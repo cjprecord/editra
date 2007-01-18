@@ -1,0 +1,222 @@
+This file outlines a set of guidelines to follow while working
+on this project, mostly style and codeing practices.
+
+It also includes some how to information about using cvs and other tools
+
+Developers are encouraged to append items to this list but
+not remove them without consulting other on the team first.
+
+#-------------------------------------------------------------------------------#
+
+    CODE:
+	- Try to keep your lines less that 80 columns wide to improve
+	  readablilty.
+
+	- When creating new files copy an existing template from the templates
+	  directory to get started with if possible.
+
+	- If you have to repeat some segment of code more than 2 or 3 times 
+	  write a function to perform that action. If its used by you in that
+	  many places it will probably be usefull elsewhere as well.
+
+	- Variables should begin with undercase letters
+
+	- Constants should be all UPPERCASE w/o underscores
+
+	- Variable names should be descriptive as possbile and should never
+	  be a single letter.
+
+		EXEPTIONS: e is used for events, i,j,k,ect for loops
+
+	- Indentation should use spaces not tabs. Each level of code should
+	  be indented by four (4) spaces. Most editors have the option of
+	  changing the tab key to use spaces instead of tab characters.
+	  
+	- If you must use some Platform specific code segments you must take
+	  care to trap them in a try catch block of some sort as to not cause 
+	  errors on platforms that dont support that feature. In general it
+	  is best to avoid these at all costs, and if you must you should also
+	  include a means to have the feature work on the other platform as
+	  well.
+
+	- Separate main sections of code in files by a line like the one
+	  above this section of this file (#-----...------#)
+
+	- Separate smaller sections within functions/classes by typeing a hash
+	  mark '#' followed by four dashes '----' then a space and then the one
+	  line description of the section, a space and a closing '----#'.
+
+		EXAMPLE:	#---- Variables ----#
+
+	- Functions in all modules except for dev_tool must be named
+	  with a mix up upper and lower case letters. This is a wx
+	  convention and since most of this is written using wx we will
+	  follow that convention, even though functions are typically written
+	  begining with a lower case letter, with each following word using
+	  uppercase letters in the begining. PyLint will complain about this
+	  too but it can be ignored.
+	
+		EXAMPLE:	defun DoSomething(parm1, parm2):
+
+	- Functions in the dev_tool module are used mostly for
+	  debugging and other developmental tasks. For this modules
+	  Functions must be named in all UPPERCASE.
+
+		EXAMPLE:	defun PRINTERROR(parm1):
+
+
+#-------------------------------------------------------------------------------#
+
+    DOCUMENTATION:
+
+	- All files should have a long description and run down of classes
+	  and functions contained in the class at the top of the file directly
+	  below the license statement.
+
+	- All functions/classes must have docstrings and they must be
+	  in the following format.
+
+		defun MyNewFunction():
+		""" DOCSTRING about function """
+
+		defun MyOtherFunction():
+		""" DOCSTRING that takes up multiple
+		lines should look like this
+
+		"""
+
+	- Use comments that are on the same line as what they are commenting
+	  sparingly. It is better to put it on the line above usualy.
+
+		EXAMPLE: some_var = (x * (other_var + CONST_VAR))	# comment
+
+	- Mark problem areas / Bugs in files on a comment line begining with the 
+	  keyword 'TODO'. This is a tag that can be used in Vim and is highlighted 
+	  for easy viewing.
+
+
+#-------------------------------------------------------------------------------#
+
+
+CVS:
+	- Setting the enviromental variable CVSROOT will make your life easier,
+	  you can do this in your .bashrc file or .profile so it is automatically
+	  set when you login to your computer. Or you can do it manually each time
+	  before starting work on this project. This will make is so you dont
+	  have to specify the repositories address with each command.
+	
+	  Linux or CYGWIN
+		export CVSROOT=:pserver:YOURLOGON@codeman.dnsdojo.org:2401/root
+
+	  Windows
+		right click my computer => properties
+		Advanced Tab => Enviromental variables
+		System Variables => New
+		Name it CVSROOT give it the value listed above after the '='
+
+	- Each time you start working on the project it is a good idea to first
+	  login to cvs and update your local tree in case there has been changes
+ 	  since you lasted worked on it.
+
+		cvs -d :pserver:YOURLOGON@codeman.dnsdojo.org:2401/root logon
+		cvs -d :pserver:YOURLOGON@codeman.dnsdojo.org:2401/root update
+
+	  Or if you have CVSROOT set
+	
+		cvs logon
+		cvs update
+
+	- If you havent checked out code you can do so with the following command
+
+		cvs co pypad
+
+	- Do not check in code until you have tested it and made sure that it
+	  has not broken anything else. It is suggested to check your code in
+	  after any new functionality is added to the file such as a new class,
+	  complex function, UI changes. In order to make it easier to find out
+	  when somthing has caused a problem down the road.
+
+	  Here is a typical cycle to follow:
+	  	1) check out code
+		2) make changes
+		3) test changes see that the work and dont break some other
+		   functionality.
+		4) update your code with the cvs to bring in changes that others
+		   may have made since you started working on your changes
+		5) test your changes again.
+		6) if everything is good check in your changes and commit.
+
+	- When you check in code make sure to include a short description of
+	  of what you did to the file when prompted to by the cvs server.
+
+	- To check code in
+
+		cvs ci filename
+	
+	- To perminatly add your changes after a ci
+
+		cvs commit
+	
+	- If you need exclusive rights to work on a file issue the following
+	  command to lock it so other users cant modify it while you are working
+	  on it. CVS is capable of managing multiple modifications and merge
+	  them together if they do not overlap. If they do overlap the merge
+	  must be looked at by a person. So this is often not necessary.
+
+		cvs admin -l filename
+
+	  Then when finished you must unlock it
+
+		cvs admin -u filename
+
+
+#-------------------------------------------------------------------------------#
+
+PyLint:
+	This is a tool for checking code for consistency and to see if you
+	are following codeing practices.
+
+	Run it using the default profile for now. Later a custom profile will
+	be created for this project to better fit the codeing standards we
+	have set.
+
+	After it runs it will print out a list of problems and warnings and
+	give you an aggregated score at the end. Any changes you make or
+	new modules written should score above a 7/10. Once the new template
+	is created this score will go up, but for now a 7 will suffice.
+
+        Usage:
+	    pylint file_name
+
+#-------------------------------------------------------------------------------#
+
+DEVELOPMENT TOOLS:
+
+	- Using Linux will make things work allot better, but we need to
+	  develop on Windows at times too to test for compatability.
+
+	  Both operating systems have ported versions of the libraries
+	  that we use in this project so this will not be a problem.
+
+	- Required Software
+		Python: http://www.python.org
+		wxPython: http://www.wxpython.org
+		cvs: There are options for this but if you are on windows I 
+		     suggest installing Cygwin and using the cvs provided in 
+		     its installer as it will provide the closest comptibilty on 
+		     windows for our cvs server and configuration files.
+		An editor that does not use Microsoft EOL characters. This only 
+		applies to windows developers. Some such editors are anything 
+		under Cygwin, Gvim for Windows, PyPad >= v0.0.63.
+		PyLint http://www.logilab.org/projects/pylint
+
+	- Suggested Software
+		On windows install the Cygwin X server and you can use Linux
+		X applications on windows that are running in the Cygwin
+		enviroment. It also makes ssh possible on windows and I may
+		switch the cvs server to secure mode in the future which will
+		requre ssh on your machine.
+
+
+#-------------------------------------------------------------------------------#
+

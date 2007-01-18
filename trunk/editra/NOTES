@@ -1,0 +1,60 @@
+This file is to serve as a sandbox for people to leave notes
+or warnings about files that they are working on or questions
+they may have.
+
+The prefered method of doing this is throught the mailing
+list once that is set up. But if that is unavailable use
+this file. Once a notice is deemed outdated or invalid please
+remove it.
+
+#--------------------------------------------------------------#
+# BEGIN
+#--------------------------------------------------------------#
+
+07/16/06: There is now Doxygen generated documentation available
+          Online for developmental reference:
+
+          http://codeman.dnsdojo.org:2402/pypad_doc
+
+          For those of you with shell accounts on the server
+          there are also man pages available.
+
+05/23/06: Note to developers working on Windows the path 
+	  resolution method is set to work off of the install
+	  path when the project is build as an exe. This means
+	  that you will get error messages about not being
+	  able to find the icons and being unable to load
+	  the profile because of this.
+
+	  These can be safely ignored and you should not fix
+	  it. However if it becomes a problem you can temporarly
+	  fix it in your own dev folder by doing the following.
+
+	  Solution 1:
+          Copy the pixmaps and profiles directories to the src directory
+          
+	  Solution 2:
+	  In pp_util.py go to the function ResolvConfigDir and
+	  change all the lines in the 'if' statement for win32
+	  that match the following line as shown.
+
+	   pro_path = path_char.join(pieces[:-1])
+
+	   TO
+
+	   pro_path = path_char.join(pieces[:-2])
+
+	  However DO NOT commit these changes back to the 
+	  repository. if you need to commit changes in pp_util
+	  makes sure to revert the above changes before you
+	  commit or it will cause problems with the Windows
+	  build.
+
+04/13/06: The cvs server is currently being hosted on a box at
+	  my house. It is possible that this machine will be
+	  down from time to time.
+
+#--------------------------------------------------------------#
+# END
+#--------------------------------------------------------------#
+
