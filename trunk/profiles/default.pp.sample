@@ -1,0 +1,33 @@
+
+# **** DO NOT MODIFY THIS FILE ****
+# **** Instead copy it to a new one file or edit default.pp ****
+# default.pp.sample
+# Editra Profile
+#
+# This is a sample profile showing the default configuration
+# of the editra editor. As well as giving an explanation of the
+# possible settings.
+#
+# This is just a stub and will be expanded as the profile support
+# does. So update your config files often.
+
+
+# LABLE		VALUE  #
+#----------------------#
+
+LANG		ENGLISH		# Currently not used but will be implemented later
+COMPLETION	On		# Turns code completion help 'On' or 'Off'
+ICONS		STOCK		# Currently not used but will be with the theme and
+				# Toolbar modules that are later to come
+SYNTAX		On		# Turns code highlighting 'On' or 'Off'
+THEME		DEFAULT		# Currently not used 
+MODE		CODE		# Currenly not used but will be used to set an overall
+				# look and feel for the editor between 'CODE' or 'DOC' mode
+WRAP		On		# Turns Word Wrap 'On' or 'Off'
+LASTFILE	''		# Currently unused but will allow for rembering
+				# last opened file.
+GUIDES		On		# Turns indentation guides 'On' or 'Off'
+TOOLBAR		On		# Turns toolbar 'On' or 'Off' (not implemented)
+
+
+EOF				# Special marker to mark end of file
