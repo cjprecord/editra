@@ -510,7 +510,7 @@ class EDSTC(wx.stc.StyledTextCtrl):
         
         lexer = syn_data[syntax.LEXER]
         # Check for special cases
-        if lexer in [ wx.stc.STC_LEX_HTML, wx.stc.STC_LEX_PHP, wx.stc.STC_LEX_XML]:
+        if lexer in [ wx.stc.STC_LEX_HTML, wx.stc.STC_LEX_XML]:
             self.SetStyleBits(7)
         elif lexer == wx.stc.STC_LEX_NULL:
             self.SetIndentationGuides(False)
