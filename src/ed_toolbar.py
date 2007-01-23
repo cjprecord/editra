@@ -53,47 +53,65 @@ TLANG = util.StripAccelerators(ed_glob.LANG)
 
 class ED_ToolBar(wx.ToolBar):
     """Toolbar wrapper class"""
-    def __init__(self, id, icon_size, style=0):
+    def __init__(self, parent, tb_id, icon_size, style=0):
         """Initializes the toolbar"""
-
         self.platform = wx.Platform
-
         if self.platform == '__WXMSW__':
-            wx.ToolBar.__init__(self, id, style=wx.TB_HORIZONTAL |
+            wx.ToolBar.__init__(self, parent, tb_id, style=wx.TB_HORIZONTAL |
                                 wx.NO_BORDER | wx.TB_FLAT | wx.TB_TEXT)
-        else:
-            wx.ToolBar.__init__(self, id, style=wx.TB_HORIZONTAL | 
-                                wx.NO_BORDER | wx.TB_FLAT | 
+        elif self.platform == '__WXGTK__':
+            wx.ToolBar.__init__(self, parent, tb_id, style=wx.TB_HORIZONTAL | 
+                                wx.NO_BORDER  | wx.TB_FLAT | 
                                 wx.TB_DOCKABLE | wx.TB_TEXT)
-
-        self.tool_size = (icon_size, icon_size)
-
+        else:
+            #icon_size = 32 #TODO Mac icons are suggested to be 32x32 with the native toolbar
+            wx.ToolBar.__init__(self, parent, tb_id, size=(icon_size,-1), 
+                                style=wx.TB_FLAT | wx.TB_NODIVIDER | wx.NO_BORDER)
+        self.tool_size = wx.Size(icon_size, icon_size)
+        self.SetToolBitmapSize(self.tool_size)
         self.CreateDefaultIcons(self.tool_size)
         self.PopulateTools()
 
 	#-- Bind Events --#
 
         #-- End Bind Events --#
-
-	self.Realize()
+        self.Realize()
 
     #---- End Init ----#
 
     #---- Function Definitions----#
 
+    #TODO this is just a quick hack to make things work for now
     def CreateDefaultIcons(self, tool_size):
         """Creates the Icons to be used in the toolbar"""
-        TOOL_SET["new"]   = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["open"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["save"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["print"] = wx.ArtProvider.GetBitmap(wx.ART_PRINT, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["undo"]  = wx.ArtProvider.GetBitmap(wx.ART_UNDO, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["redo"]  = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["copy"]  = wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["cut"]   = wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["paste"] = wx.ArtProvider.GetBitmap(wx.ART_PASTE, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["find"]  = wx.ArtProvider.GetBitmap(wx.ART_FIND, wx.ART_TOOLBAR, tool_size)
-        TOOL_SET["findr"] = wx.ArtProvider.GetBitmap(wx.ART_FIND_AND_REPLACE, wx.ART_TOOLBAR, tool_size)
+        stock_dir = (ed_glob.CONFIG['PIXMAPS_DIR'] + u"toolbar" + util.GetPathChar() +
+                     ed_glob.PROFILE['ICONS'] + util.GetPathChar())
+        # wx 2.8 uses a native mac toolbar and the builtin wx icons look like complete
+        # garbage in it so provide some custom pixmaps instead.
+        if wx.Platform == '__WXMAC__' or ed_glob['ICONS'].lower() != u"stock":
+            TOOL_SET["new"]   = wx.Bitmap(stock_dir + "new.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["open"]  = wx.Bitmap(stock_dir + "open.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["save"]  = wx.Bitmap(stock_dir + "save.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["print"] = wx.Bitmap(stock_dir + "print.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["undo"]  = wx.Bitmap(stock_dir + "undo.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["redo"]  = wx.Bitmap(stock_dir + "redo.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["copy"]  = wx.Bitmap(stock_dir + "copy.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["cut"]   = wx.Bitmap(stock_dir + "cut.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["paste"] = wx.Bitmap(stock_dir + "paste.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["find"]  = wx.Bitmap(stock_dir + "find.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["findr"] = wx.Bitmap(stock_dir + "findr.png", wx.BITMAP_TYPE_PNG)
+        else:
+            TOOL_SET["new"]   = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["open"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["save"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["print"] = wx.ArtProvider.GetBitmap(wx.ART_PRINT, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["undo"]  = wx.ArtProvider.GetBitmap(wx.ART_UNDO, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["redo"]  = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["copy"]  = wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["cut"]   = wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["paste"] = wx.ArtProvider.GetBitmap(wx.ART_PASTE, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["find"]  = wx.ArtProvider.GetBitmap(wx.ART_FIND, wx.ART_TOOLBAR, tool_size)
+            TOOL_SET["findr"] = wx.ArtProvider.GetBitmap(wx.ART_FIND_AND_REPLACE, wx.ART_TOOLBAR, tool_size)
 
     def LoadIconSet(self):
         """Loads the Icon set from the theme handler.

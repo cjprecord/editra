@@ -89,6 +89,7 @@ ID_PREF_METAL    = 224
 ID_PREF_FHIST    = 225
 ID_PREF_WSIZE    = 226
 ID_PREF_WPOS     = 227
+ID_PREF_ICON     = 228
 
 # View Menu IDs
 ID_ZOOM_OUT      = 300
@@ -199,7 +200,7 @@ PROFILE = {
            'KWHELPER'   : True,
            'FHIST_LVL'  : '5',
            'GUIDES'     : True,
-           'ICONS'      : 'STOCK',
+           'ICONS'      : 'Stock',
            'LANG'       : 'ENGLISH',
            'MODE'       : 'DEBUG',
            'SYNTAX'     : True,
@@ -229,7 +230,8 @@ ID_2_PROF = {
              ID_WORD_WRAP         : 'WRAP',
              ID_PREF_METAL        : 'METAL',
              ID_PREF_WSIZE        : 'SET_WSIZE',
-             ID_PREF_WPOS         : 'SET_WPOS'
+             ID_PREF_WPOS         : 'SET_WPOS',
+             ID_PREF_ICON         : 'ICONS'
 }
 
 # Language Settings

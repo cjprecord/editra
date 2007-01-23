@@ -55,8 +55,9 @@ __revision__ = "$Id: Exp $"
 
 import os			# Python OS libraries
 import sys			# Python System libraries
+import time
 import wx			# wxPython libraries
-import wx.lib.printout as printout 
+import wx.lib.printout as printout
 from ed_glob import *		# Global Variables
 import util 			# Misc Helper functions
 import dev_tool 		         # Tools Used for Debugging
@@ -97,7 +98,7 @@ class MainWindow(wx.Frame):
                 self.SetExtraStyle(wx.FRAME_EX_METAL)
 
         #---- Sizers to hold subapplets ----#
-        self.sizer = wx.BoxSizer()
+       # self.sizer = wx.BoxSizer()
 
         #---- Setup File History ----#
         self.filehistory = wx.FileHistory(int(PROFILE['FHIST_LVL']))
@@ -109,7 +110,7 @@ class MainWindow(wx.Frame):
         self.nb = ed_pages.ED_Pages(self, -1)
 
         #---- Fill the sizer ----#
-        self.sizer.Add(self.nb, 0, wx.EXPAND)
+      #  self.sizer.Add(self.nb, 0, wx.EXPAND)
 
         #---- Status bar on bottom of window ----#
         self.CreateStatusBar(2, style=wx.ST_SIZEGRIP)
@@ -118,7 +119,7 @@ class MainWindow(wx.Frame):
 
         #---- Create a toolbar ----#
         if PROFILE['TOOLBAR']:
-            self.toolbar = ed_toolbar.ED_ToolBar(self, 16)
+            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY, 16)
             self.SetToolBar(self.toolbar)
 
         # Toolbar Event Handlers
@@ -369,7 +370,8 @@ class MainWindow(wx.Frame):
                 pass
 
         #---- Show the Frame ----#
-        if PROFILE['SET_WPOS'] and PROFILE.has_key('WPOS'):
+        if PROFILE['SET_WPOS'] and PROFILE.has_key('WPOS') and \
+          isinstance(PROFILE['WPOS'], tuple) and len(PROFILE['WPOS']) == 2:
             self.SetPosition(PROFILE['WPOS'])
         else:
             self.CenterOnParent()
@@ -595,8 +597,14 @@ class MainWindow(wx.Frame):
         self.Unbind(wx.EVT_CLOSE)
 
         # Save Window Size/Position for next launch
-        PROFILE['WSIZE'] = self.GetSize()
+        if wx.Platform == '__WXMAC__': #HACK workaround for possible bug in wxPython 2.8
+            f_size = self.GetSize()
+            PROFILE['WSIZE'] = (f_size[0], f_size[1] - 32)
+        else:
+            PROFILE['WSIZE'] = self.GetSize()
         PROFILE['WPOS'] = self.GetPosition()
+        dev_tool.DEBUGP("[main_evt] [exit] Closing editor at pos=" + 
+                        str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
 
         # Cleanup Controls
         controls = self.nb.GetPageCount()
@@ -666,8 +674,6 @@ class MainWindow(wx.Frame):
         else:
             # Open File
             self.DoOpen(evt, file_handle)
-
-        evt.Skip()
 
     #---- End File Menu Functions ----#
 
@@ -869,12 +875,11 @@ class MainWindow(wx.Frame):
             self.toolbar.Destroy()
             PROFILE['TOOLBAR'] = False
         else:
-            self.toolbar = ed_toolbar.ED_ToolBar(self, 16)
+            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY, 16)
             self.SetToolBar(self.toolbar)
             PROFILE['TOOLBAR'] = True
             self.UpdateToolBar()
-        self.SetBestFittingSize()
-        evt.Skip()
+        self.SetInitialSize()
 
     #---- End View Menu Functions ----#
 
@@ -886,7 +891,6 @@ class MainWindow(wx.Frame):
             self.PushStatusText("Word Wrap On", SB_INFO)
         else:	
             self.PushStatusText("Word Wrap Off", SB_INFO)
-        evt.Skip()
 
     def OnFont(self, evt):
         """Font"""
@@ -898,9 +902,7 @@ class MainWindow(wx.Frame):
         if result == wx.ID_OK:
             font = data.GetChosenFont()
             self.nb.control.StyleSetFont(0, font)
-
         dlg.Destroy()
-        evt.Skip()
 
     #---- End Format Menu Functions ----#
 
@@ -912,7 +914,7 @@ class MainWindow(wx.Frame):
             self.PushStatusText("Syntax Highlighting On", SB_INFO)
         else:
             self.PushStatusText("Syntax Highlighting Off", SB_INFO)
-        evt.Skip()
+        return
 
     def OnIndentGuides(self, evt):
         """Turn Indentation Guides on and off"""
@@ -921,7 +923,7 @@ class MainWindow(wx.Frame):
             self.PushStatusText("Indentation Guides On", SB_INFO)
         else:
             self.PushStatusText("Indentation Guides Off", SB_INFO)
-        evt.Skip()
+        return
 
     def OnHLBrackets(self, evt):
         """Turns Bracket Highlighting on and off"""
@@ -930,8 +932,7 @@ class MainWindow(wx.Frame):
              self.PushStatusText("Bracket Highlighting On", SB_INFO)
         else:
             self.PushStatusText("Bracket Highlighting Off", SB_INFO)
-
-        evt.Skip()
+        return
 
     def OnKeyWordHelp(self, evt):
         """Turn KeyWordHelp On and Off"""
@@ -940,6 +941,7 @@ class MainWindow(wx.Frame):
             self.PushStatusText("Keyword Helper On", SB_INFO)
         else:
             self.PushStatusText("Keyword Helper Off", SB_INFO)
+        return
 
     ### Language Menu Functions
     def OnSetLexer(self, evt):
@@ -961,10 +963,21 @@ class MainWindow(wx.Frame):
     #---- Help Menu Functions ----#
     def OnAbout(self, evt):
         """About"""
-        dlg = util.About(self)
-        dlg.ShowModal()
-        dlg.Destroy()
-        evt.Skip()
+        info = wx.AboutDialogInfo()
+        year = time.localtime()
+        desc = ["Editra is a programmers text editor.",
+                "Written in 100%% Python.\n",
+                "Platform Info: (python %s,%s)", 
+                "License: GPL v2 (see COPYING.txt for full license)"]
+        desc = "\n".join(desc)
+        py_version = sys.version.split()[0]
+        wx_info = ", ".join(wx.PlatformInfo[1:])
+        info.SetCopyright("Copyright(C) %d Cody Precord" % year[0])
+        info.SetName(prog_name.title())
+        info.SetDescription(desc % (py_version, wx_info))
+        info.SetVersion(version)
+        about = wx.AboutBox(info)
+        del about
 
     #---- End Help Menu Functions ----#
 

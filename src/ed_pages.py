@@ -55,6 +55,7 @@ from ed_glob import CONFIG, version, prog_name
 import ed_stc 			 # Editra Styled Text Control
 import dev_tool			 # Editra Debug tools
 import extern.FlatNotebook as FNB
+# import wx.lib.flatnotebook as FNB # Included as part of wxpython 2.8
 #---- Class Globals ----#
 IMG = {}
 
@@ -105,7 +106,7 @@ class ED_Pages(FNB.FlatNotebook):
         self.control = ed_stc.EDSTC(self, self.pg_num,
                                     style=wx.TE_MULTILINE|wx.TE_RICH2)
         dev_tool.DEBUGP("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
-        self.AddPage(self.control, "Untitled - " + str(self.pg_num))
+        self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
         self.SetPageImage(self.GetSelection(), IMG['TXT'])
 
     def OpenPageType(type=0):
