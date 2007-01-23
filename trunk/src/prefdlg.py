@@ -73,7 +73,7 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_KWHELPER, ed_glob.ID_SYNTAX, ed_glob.ID_INDENT_GUIDES,
             ed_glob.ID_WORD_WRAP, ed_glob.ID_PREF_TABS, ed_glob.ID_PREF_TABW,
             ed_glob.ID_SHOW_WS, ed_glob.ID_PREF_METAL, ed_glob.ID_PREF_FHIST,
-            ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS ]
+            ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON ]
 
 # Validator Flags
 ALPHA_ONLY = 1
@@ -223,20 +223,18 @@ class PrefPages(wx.Notebook):
         info_txt = [ "Most changes made in this dialog currently require the program",
                      "to be restarted before taking effect."]
 
-        info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt), (8, 10))
-        wx.StaticText(gen_panel, wx.ID_ANY, u"Language:", (15, 250), (75, 18))
-        ExChoice(gen_panel, id=ed_glob.ID_PREF_LANG, pos=(90,250), size=(300,-1),
-                           choices=util.GetLanguages(), default=ed_glob.PROFILE['LANG'].title())
-    #    lang_sizer = wx.BoxSizer(wx.HORIZONTAL)
-    #    lang_sizer.Add(lang_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-    #    lang_sizer.Add(lang_c, 0, wx.ALIGN_CENTER_VERTICAL)
+        info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt) + ("\n" * 10))
+        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, u"Language: ")
+        lang_c = ExChoice(gen_panel, id=ed_glob.ID_PREF_LANG,
+                           choices=util.GetResources(u"language"), 
+                           default=ed_glob.PROFILE['LANG'].title())
+        lang_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        lang_sizer.Add(lang_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        lang_sizer.Add(lang_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-      #  sizer.Add(info, 0, wx.CENTER)
-      #  sizer.Add(lang_sizer, 1, wx.BOTTOM)
-      #  sizer.Add(lang_lbl, 10, wx.LEFT | wx.BOTTOM)
-       # sizer.Add(lang_c, 10, wx.BOTTOM | wx.LEFT)
-
+        sizer.Add(info, 0, wx.CENTER)
+        sizer.Add(lang_sizer, 50, wx.BOTTOM)
         gen_panel.SetSizer(sizer)
 
         self.AddPage(gen_panel, u"General")
@@ -244,10 +242,8 @@ class PrefPages(wx.Notebook):
     def ProfilePage(self):
         """Creates the profile editor page"""
         prof_panel = wx.Panel(self, wx.ID_ANY)
-
         # Bind size evt to this panel
         prof_panel.Bind(wx.EVT_SIZE, self.OnSize)
-        
         # Add Profile Editor to Panel
         self.list = ProfileListCtrl(prof_panel)
 
@@ -339,8 +335,17 @@ class PrefPages(wx.Notebook):
         fh_sizer.Add(fh_cb, 1, wx.ALIGN_CENTER_VERTICAL)
 
         # Various Appearance Settings
-        app_lbl = wx.StaticText(misc_panel, wx.ID_ANY, u"Appearance:  ")
+        app_lbl = wx.StaticText(misc_panel, wx.ID_ANY, u"Appearance:")
         app_sizer = wx.BoxSizer(wx.VERTICAL)
+        tb_icont = wx.StaticText(misc_panel, wx.ID_ANY, u"Icon Theme: ")
+        tb_icon = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICON,
+                            choices=util.GetResources(u"pixmaps" + util.GetPathChar() + u"toolbar"), 
+                            default=ed_glob.PROFILE['ICONS'].title())
+        tbi_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        tbi_sizer.Add(tb_icont, 1, wx.ALIGN_CENTER_VERTICAL)
+        tbi_sizer.Add(tb_icon, 1, wx.ALIGN_CENTER_VERTICAL)
+        app_sizer.Add(tbi_sizer, 1, wx.ALIGN_CENTER_VERTICAL)
+
         if wx.Platform == '__WXMAC__':
             m_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_METAL, u"Use Metal Style (OS X Only)")
             if ed_glob.PROFILE.has_key('METAL'):

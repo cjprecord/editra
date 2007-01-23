@@ -99,76 +99,6 @@ class FileDropTarget(wx.FileDropTarget):
 
 #---- End FileDropTarget ----#
 
-#---- About Dialog ----#
-class About(wx.Dialog):
-    """ Class that impliments an about window """
-    text = '''
-    <html>
-    <body bgcolor="9D2424">
-    <center>
-    <table bgcolor="#D8D8D8" width="100%%" cellspacing="0"
-    cellpadding="0" border="1">
-    <tr>
-        <td align="center">
-        <h2>Editra %s</h2>
-        Copyright&#169; 2006 <b>Cody Precord</b><br>
-        staff@editra.org<br><br>
-        Platform Info: (python %s,%s)<br><br>
-        License: GPL v2 (see <i>COPYING.txt</i> for full license)
-        </td>
-    </tr>
-    </table>
-    </center>
-    <p>
-    Editra's implimentation is completely written in <a title="python.org" href="http://python.org">Python</a> utilizing <a href="http://wxpython.org">wxPython</a> Widget Libraries for the bulk of the UI.  
-    </p>
-    <p>Visit the project homepage at http://editra.org</p>
-    </body>
-    </html>
-
-    '''
-    def __init__(self, parent):
-
-        pre = wx.PreDialog()
-        pre.Create(parent, -1, ed_glob.LANG['About'][ed_glob.L_LBL].replace(u"&", u""))
-        self.PostCreate(pre)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-
-        # Create html window to hold project info
-        html = wx.html.HtmlWindow(self, -1, size=(350, -1))
-        if "gtk2" in wx.PlatformInfo:
-            html.SetStandardFonts()
-        py_version = sys.version.split()[0]
-        html.SetPage(self.text % (ed_glob.version,
-                                  py_version,
-                                  ", ".join(wx.PlatformInfo[1:]),
-                                  ))
-        html.FindWindowById(wx.ID_OK)
-        int_rep = html.GetInternalRepresentation()
-        html.SetSize( (int_rep.GetWidth()+25, int_rep.GetHeight()+25) )
-        self.SetClientSize(html.GetSize())
-        self.CentreOnParent(wx.BOTH)
-
-        # Put Html window into sizer
-        sizer.Add(html, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-
-        # Add sizer to hold button
-        b_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        button = wx.Button(self, wx.ID_OK, u"Close")
-        button.SetDefault()
-        b_sizer.Add(button, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
-
-        # Add Button to Sizer
-        sizer.Add(b_sizer, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL |
-                  wx.ALL, 5)
-
-        # Finish layout of all objects in Dialog
-        self.SetSizer(sizer)
-        self.SetAutoLayout(True)
-        sizer.Fit(self)
-
-#---- End About ----#
-
 #---- Misc Common Function Library ----#
 
 # File Helper Functions
@@ -364,21 +294,20 @@ def ResolvConfigDir(config_dir):
 
     return pro_path
 
-def GetLanguages():
-    """Returns a list of installed language plugins or -1 if the language
-    directory is not found."""
-    lang_dir = ResolvConfigDir(u"language")
-    lang_lst = []
-    if not os.path.exists(lang_dir):
+def GetResources(resource):
+    """Returns a list of resource directories from a given toplevel config dir"""
+    rec_dir = ResolvConfigDir(resource)
+    rec_lst = []
+    if not os.path.exists(rec_dir):
         return -1
     else:
-        langs = os.listdir(lang_dir)
-        for lang in langs:
-            if os.path.isdir(lang_dir + lang):
-                lang_lst.append(lang.title())
+        recs = os.listdir(rec_dir)
+        for rec in recs:
+            if os.path.isdir(rec_dir + rec) and rec[0] != u".":
+                rec_lst.append(rec.title())
 
-        return lang_lst
- 
+        return rec_lst
+
 def StripAccelerators(lang_dict):
     """Strips the & characters from the dictionary items and returns
     the items as a dictionary. This is here so that we only need to 
@@ -409,11 +338,20 @@ def StrToTuple(tu_str):
     tu_str = tu_str.strip('(,)')
     tu_str = tu_str.replace(',', '')
     tu_str = tu_str.split()
-
+    neg = False
+    
     ret_tu = list()
     for val in tu_str:
-        if val.isdigit():
-            ret_tu.append(int(val))
+        # workaround of negative numbers
+	if val[0] == u'-':
+	    neg = True
+
+        if val.isdigit() or neg:
+            if neg:
+                neg = False
+                ret_tu.append(int(val)*-1)
+            else:
+                ret_tu.append(int(val))
 
     return tuple(ret_tu)
 

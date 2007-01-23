@@ -81,6 +81,7 @@ DATA_FILES = [
 				"../pixmaps/mime/shell.png",
 				"../pixmaps/mime/tex.png",
 				"../pixmaps/mime/text.png"]),
+              ("pixmaps/toolbar/Stock", glob.glob('../pixmaps/toolbar/Nuovo/*')),
               ("templates", ["../templates/py"]),
               ("profiles", ["../profiles/default.pp",
                             "../profiles/.loader", 
@@ -146,13 +147,18 @@ if __platform__ == "win32":
         author_email = AUTHOR_EMAIL,
 	license = LICENSE,
         url = URL,
-       # packages = ["syntax"],
       	data_files = DATA_FILES
 	)
 
 #---- Setup MacOSX APP ----#
 elif __platform__ == "darwin":
-    from setuptools import setup
+    try:
+        from setuptools import setup
+    except:
+        print "You dont have py2app installed!! Can't complete build!!"
+	exit()
+	
+
     py2app_options = dict(
                           iconfile = '../pixmaps/editra.icns', 
                           argv_emulation = True,

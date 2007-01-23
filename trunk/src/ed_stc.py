@@ -60,22 +60,24 @@ import dev_tool
 
 #-------------------------------------------------------------------------#
 # Font Settings
-if wx.Platform == '__WXMSW__':
-    faces = { 'times': 'Times New Roman',
-              'mono' : 'Courier New',
-              'helv' : 'Arial',
-              'other': 'Comic Sans MS',
-              'size' : 10,
-              'size2': 8,
-             }
-else:
-    faces = { 'times': 'Times',
-              'mono' : 'Monaco', #'Courier',
-              'helv' : 'Helvetica',
-              'other': 'Bitstream Vera Sans',
-              'size' : 10,
-              'size2': 8,
-             }
+sysfont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+font_face = sysfont.GetFaceName()
+#if wx.Platform == '__WXMSW__':
+#    faces = { 'times': 'Times New Roman',
+#              'mono' : 'Courier New',
+#              'helv' : 'Arial',
+#              'other': 'Comic Sans MS',
+#              'size' : 10,
+#              'size2': 8
+#             }
+#else:
+faces = { 'times': sysfont.GetFaceName(), #'Times',
+           'mono' : sysfont.GetFaceName(), #'Monaco', #'Courier',
+           'helv' : sysfont.GetFaceName(), #'Helvetica',
+           'other': sysfont.GetFaceName(), #'Bitstream Vera Sans',
+           'size' : sysfont.GetPointSize(),
+           'size2': sysfont.GetPointSize()-2
+         }
 #-------------------------------------------------------------------------#
 # Common Style Strings
 # HACK till a proper style provider/editor can be implimented

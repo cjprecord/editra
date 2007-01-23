@@ -39,6 +39,7 @@ __revision__ = "$Id: Exp $"
 # Dependancies
 import os
 import sys
+import gettext
 import wx
 import ed_glob
 import util
@@ -62,6 +63,7 @@ else:
 
 # 3. Setup Language Settings
 # TODO it is typically not a good idea to be changing the path like this
+# TODO Design Change, moving to use standard po files instead of these python scripts
 # Must set this after loading Profile so we know what language to use
 ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("language" + util.GetPathChar() + ed_glob.PROFILE['LANG'].lower())
 if os.path.exists(ed_glob.CONFIG['LANG_DIR']) and ed_glob.PROFILE['LANG'].lower() != 'english':
@@ -71,16 +73,19 @@ else:
     # External Language Resource is missing/notfound so use builtin from ed_glob instead
     pass
 
-#---- End Configuration Setup ----#
+# New language setup stuff
+#gettext.install(ed_glob.prog_name, util.ResolvConfigDir("locale"), unicode=True)
 
-# Now import main launch application
-import ed_main
+#---- End Configuration Setup ----#
 
 # Create Application
 if ed_glob.PROFILE['MODE'] == u"DEBUG":
-    EDITRA = wx.App()
+    EDITRA = wx.App(False)
 else:
-    EDITRA = wx.PySimpleApp()
+    EDITRA = wx.App(False) #PySimpleApp()
+
+# Now import main launch application
+import ed_main
 
 # Create the Editor
 FRAME = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], ed_glob.prog_name)
