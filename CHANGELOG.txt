@@ -6,8 +6,23 @@ Change Log:
 
 Changes since last release:
 
-VERSION 0.0.84
+
+VERSION 0.0.xx
 DATE xx/xx/xxxx
+Twelth Snapshot Release
+
+NEWS:
+ Updated program to run on Python 2.5 and wxPython 2.8
+
+NEW: [features/improvements]
++New native About Dialog
+
+BUG FIXES:
++Negative window positioning now moves the window back into visible space on load
+
+#---------------------------------------------------------------------------------#
+VERSION 0.0.84
+DATE 01/15/2007
 Eleventh Snapshot Release
 
 NEWS:
