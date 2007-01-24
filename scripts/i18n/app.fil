@@ -1,0 +1,12 @@
+../../src/dev_tool.py
+../../src/ed_glob.py
+../../src/ed_main.py
+../../src/ed_pages.py
+../../src/ed_stc.py 
+../../src/ed_toolbar.py
+../../src/editra.py
+../../src/prefdlg.py
+../../src/profiler.py
+../../src/util.py
+../../src/syntax/synglob.py
+../../src/syntax/syntax.py

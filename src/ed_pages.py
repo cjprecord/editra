@@ -58,7 +58,7 @@ import extern.FlatNotebook as FNB
 # import wx.lib.flatnotebook as FNB # Included as part of wxpython 2.8
 #---- Class Globals ----#
 IMG = {}
-
+_ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 class ED_Pages(FNB.FlatNotebook):
     """ Editra tabbed pages class """
@@ -270,7 +270,8 @@ class ED_Pages(FNB.FlatNotebook):
 
     def CreateImageList(self):
         """Creates the image list for the tabs buttons."""
-        #HACK should have a mime type provider to handle filetypes/images ect
+        #HACK should use themimetypemanager to handle filetypes/images ect
+        #     just cant seem to get it to work properly on the mac right now.
         # Get Images
         img_dir = CONFIG['MIME_DIR']
         IMG["C"] = wx.Bitmap(img_dir + "c.png", wx.BITMAP_TYPE_PNG)

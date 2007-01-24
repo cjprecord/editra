@@ -68,6 +68,7 @@ import prefdlg                       # Preference Dialog Class
 
 # Function Aliases
 da = util.DeAccel
+_ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
 
@@ -150,138 +151,141 @@ class MainWindow(wx.Frame):
 
         #---- Submenu Items ----#
         # Language (sub of settings)
-        languagemenu.Append(ID_LANG_ASM, "ASM", "Switch Lexer to ASM", 
+        languagemenu.Append(ID_LANG_ASM, "ASM", _("Switch Lexer to %s") % "ASM", 
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_BATCH, "Batch", "Switch Lexer to Batch",
+        languagemenu.Append(ID_LANG_BATCH, "Batch", _("Switch Lexer to %s") % "Batch",
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_C, "C", "Switch Lexer to C", 
+        languagemenu.Append(ID_LANG_C, "C", _("Switch Lexer to %s") % "C", 
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_CPP, "CPP", "Switch Lexer to CPP", 
+        languagemenu.Append(ID_LANG_CPP, "CPP", _("Switch Lexer to %s") % "CPP", 
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_CSS, "CSS", "Switch Lexer to CSS", 
+        languagemenu.Append(ID_LANG_CSS, "CSS", _("Switch Lexer to %s") % "CSS", 
                             wx.ITEM_CHECK)
         languagemenu.Append(ID_LANG_H, "Header Files", 
-                            "Switch Lexer to Header Files", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_HTML, "HTML", "Switch Lexer to HTML", 
+                            _("Switch Lexer to %s") % "Header Files", wx.ITEM_CHECK)
+        languagemenu.Append(ID_LANG_HTML, "HTML", _("Switch Lexer to %s") % "HTML", 
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_JAVA, "Java", "Switch Lexer to Java", 
+        languagemenu.Append(ID_LANG_JAVA, "Java", _("Switch Lexer to %s") % "Java", 
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_LISP, "Lisp", "Switch Lexer to Lisp", 
+        languagemenu.Append(ID_LANG_LISP, "Lisp", _("Switch Lexer to %s") % "Lisp", 
                             wx.ITEM_CHECK)	
         languagemenu.Append(ID_LANG_MAKE, "Makefile", 
-                            "Switch Lexer to Makefiles", wx.ITEM_CHECK)	
+                            _("Switch Lexer to %s") % "Makefiles", wx.ITEM_CHECK)	
         languagemenu.Append(ID_LANG_NSIS, "NSIS", 
-                            "Switch Lexer to Nullsoft Scriptable Installer", 
+                            _("Switch Lexer to %s") % "Nullsoft Scriptable Installer", 
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PASCAL, "Pascal", "Switch Lexer to Pascal",
+        languagemenu.Append(ID_LANG_PASCAL, "Pascal", _("Switch Lexer to %s") % "Pascal",
                             wx.ITEM_CHECK)
         languagemenu.Append(ID_LANG_PERL, "Perl", 
-                           "Switch Lexer to Perl Scripts", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PHP, "PHP", "Switch Lexer to PHP", 
+                           _("Switch Lexer to %s") % "Perl Scripts", wx.ITEM_CHECK)
+        languagemenu.Append(ID_LANG_PHP, "PHP", _("Switch Lexer to %s") % "PHP", 
                             wx.ITEM_CHECK)
         languagemenu.Append(ID_LANG_PS, "PostScript", 
-                            "Switch Lexer to PostScript", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PYTHON, "PYTHON", "Switch Lexer to Python",
+                            _("Switch Lexer to %s") % "PostScript", wx.ITEM_CHECK)
+        languagemenu.Append(ID_LANG_PYTHON, "PYTHON", _("Switch Lexer to %s") % "Python",
                             wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_RUBY, "Ruby", "Switch Lexer to Ruby", 
+        languagemenu.Append(ID_LANG_RUBY, "Ruby", _("Switch Lexer to %s") % "Ruby", 
                             wx.ITEM_CHECK)
         languagemenu.Append(ID_LANG_SHELL, "Shell Scripts", 
-                            "Switch Lexer to Shell Scripts", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_SQL, "SQL", "Switch Lexer to SQL", 
+                            _("Switch Lexer to %s") % "Shell Scripts", wx.ITEM_CHECK)
+        languagemenu.Append(ID_LANG_SQL, "SQL", _("Switch Lexer to %s") % "SQL", 
                             wx.ITEM_CHECK)
         languagemenu.Append(ID_LANG_TEX, "Tex/LaTex", 
-                            "Switch Lexer to Tex/LaTex", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_VHDL, "VHDL", "Switch Lexer to VHDL", 
+                            _("Switch Lexer to %s") % "Tex/LaTex", wx.ITEM_CHECK)
+        languagemenu.Append(ID_LANG_VHDL, "VHDL", _("Switch Lexer to %s") % "VHDL", 
                             wx.ITEM_CHECK)
         languagemenu.Append(ID_LANG_VB, "Visual Basic", 
-                            "Switch Lexer to Visual Basic", wx.ITEM_CHECK)
+                            _("Switch Lexer to %s") % "Visual Basic", wx.ITEM_CHECK)
 
         #---- Menu Items ----#
         # File Menu Items
-        self.filemenu.Append(ID_NEW, LANG['New'][L_LBL] + "\tCtrl+N", LANG['New'][L_SB])
-        self.filemenu.Append(ID_OPEN, LANG['Open'][L_LBL] + "\tCtrl+O", LANG['Open'][L_SB])
+        self.filemenu.Append(ID_NEW, _("New") + u"\tCtrl+N", _("Start a New File"))
+        self.filemenu.Append(ID_OPEN, _("Open") + "\tCtrl+O", _("Open"))
         ## Setup File History in the File Menu
         self.filehistory.UseMenu(self.fileopen)
-        self.filemenu.AppendMenu(ID_FHIST, LANG['OpenR'][L_LBL], 
-                                 self.fileopen, LANG['OpenR'][L_SB])
+        self.filemenu.AppendMenu(ID_FHIST, _("Open Recent"), 
+                                 self.fileopen, _("Recently Opened Files"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_CLOSE, LANG['Close'][L_LBL] + "\tCtrl+W", LANG['Close'][L_SB])
+        self.filemenu.Append(ID_CLOSE, _("Close Page") + "\tCtrl+W", _("Close Current Page"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_SAVE, LANG['Save'][L_LBL] + "\tCtrl+S", LANG['Save'][L_SB])
-        self.filemenu.Append(ID_SAVEAS, LANG['SaveAs'][L_LBL], LANG['SaveAs'][L_SB])
+        self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"))
+        self.filemenu.Append(ID_SAVEAS, _("Save As"), _("Save As"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_SAVE_PROFILE, LANG['SavePro'][L_LBL], LANG['SavePro'][L_SB])
-        self.filemenu.Append(ID_LOAD_PROFILE, LANG['LoadPro'][L_LBL], LANG['LoadPro'][L_SB])
+        self.filemenu.Append(ID_SAVE_PROFILE, _("Save Profile"), 
+                             _("Save Current Settings to a New Profile"))
+        self.filemenu.Append(ID_LOAD_PROFILE, _("Load Profile"), _("Load a Custom Profile"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_PRINT, LANG['Print'][L_LBL] + "\tCtrl+P", LANG['Print'][L_SB])
+        self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_EXIT, LANG['Exit'][L_LBL] + "\tAlt+Q", LANG['Exit'][L_SB])
+        self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"))
 
         # Edit Menu Items
-        self.editmenu.Append(ID_UNDO, LANG['Undo'][L_LBL] + "\tCtrl+Z", LANG['Undo'][L_SB])
-        self.editmenu.Append(ID_REDO, LANG['Redo'][L_LBL] + "\tCtrl+Shift+Z", LANG['Redo'][L_SB])
+        self.editmenu.Append(ID_UNDO, _("Undo") + "\tCtrl+Z", _("Undo Last Action"))
+        self.editmenu.Append(ID_REDO, _("Redo") + "\tCtrl+Shift+Z", _("Redo Last Undo"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_CUT, LANG['Cut'][L_LBL] + "\tCtrl+X", LANG['Cut'][L_SB])
-        self.editmenu.Append(ID_COPY, LANG['Copy'][L_LBL] + "\tCtrl+C", LANG['Copy'][L_SB])
-        self.editmenu.Append(ID_PASTE, LANG['Paste'][L_LBL] + "\tCtrl+V", LANG['Paste'][L_SB])
+        self.editmenu.Append(ID_CUT, _("Cut") + "\tCtrl+X", _("Cut Selected Text from File"))
+        self.editmenu.Append(ID_COPY, _("Copy") + "\tCtrl+C", _("Copy Selected Text to Clipboard"))
+        self.editmenu.Append(ID_PASTE, _("Paste") + "\tCtrl+V", 
+                             _("Paste Text from Clipboard to File"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_SELECTALL, LANG['SelectA'][L_LBL] + "\tCtrl+A", 
-                             LANG['SelectA'][L_SB])
+        self.editmenu.Append(ID_SELECTALL, _("Select All") + "\tCtrl+A", 
+                             _("Select All Text in Document"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_FIND, LANG['Find'][L_LBL] + "\tCtrl+F", LANG['Find'][L_SB])
-        self.editmenu.Append(ID_FIND_REPLACE, LANG['FReplace'][L_LBL] + "\tCtrl+R", 
-                             LANG['FReplace'][L_SB])
+        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+F", _("Find Text"))
+        self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 
+                             _("Find and Replace Text"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_PREF, LANG['Pref'][L_LBL], LANG['Pref'][L_SB])
+        self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"))
 
         # View Menu Items
-        self.viewmenu.Append(ID_ZOOM_OUT, LANG['ZoomO'] + "\tCtrl+-", LANG['ZoomO'])
-        self.viewmenu.Append(ID_ZOOM_IN, LANG['ZoomI'] + "\tCtrl++", LANG['ZoomI'])
-        self.viewmenu.Append(ID_ZOOM_NORMAL, LANG['ZoomD'] + "\tCtrl+0", LANG['ZoomD'])
+        self.viewmenu.Append(ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", _("Zoom Out"))
+        self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"))
+        self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", _("Zoom Default"))
         self.viewmenu.AppendSeparator()
-        self.viewmenu.Append(ID_SHOW_WS, LANG['WhiteS'][L_LBL], 
-                             LANG['WhiteS'][L_SB], wx.ITEM_CHECK)
+        self.viewmenu.Append(ID_SHOW_WS, _("Show Whitespace"), 
+                             _("Show Whitespace Markers"), wx.ITEM_CHECK)
         if PROFILE['SHOW_WS']:
             self.viewmenu.Check(ID_SHOW_WS, -1)
-        self.viewmenu.Append(ID_INDENT_GUIDES, LANG['IndentG'][L_LBL], 
-                             LANG['IndentG'][L_SB], wx.ITEM_CHECK)
+        self.viewmenu.Append(ID_INDENT_GUIDES, _("Indentation Guides"), 
+                             _("Show Indentation Guides"), wx.ITEM_CHECK)
         self.viewmenu.AppendSeparator()
-        self.viewmenu.Append(ID_VIEW_TOOL, LANG['Toolbar'][L_LBL], 
-                             LANG['Toolbar'][L_SB], wx.ITEM_CHECK)
+        self.viewmenu.Append(ID_VIEW_TOOL, _("Toolbar"), 
+                             _("Show Toolbar"), wx.ITEM_CHECK)
         if PROFILE['TOOLBAR']:
             self.viewmenu.Check(ID_VIEW_TOOL, -1)
 
         # Format Menu Items
-        self.formatmenu.Append(ID_WORD_WRAP, LANG['WordWrap'][L_LBL], 
-                               LANG['WordWrap'][L_SB], wx.ITEM_CHECK)
-        self.formatmenu.Append(ID_FONT, LANG['Font'][L_LBL], LANG['Font'][L_SB])
+        self.formatmenu.Append(ID_WORD_WRAP, _("Word Wrap"), 
+                               _("Wrap Text Horizontally"), wx.ITEM_CHECK)
+        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"))
 
         ## Set Check Marks
         if PROFILE['WRAP']:
             self.formatmenu.Check(ID_WORD_WRAP, -1)
 
         # Settings Menu Items
-        self.settingsmenu.Append(ID_SYNTAX, LANG['SyntaxHL'][L_LBL], 
-                                 LANG['SyntaxHL'][L_SB], wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_BRACKETHL, LANG['BraceHL'][L_LBL], 
-                                 LANG['BraceHL'][L_SB], wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_KWHELPER, LANG['KWHelper'][L_LBL], 
-                                 LANG['KWHelper'][L_SB], wx.ITEM_CHECK)
-        self.settingsmenu.AppendMenu(ID_LANG, LANG['Lexer'][L_LBL], 
-                                     languagemenu, LANG['Lexer'][L_SB])
+        self.settingsmenu.Append(ID_SYNTAX, _("Syntax Highlighting"), 
+                                 _("Color Highlight Code Syntax"), wx.ITEM_CHECK)
+        self.settingsmenu.Append(ID_BRACKETHL, _("Bracket Highlighting"), 
+                                 _("Highlight Brackets/Braces"), wx.ITEM_CHECK)
+        self.settingsmenu.Append(ID_KWHELPER,_("Keyword Helper"), 
+                                 _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"), 
+                                wx.ITEM_CHECK)
+        self.settingsmenu.AppendMenu(ID_LANG, _("Lexers"), 
+                                     languagemenu, _("Manually Set a Lexer/Syntax"))
         self.languagemenu = languagemenu
 
         # Help Menu Items
-        self.helpmenu.Append(ID_ABOUT, LANG['About'][L_LBL], LANG['About'][L_SB])
+        self.helpmenu.Append(ID_ABOUT, _("About"), _("About"))
 
         #---- Menu Bar ----#
         self.menubar = wx.MenuBar()
-        self.menubar.Append(self.filemenu, LANG['File'][L_LBL])
-        self.menubar.Append(self.editmenu, LANG['Edit'][L_LBL])
-        self.menubar.Append(self.viewmenu, LANG['View'])
-        self.menubar.Append(self.formatmenu, LANG['Format'])
-        self.menubar.Append(self.settingsmenu, LANG['Settings'])
-        self.menubar.Append(self.helpmenu, LANG['Help'])
+        self.menubar.Append(self.filemenu, _("File"))
+        self.menubar.Append(self.editmenu, _("Edit"))
+        self.menubar.Append(self.viewmenu, _("View"))
+        self.menubar.Append(self.formatmenu, _("Format"))
+        self.menubar.Append(self.settingsmenu, _("Settings"))
+        self.menubar.Append(self.helpmenu, _("Help"))
         self.SetMenuBar(self.menubar)
 
         #---- Actions to take on menu events ----#
@@ -398,7 +402,7 @@ class MainWindow(wx.Frame):
         in a new notebook page.
 
         """
-        dlg = wx.FileDialog(self, LANG['ChooseF'], '', "", 
+        dlg = wx.FileDialog(self, _("Choose a File"), '', "", 
                             self.MenuFileTypes(), wx.OPEN | wx.MULTIPLE)
 
         result = wx.ID_CANCEL
@@ -447,10 +451,10 @@ class MainWindow(wx.Frame):
         else:
             name = self.nb.control.filename
 
-        dlg = wx.MessageDialog(self, "The file: \"" + name + 
-                               "\" has been modified since the last save point \n" +
-                               LANG['SaveChg'][L_SB], 
-                               LANG['SaveChg'][L_LBL], 
+        dlg = wx.MessageDialog(self, 
+                                _("The file: \"%s\" has been modified since the last "
+                                  "save point.\n Would you like to save the changes?") % name, 
+                               _("Save Changes?"), 
                                wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL)
         result = dlg.ShowModal()
         dlg.Destroy()
@@ -468,11 +472,11 @@ class MainWindow(wx.Frame):
         if fname != '':
             result = self.nb.control.Save()
             if result == wx.ID_OK:
-                self.PushStatusText(LANG['SavedF'] + u":" + fname, SB_INFO)
+                self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
             else:
-                self.PushStatusText("ERROR: Failed to save " + fname, SB_INFO)
-                dlg = wx.MessageDialog(self, "Failed to save file: " + fname +
-                                        "\n\nError:\n" + str(result), "Save Error",
+                self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
+                dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
+                                                (fname, result), _("Save Error"),
                                         wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -483,7 +487,7 @@ class MainWindow(wx.Frame):
     def OnSaveAs(self, evt):
         """Save As"""
         self.dirname = ''
-        dlg = wx.FileDialog(self, LANG['SaveLoc'], self.dirname, "", 
+        dlg = wx.FileDialog(self, _("Choose a Save Location"), self.dirname, "", 
                             self.MenuFileTypes(), wx.SAVE|wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
         if result == wx.ID_OK: 
@@ -491,17 +495,17 @@ class MainWindow(wx.Frame):
             result = self.nb.control.SaveAs(path)
             fname = self.nb.control.filename
             if result != wx.ID_OK:
-                dlg = wx.MessageDialog(self, "Failed to save file: " + fname +
-                                        "\n\nError:\n" + str(result), "Save As Error",
+                dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
+                                                (fname, result), _("Save Error"),
                                         wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
-                self.PushStatusText("ERROR: Failed to save " + fname, SB_INFO)
+                self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
             else:
-                self.PushStatusText("Saved File As: " + fname, SB_INFO)
-                self.SetTitle(fname + " - file://" + self.nb.control.dirname + 
+                self.PushStatusText(_("Saved File As: %s") % fname, SB_INFO)
+                self.SetTitle(fname + u" - file://" + self.nb.control.dirname + 
                               self.nb.control.path_char + fname + " - " + 
-                              prog_name + " v" + version)
+                              prog_name + u" v" + version)
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.UpdatePageImage()
         else:
@@ -509,8 +513,8 @@ class MainWindow(wx.Frame):
 
     def OnSaveProfile(self, evt):
         """Saves current settings as a profile"""
-        dlg = wx.FileDialog(self, "Where to Save Profile?", CONFIG['PROFILE_DIR'], 
-                            "default.pp", LANG['Profile'] + " (*.pp)|*.pp", 
+        dlg = wx.FileDialog(self, _("Where to Save Profile?"), CONFIG['PROFILE_DIR'], 
+                            "default.pp", _("Profile") + " (*.pp)|*.pp", 
                             wx.SAVE | wx.OVERWRITE_PROMPT)
 
         result = dlg.ShowModal()
@@ -518,21 +522,21 @@ class MainWindow(wx.Frame):
             profile = dlg.GetFilename()
             path = dlg.GetPath()
             profiler.WriteProfile(path)
-            self.PushStatusText("Profile Saved as: " + profile, SB_INFO)
+            self.PushStatusText(_("Profile Saved as: %s") % profile, SB_INFO)
         else:
             pass
 
     def OnLoadProfile(self, evt):
         """Loads a profile"""
-        dlg = wx.FileDialog(self, LANG['LoadPro'][L_LBL], CONFIG['PROFILE_DIR'], 
-                            "default.pp", LANG['Profile'] + " (*.pp)|*.pp", wx.OPEN)
+        dlg = wx.FileDialog(self, _("Load a Custom Profile"), CONFIG['PROFILE_DIR'], 
+                            "default.pp", _("Profile") + " (*.pp)|*.pp", wx.OPEN)
 
         result = dlg.ShowModal()
         if result == wx.ID_OK: 
             profile = dlg.GetFilename()
             path = dlg.GetPath()
             profiler.ReadProfile(path)
-            self.PushStatusText(LANG['ProLoad'] + ": " + profile, SB_INFO)
+            self.PushStatusText(_("Loaded Profile: %s") % profile, SB_INFO)
             dlg.Destroy()
         else:
             pass
@@ -597,11 +601,11 @@ class MainWindow(wx.Frame):
         self.Unbind(wx.EVT_CLOSE)
 
         # Save Window Size/Position for next launch
+        f_size = self.GetSize()
         if wx.Platform == '__WXMAC__': #HACK workaround for possible bug in wxPython 2.8
-            f_size = self.GetSize()
             PROFILE['WSIZE'] = (f_size[0], f_size[1] - 32)
         else:
-            PROFILE['WSIZE'] = self.GetSize()
+            PROFILE['WSIZE'] = f_size
         PROFILE['WPOS'] = self.GetPosition()
         dev_tool.DEBUGP("[main_evt] [exit] Closing editor at pos=" + 
                         str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
@@ -662,9 +666,9 @@ class MainWindow(wx.Frame):
         # Check if file still exists
         if not os.path.exists(file_handle):
             mdlg = wx.MessageDialog(self, "file: " + file_handle,
-                                          "The file you selected could not " + 
-                                          "be found\n" + 
-                                          "Perhaps its been moved or deleted",
+                                          _("The file you selected could not "
+                                          "be found\n" 
+                                          "Perhaps its been moved or deleted"),
                                      wx.OK | wx.ICON_WARNING)
             mdlg.CenterOnParent()
             mdlg.ShowModal()
@@ -712,7 +716,7 @@ class MainWindow(wx.Frame):
         """Show a Find dialog"""
         data = wx.FindReplaceData()
         data.SetFlags(wx.FR_DOWN)
-        self.find_dlg = wx.FindReplaceDialog(self.nb, data, LANG['Find'][L_LBL].replace(u"&",u""), 
+        self.find_dlg = wx.FindReplaceDialog(self.nb, data, _("Find"), 
                                              wx.FR_NOUPDOWN |
                                              wx.FR_NOWHOLEWORD)	# TODO
         self.find_dlg.data = data # save reference to data
@@ -723,7 +727,7 @@ class MainWindow(wx.Frame):
         """Show a find/replace dialog"""
         data = wx.FindReplaceData()
         data.SetFlags(wx.FR_DOWN)
-        self.find_dlg = wx.FindReplaceDialog(self.nb, data, LANG['FReplace'][L_LBL].replace(u"&",u""),
+        self.find_dlg = wx.FindReplaceDialog(self.nb, data, _("Find/Replace"),
                                              wx.FR_REPLACEDIALOG |
                                              wx.FR_NOUPDOWN |
                                              wx.FR_NOWHOLEWORD)		# TODO
@@ -781,9 +785,8 @@ class MainWindow(wx.Frame):
 
             if loc == -1:
                 # Couldn't Find the string let user know
-                mdlg = wx.MessageDialog(self, LANG['NotFound'],
-                                        '\'' + dlg.findstring + 
-                                        '\' Not Found in File',
+                mdlg = wx.MessageDialog(self, _("Not Found"),
+                                        _("\'%s\' Not Found in File"),
                                         wx.OK | wx.ICON_INFORMATION)
                 mdlg.ShowModal()
                 mdlg.Destroy()
@@ -831,7 +834,7 @@ class MainWindow(wx.Frame):
                     last = self.nb.control.GetLineEndPosition(line_count)
 
             # Notify that replace all is finished
-            mdlg = wx.MessageDialog(self, "Replace All Finished", "All Done", 
+            mdlg = wx.MessageDialog(self, _("Replace All Finished"), _("All Done"), 
                                     wx.OK | wx.ICON_INFORMATION)
             mdlg.ShowModal()
             mdlg.Destroy()
@@ -911,36 +914,36 @@ class MainWindow(wx.Frame):
         """Turn Syntax Highlighting on and off"""
         self.nb.control.SyntaxOnOff()
         if self.nb.control.highlight:
-            self.PushStatusText("Syntax Highlighting On", SB_INFO)
+            self.PushStatusText(_("Syntax Highlighting On"), SB_INFO)
         else:
-            self.PushStatusText("Syntax Highlighting Off", SB_INFO)
+            self.PushStatusText(_("Syntax Highlighting Off"), SB_INFO)
         return
 
     def OnIndentGuides(self, evt):
         """Turn Indentation Guides on and off"""
         self.nb.control.IndentGuideOnOff()
         if self.nb.control.GetIndentationGuides():
-            self.PushStatusText("Indentation Guides On", SB_INFO)
+            self.PushStatusText(_("Indentation Guides On"), SB_INFO)
         else:
-            self.PushStatusText("Indentation Guides Off", SB_INFO)
+            self.PushStatusText(_("Indentation Guides Off"), SB_INFO)
         return
 
     def OnHLBrackets(self, evt):
         """Turns Bracket Highlighting on and off"""
         self.nb.control.ToggleBracketHL()
         if self.nb.control.brackethl:
-             self.PushStatusText("Bracket Highlighting On", SB_INFO)
+             self.PushStatusText(_("Bracket Highlighting On"), SB_INFO)
         else:
-            self.PushStatusText("Bracket Highlighting Off", SB_INFO)
+            self.PushStatusText(_("Bracket Highlighting Off"), SB_INFO)
         return
 
     def OnKeyWordHelp(self, evt):
         """Turn KeyWordHelp On and Off"""
         self.nb.control.KeyWordHelpOnOff()
         if self.nb.control.kwhelp:
-            self.PushStatusText("Keyword Helper On", SB_INFO)
+            self.PushStatusText(_("Keyword Helper On"), SB_INFO)
         else:
-            self.PushStatusText("Keyword Helper Off", SB_INFO)
+            self.PushStatusText(_("Keyword Helper Off"), SB_INFO)
         return
 
     ### Language Menu Functions
@@ -1012,8 +1015,7 @@ class MainWindow(wx.Frame):
         """ Update Line/Column indicator based on position """
         line, column = self.nb.control.GetPos()
         if line >= 0 and column >= 0:
-            self.SetStatusText(LANG['Line'] + u": " + str(line) + "  " + 
-                               LANG['Column'] + u": " + str(column), SB_ROWCOL)
+            self.SetStatusText(_("Line: %d  Column: %d") % (line, column), SB_ROWCOL)
         else:
             pass
         self.UpdateToolBar()

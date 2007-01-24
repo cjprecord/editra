@@ -49,6 +49,7 @@ import wx.lib.wxpTag
 import ed_glob
 import dev_tool
 
+_ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
 
@@ -78,7 +79,7 @@ class FileDropTarget(wx.FileDropTarget):
 
         # Check if file exists and is actually a file
         if (not os.path.exists(self.file_path)) or (not os.path.isfile(self.file_path)):
-            self.window.PushStatusText("Invalid file: " + self.file_path, ed_glob.SB_INFO)
+            self.window.PushStatusText(_("Invalid file: %s") % self.file_path, ed_glob.SB_INFO)
         else:
             self.OpenDropFile()
 
@@ -93,7 +94,7 @@ class FileDropTarget(wx.FileDropTarget):
             self.window.nb.OpenPage(self.pathname, self.filename)
 
         #Update statusbar
-        self.window.PushStatusText("Opened file: " + self.file_path, ed_glob.SB_INFO)
+        self.window.PushStatusText(_("Opened file: %s") % self.file_path, ed_glob.SB_INFO)
 
         return self.file_path
 
@@ -343,8 +344,8 @@ def StrToTuple(tu_str):
     ret_tu = list()
     for val in tu_str:
         # workaround of negative numbers
-	if val[0] == u'-':
-	    neg = True
+        if val[0] == u'-':
+            neg = True
 
         if val.isdigit() or neg:
             if neg:

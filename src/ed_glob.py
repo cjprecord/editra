@@ -203,6 +203,7 @@ PROFILE = {
            'ICONS'      : 'Stock',
            'LANG'       : 'ENGLISH',
            'MODE'       : 'DEBUG',
+           'MYPROFILE'  : 'default.pp',
            'SYNTAX'     : True,
            'TABWIDTH'   : '8',
            'THEME'      : 'DEFAULT', 
@@ -233,74 +234,3 @@ ID_2_PROF = {
              ID_PREF_WPOS         : 'SET_WPOS',
              ID_PREF_ICON         : 'ICONS'
 }
-
-# Language Settings
-# This is (re)populated when the editor is launched, definitions are here only
-# for a fallback in case a language file is incomplete or fails to load.
-L_LBL = 0
-L_SB = 1
-LANG = {
-        #--- File Menu ----#
-        'File'     : [u"&File", u""],
-        'New'      : [u"&New", u"Start a New File"],
-        'Open'     : [u"&Open", u"Open a File"],
-        'OpenR'    : [u"Open Recent", u"Recently Opened Files"],
-        'Close'    : [u"&Close Page", u"Close Current Page"],
-        'Save'     : [u"&Save", u"Save"],
-        'SaveAs'   : [u"Save &As", u"Save As"],
-        'SavePro'  : [u"Save Profile", u"Save Current Settings to New Profile"],
-        'LoadPro'  : [u"Load Profile", u"Load a Custom Profile"],
-        'Print'    : [u"&Print", u"Print Current File"],
-        'Exit'     : [u"E&xit", u"Exit the Program"],
-
-        #--- Edit Menu ---#
-        'Edit'     : [u"&Edit", u""],
-        'Undo'     : [u"&Undo", u"Undo Last Action"],
-        'Redo'     : [u"Re&do", u"Redo Last Undo"],
-        'Cut'      : [u"Cu&t", u"Cut Selected Text From Document"],
-        'Copy'     : [u"&Copy", u"Copy Selected Text to Clipboard"],
-        'Paste'    : [u"&Paste", u"Paste Text from Clipboard to Document"],
-        'SelectA'  : [u"Select &All", u"Select All Text In Document"],
-        'Find'     : [u"&Find", u"Find Text"],
-        'FReplace' : [u"Find/&Replace", u"Find & Replace"],
-        'Pref'     : [u"Preferences", u"Edit Preferences / Settings"],
-        
-        #--- View Menu ---#
-        'View'     : u"&View",
-        'ZoomO'    : u"Zoom Out",
-        'ZoomI'    : u"Zoom In",
-        'ZoomD'    : u"Zoom Default",
-        'WhiteS'   : [u"Show Whitespace", u"Show Whitespace Markers"],
-        'IndentG'  : [u"Indentation Guides", "Show Indentation Guides"],
-        'Toolbar'  : [u"Toolbar", u"Show Toolbar"],
-
-        #--- Format Menu ---#
-        'Format'   : u"F&ormat",
-        'WordWrap' : [u"&Word Wrap", u"Wrap Text Horizontally"],
-        'Font'     : [u"Fon&t", u"Change Font Settings"],
-
-        #--- Settings Menu ---#
-        'Settings' : u"&Settings",
-        'SyntaxHL' : [u"Syntax Highlighting", u"Color Highlight Code Syntax"],
-        'BraceHL'  : [u"Bracket Highlighting", u"Highlight Braces"],
-        'KWHelper' : [u"Keyword Helper", u"Provides a Contextual Help Menu Listing Standard Keywords/Functions"],
-        'Lexer'    : [u"Lexers", u"Manually Set a Lexer"],
-
-        #--- Help Menu ---#
-        'Help'     : u"&Help",
-        'About'    : [u"&About", u"Information About this Program"],
-
-        #--- Status Bar ---#
-        'Line'     : u"Line",
-        'Column'   : u"Column",
-
-        #--- Dialogs ---#
-        'SavedF'   : u"Saved File",
-        'SaveLoc'  : u"Choose a save location",
-        'ChooseF'  : u"Choose a File",
-        'SaveChg'  : [u"Save Changes?", u"Would you like to save the changes?"],
-        'Profile'  : u"Profile",
-        'ProLoad'  : u"Loaded Profile",
-        'NotFound' : u"Not Found"
-}
-

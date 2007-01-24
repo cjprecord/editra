@@ -1,0 +1,519 @@
+# Copyright (C) 2007 Cody Precord
+# This file is distributed under the GPL.
+# Cody Precord <cprecord@editra.org>, 2007.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: editra 0.0.85\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-01-24 06:18-0600\n"
+"PO-Revision-Date: 2007-01-24 05:12-600\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: ENGLISH <staff@editra.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: prefdlg.py:378
+#, python-format
+msgid ""
+"\n"
+"You are running version: %s"
+msgstr ""
+
+#: ed_main.py:789
+#, python-format
+msgid "'%s' Not Found in File"
+msgstr ""
+
+#: ed_main.py:279
+msgid "About"
+msgstr ""
+
+#: ed_main.py:837
+msgid "All Done"
+msgstr ""
+
+#: prefdlg.py:306
+msgid "AntiAliasing"
+msgstr ""
+
+#: prefdlg.py:339
+msgid "Appearance"
+msgstr ""
+
+#: prefdlg.py:111
+msgid "Apply"
+msgstr ""
+
+#: ed_main.py:269 prefdlg.py:259
+msgid "Bracket Highlighting"
+msgstr ""
+
+#: ed_main.py:937
+msgid "Bracket Highlighting Off"
+msgstr ""
+
+#: ed_main.py:935
+msgid "Bracket Highlighting On"
+msgstr ""
+
+#: prefdlg.py:109
+msgid "Cancel"
+msgstr ""
+
+#: ed_main.py:260
+msgid "Change Font Settings"
+msgstr ""
+
+#: ed_main.py:405
+msgid "Choose a File"
+msgstr ""
+
+#: ed_main.py:490
+msgid "Choose a Save Location"
+msgstr ""
+
+#: ed_main.py:209
+msgid "Close Current Page"
+msgstr ""
+
+#: ed_main.py:209
+msgid "Close Page"
+msgstr ""
+
+#: prefdlg.py:284
+msgid "Code"
+msgstr ""
+
+#: ed_main.py:268
+msgid "Color Highlight Code Syntax"
+msgstr ""
+
+#: ed_main.py:227 ed_toolbar.py:138
+msgid "Copy"
+msgstr ""
+
+#: ed_main.py:227 ed_toolbar.py:139
+msgid "Copy Selected Text to Clipboard"
+msgstr ""
+
+#: ed_main.py:226 ed_toolbar.py:140
+msgid "Cut"
+msgstr ""
+
+#: ed_main.py:226 ed_toolbar.py:141
+msgid "Cut Selected Text from File"
+msgstr ""
+
+#: ed_main.py:477 ed_main.py:503
+#, python-format
+msgid "ERROR: Failed to save %s"
+msgstr ""
+
+#: ed_main.py:284
+msgid "Edit"
+msgstr ""
+
+#: ed_main.py:238
+msgid "Edit Preferences / Settings"
+msgstr ""
+
+#: ed_main.py:220
+msgid "Exit"
+msgstr ""
+
+#: ed_main.py:220
+msgid "Exit the Program"
+msgstr ""
+
+#: ed_toolbar.py:146
+msgid "FReplace"
+msgstr ""
+
+#: ed_main.py:478 ed_main.py:498
+#, python-format
+msgid ""
+"Failed to save file: %s\n"
+"\n"
+"Error:\n"
+"%d"
+msgstr ""
+
+#: prefdlg.py:258
+msgid "Features"
+msgstr ""
+
+#: ed_main.py:283
+msgid "File"
+msgstr ""
+
+#: prefdlg.py:330
+msgid "File History Depth"
+msgstr ""
+
+#: ed_main.py:234 ed_main.py:719 ed_toolbar.py:145
+msgid "Find"
+msgstr ""
+
+#: ed_main.py:234 ed_toolbar.py:145
+msgid "Find Text"
+msgstr ""
+
+#: ed_main.py:236 ed_toolbar.py:147
+msgid "Find and Replace Text"
+msgstr ""
+
+#: ed_main.py:235 ed_main.py:730
+msgid "Find/Replace"
+msgstr ""
+
+#: ed_main.py:260
+msgid "Font"
+msgstr ""
+
+#: ed_main.py:286 prefdlg.py:291
+msgid "Format"
+msgstr ""
+
+#: ed_main.py:288
+msgid "Help"
+msgstr ""
+
+#: ed_main.py:270
+msgid "Highlight Brackets/Braces"
+msgstr ""
+
+#: prefdlg.py:341
+msgid "Icon Theme"
+msgstr ""
+
+#: ed_main.py:249 prefdlg.py:263
+msgid "Indentation Guides"
+msgstr ""
+
+#: ed_main.py:928
+msgid "Indentation Guides Off"
+msgstr ""
+
+#: ed_main.py:926
+msgid "Indentation Guides On"
+msgstr ""
+
+#: util.py:82
+#, python-format
+msgid "Invalid file: %s"
+msgstr ""
+
+#: prefdlg.py:422
+msgid "Item"
+msgstr ""
+
+#: ed_main.py:271 prefdlg.py:261
+msgid "Keyword Helper"
+msgstr ""
+
+#: ed_main.py:946
+msgid "Keyword Helper Off"
+msgstr ""
+
+#: ed_main.py:944
+msgid "Keyword Helper On"
+msgstr ""
+
+#: prefdlg.py:228
+msgid "Language: "
+msgstr ""
+
+#: ed_main.py:274
+msgid "Lexers"
+msgstr ""
+
+#: ed_main.py:1018
+#, python-format
+msgid "Line: %d  Column: %d"
+msgstr ""
+
+#: ed_main.py:216
+msgid "Load Profile"
+msgstr ""
+
+#: ed_main.py:216 ed_main.py:531
+msgid "Load a Custom Profile"
+msgstr ""
+
+#: ed_main.py:539
+#, python-format
+msgid "Loaded Profile: %s"
+msgstr ""
+
+#: ed_main.py:275
+msgid "Manually Set a Lexer/Syntax"
+msgstr ""
+
+#: prefdlg.py:305 prefdlg.py:371
+msgid "Misc"
+msgstr ""
+
+#: ed_main.py:202 ed_toolbar.py:128
+msgid "New"
+msgstr ""
+
+#: ed_main.py:788
+msgid "Not Found"
+msgstr ""
+
+#: prefdlg.py:113
+msgid "Ok"
+msgstr ""
+
+#: ed_main.py:203 ed_toolbar.py:129
+msgid "Open"
+msgstr ""
+
+#: ed_main.py:206
+msgid "Open Recent"
+msgstr ""
+
+#: util.py:97
+#, python-format
+msgid "Opened file: %s"
+msgstr ""
+
+#: ed_main.py:228 ed_toolbar.py:142
+msgid "Paste"
+msgstr ""
+
+#: ed_main.py:229 ed_toolbar.py:143
+msgid "Paste Text from Clipboard to File"
+msgstr ""
+
+#: ed_main.py:238 prefdlg.py:95
+msgid "Preferences"
+msgstr ""
+
+#: ed_main.py:218 ed_toolbar.py:132
+msgid "Print"
+msgstr ""
+
+#: ed_main.py:218 ed_toolbar.py:133
+msgid "Print Current File"
+msgstr ""
+
+#: ed_main.py:517 ed_main.py:532
+msgid "Profile"
+msgstr ""
+
+#: ed_main.py:525
+#, python-format
+msgid "Profile Saved as: %s"
+msgstr ""
+
+#: prefdlg.py:251
+msgid "Profile Viewer"
+msgstr ""
+
+#: ed_main.py:272
+msgid "Provides a Contextual Help Menu Listing Standard Keywords/Functions"
+msgstr ""
+
+#: ed_main.py:207
+msgid "Recently Opened Files"
+msgstr ""
+
+#: ed_main.py:224 ed_toolbar.py:136
+msgid "Redo"
+msgstr ""
+
+#: ed_main.py:224 ed_toolbar.py:136
+msgid "Redo Last Undo"
+msgstr ""
+
+#: prefdlg.py:360
+msgid "Remember Window Position on Exit"
+msgstr ""
+
+#: prefdlg.py:357
+msgid "Remember Window Size on Exit"
+msgstr ""
+
+#: ed_main.py:837
+msgid "Replace All Finished"
+msgstr ""
+
+#: ed_main.py:211 ed_toolbar.py:130
+msgid "Save"
+msgstr ""
+
+#: ed_main.py:212
+msgid "Save As"
+msgstr ""
+
+#: ed_main.py:457
+msgid "Save Changes?"
+msgstr ""
+
+#: ed_main.py:211 ed_toolbar.py:131
+msgid "Save Current File"
+msgstr ""
+
+#: ed_main.py:215
+msgid "Save Current Settings to a New Profile"
+msgstr ""
+
+#: ed_main.py:479 ed_main.py:499
+msgid "Save Error"
+msgstr ""
+
+#: ed_main.py:214
+msgid "Save Profile"
+msgstr ""
+
+#: ed_main.py:505
+#, python-format
+msgid "Saved File As: %s"
+msgstr ""
+
+#: ed_main.py:475
+#, python-format
+msgid "Saved File: %s"
+msgstr ""
+
+#: ed_main.py:231
+msgid "Select All"
+msgstr ""
+
+#: ed_main.py:232
+msgid "Select All Text in Document"
+msgstr ""
+
+#: ed_main.py:287 prefdlg.py:329
+msgid "Settings"
+msgstr ""
+
+#: ed_main.py:250
+msgid "Show Indentation Guides"
+msgstr ""
+
+#: ed_main.py:253
+msgid "Show Toolbar"
+msgstr ""
+
+#: ed_main.py:245 prefdlg.py:308
+msgid "Show Whitespace"
+msgstr ""
+
+#: ed_main.py:246
+msgid "Show Whitespace Markers"
+msgstr ""
+
+#: ed_main.py:202 ed_toolbar.py:128
+msgid "Start a New File"
+msgstr ""
+
+#: ed_main.py:154 ed_main.py:156 ed_main.py:158 ed_main.py:160 ed_main.py:162
+#: ed_main.py:165 ed_main.py:166 ed_main.py:168 ed_main.py:170 ed_main.py:173
+#: ed_main.py:175 ed_main.py:177 ed_main.py:180 ed_main.py:181 ed_main.py:184
+#: ed_main.py:185 ed_main.py:187 ed_main.py:190 ed_main.py:191 ed_main.py:194
+#: ed_main.py:195 ed_main.py:198
+#, python-format
+msgid "Switch Lexer to %s"
+msgstr ""
+
+#: prefdlg.py:269
+msgid "Syntax"
+msgstr ""
+
+#: ed_main.py:267 prefdlg.py:270
+msgid "Syntax Highlighting"
+msgstr ""
+
+#: ed_main.py:919
+msgid "Syntax Highlighting Off"
+msgstr ""
+
+#: ed_main.py:917
+msgid "Syntax Highlighting On"
+msgstr ""
+
+#: prefdlg.py:292
+msgid "Tab Width"
+msgstr ""
+
+#: prefdlg.py:322
+msgid "Text"
+msgstr ""
+
+#: ed_main.py:669
+msgid ""
+"The file you selected could not be found\n"
+"Perhaps its been moved or deleted"
+msgstr ""
+
+#: ed_main.py:455
+#, python-format
+msgid ""
+"The file: \"%s\" has been modified since the last save point.\n"
+" Would you like to save the changes?"
+msgstr ""
+
+#: ed_main.py:252
+msgid "Toolbar"
+msgstr ""
+
+#: ed_main.py:223 ed_toolbar.py:135
+msgid "Undo"
+msgstr ""
+
+#: ed_main.py:223 ed_toolbar.py:135
+msgid "Undo Last Action"
+msgstr ""
+
+#: prefdlg.py:386
+msgid "Update"
+msgstr ""
+
+#: prefdlg.py:377
+msgid "Update Status"
+msgstr ""
+
+#: prefdlg.py:351
+msgid "Use Metal Style (OS X Only)"
+msgstr ""
+
+#: prefdlg.py:310
+msgid "Use Tabs Instead of Whitespaces"
+msgstr ""
+
+#: prefdlg.py:423
+msgid "Value"
+msgstr ""
+
+#: ed_main.py:285
+msgid "View"
+msgstr ""
+
+#: ed_main.py:516
+msgid "Where to Save Profile?"
+msgstr ""
+
+#: ed_main.py:258 prefdlg.py:299
+msgid "Word Wrap"
+msgstr ""
+
+#: ed_main.py:259
+msgid "Wrap Text Horizontally"
+msgstr ""
+
+#: ed_main.py:243
+msgid "Zoom Default"
+msgstr ""
+
+#: ed_main.py:242
+msgid "Zoom In"
+msgstr ""
+
+#: ed_main.py:241
+msgid "Zoom Out"
+msgstr ""

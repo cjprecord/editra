@@ -43,11 +43,11 @@ import wx
 import ed_glob
 import util
 
+_ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 # Global Variables
 ICON_SET = {}
 TOOL_SET = {}
-TLANG = util.StripAccelerators(ed_glob.LANG)
 
 #--------------------------------------------------------------------------#
 
@@ -125,28 +125,26 @@ class ED_ToolBar(wx.ToolBar):
     def PopulateTools(self):
         """Sets the tools in the toolbar"""
         # Place Icons in toolbar
-        self.AddSimpleTool(ed_glob.ID_NEW, TOOL_SET["new"], TLANG['New'], "Open New Blank Page")
-        self.AddSimpleTool(ed_glob.ID_OPEN, TOOL_SET["open"], TLANG['Open'], "Open New Document")
-        self.AddSimpleTool(ed_glob.ID_SAVE, TOOL_SET["save"], TLANG['Save'], 
-                           "Save Current Document")
-        self.AddSimpleTool(ed_glob.ID_PRINT, TOOL_SET["print"], TLANG['Print'], 
-                           "Print Current Document")
+        self.AddSimpleTool(ed_glob.ID_NEW, TOOL_SET["new"], _("New"), _("Start a New File"))
+        self.AddSimpleTool(ed_glob.ID_OPEN, TOOL_SET["open"], _("Open"), _("Open"))
+        self.AddSimpleTool(ed_glob.ID_SAVE, TOOL_SET["save"], _("Save"), 
+                           _("Save Current File"))
+        self.AddSimpleTool(ed_glob.ID_PRINT, TOOL_SET["print"], _("Print"), 
+                           _("Print Current File"))
         self.AddSeparator()
-        
-        self.AddSimpleTool(ed_glob.ID_UNDO, TOOL_SET["undo"], TLANG['Undo'], "Undo Changes")
-        self.AddSimpleTool(ed_glob.ID_REDO, TOOL_SET["redo"], TLANG['Redo'], "Redo Changes")
-        
+        self.AddSimpleTool(ed_glob.ID_UNDO, TOOL_SET["undo"], _("Undo"), _("Undo Last Action"))
+        self.AddSimpleTool(ed_glob.ID_REDO, TOOL_SET["redo"], _("Redo"), _("Redo Last Undo"))
         self.AddSeparator()
-        
-        self.AddSimpleTool(ed_glob.ID_COPY, TOOL_SET["copy"], TLANG['Copy'], "Copy Selected Text")
-        self.AddSimpleTool(ed_glob.ID_CUT, TOOL_SET["cut"], TLANG['Cut'], "Cut Selected Text")
-        self.AddSimpleTool(ed_glob.ID_PASTE, TOOL_SET["paste"], TLANG['Paste'], "Paste Text")
-        
+        self.AddSimpleTool(ed_glob.ID_COPY, TOOL_SET["copy"], _("Copy"), 
+                          _("Copy Selected Text to Clipboard"))
+        self.AddSimpleTool(ed_glob.ID_CUT, TOOL_SET["cut"], _("Cut"), 
+                          _("Cut Selected Text from File"))
+        self.AddSimpleTool(ed_glob.ID_PASTE, TOOL_SET["paste"], _("Paste"), 
+                          _("Paste Text from Clipboard to File"))
         self.AddSeparator()
-
-        self.AddSimpleTool(ed_glob.ID_FIND, TOOL_SET["find"], TLANG['Find'], "Find Text")
-        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, TOOL_SET["findr"], TLANG['FReplace'], 
-                           "Find And Replace Text")
+        self.AddSimpleTool(ed_glob.ID_FIND, TOOL_SET["find"], _("Find"), _("Find Text"))
+        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, TOOL_SET["findr"], _("FReplace"), 
+                           _("Find and Replace Text"))
         self.AddSeparator()
 
     #---- Event Handlers ----#
