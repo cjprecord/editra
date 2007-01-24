@@ -62,9 +62,10 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import sys
 import ed_glob
-from ed_glob import LANG, L_LBL, L_SB
 import util
 import dev_tool
+
+_ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 
 #----------------------------------------------------------------------------#
@@ -91,7 +92,7 @@ class PrefDlg(wx.Dialog):
             if ed_glob.PROFILE['METAL']:
                 pre.SetExtraStyle(wx.DIALOG_EX_METAL)
 
-        pre.Create(parent, -1, 'Preferences')
+        pre.Create(parent, -1, _('Preferences'))
         self.PostCreate(pre)
 
         # Attributes
@@ -105,11 +106,11 @@ class PrefDlg(wx.Dialog):
 
         # Create the buttons
         b_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        cancel_b = wx.Button(self, wx.ID_CANCEL, "Cancel")
+        cancel_b = wx.Button(self, wx.ID_CANCEL, _("Cancel"))
         cancel_b.SetDefault()
-        apply_b = wx.Button(self, wx.ID_APPLY, "Apply")
+        apply_b = wx.Button(self, wx.ID_APPLY, _("Apply"))
         apply_b.SetDefault()
-        ok_b = wx.Button(self, wx.ID_OK, "Ok")
+        ok_b = wx.Button(self, wx.ID_OK, _("Ok"))
         ok_b.SetDefault()
         b_sizer.Add(cancel_b, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         b_sizer.Add(apply_b, 0, wx.ALIGN_CENTER | wx.ALL, 5)
@@ -224,7 +225,7 @@ class PrefPages(wx.Notebook):
                      "to be restarted before taking effect."]
 
         info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt) + ("\n" * 10))
-        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, u"Language: ")
+        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Language: "))
         lang_c = ExChoice(gen_panel, id=ed_glob.ID_PREF_LANG,
                            choices=util.GetResources(u"language"), 
                            default=ed_glob.PROFILE['LANG'].title())
@@ -247,26 +248,26 @@ class PrefPages(wx.Notebook):
         # Add Profile Editor to Panel
         self.list = ProfileListCtrl(prof_panel)
 
-        self.AddPage(prof_panel, "Profile Viewer")
+        self.AddPage(prof_panel, _("Profile Viewer"))
 
     def CodePage(self):
         """Code preference page"""
         code_panel = wx.Panel(self, wx.ID_ANY)
 
         # Feature Settings
-        feat_lbl = wx.StaticText(code_panel, wx.ID_ANY, "Features:")
-        br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, LANG['BraceHL'][L_LBL])
+        feat_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Features") + u":")
+        br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, _("Bracket Highlighting"))
         br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
-        cc_cb = wx.CheckBox(code_panel, ed_glob.ID_KWHELPER, LANG['KWHelper'][L_LBL])
+        cc_cb = wx.CheckBox(code_panel, ed_glob.ID_KWHELPER, _("Keyword Helper"))
         cc_cb.SetValue(ed_glob.PROFILE['KWHELPER'])
-        ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, LANG['IndentG'][L_SB])
+        ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"))
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
         feat_sizer = wx.BoxSizer(wx.VERTICAL)
         feat_sizer.AddMany([br_cb, cc_cb, ind_cb]) 
 
         # Syntax Settings
-        syn_lbl = wx.StaticText(code_panel, wx.ID_ANY, "Syntax:")
-        syn_cb = wx.CheckBox(code_panel, ed_glob.ID_SYNTAX, LANG['SyntaxHL'][L_LBL])
+        syn_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Syntax") + u":")
+        syn_cb = wx.CheckBox(code_panel, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
         syn_cb.SetValue(ed_glob.PROFILE['SYNTAX'])
 
         syn_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -280,33 +281,33 @@ class PrefPages(wx.Notebook):
         border.Add(syn_sizer, 0, wx.LEFT, 20)
         code_panel.SetSizer(border)
 
-        self.AddPage(code_panel, "Code")
+        self.AddPage(code_panel, _("Code"))
 
     def TextPage(self):
         """Adds a Text Preferences Page"""
         text_panel = wx.Panel(self, wx.ID_ANY)
 
         # Format Section Label
-        format_lbl = wx.StaticText(text_panel, wx.ID_ANY, util.DeAccel(LANG['Format']+":"))
-        tw_lbl = wx.StaticText(text_panel, wx.ID_ANY, u"Tab Width:  ")
+        format_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("Format") + u":")
+        tw_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("Tab Width") + u":  ")
         tw_cb = ExChoice(text_panel, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
                           default=ed_glob.PROFILE['TABWIDTH'])
         tabw_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tabw_sizer.Add(tw_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         tabw_sizer.Add(tw_cb, 0, wx.ALIGN_CENTER_VERTICAL)
-        ww_cb = wx.CheckBox(text_panel, ed_glob.ID_WORD_WRAP, LANG['WordWrap'][L_LBL])
+        ww_cb = wx.CheckBox(text_panel, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
         ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
         format_sizer = wx.BoxSizer(wx.VERTICAL)
         format_sizer.AddMany([tabw_sizer, ww_cb]) 
 
         # Misc Section
-        misc_lbl = wx.StaticText(text_panel, wx.ID_ANY, u"Misc:")
-        aa_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_AALIAS, u"AntiAliasing")
+        misc_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("Misc") + u":")
+        aa_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_AALIAS, _("AntiAliasing"))
         aa_cb.SetValue(ed_glob.PROFILE['AALIASING'])
-        sws_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_WS, LANG['WhiteS'][L_LBL])
+        sws_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_WS, _("Show Whitespace"))
         sws_cb.SetValue(ed_glob.PROFILE['SHOW_WS'])
-        ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, u"Use Tabs Instead of Whitespaces")
+        ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, _("Use Tabs Instead of Whitespaces"))
         ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
         misc_sizer = wx.BoxSizer(wx.VERTICAL)
         misc_sizer.AddMany([aa_cb, sws_cb, ut_cb]) 
@@ -318,15 +319,15 @@ class PrefPages(wx.Notebook):
         border.Add(misc_lbl, 0, wx.ALL, 10)
         border.Add(misc_sizer, 0, wx.LEFT, 20)
         text_panel.SetSizer(border)
-        self.AddPage(text_panel, u"Text")
+        self.AddPage(text_panel, _("Text"))
 
     def MiscPage(self):
         """Theme preference page"""
         misc_panel = wx.Panel(self, wx.ID_ANY)
 
         # Misc Settings Section
-        set_lbl = wx.StaticText(misc_panel, wx.ID_ANY, u"Settings:  ")
-        fh_lbl = wx.StaticText(misc_panel, wx.ID_ANY, u"File History Depth:  ")
+        set_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Settings") + u":  ")
+        fh_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("File History Depth") + u":  ")
         fh_cb = ExChoice(misc_panel, ed_glob.ID_PREF_FHIST,
                           choices=['1','2','3','4','5','6','7','8','9'],
                           default=ed_glob.PROFILE['FHIST_LVL'])
@@ -335,9 +336,9 @@ class PrefPages(wx.Notebook):
         fh_sizer.Add(fh_cb, 1, wx.ALIGN_CENTER_VERTICAL)
 
         # Various Appearance Settings
-        app_lbl = wx.StaticText(misc_panel, wx.ID_ANY, u"Appearance:")
+        app_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Appearance") + u":")
         app_sizer = wx.BoxSizer(wx.VERTICAL)
-        tb_icont = wx.StaticText(misc_panel, wx.ID_ANY, u"Icon Theme: ")
+        tb_icont = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Theme") + u": ")
         tb_icon = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICON,
                             choices=util.GetResources(u"pixmaps" + util.GetPathChar() + u"toolbar"), 
                             default=ed_glob.PROFILE['ICONS'].title())
@@ -347,16 +348,16 @@ class PrefPages(wx.Notebook):
         app_sizer.Add(tbi_sizer, 1, wx.ALIGN_CENTER_VERTICAL)
 
         if wx.Platform == '__WXMAC__':
-            m_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_METAL, u"Use Metal Style (OS X Only)")
+            m_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_METAL, _("Use Metal Style (OS X Only)"))
             if ed_glob.PROFILE.has_key('METAL'):
                 m_cb.SetValue(ed_glob.PROFILE['METAL'])
             else:
                 m_cb.SetValue(False)
             app_sizer.Add(m_cb, 0, wx.ALIGN_CENTER_VERTICAL)
-        ws_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WSIZE, u"Remember Window Size on Exit")
+        ws_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WSIZE, _("Remember Window Size on Exit"))
         ws_cb.SetValue(ed_glob.PROFILE['SET_WSIZE'])
         app_sizer.Add(ws_cb, 1, wx.ALIGN_CENTER_VERTICAL)
-        wp_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WPOS, u"Remember Window Position on Exit")
+        wp_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WPOS, _("Remember Window Position on Exit"))
         wp_cb.SetValue(ed_glob.PROFILE['SET_WPOS'])
         app_sizer.Add(wp_cb, 1, wx.ALIGN_CENTER_VERTICAL)
 
@@ -367,14 +368,14 @@ class PrefPages(wx.Notebook):
         border.Add(app_lbl, 0, wx.ALL, 10)
         border.Add(app_sizer, 0, wx.LEFT, 20)
         misc_panel.SetSizer(border)
-        self.AddPage(misc_panel, "Misc")
+        self.AddPage(misc_panel, _("Misc"))
 
     def UpdatePage(self):
         """Update Status page"""
         upd_panel = wx.Panel(self, wx.ID_ANY)
 
-        info = wx.StaticText(upd_panel, wx.ID_ANY, "Update Status:")
-        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, "\nYou are running version: " + ed_glob.version)
+        info = wx.StaticText(upd_panel, wx.ID_ANY, _("Update Status") + u":")
+        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, _("\nYou are running version: %s") % ed_glob.version)
 
         border = wx.BoxSizer(wx.VERTICAL)
         border.Add(info, 0, wx.LEFT, 10)
@@ -382,7 +383,7 @@ class PrefPages(wx.Notebook):
 
         upd_panel.SetSizer(border)
 
-        self.AddPage(upd_panel, "Update")
+        self.AddPage(upd_panel, _("Update"))
 
     def OnPageChanged(self, evt):
         """Actions to do after a page change"""
@@ -418,8 +419,8 @@ class ProfileListCtrl(wx.ListCtrl,
 
     def PopulateProfileView(self):
         """Populates the profile view with the profile info"""
-        self.InsertColumn(0, "Item")
-        self.InsertColumn(1, "Value")
+        self.InsertColumn(0, _("Item"))
+        self.InsertColumn(1, _("Value"))
 
         prof = []
         for ind in ed_glob.PROFILE:

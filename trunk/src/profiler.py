@@ -74,6 +74,7 @@ from ed_glob import prog_name
 import util
 import dev_tool
 
+_ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
 #---- Begin Function Definitions ----#
@@ -240,5 +241,4 @@ def AddFileHistoryToProfile(file_history):
         file_path = file_history.GetHistoryFile(i)
         PROFILE[key] = file_path
         i += 1
-
     return i

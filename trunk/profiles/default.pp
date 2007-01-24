@@ -3,19 +3,18 @@
 
 # Lable			Value #
 #-----------------------------#
-AALIASING		True
-BRACKETHL		True
+AALIASING	True
+BRACKETHL	True
 DEFAULT		False
-FHIST_LVL		5
+FHIST_LVL	5
 GUIDES		True
-ICONS		STOCK
-KWHELPER		True
-LANG		ENGLISH
+ICONS		Stock
+KWHELPER	True
+LANG		English
 MODE		DEBUG
-MYPROFILE		/Users/cody/editra//profiles/default.pp
 SHOW_WS		False
 SYNTAX		True
-TABWIDTH		8
+TABWIDTH	8
 THEME		DEFAULT
 TOOLBAR		True
 USETABS		True

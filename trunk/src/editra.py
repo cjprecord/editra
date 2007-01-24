@@ -61,28 +61,27 @@ else:
     util.CreateConfigDir()
     profiler.LoadProfile()
 
-# 3. Setup Language Settings
-# TODO it is typically not a good idea to be changing the path like this
-# TODO Design Change, moving to use standard po files instead of these python scripts
-# Must set this after loading Profile so we know what language to use
-ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("language" + util.GetPathChar() + ed_glob.PROFILE['LANG'].lower())
-if os.path.exists(ed_glob.CONFIG['LANG_DIR']) and ed_glob.PROFILE['LANG'].lower() != 'english':
-    sys.path.insert(0,ed_glob.CONFIG['LANG_DIR'])
-    import ed_lang
-else:
-    # External Language Resource is missing/notfound so use builtin from ed_glob instead
-    pass
-
-# New language setup stuff
-#gettext.install(ed_glob.prog_name, util.ResolvConfigDir("locale"), unicode=True)
-
-#---- End Configuration Setup ----#
+# 3. Get Language Resource Directory
+ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale")
 
 # Create Application
 if ed_glob.PROFILE['MODE'] == u"DEBUG":
     EDITRA = wx.App(False)
 else:
-    EDITRA = wx.App(False) #PySimpleApp()
+    EDITRA = wx.App(False)
+
+# New language setup stuff
+langid = wx.LANGUAGE_DEFAULT
+the_locale = wx.Locale(langid)
+the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
+the_locale.AddCatalog(ed_glob.prog_name)
+language = gettext.translation(ed_glob.prog_name, ed_glob.CONFIG['LANG_DIR'],
+                                [the_locale.GetCanonicalName()], fallback=True)
+language.install()
+print "Found locale directory at %s using language %s" % (ed_glob.CONFIG['LANG_DIR'], the_locale.GetCanonicalName())
+#gettext.install(ed_glob.prog_name.lower(), util.ResolvConfigDir("locale"), unicode=True)
+
+#---- End Configuration Setup ----#
 
 # Now import main launch application
 import ed_main

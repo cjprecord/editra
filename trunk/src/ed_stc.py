@@ -53,11 +53,12 @@ __revision__ = "$Id:  Exp $"
 
 import os
 import wx, wx.stc, keyword 
-from ed_glob import PROFILE, ID_ZOOM_IN, ID_ZOOM_OUT, ID_ZOOM_NORMAL, ID_SYNTAX, LANG
+from ed_glob import PROFILE, ID_ZOOM_IN, ID_ZOOM_OUT, ID_ZOOM_NORMAL, ID_SYNTAX
 import syntax.syntax as syntax
 import util
 import dev_tool
 
+_ = wx.GetTranslation
 #-------------------------------------------------------------------------#
 # Font Settings
 sysfont = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
@@ -596,7 +597,7 @@ class EDSTC(wx.stc.StyledTextCtrl):
 
     def SetProperties(self, prop_lst):
         """Sets the Lexer Properties from a list of specifications
-        PARAM: syn_lst = [ ("PROPERTY", "VAL"), ("PROPERTY2", "VAL2) ]
+        PARAM: prop_lst = [ ("PROPERTY", "VAL"), ("PROPERTY2", "VAL2) ]
 
         """
         # Parses Property list, ignoring all bad values
