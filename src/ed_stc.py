@@ -39,14 +39,12 @@
 # - OnMarginClick: Margin Event handler                                       #
 # - OnFoldAll: Opens or closes a folder tree                                  #
 # - Expand: Opens margin folders                                              #
-# - FindLexer: Finds the approriate lexer based on filetype                   #
-# - Set**Style: CPP, CSS, Default, Lisp, Makefile, Perl, Python, SQL          #
-#               Set the style for a particular language.                      #
+# - FindLexer: Finds the approriate lexer based on file extentsion            #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id:  Exp $"
+__revision__ = "$Id:  $"
 
 #-------------------------------------------------------------------------#
 # Dependencies
@@ -142,18 +140,6 @@ class EDSTC(wx.stc.StyledTextCtrl):
                  style=0):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
-        Default Settings (w/o profile):
-        WordWrap:		On
-        AntiAliasing:	On
-        EOL Marker:	LF ONLY (Unix Style)
-        Tab Width:		8 spaces
-        Indentation Guides:	On
-        Keyword Helper:	On
-        Syntax Highlight:	On
-        Foldering:		On
-        Font Size:		10pt
-        Font:		Courier New (MSW)
-                            Monaco (GTK/MAC)
 
         """
         wx.stc.StyledTextCtrl.__init__(self, parent, win_id, pos, size, style)

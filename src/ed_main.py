@@ -48,7 +48,7 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -67,7 +67,6 @@ import ed_pages         		# Notebook Class
 import prefdlg                       # Preference Dialog Class
 
 # Function Aliases
-da = util.DeAccel
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 

@@ -30,7 +30,7 @@
   MacOSX:
   	python setup.py py2app
 """
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #---- Imports ----#
 import os
@@ -67,31 +67,22 @@ DATA_FILES = [
 			      "syntax/xml.py", "syntax/__init__.py" ]),
               ("pixmaps", ["../pixmaps/editra.png", "../pixmaps/editra.ico",
                            "../pixmaps/editra.icns"]),
-              ("pixmaps/mime", ["../pixmaps/mime/c.png", 
-                                "../pixmaps/mime/cpp.png",
-                                "../pixmaps/mime/css.png",
-                                "../pixmaps/mime/header.png",
-				"../pixmaps/mime/html.png",
-				"../pixmaps/mime/java.png",
-				"../pixmaps/mime/makefile.png",
-				"../pixmaps/mime/perl.png",
-				"../pixmaps/mime/php.png",
-				"../pixmaps/mime/python.png",
-				"../pixmaps/mime/ruby.png",
-				"../pixmaps/mime/shell.png",
-				"../pixmaps/mime/tex.png",
-				"../pixmaps/mime/text.png"]),
+              ("pixmaps/mime", glob.glob("../pixmaps/mime/*.png")),
               ("pixmaps/toolbar/Stock", glob.glob('../pixmaps/toolbar/Nuovo/*')),
               ("templates", ["../templates/py"]),
               ("profiles", ["../profiles/default.pp",
                             "../profiles/.loader", 
                             "../profiles/default.pp.sample"]),
-	      ("language/english", ["../language/english/ed_lang.py"]),
-	      ("language/japanese", ["../language/japanese/ed_lang.py"]),
+              ("locale/en_US/LC_MESSAGES", ["../locale/en_US/LC_MESSAGES/Editra.mo"]),
+              ("locale/ja_JP/LC_MESSAGES", ["../locale/ja_JP/LC_MESSAGES/Editra.mo"]),
               "../README.txt","../CHANGELOG.txt","../COPYING.txt"
 	     ]
 
 DESCRIPTION = "Code Editor"
+
+ICON = { 'Win' : "../pixmaps/editra.ico",
+          'Mac' : "../pixmaps/editra.icns"
+}
 
 INCLUDES = ['syntax.*']
 
@@ -135,35 +126,38 @@ RT_MANIFEST = 24
 #---- Setup Windows EXE ----#
 if __platform__ == "win32":
     from distutils.core import setup
-    import py2exe
+    try:
+        import py2exe
+    except:
+        print "\n!! You dont have py2exe installed. Cant build a standalone .exe !!\n"
+        exit()
 
     setup(
         name = NAME, 
         version = VERSION, 
-	options = {"py2exe" : {"compressed" : 1, "optimize" : 2, "includes" : INCLUDES }},
-        windows = [{"script": "editra.py","icon_resources": [(1, "../pixmaps/editra.ico")], "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
+        options = {"py2exe" : {"compressed" : 1, "optimize" : 2, "includes" : INCLUDES }},
+        windows = [{"script": "editra.py","icon_resources": [(1, ICON['Win'])], "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
-	license = LICENSE,
+        license = LICENSE,
         url = URL,
-      	data_files = DATA_FILES
-	)
+        data_files = DATA_FILES
+        )
 
 #---- Setup MacOSX APP ----#
 elif __platform__ == "darwin":
     try:
         from setuptools import setup
     except:
-        print "You dont have py2app installed!! Can't complete build!!"
-	exit()
-	
+        print "\n!! You dont have py2app and/or setuptools installed!! Can't build the .app file !!\n"
+        exit()
 
     py2app_options = dict(
-                          iconfile = '../pixmaps/editra.icns', 
+                          iconfile = ICON['Mac'], 
                           argv_emulation = True,
-			  optimize = True,
-			  includes = INCLUDES)
+                          optimize = True,
+                          includes = INCLUDES)
 
     setup(
         app = APP,
@@ -172,14 +166,15 @@ elif __platform__ == "darwin":
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
-	license = LICENSE,
+        license = LICENSE,
         url = URL,
         data_files = DATA_FILES,
-	#packages = ['syntax', 'extern'],
+        #packages = ['syntax', 'extern'],
         setup_requires = ['py2app'],
         )
 
-#---- Unsupported Platform(s) ----#
+#---- Other Platform(s) ----#
 else:
-    print "\nCurrently Unsupported Platform " + __platform__
+    print "\nCurrently we dont have a setup script that works for: " + __platform__
+    print "\nPlease feel free to write one for us if you want and it will be inluded in future release"
  

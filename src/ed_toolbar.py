@@ -84,6 +84,7 @@ class ED_ToolBar(wx.ToolBar):
     #TODO this is just a quick hack to make things work for now
     def CreateDefaultIcons(self, tool_size):
         """Creates the Icons to be used in the toolbar"""
+        # TODO check this path to see if it is valid before trying to use it
         stock_dir = (ed_glob.CONFIG['PIXMAPS_DIR'] + u"toolbar" + util.GetPathChar() +
                      ed_glob.PROFILE['ICONS'] + util.GetPathChar())
         # wx 2.8 uses a native mac toolbar and the builtin wx icons look like complete
@@ -143,7 +144,7 @@ class ED_ToolBar(wx.ToolBar):
                           _("Paste Text from Clipboard to File"))
         self.AddSeparator()
         self.AddSimpleTool(ed_glob.ID_FIND, TOOL_SET["find"], _("Find"), _("Find Text"))
-        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, TOOL_SET["findr"], _("FReplace"), 
+        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, TOOL_SET["findr"], _("Find/Replace"), 
                            _("Find and Replace Text"))
         self.AddSeparator()
 

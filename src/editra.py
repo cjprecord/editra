@@ -33,7 +33,7 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -42,16 +42,18 @@ import sys
 import gettext
 import wx
 import ed_glob
+import ed_i18n
 import util
 
 #--------------------------------------------------------------------------#
 
 #---- Load Configuration Information ----#
 
-# 1. Set Non-Profile Dependant Resource location globals
+# 1. Set Resource location globals
 ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
 ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
 ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir("pixmaps/mime")
+ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale")
 
 # 2. Load Profile Settings
 import profiler
@@ -61,34 +63,27 @@ else:
     util.CreateConfigDir()
     profiler.LoadProfile()
 
-# 3. Get Language Resource Directory
-ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale")
-
-# Create Application
+# 3. Create Application
 if ed_glob.PROFILE['MODE'] == u"DEBUG":
     EDITRA = wx.App(False)
 else:
     EDITRA = wx.App(False)
 
-# New language setup stuff
-langid = wx.LANGUAGE_DEFAULT
+# 4. Set up language settings
+langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
 the_locale = wx.Locale(langid)
 the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
 the_locale.AddCatalog(ed_glob.prog_name)
 language = gettext.translation(ed_glob.prog_name, ed_glob.CONFIG['LANG_DIR'],
                                 [the_locale.GetCanonicalName()], fallback=True)
 language.install()
-print "Found locale directory at %s using language %s" % (ed_glob.CONFIG['LANG_DIR'], the_locale.GetCanonicalName())
-#gettext.install(ed_glob.prog_name.lower(), util.ResolvConfigDir("locale"), unicode=True)
 
-#---- End Configuration Setup ----#
-
-# Now import main launch application
+# 5. Now import main launch application
 import ed_main
 
-# Create the Editor
+# 6. Create the Editor
 FRAME = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], ed_glob.prog_name)
 
-# Start Application
+# 7. Start Applications Main Loop
 EDITRA.MainLoop()
 

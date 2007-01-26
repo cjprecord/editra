@@ -41,7 +41,7 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -50,7 +50,6 @@ import os			 # Python Modules
 import sys
 import re
 import wx			 # wxPython Modules
-# import wx.py
 from ed_glob import CONFIG, version, prog_name
 import ed_stc 			 # Editra Styled Text Control
 import dev_tool			 # Editra Debug tools
