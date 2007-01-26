@@ -1,6 +1,6 @@
 ############################################################################
-#    Copyright (C) 2007 Editra Development Team   			   #
-#    staff@editra.org   						   #
+#    Copyright (C) 2007 Cody Precord                                       #
+#    cprecord@editra.org                                                   #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
 #    it under the terms of the GNU General Public License as published by  #
@@ -30,7 +30,7 @@
   MacOSX:
   	python setup.py py2app
 """
-__revision__ = "$Id: $"
+__revision__ = "$Revision: $"
 
 #---- Imports ----#
 import os
