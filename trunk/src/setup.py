@@ -30,7 +30,7 @@
   MacOSX:
   	python setup.py py2app
 """
-__revision__ = "$Revision: $"
+__revision__ = "$Revision$"
 
 #---- Imports ----#
 import os
