@@ -35,7 +35,7 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
@@ -192,7 +192,7 @@ EXT_DICT = {ID_LANG_ASM : 'asm', ID_LANG_BATCH : 'bat',
 
 # Dictionary to hold the profile
 # Always holds default settings incase profile loading fails or file
-# is incorrecly formatted
+# is incorrecly formatted/missing values
 PROFILE = { 
            'AALIASING'  : True,
            'BRACKETHL'  : True,
@@ -201,7 +201,7 @@ PROFILE = {
            'FHIST_LVL'  : '5',
            'GUIDES'     : True,
            'ICONS'      : 'Stock',
-           'LANG'       : 'ENGLISH',
+           'LANG'       : 'Default', # Use System Default Language by default
            'MODE'       : 'DEBUG',
            'MYPROFILE'  : 'default.pp',
            'SYNTAX'     : True,
@@ -215,6 +215,14 @@ PROFILE = {
            'WSIZE'      : (700, 450),
            'SET_WPOS'   : True
 }
+
+# Global localization object
+# This is populated with 
+#LOCALE = { 
+#          'Current' : wx.LANGUAGE_DEFAULT,
+#          'Previous' : wx.LANGUAGE_DEFAULT,
+#          'FailSafe' : wx.LANGUAGE_DEFAULT
+#}
 
 # Dictionary to map object ids to Profile keys
 ID_2_PROF = {

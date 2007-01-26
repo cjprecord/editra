@@ -37,7 +37,7 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -66,9 +66,8 @@ class FileDropTarget(wx.FileDropTarget):
         self.filename  = ''
 
     def OnDropFiles(self, x_ord, y_ord, evt):
-        """Checks Current condition on recieving window/control and
-        Performs proper checking to see if any existing data should
-        be saved prior to passing the file handle to the Open function
+        """Catches the drop file and passes it to open function if it is
+        a valid file type of file (i.e not a directory/binary file)
 
         """
         #Get Drop File Path from drop event
@@ -308,24 +307,6 @@ def GetResources(resource):
                 rec_lst.append(rec.title())
 
         return rec_lst
-
-def StripAccelerators(lang_dict):
-    """Strips the & characters from the dictionary items and returns
-    the items as a dictionary. This is here so that we only need to 
-    have one entry for each word in the dictionary instead of having
-    a special entry for menu accelerators"""
-    ret_dict = {}
-    for key in lang_dict:
-        ret_dict[key] = lang_dict[key][ed_glob.L_LBL].replace(u'&', u"")
-
-    return ret_dict
-
-def DeAccel(accel_str):
-    """Strips the accelerator character from a string"""
-    if isinstance(accel_str, basestring):
-        return accel_str.replace(u'&', u'')
-    else:
-        return accel_str
 
 # String Manupulation/Conversion Utilities
 def StrToTuple(tu_str):

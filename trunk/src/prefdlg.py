@@ -54,7 +54,7 @@
 #----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__revision__ = "$Id: $"
 
 #----------------------------------------------------------------------------#
 # Dependancies
@@ -62,6 +62,7 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import sys
 import ed_glob
+import ed_i18n
 import util
 import dev_tool
 
@@ -76,9 +77,6 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_SHOW_WS, ed_glob.ID_PREF_METAL, ed_glob.ID_PREF_FHIST,
             ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON ]
 
-# Validator Flags
-ALPHA_ONLY = 1
-DIGIT_ONLY = 2
 #----------------------------------------------------------------------------#
 
 class PrefDlg(wx.Dialog):
@@ -182,10 +180,9 @@ class PrefDlg(wx.Dialog):
         the changes made in this dialog.
 
         """
-        #TODO beef me up, value type checking isbool, ect...
         for obj in self.act_objs:
             value = obj.GetValue()
-            # TODO This is wrong but works for now (does not do thorough checking
+            # TODO This is does not do any value validation
             prof_key = ed_glob.ID_2_PROF[self.act_ids[self.act_objs.index(obj)]]
             ed_glob.PROFILE[prof_key] = value
 
@@ -224,18 +221,19 @@ class PrefPages(wx.Notebook):
         info_txt = [ "Most changes made in this dialog currently require the program",
                      "to be restarted before taking effect."]
 
-        info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt) + ("\n" * 10))
-        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Language: "))
-        lang_c = ExChoice(gen_panel, id=ed_glob.ID_PREF_LANG,
-                           choices=util.GetResources(u"language"), 
-                           default=ed_glob.PROFILE['LANG'].title())
+        info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt))
+        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Language: "), pos=wx.Point(50,130))
+        lang_c = ed_i18n.LangListCombo(gen_panel, ed_glob.ID_PREF_LANG, ed_glob.PROFILE['LANG'])
+#ExChoice(gen_panel, id=ed_glob.ID_PREF_LANG,
+#                           choices=util.GetResources(u"locale"), 
+#                           default=ed_glob.PROFILE['LANG'].title())
         lang_sizer = wx.BoxSizer(wx.HORIZONTAL)
         lang_sizer.Add(lang_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         lang_sizer.Add(lang_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(info, 0, wx.CENTER)
-        sizer.Add(lang_sizer, 50, wx.BOTTOM)
+        sizer.Add(lang_sizer, 80, wx.BOTTOM)
         gen_panel.SetSizer(sizer)
 
         self.AddPage(gen_panel, u"General")
@@ -449,7 +447,8 @@ class ExChoice(wx.Choice):
     """
     def __init__(self, parent, id, pos=(-1,-1), size=(-1,-1), choices=[], default=None):
         """Constructs a Choice Control"""
-        wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices)
+        wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices,
+                            style=wx.CB_SORT)
         if default != None:
             self.SetStringSelection(default)
 
