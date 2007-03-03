@@ -49,6 +49,7 @@ from wx.lib import langlistctrl
 import wx.combo
 import glob
 import ed_glob
+import dev_tool
 
 #----------------------------------------------------------------------------#
 # Global Variables
@@ -60,7 +61,8 @@ OPT_DESCRIPT = 1
 #---- Helper Functions used by the classes in this module ----#
 def GetAvailLocales():
     """Gets a list of the available locales that have been installed
-    for the editor. Returning a list of strings.
+    for the editor. Returning a list of strings that represent the 
+    canonical names of each language.
 
     """
     avail_loc = list()
@@ -107,13 +109,39 @@ class LangListCombo(wx.combo.BitmapComboBox):
     """
     def __init__(self, parent, id, default=None):
         """Initializes the combobox"""
+        self.default = default
         lang_ids = GetLocaleDict(GetAvailLocales()).values()
         if wx.LANGUAGE_DEFAULT not in lang_ids:
             lang_ids.append(wx.LANGUAGE_DEFAULT)
         lang_items = langlistctrl.CreateLanguagesResourceLists(langlistctrl.LC_ONLY, lang_ids)
-        wx.combo.BitmapComboBox.__init__(self, parent, id, size=wx.Size(350,25), pos=wx.Point(50, -1), style=wx.CB_READONLY)
+        wx.combo.BitmapComboBox.__init__(self, parent, id, size=wx.Size(320,26), 
+                                          style=wx.CB_READONLY)
         for lang_d in lang_items[1]:
             bit_m = lang_items[0].GetBitmap(lang_items[1].index(lang_d))
             self.Append(lang_d, bit_m)
         if default:
             self.SetValue(default)
+
+        # Bind Events
+        # wxMacBug? clicking outside of control to close the selection list 
+        #      causes the value of the control to be set to None/Empty String.
+        #      Also clicking on the drop down button and releasing it without
+        #      making a new selection also causes this behavior. So need to
+        #      catch these events and reset the selection when it gets set to
+        #      an empty string. The event handler that these events are
+        #      sent to catch most conditions except if the inital click on the
+        #      the drop button and then click off. The BitmapComboBox is currently
+        #      stated as being "abit klunky" on the Mac so this may be clarified in
+        #      a future update.
+        self.Bind(wx.EVT_LEFT_UP, self.OnComboClick, self)
+        self.Bind(wx.EVT_LEFT_DOWN, self.OnComboClick, self)
+        self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.OnComboClick, self)
+
+    def OnComboClick(self, evt):
+        """Event handler for clicks in the combo box"""
+        sel = self.GetValue()
+        if sel == "" or sel == None:
+            self.SetValue(self.default)
+        dev_tool.DEBUGP("[ed_i18n] [obj_evt] LangListCombo Clicked")
+        evt.Skip()
+        

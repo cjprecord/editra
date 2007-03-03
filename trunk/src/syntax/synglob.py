@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                          #
 #    cprecord@editra.org                                                      #
 #                                                                             #
-#    This program is free software; you can redistribute it and#or modify     #
+#    Editra is free software; you can redistribute it and#or modify           #
 #    it under the terms of the GNU General Public License as published by     #
 #    the Free Software Foundation; either version 2 of the License, or        #
 #    (at your option) any later version.                                      #
 #                                                                             #
-#    This program is distributed in the hope that it will be useful,          #
+#    Edira is distributed in the hope that it will be useful,                 #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
 #    GNU General Public License for more details.                             #
@@ -25,7 +25,8 @@
 #                                                                             #
 # SUMMARY:                                                                    #
 # Profides configuration and basic API functionality to all the syntax        #
-# modules                                                                     #
+# modules. It also acts more or less as a configuration file for the syntax   #
+# managment code.                                                             #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -34,6 +35,7 @@ __revision__ = "$Id: Exp $"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
+import wx
 import wx.stc as stc
 
 #-----------------------------------------------------------------------------#
@@ -42,76 +44,87 @@ import wx.stc as stc
 # Used for specifying what dialect/keyword set to load for a specific lexer
 
 # Use LEX_NULL
-ID_LANG_TXT  = 10
+ID_LANG_TXT  = wx.NewId()
+
+# Use LEX_ADA
+ID_LANG_ADA = wx.NewId()
 
 # Use LEX_ASM
-ID_LANG_ASM  = 100
-ID_LANG_68K  = 101
-ID_LANG_MASM = 102
-ID_LANG_NASM = 103
+ID_LANG_ASM  = wx.NewId()
+ID_LANG_68K  = wx.NewId()
+ID_LANG_MASM = wx.NewId()
+ID_LANG_NASM = wx.NewId()
 
 # Use LEX_BASH
-ID_LANG_BOURNE = 110
-ID_LANG_BASH   = 111
-ID_LANG_CSH    = 112
-ID_LANG_KSH    = 113
+ID_LANG_BOURNE = wx.NewId()
+ID_LANG_BASH   = wx.NewId()
+ID_LANG_CSH    = wx.NewId()
+ID_LANG_KSH    = wx.NewId()
 
 # Use LEX_CPP
-ID_LANG_C    = 120
-ID_LANG_CPP  = 121
-ID_LANG_JAVA = 122
+ID_LANG_C    = wx.NewId()
+ID_LANG_CPP  = wx.NewId()
+ID_LANG_H    = wx.NewId()
+ID_LANG_JAVA = wx.NewId()
 
 # Use LEX_CSS
-ID_LANG_CSS = 140
+ID_LANG_CSS = wx.NewId()
+ID_LANG_ESS = wx.NewId()
 
 # Use LEX_HTML
-ID_LANG_HTML = 150
-ID_LANG_JS   = 151
-ID_LANG_VBS  = 152
-ID_LANG_PHP  = 153
-ID_LANG_XML  = 154
-ID_LANG_SGML = 155
+ID_LANG_HTML = wx.NewId()
+ID_LANG_JS   = wx.NewId()
+ID_LANG_VBS  = wx.NewId()
+ID_LANG_PHP  = wx.NewId()
+ID_LANG_XML  = wx.NewId()
+ID_LANG_SGML = wx.NewId()
 
 # Use LEX_LISP
-ID_LANG_LISP = 170
+ID_LANG_LISP = wx.NewId()
 
 # Use LEX_MSSQL (Microsoft SQL)
-ID_LANG_MSSQL = 180
+ID_LANG_MSSQL = wx.NewId()
 
 # Use LEX_NSIS
-ID_LANG_NSIS = 190
+ID_LANG_NSIS = wx.NewId()
 
 # Use LEX_PASCAL
-ID_LANG_PASCAL = 200
+ID_LANG_PASCAL = wx.NewId()
 
 # Use LEX_PERL
-ID_LANG_PERL = 210
+ID_LANG_PERL = wx.NewId()
 
 # Use LEX_PS
-ID_LANG_PS = 220
+ID_LANG_PS = wx.NewId()
 
 # Use LEX_PYTHON 
-ID_LANG_PYTHON = 230
+ID_LANG_PYTHON = wx.NewId()
 
 # Use LEX_RUBY
-ID_LANG_RUBY = 240
+ID_LANG_RUBY = wx.NewId()
+
+# Use LEX_SMALLTALK
+ID_LANG_ST = wx.NewId()
 
 # Use LEX_SQL (PL/SQL, SQL*Plus)
-ID_LANG_SQL = 250
+ID_LANG_SQL = wx.NewId()
+
+# Use LEX_TCL
+ID_LANG_TCL  = wx.NewId()
 
 # Use LEX_TEX
-ID_LANG_TEX = 260
-ID_LANG_LATEX = 261
+ID_LANG_TEX = wx.NewId()
+ID_LANG_LATEX = wx.NewId()
 
 # Use LEX_VB
-ID_LANG_VB = 270
+ID_LANG_VB = wx.NewId()
 
 # Use LEX_VHDL
-ID_LANG_VHDL = 280
+ID_LANG_VHDL = wx.NewId()
 
 # Use LEX_OTHER (Batch, Makefile)
-ID_LANG_BATCH = 290
-ID_LANG_MAKE  = 291
+ID_LANG_BATCH = wx.NewId()
+ID_LANG_MAKE  = wx.NewId()
 
 #---- End Language Identifier Keys ----#
 
@@ -125,86 +138,113 @@ ID_LANG_MAKE  = 291
 # for that file cannot be loaded automatically.
 # SPECIFICATION: str extention : (int File Type ID, string Name, int Lexer, str modulename)
 #
-# Yea, its alittle ugly but it will do for now
+# Yea, its alittle ugly but works nicely
 #            EXT     LANG_ID         DESC_STR                 LEXER            MODULE
-EXT_REG = { 'asm'  : (ID_LANG_68K,   'MASM',                 stc.STC_LEX_ASM,   'masm'),
-            '68k'  : (ID_LANG_68K,   '68K Assembly',          stc.STC_LEX_ASM,   'asm68k'),
-            'masm' : (ID_LANG_MASM,  'MASM',                  stc.STC_LEX_ASM,   'masm'),
-            'nasm' : (ID_LANG_NASM,  'Netwide Assembler',     stc.STC_LEX_ASM,   'nasm'),
-            'bat'  : (ID_LANG_BATCH, 'DOS Batch Script',      stc.STC_LEX_BATCH, 'batch'),
-            'cmd'  : (ID_LANG_BATCH, 'DOS Batch Script',      stc.STC_LEX_BATCH, 'batch'),
-            'bsh'  : (ID_LANG_BASH,  'Bash Shell Script',     stc.STC_LEX_BASH,  'sh'),
-            'sh'   : (ID_LANG_BASH,  'Bash Shell Script',     stc.STC_LEX_BASH,  'sh'),
-            'csh'  : (ID_LANG_CSH,   'C-Shell Script',        stc.STC_LEX_BASH,  'sh'),
-            'ksh'  : (ID_LANG_KSH,   'Korn Shell Script',     stc.STC_LEX_BASH,  'sh'),
-            'c'    : (ID_LANG_C,     'C',                     stc.STC_LEX_CPP,   'cpp'),
-            'cpp'  : (ID_LANG_CPP,   'CPP',                   stc.STC_LEX_CPP,   'cpp'),
-            'cxx'  : (ID_LANG_CPP,   'CPP',                   stc.STC_LEX_CPP,   'cpp'),
-            'c++'  : (ID_LANG_CPP,   'CPP',                   stc.STC_LEX_CPP,   'cpp'),
-            'cc'   : (ID_LANG_CPP,   'CPP',                   stc.STC_LEX_CPP,   'cpp'),
-            'h'    : (ID_LANG_CPP,   'Header',                stc.STC_LEX_CPP,   'cpp'),
-            'h++'  : (ID_LANG_CPP,   'Header',                stc.STC_LEX_CPP,   'cpp'),
-            'hh'   : (ID_LANG_CPP,   'Header',                stc.STC_LEX_CPP,   'cpp'),
-            'hpp'  : (ID_LANG_CPP,   'Header',                stc.STC_LEX_CPP,   'cpp'),
-            'hxx'  : (ID_LANG_CPP,   'Header',                stc.STC_LEX_CPP,   'cpp'),
-            'css'  : (ID_LANG_CSS,   'Cascading Style Sheet', stc.STC_LEX_CSS,   'css'),
-            'html' : (ID_LANG_HTML,  'HTML',                  stc.STC_LEX_HTML,  'html'),
-            'htm'  : (ID_LANG_HTML,  'HTML',                  stc.STC_LEX_HTML,  'html'),
-            'shtml': (ID_LANG_HTML,  'HTML',                  stc.STC_LEX_HTML,  'html'),
-            'java' : (ID_LANG_JAVA,  'Java',                  stc.STC_LEX_CPP,   'java'),
-            'js'   : (ID_LANG_JS,    'JavaScript',            stc.STC_LEX_CPP,  'javascript'), 
-            'php'  : (ID_LANG_PHP,   'PHP',                   stc.STC_LEX_HTML,   'php'),
-            'php3' : (ID_LANG_PHP,   'PHP',                   stc.STC_LEX_HTML,   'php'),
-            'phtml': (ID_LANG_PHP,   'PHP',                   stc.STC_LEX_HTML,   'php'),
-            'tex'  : (ID_LANG_TEX,   'Tex/Latex',             stc.STC_LEX_LATEX,   'latex'),
-            'sty'  : (ID_LANG_TEX,   'Tex/Latex',             stc.STC_LEX_LATEX,   'latex'),
-            'aux'  : (ID_LANG_LATEX, 'Latex',                 stc.STC_LEX_LATEX, 'latex'),
-            'lisp' : (ID_LANG_LISP,  'Lisp',                  stc.STC_LEX_LISP,  'lisp'),
-            'cl'   : (ID_LANG_LISP,  'Lisp',                  stc.STC_LEX_LISP,  'lisp'),
-            'lsp'  : (ID_LANG_LISP,  'Lisp',                  stc.STC_LEX_LISP,  'lisp'),
-            'makefile' : (ID_LANG_MAKE, 'Makefile',           stc.STC_LEX_MAKEFILE, 'make'),
-            'configure' : (ID_LANG_MAKE, 'Makefile',          stc.STC_LEX_MAKEFILE, 'make'),
-            'mak'  : (ID_LANG_MAKE,  'Makefile',              stc.STC_LEX_MAKEFILE, 'make'),
-            'mssql' : (ID_LANG_MSSQL, 'Microsoft SQL',        stc.STC_LEX_MSSQL, 'mssql'),
-            'nsi'  : (ID_LANG_NSIS,  'Nullsoft Installer Script', stc.STC_LEX_NSIS, 'nsis'),
-            'pp'   : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
-            'pas'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
-            'dpr'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
-            'dpk'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
-            'dfm'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
-            'inc'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
-            'pl'   : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,  'perl'),
-            'pm'   : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,  'perl'),
-            'pod'  : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,  'perl'),
-            'cgi'  : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,  'perl'),
-            'ps'   : (ID_LANG_PS,     'Postscript',           stc.STC_LEX_PS,    'postscript'),
-            'py'   : (ID_LANG_PYTHON, 'Python',               stc.STC_LEX_PYTHON, 'python'),
-            'rb'   : (ID_LANG_RUBY,   'Ruby',                 stc.STC_LEX_RUBY,  'ruby'),
-            'rbx'  : (ID_LANG_RUBY,   'Ruby',                 stc.STC_LEX_RUBY,  'ruby'),
-            'rbw'  : (ID_LANG_RUBY,   'Ruby',                 stc.STC_LEX_RUBY,  'ruby'),
-            'sql'  : (ID_LANG_SQL,    'SQL',                  stc.STC_LEX_SQL,   'sql'),
-            'vb'   : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
-            'bas'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
-            'frm'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
-            'cls'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
-            'ctl'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
-            'vhdl' : (ID_LANG_VHDL,   'VHDL',                 stc.STC_LEX_VHDL,  'vhdl'),
-            'vhd'  : (ID_LANG_VHDL,   'VHDL',                 stc.STC_LEX_VHDL,  'vhdl'),
-            'xml'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'svg'  : (ID_LANG_XML,    'SVG',                  stc.STC_LEX_XML,   'xml'),
-            'xsl'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'rdf'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'xslt' : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'xsd'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'xul'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
+EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   'asm68k'),
+            'adb'  : (ID_LANG_ADA,    'Ada',                  stc.STC_LEX_ADA,   'ada'),
+            'ads'  : (ID_LANG_ADA,    'Ada',                  stc.STC_LEX_ADA,   'ada'),
+            'asm'  : (ID_LANG_68K,    'MASM',                 stc.STC_LEX_ASM,   'masm'),
+            'aux'  : (ID_LANG_LATEX,  'LaTex',                stc.STC_LEX_LATEX, 'latex'),
             'axl'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'xrc'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
+            'bat'  : (ID_LANG_BATCH,  'DOS Batch Script',     stc.STC_LEX_BATCH, 'batch'),            
+            'bas'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
+            'bsh'  : (ID_LANG_BASH,   'Bash Shell Script',    stc.STC_LEX_BASH,  'sh'),
+            'c'    : (ID_LANG_C,      'C',                    stc.STC_LEX_CPP,   'cpp'),
+            'cc'   : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'c++'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'cgi'  : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,  'perl'),
+            'cl'   : (ID_LANG_LISP,   'Lisp',                 stc.STC_LEX_LISP,  'lisp'),
+            'cls'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
+            'cmd'  : (ID_LANG_BATCH,  'DOS Batch Script',     stc.STC_LEX_BATCH, 'batch'),
+            'configure' : (ID_LANG_MAKE, 'Makefile',          stc.STC_LEX_MAKEFILE, 'make'),
+            'cpp'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'csh'  : (ID_LANG_CSH,    'C-Shell Script',       stc.STC_LEX_BASH,  'sh'),
+            'css'  : (ID_LANG_CSS,    'Cascading Style Sheet', stc.STC_LEX_CSS,  'css'),
+            'ctl'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
+            'cxx'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'dfm'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
+            'dpk'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
+            'dpr'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
             'dtd'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
-            'txt'  : (ID_LANG_TXT,    'Plain Text',           stc.STC_LEX_NULL,  None)
+            'ess'  : (ID_LANG_ESS,    'Editra Style Sheet',   stc.STC_LEX_CSS,   'editra_ss'),
+            'frm'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
+            'h'    : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'hh'   : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'h++'  : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'hpp'  : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'html' : (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,  'html'),
+            'htm'  : (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,  'html'),
+            'hxx'  : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'inc'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
+            'itcl' : (ID_LANG_TCL,    'TCL/TK',               stc.STC_LEX_TCL,   'tcl'),
+            'java' : (ID_LANG_JAVA,   'Java',                 stc.STC_LEX_CPP,   'java'),
+            'js'   : (ID_LANG_JS,     'JavaScript',           stc.STC_LEX_CPP,   'javascript'), 
+            'ksh'  : (ID_LANG_KSH,    'Korn Shell Script',    stc.STC_LEX_BASH,  'sh'),
+            'lisp' : (ID_LANG_LISP,   'Lisp',                 stc.STC_LEX_LISP,  'lisp'),
+            'lsp'  : (ID_LANG_LISP,   'Lisp',                 stc.STC_LEX_LISP,  'lisp'),
+            'mak'  : (ID_LANG_MAKE,   'Makefile',             stc.STC_LEX_MAKEFILE, 'make'),
+            'makefile' : (ID_LANG_MAKE, 'Makefile',           stc.STC_LEX_MAKEFILE, 'make'),
+            'masm' : (ID_LANG_MASM,   'MASM',                 stc.STC_LEX_ASM,   'masm'),
+            'mssql' : (ID_LANG_MSSQL, 'Microsoft SQL',        stc.STC_LEX_MSSQL, 'mssql'),
+            'nasm' : (ID_LANG_NASM,   'Netwide Assembler',    stc.STC_LEX_ASM,   'nasm'),
+            'nsi'  : (ID_LANG_NSIS,   'Nullsoft Installer Script', stc.STC_LEX_NSIS, 'nsis'),
+            'pas'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
+            'php'  : (ID_LANG_PHP,    'PHP',                  stc.STC_LEX_HTML,   'php'),
+            'php3' : (ID_LANG_PHP,    'PHP',                  stc.STC_LEX_HTML,   'php'),
+            'phtml': (ID_LANG_PHP,    'PHP',                  stc.STC_LEX_HTML,   'php'),
+            'pl'   : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,   'perl'),
+            'pm'   : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,   'perl'),
+            'pod'  : (ID_LANG_PERL,   'Perl',                 stc.STC_LEX_PERL,   'perl'),
+            'pp'   : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
+            'ps'   : (ID_LANG_PS,     'Postscript',           stc.STC_LEX_PS,     'postscript'),
+            'py'   : (ID_LANG_PYTHON, 'Python',               stc.STC_LEX_PYTHON, 'python'),
+            'rb'   : (ID_LANG_RUBY,   'Ruby',                 stc.STC_LEX_RUBY,   'ruby'),
+            'rbw'  : (ID_LANG_RUBY,   'Ruby',                 stc.STC_LEX_RUBY,   'ruby'),
+            'rbx'  : (ID_LANG_RUBY,   'Ruby',                 stc.STC_LEX_RUBY,   'ruby'),
+            'rdf'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml'),
+            'sh'   : (ID_LANG_BASH,   'Bash Shell Script',    stc.STC_LEX_BASH,   'sh'),
+            'shtml': (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,   'html'),
+            'sql'  : (ID_LANG_SQL,    'SQL',                  stc.STC_LEX_SQL,    'sql'),
+            'st'   : (ID_LANG_ST,     'Smalltalk',            stc.STC_LEX_SMALLTALK, 'smalltalk'),
+            'sty'  : (ID_LANG_TEX,    'Tex/LaTex',            stc.STC_LEX_LATEX,  'latex'),
+            'svg'  : (ID_LANG_XML,    'SVG',                  stc.STC_LEX_XML,    'xml'),
+            'tcl'  : (ID_LANG_TCL,    'TCL/TK',               stc.STC_LEX_TCL,    'tcl'),
+            'tex'  : (ID_LANG_TEX,    'Tex/LaTex',            stc.STC_LEX_LATEX,  'latex'),
+            'txt'  : (ID_LANG_TXT,    'Plain Text',           stc.STC_LEX_NULL,   None),
+            'vb'   : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,     'visualbasic'),
+            'vhdl' : (ID_LANG_VHDL,   'VHDL',                 stc.STC_LEX_VHDL,   'vhdl'),
+            'vhd'  : (ID_LANG_VHDL,   'VHDL',                 stc.STC_LEX_VHDL,   'vhdl'),
+            'xml'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml'),
+            'xrc'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml'),
+            'xsd'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml'),
+            'xsl'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml'),
+            'xslt' : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml'),
+            'xul'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,    'xml')
            }
 
+# Maps language ID's to File extensions
+EXT_DICT = {ID_LANG_ASM : 'asm', ID_LANG_BATCH : 'bat',
+            ID_LANG_C : 'c', ID_LANG_CPP : 'cpp',
+            ID_LANG_CSS : 'css', ID_LANG_H : 'h',
+            ID_LANG_HTML : 'html', ID_LANG_JAVA : 'java',
+            ID_LANG_LISP : 'lisp', ID_LANG_MAKE : 'makefile',
+            ID_LANG_NSIS : 'nsi', ID_LANG_PASCAL : 'p',
+            ID_LANG_PERL : 'pl', ID_LANG_PHP : 'php',
+            ID_LANG_PS : 'ps', ID_LANG_PYTHON : 'py',
+            ID_LANG_RUBY : 'rb', ID_LANG_BASH : 'sh',
+            ID_LANG_CSH : 'csh', ID_LANG_KSH : 'ksh',
+            ID_LANG_SQL : 'sql', ID_LANG_TEX : 'tex',
+            ID_LANG_VHDL : 'vhdl', ID_LANG_VB : 'vb',
+            ID_LANG_XML : 'xml', ID_LANG_68K : '68k',
+            ID_LANG_MASM : 'masm', ID_LANG_NASM : 'nasm',
+            ID_LANG_JS : 'js', ID_LANG_TXT : 'txt',
+            ID_LANG_ST : 'st', ID_LANG_ADA : 'ads',
+            ID_LANG_TCL : 'tcl', ID_LANG_ESS : 'ess'
+}
+
 # Maps file types to Lexer values
-FILE_LEXERS = { 'Assembly Code'            : stc.STC_LEX_ASM,
+FILE_LEXERS = { 'Ada'                      : stc.STC_LEX_ADA,
+                 'Assembly Code'            : stc.STC_LEX_ASM,
                  'Shell Scripts'            : stc.STC_LEX_BASH,
                  'Batch Files'              : stc.STC_LEX_BATCH,
                  'C/CPP'                    : stc.STC_LEX_CPP,
@@ -223,6 +263,7 @@ FILE_LEXERS = { 'Assembly Code'            : stc.STC_LEX_ASM,
                  'PostScript'               : stc.STC_LEX_PS,
                  'Python'                   : stc.STC_LEX_PYTHON,
                  'Ruby'                     : stc.STC_LEX_RUBY,
+                 'Smalltalk'                : stc.STC_LEX_SMALLTALK,
                  'PL/SQL'                   : stc.STC_LEX_SQL,
                  'Visual Basic'             : stc.STC_LEX_VB,
                  'VHDL'                     : stc.STC_LEX_VHDL,
@@ -231,11 +272,12 @@ FILE_LEXERS = { 'Assembly Code'            : stc.STC_LEX_ASM,
                } 
 
 # Map Lexers to Module names
-LEX_MODULES = { stc.STC_LEX_ASM     : ['asm', 'asm68k', 'masm', 'nasm'],
+LEX_MODULES = {stc.STC_LEX_ADA     : ['ada'], 
+                stc.STC_LEX_ASM     : ['asm', 'asm68k', 'masm', 'nasm'],
                 stc.STC_LEX_BASH     : ['sh'],
                 stc.STC_LEX_BATCH    : ['bat'],
                 stc.STC_LEX_CPP      : ['cpp'],
-                stc.STC_LEX_CSS      : ['css'],
+                stc.STC_LEX_CSS      : ['css', 'editra_ss'],
                 stc.STC_LEX_HTML     : ['javascript', 'html', 'php'],
                 stc.STC_LEX_TEX      : ['latex'],
                 stc.STC_LEX_LISP     : ['lisp'],
@@ -248,6 +290,7 @@ LEX_MODULES = { stc.STC_LEX_ASM     : ['asm', 'asm68k', 'masm', 'nasm'],
                 stc.STC_LEX_PS       : ['postscript'],
                 stc.STC_LEX_PYTHON   : ['python'],
                 stc.STC_LEX_RUBY     : ['ruby'],
+                stc.STC_LEX_SMALLTALK: ['smalltalk'],
                 stc.STC_LEX_SQL      : ['sql'],
                 stc.STC_LEX_VB       : ['visualbasic'],
                 stc.STC_LEX_XML      : ['xml'],

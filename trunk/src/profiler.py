@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -68,9 +68,7 @@ __revision__ = "$Id:  Exp $"
 # Dependancies
 import os
 import wx
-from ed_glob import CONFIG
-from ed_glob import PROFILE
-from ed_glob import prog_name
+from ed_glob import CONFIG, PROFILE, prog_name, version
 import util
 import dev_tool
 
@@ -78,6 +76,42 @@ _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
 #---- Begin Function Definitions ----#
+def AddFileHistoryToProfile(file_history):
+    """Manages work of adding a file from the profile in order
+    to allow the top files from the history to be available 
+    the next time the user opens the program.
+
+    """
+    size = file_history.GetNoHistoryFiles()
+    file_key = "FILE"
+    i = 0
+
+    while size > i:
+        key = file_key + str(i)
+        file_path = file_history.GetHistoryFile(i)
+        PROFILE[key] = file_path
+        i += 1
+    return i
+
+def CalcVersionValue(ver_str="0.0.0"):
+    """Calculates a version value from the provided dot-formated string
+
+    SPECIFICATION: Version value calculation AA.BBB.CCC
+                   C values: < 1     (i.e 0.0.85 = 0.850)
+                   B values: 1 - 999 (i.e 0.1.85 = 1.850)
+                   A values: >= 1000 (i.e 1.1.85 = 1001.850)
+
+    """
+    ver_lvl = ver_str.split(u".")
+    if len(ver_lvl) < 3:
+        return 0
+    A = int(ver_lvl[0]) * 1000
+    B = int(ver_lvl[1])
+    if len(ver_lvl[2]) <= 2:
+        ver_lvl[2] += u'0'
+    C = float(ver_lvl[2]) / 1000
+    return float(A) + float(B) + C
+
 def GetLoader():
     """Finds the loader to use"""
 
@@ -92,25 +126,26 @@ def GetLoader():
 
     return LOADER
 
-def LoadProfile():
-    """Loads Last Used Profile"""
-
+def GetProfileStr():
+    """Reads the profile string from the loader and returns it"""
     LOADER = GetLoader()
 
     try:
         file_handle = open(LOADER, mode="r")
     except IOError:
         dev_tool.DEBUGP("[profiler] [exception] Failed to open profile loader")
-        # So try the default
-        ReadProfile(CONFIG['PROFILE_DIR'] + "default.pp")
-        dev_tool.DEBUGP("[prof_info] Loaded Default Profile")
-        return 1
+        # So return the default
+        dev_tool.DEBUGP("[prof_info] Trying Default Profile")
+        return CONFIG['PROFILE_DIR'] + u"default.pp"
 
     profile = file_handle.readline()
     profile = profile.split("\n")[0] # strip newline from end
-
     file_handle.close()
+    return profile
 
+def LoadProfile():
+    """Loads Last Used Profile"""
+    profile = GetProfileStr()
     if profile == "":
         profile = "default.pp"
 
@@ -119,6 +154,43 @@ def LoadProfile():
     else:
         retval = ReadProfile(CONFIG['PROFILE_DIR'] + profile)
     return retval
+
+def ProfileIsCurrent():
+    """Checks if profile is compatible with current editor version
+    and returns a bool stating if it is or not.
+
+    """
+    if CalcVersionValue(ProfileVersionStr()) >= CalcVersionValue(version):
+        return True
+    else:
+        return False
+
+def ProfileVersionStr():
+    """Checks the Loader for the profile version string and
+    returns the version string. If there is an error or the
+    string is not found it returns a zero version string.
+    """
+    loader = GetLoader()
+
+    try:
+        file_handle = open(loader, mode="r")
+    except IOError:
+        dev_tool.DEBUGP('[profile] [exception] Failed to open loader')
+        return "0.0.0"
+
+    ret_val = "0.0.0"
+    while True:
+        value = file_handle.readline()
+        value = value.split()
+        if len(value) > 0:
+            if value[0] == u'VERSION':
+                ret_val = value[1]
+                break
+        else:
+            break
+    file_handle.close()
+
+    return ret_val
 
 def ReadProfile(profile):
     """Reads profile settings from a file into the
@@ -131,7 +203,7 @@ def ReadProfile(profile):
     except IOError:
         dev_tool.DEBUGP("[profiler] [exception] Loading Profile: " + profile +
                         "\n[prof_warn] Loaded Default Profile Settings")
-        PROFILE['MYPROFILE'] = "default.pp"
+        PROFILE['MYPROFILE'] = os.path.join(os.path.split(profile)[0], u"default.pp")
         return 1
 
     lable = ""
@@ -152,6 +224,11 @@ def ReadProfile(profile):
             if len(values) >= 2:
                 lable = values[0]
                 val = " ".join(values[1:])
+
+                # Convert int values from string to int
+                if val.isdigit():
+                    val = int(val)
+
                 # If val is a bool convert it from string
                 if val in [u"True", u"On"]:
                     val = True
@@ -160,7 +237,7 @@ def ReadProfile(profile):
                 else:
                     pass
 
-                if lable == 'WSIZE' or lable == 'WPOS':
+                if lable in ['WSIZE', 'WPOS', 'ICON_SZ']:
                     val = util.StrToTuple(val)
 
                 PROFILE[lable] = val
@@ -170,7 +247,7 @@ def ReadProfile(profile):
         # Check end of file condition
         if len(values) > 0 and values[0] == "EOF":
             break
-        elif invalid_line > 100:  # Bail after 100 lines
+        elif invalid_line > 100:  # Bail after 100 bad lines
             break
         else:
             pass
@@ -193,15 +270,18 @@ def UpdateProfileLoader():
         return 1
 
     file_handle.write(PROFILE['MYPROFILE'])
+    file_handle.write(u"\nVERSION\t" + version)
     file_handle.close()
     return 0
 
+# TODO exception handling for condition when a read only profile is loaded
+#      this writting will fail
 def WriteProfile(profile):
     """Writes a profile to a file"""
     file_handle = open(profile, mode="w")
-    header = "# " + profile + "\n# Editra Profile\n" \
-              + "\n# Lable\t\t\tValue #" + \
-              "\n#-----------------------------#\n"
+    header = u"# " + profile + u"\n# Editra " + version + u" Profile\n" \
+              + u"#\n# Lable\t\t\tValue #" + \
+              u"\n#-----------------------------#\n"
 
     file_handle.write(header)
     file_handle.close()
@@ -224,21 +304,5 @@ def WriteProfile(profile):
     dev_tool.DEBUGP("[prof_info] Wrote out Profile: " + profile)
 
     PROFILE['MYPROFILE'] = profile
+    file_handle.close()
     return 0
-
-def AddFileHistoryToProfile(file_history):
-    """Manages work of adding a file from the profile in order
-    to allow the top files from the history to be available 
-    the next time the user opens the program.
-
-    """
-    size = file_history.GetNoHistoryFiles()
-    file_key = "FILE"
-    i = 0
-
-    while size > i:
-        key = file_key + str(i)
-        file_path = file_history.GetHistoryFile(i)
-        PROFILE[key] = file_path
-        i += 1
-    return i

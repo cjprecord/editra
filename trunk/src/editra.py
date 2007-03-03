@@ -44,6 +44,7 @@ import wx
 import ed_glob
 import ed_i18n
 import util
+import dev_tool
 
 #--------------------------------------------------------------------------#
 
@@ -52,24 +53,34 @@ import util
 # 1. Set Resource location globals
 ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
 ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
-ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir("pixmaps/mime")
+ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"))
+ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
 ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale")
+ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
+ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test_data")
 
 # 2. Load Profile Settings
 import profiler
-if util.HasConfig():
-    profiler.LoadProfile()
+if util.HasConfigDir():
+    if profiler.ProfileIsCurrent():
+        profiler.LoadProfile()
+    else:
+        dev_tool.DEBUGP("[main_info] Updating Profile to current version")
+        profiler.WriteProfile(profiler.GetProfileStr())
+        profiler.LoadProfile()
 else:
     util.CreateConfigDir()
     profiler.LoadProfile()
 
 # 3. Create Application
-if ed_glob.PROFILE['MODE'] == u"DEBUG":
-    EDITRA = wx.App(False)
+dev_tool.DEBUGP("[main_info] Initializing Application...")
+if ed_glob.PROFILE['MODE'] == u"GUI_DEBUG":
+    EDITRA = wx.App(True)
 else:
     EDITRA = wx.App(False)
 
 # 4. Set up language settings
+dev_tool.DEBUGP("[main_info] Setting Locale/Language Settings")
 langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
 the_locale = wx.Locale(langid)
 the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
@@ -82,8 +93,10 @@ language.install()
 import ed_main
 
 # 6. Create the Editor
-FRAME = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], ed_glob.prog_name)
+FRAME = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
+                            ed_glob.prog_name, dev_tool.DEBUGP)
 
 # 7. Start Applications Main Loop
+dev_tool.DEBUGP("[main_info] Starting MainLoop...")
 EDITRA.MainLoop()
 

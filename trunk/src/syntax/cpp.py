@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                          #
 #    cprecord@editra.org                                                      #
 #                                                                             #
-#    This program is free software; you can redistribute it and#or modify     #
+#    Editra is free software; you can redistribute it and#or modify           #
 #    it under the terms of the GNU General Public License as published by     #
 #    the Free Software Foundation; either version 2 of the License, or        #
 #    (at your option) any later version.                                      #
 #                                                                             #
-#    This program is distributed in the hope that it will be useful,          #
+#    Editra is distributed in the hope that it will be useful,                #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
 #    GNU General Public License for more details.                             #
@@ -77,6 +77,7 @@ cpp_types = ("public protected private inline virtual explicit export bool "
 
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
+                 ('STC_C_COMMENT', 'comment_style'),
                  ('STC_C_COMMENTLINE', 'comment_style'),
                  ('STC_C_COMMENTDOC', 'comment_style'),
                  ('STC_C_COMMENTDOCKEYWORD', 'dockey_style'),
@@ -111,7 +112,7 @@ def Keywords(type=0):
     KEYWORDS = []
     kw1_str = [c_keywords]
     kw2_str = [c_types]
-    if type == synglob.ID_LANG_CPP:
+    if type in [ synglob.ID_LANG_CPP, synglob.ID_LANG_H]:
         kw1_str.append(cpp_keywords)
         kw2_str.append(cpp_types)
     KEYWORDS.append((0, " ".join(kw1_str)))

@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -20,7 +20,7 @@
 
 """
 #--------------------------------------------------------------------------#
-# FILE: MainWindow.py                                                      #
+# FILE: ed_main.py                                                         #
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # SUMMARY:                                                                 #
@@ -57,14 +57,14 @@ import os			# Python OS libraries
 import sys			# Python System libraries
 import time
 import wx			# wxPython libraries
-import wx.lib.printout as printout
 from ed_glob import *		# Global Variables
 import util 			# Misc Helper functions
-import dev_tool 		         # Tools Used for Debugging
-import profiler                      # Profile Toolkit
-import ed_toolbar                    # Toolbar Class
-import ed_pages         		# Notebook Class
-import prefdlg                       # Preference Dialog Class
+import profiler                 # Profile Toolkit
+import ed_toolbar               # Toolbar Class
+import ed_pages                 # Notebook Class
+import ed_print
+import ed_cmdbar
+import syntax.syntax as syntax
 
 # Function Aliases
 _ = wx.GetTranslation
@@ -73,22 +73,23 @@ _ = wx.GetTranslation
 
 class MainWindow(wx.Frame):
     """This is the main class that glues everything together"""
-    def __init__(self, parent, id, wsize, title):
+    def __init__(self, parent, id, wsize, title, log):
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=wsize,
                           style=wx.DEFAULT_FRAME_STYLE | wx.NO_FULL_REPAINT_ON_RESIZE)
 
         self.SetTitle(title + u' - v' + version)
+        self.LOG = log
 
         # Try and set an app icon
         try:
             if wx.Platform == '__WXMSW__':
                 ed_icon = CONFIG['PIXMAPS_DIR'] + "editra.ico"
                 self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
-                dev_tool.DEBUGP("[main_evt] Set Icon for Windows")
+                self.LOG("[main_evt] Set Icon for Windows")
             else:
                 ed_icon = CONFIG['PIXMAPS_DIR'] + "editra.png"
                 self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
-                dev_tool.DEBUGP("[main_evt] Set Icon for " + os.sys.platform)
+                self.LOG("[main_evt] Set Icon for " + os.sys.platform)
         finally:
             pass
 
@@ -107,33 +108,36 @@ class MainWindow(wx.Frame):
         self.toolbar = None
 
         #---- Notebook to hold editor windows ----#
-        self.nb = ed_pages.ED_Pages(self, -1)
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
+        self.nb = ed_pages.ED_Pages(self, -1, log)
+        self.sizer.Add(self.nb, 6, wx.EXPAND)
+        self.sizer.Layout()
+        self.SendSizeEvent()
+        self.SetSizer(self.sizer)
 
-        #---- Fill the sizer ----#
-      #  self.sizer.Add(self.nb, 0, wx.EXPAND)
+        #---- Command Bar
+        self._cmdbar = ed_cmdbar.CommandBar(self, wx.ID_ANY)
+        self._cmdbar.Hide()
 
         #---- Status bar on bottom of window ----#
-        self.CreateStatusBar(2, style=wx.ST_SIZEGRIP)
+        self.CreateStatusBar(2, style=wx.ST_SIZEGRIP | wx.ST_DOTS_MIDDLE)
         self.SetStatusWidths([-1, 155])
         #---- End Statusbar Setup ----#
 
         #---- Create a toolbar ----#
         if PROFILE['TOOLBAR']:
-            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY, 16)
+            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY)
             self.SetToolBar(self.toolbar)
 
         # Toolbar Event Handlers
+        # TODO move to toolbar module
+        self.Bind(wx.EVT_TOOL, self.DispatchToControl)
         wx.EVT_TOOL(self, ID_NEW, self.OnNew)
         wx.EVT_TOOL(self, ID_OPEN, self.OnOpen)
         wx.EVT_TOOL(self, ID_SAVE, self.OnSave)
         wx.EVT_TOOL(self, ID_PRINT, self.OnPrint)
-        wx.EVT_TOOL(self, ID_UNDO, self.OnUndo)
-        wx.EVT_TOOL(self, ID_REDO, self.OnRedo)
-        wx.EVT_TOOL(self, ID_COPY, self.OnCopy)
-        wx.EVT_TOOL(self, ID_CUT, self.OnCut)
-        wx.EVT_TOOL(self, ID_PASTE, self.OnPaste)
-        wx.EVT_TOOL(self, ID_FIND, self.OnShowFind)
-        wx.EVT_TOOL(self, ID_FIND_REPLACE, self.OnShowFindReplace)
+        wx.EVT_TOOL(self, ID_FIND, self.nb.FindService.OnShowFindDlg)
+        wx.EVT_TOOL(self, ID_FIND_REPLACE, self.nb.FindService.OnShowFindDlg)
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
@@ -142,59 +146,11 @@ class MainWindow(wx.Frame):
         self.viewmenu = wx.Menu()
         self.formatmenu = wx.Menu()
         self.settingsmenu = wx.Menu()
+        self.toolsmenu = wx.Menu()
         self.helpmenu = wx.Menu()
 
         # Submenus
         self.fileopen = wx.Menu() #submenu of file
-        languagemenu = wx.Menu() #submenu of settings
-
-        #---- Submenu Items ----#
-        # Language (sub of settings)
-        languagemenu.Append(ID_LANG_ASM, "ASM", _("Switch Lexer to %s") % "ASM", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_BATCH, "Batch", _("Switch Lexer to %s") % "Batch",
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_C, "C", _("Switch Lexer to %s") % "C", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_CPP, "CPP", _("Switch Lexer to %s") % "CPP", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_CSS, "CSS", _("Switch Lexer to %s") % "CSS", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_H, "Header Files", 
-                            _("Switch Lexer to %s") % "Header Files", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_HTML, "HTML", _("Switch Lexer to %s") % "HTML", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_JAVA, "Java", _("Switch Lexer to %s") % "Java", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_LISP, "Lisp", _("Switch Lexer to %s") % "Lisp", 
-                            wx.ITEM_CHECK)	
-        languagemenu.Append(ID_LANG_MAKE, "Makefile", 
-                            _("Switch Lexer to %s") % "Makefiles", wx.ITEM_CHECK)	
-        languagemenu.Append(ID_LANG_NSIS, "NSIS", 
-                            _("Switch Lexer to %s") % "Nullsoft Scriptable Installer", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PASCAL, "Pascal", _("Switch Lexer to %s") % "Pascal",
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PERL, "Perl", 
-                           _("Switch Lexer to %s") % "Perl Scripts", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PHP, "PHP", _("Switch Lexer to %s") % "PHP", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PS, "PostScript", 
-                            _("Switch Lexer to %s") % "PostScript", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_PYTHON, "PYTHON", _("Switch Lexer to %s") % "Python",
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_RUBY, "Ruby", _("Switch Lexer to %s") % "Ruby", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_SHELL, "Shell Scripts", 
-                            _("Switch Lexer to %s") % "Shell Scripts", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_SQL, "SQL", _("Switch Lexer to %s") % "SQL", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_TEX, "Tex/LaTex", 
-                            _("Switch Lexer to %s") % "Tex/LaTex", wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_VHDL, "VHDL", _("Switch Lexer to %s") % "VHDL", 
-                            wx.ITEM_CHECK)
-        languagemenu.Append(ID_LANG_VB, "Visual Basic", 
-                            _("Switch Lexer to %s") % "Visual Basic", wx.ITEM_CHECK)
 
         #---- Menu Items ----#
         # File Menu Items
@@ -208,12 +164,14 @@ class MainWindow(wx.Frame):
         self.filemenu.Append(ID_CLOSE, _("Close Page") + "\tCtrl+W", _("Close Current Page"))
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"))
-        self.filemenu.Append(ID_SAVEAS, _("Save As"), _("Save As"))
+        self.filemenu.Append(ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", _("Save As"))
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_SAVE_PROFILE, _("Save Profile"), 
                              _("Save Current Settings to a New Profile"))
         self.filemenu.Append(ID_LOAD_PROFILE, _("Load Profile"), _("Load a Custom Profile"))
         self.filemenu.AppendSeparator()
+        self.filemenu.Append(ID_PRINT_SU, _("Page Setup") + "\tCtrl+Shift+P", _("Configure Printer"))
+        self.filemenu.Append(ID_PRINT_PRE, _("Print Preview"), _("Preview Printout"))
         self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"))
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"))
@@ -230,9 +188,31 @@ class MainWindow(wx.Frame):
         self.editmenu.Append(ID_SELECTALL, _("Select All") + "\tCtrl+A", 
                              _("Select All Text in Document"))
         self.editmenu.AppendSeparator()
+        self.linemenu = wx.Menu()
+        self.linemenu.Append(ID_CUT_LINE, _("Cut Line") + "\tCtrl+D",
+                            _("Cut Current Line"))
+        self.linemenu.Append(ID_COPY_LINE, _("Copy Line") + "\tCtrl+Y",
+                            _("Copy Current Line"))
+        self.linemenu.Append(ID_JOIN_LINES, _("Join Line(s)") + "\tCtrl+J",
+                            _("Join the Selected Lines"))
+        self.linemenu.Append(ID_TRANSPOSE, _("Transpose Line") + "\tCtrl+T",
+                            _("Transpose the currentline with the previous one"))
+        self.editmenu.AppendMenu(ID_LINE_EDIT, _("Line Edit"), self.linemenu,
+                                _("Commands that affect an entire line"))
+        self.bookmenu = wx.Menu()
+        self.bookmenu.Append(ID_ADD_BM, _("Add Bookmark") + u"\tCtrl+B",
+                             _("Add a bookmark to the current line"))
+        self.bookmenu.Append(ID_DEL_BM, _("Remove Bookmark") + u"\tCtrl+Shift+B",
+                            _("Remove bookmark from current line"))
+        self.bookmenu.Append(ID_DEL_ALL_BM, _("Remove All Bookmarks"),
+                            _("Remove all bookmarks from the current document"))
+        self.editmenu.AppendMenu(ID_BOOKMARK, _("Bookmarks"),  self.bookmenu,
+                                _("Add add and remove bookmarks"))
+        self.editmenu.AppendSeparator()
         self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+F", _("Find Text"))
         self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 
                              _("Find and Replace Text"))
+        self.editmenu.Append(ID_QUICK_FIND, _("Quick Find") + "\tCtrl+/", _("Open the Quick Find Bar"))
         self.editmenu.AppendSeparator()
         self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"))
 
@@ -241,26 +221,43 @@ class MainWindow(wx.Frame):
         self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"))
         self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", _("Zoom Default"))
         self.viewmenu.AppendSeparator()
+        self.viewmenu.Append(ID_SHOW_EOL, _("Show EOL Markers"), _("Show EOL Markers"), wx.ITEM_CHECK)
         self.viewmenu.Append(ID_SHOW_WS, _("Show Whitespace"), 
                              _("Show Whitespace Markers"), wx.ITEM_CHECK)
-        if PROFILE['SHOW_WS']:
-            self.viewmenu.Check(ID_SHOW_WS, -1)
         self.viewmenu.Append(ID_INDENT_GUIDES, _("Indentation Guides"), 
                              _("Show Indentation Guides"), wx.ITEM_CHECK)
         self.viewmenu.AppendSeparator()
+        self.viewmenu.Append(ID_NEXT_MARK, _("Next Bookmark") + u"\tCtrl+Right", 
+                            _("View Line of Next Bookmark"))
+        self.viewmenu.Append(ID_PRE_MARK, _("Previous Bookmark") + u"\tCtrl+Left", 
+                            _("View Line of Previous Bookmark"))
+        self.viewmenu.AppendSeparator()
         self.viewmenu.Append(ID_VIEW_TOOL, _("Toolbar"), 
                              _("Show Toolbar"), wx.ITEM_CHECK)
-        if PROFILE['TOOLBAR']:
-            self.viewmenu.Check(ID_VIEW_TOOL, -1)
 
         # Format Menu Items
+        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"))
+        self.formatmenu.AppendSeparator()
+        self.formatmenu.Append(ID_INDENT, _("Indent Lines"), 
+                              _("Indent the selected lines"))
+        self.formatmenu.Append(ID_UNINDENT, _("Unindent Lines") + u"\tShift+Tab", 
+                              _("Unindent the selected lines"))
+        self.formatmenu.AppendSeparator()
         self.formatmenu.Append(ID_WORD_WRAP, _("Word Wrap"), 
                                _("Wrap Text Horizontally"), wx.ITEM_CHECK)
-        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"))
-
-        ## Set Check Marks
-        if PROFILE['WRAP']:
-            self.formatmenu.Check(ID_WORD_WRAP, -1)
+        self.formatmenu.AppendSeparator()
+        self.lineformat = wx.Menu()
+        self.lineformat.Append(ID_EOL_MAC, _("Macintosh (\\r)"), 
+                              _("Format all EOL characters to %s Mode") % _("Macintosh (\\r)"),
+                              wx.ITEM_CHECK)
+        self.lineformat.Append(ID_EOL_UNIX, _("Unix (\\n)"), 
+                              _("Format all EOL characters to %s Mode") % _("Unix (\\n)"),
+                              wx.ITEM_CHECK)
+        self.lineformat.Append(ID_EOL_WIN, _("Windows (\\r\\n)"), 
+                              _("Format all EOL characters to %s Mode") % _("Windows (\\r\\n)"),
+                              wx.ITEM_CHECK)
+        self.formatmenu.AppendMenu(ID_EOL_MODE, _("EOL Mode"), self.lineformat,
+                                  _("End of line character formatting"))
 
         # Settings Menu Items
         self.settingsmenu.Append(ID_SYNTAX, _("Syntax Highlighting"), 
@@ -270,12 +267,21 @@ class MainWindow(wx.Frame):
         self.settingsmenu.Append(ID_KWHELPER,_("Keyword Helper"), 
                                  _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"), 
                                 wx.ITEM_CHECK)
-        self.settingsmenu.AppendMenu(ID_LANG, _("Lexers"), 
-                                     languagemenu, _("Manually Set a Lexer/Syntax"))
-        self.languagemenu = languagemenu
+        self.languagemenu = syntax.GenLexerMenu()
+        self.settingsmenu.AppendMenu(ID_LEXER, _("Lexers"), 
+                                     self.languagemenu,
+                                     _("Manually Set a Lexer/Syntax"))
+
+        # Tools Menu
+        self.toolsmenu.Append(ID_STYLE_EDIT, _("Style Editor"), 
+                             _("Edit the way syntax is highlighted"))
 
         # Help Menu Items
-        self.helpmenu.Append(ID_ABOUT, _("About"), _("About"))
+        self.helpmenu.Append(ID_ABOUT, _("About") + u"...", _("About") + u"...")
+        self.helpmenu.Append(ID_HOMEPAGE, _("Project Homepage"), 
+                            _("Visit the project homepage %s") % home_page)
+        self.helpmenu.Append(ID_CONTACT, _("Project Contact"),
+                            _("Email Project Staff Members"))
 
         #---- Menu Bar ----#
         self.menubar = wx.MenuBar()
@@ -284,73 +290,62 @@ class MainWindow(wx.Frame):
         self.menubar.Append(self.viewmenu, _("View"))
         self.menubar.Append(self.formatmenu, _("Format"))
         self.menubar.Append(self.settingsmenu, _("Settings"))
+        self.menubar.Append(self.toolsmenu, _("Tools"))
         self.menubar.Append(self.helpmenu, _("Help"))
         self.SetMenuBar(self.menubar)
 
         #---- Actions to take on menu events ----#
-        wx.EVT_MENU_OPEN(self, self.UpdateMenu)
+        self.Bind(wx.EVT_MENU_OPEN, self.UpdateMenu)
+        self.BindLangMenu()
+        if wx.Platform == '__WXGTK__':
+            self.Bind(wx.EVT_MENU_HIGHLIGHT, self.OnMenuHighlight, id=ID_LEXER)
 
         # File Menu Events
-        wx.EVT_MENU(self, ID_NEW, self.OnNew)
-        wx.EVT_MENU(self, ID_OPEN, self.OnOpen)
-        wx.EVT_MENU(self, ID_CLOSE, self.OnClosePage)
-        wx.EVT_MENU(self, ID_SAVE, self.OnSave)
-        wx.EVT_MENU(self, ID_SAVEAS, self.OnSaveAs)
-        wx.EVT_MENU(self, ID_SAVE_PROFILE, self.OnSaveProfile)
-        wx.EVT_MENU(self, ID_LOAD_PROFILE, self.OnLoadProfile)
-        wx.EVT_MENU(self, ID_PRINT, self.OnPrint)
-        wx.EVT_MENU(self, ID_EXIT, self.OnExit)
+        self.Bind(wx.EVT_MENU, self.OnNew, id=ID_NEW)
+        self.Bind(wx.EVT_MENU, self.OnOpen, id=ID_OPEN)
+        self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSE)
+        self.Bind(wx.EVT_MENU, self.OnSave, id=ID_SAVE)
+        self.Bind(wx.EVT_MENU, self.OnSaveAs, id=ID_SAVEAS)
+        self.Bind(wx.EVT_MENU, self.OnSaveProfile, id=ID_SAVE_PROFILE)
+        self.Bind(wx.EVT_MENU, self.OnLoadProfile, id=ID_LOAD_PROFILE)
+        self.Bind(wx.EVT_MENU, self.OnPrint)
+        self.Bind(wx.EVT_MENU, self.OnExit, id=ID_EXIT)
         self.Bind(wx.EVT_MENU_RANGE, self.OnFileHistory, 
                   id=wx.ID_FILE1, id2=wx.ID_FILE9)
 
         # Edit Menu Events
-        wx.EVT_MENU(self, ID_UNDO, self.OnUndo)
-        wx.EVT_MENU(self, ID_REDO, self.OnRedo)
-        wx.EVT_MENU(self, ID_CUT, self.OnCut)
-        wx.EVT_MENU(self, ID_COPY, self.OnCopy)
-        wx.EVT_MENU(self, ID_PASTE, self.OnPaste)
-        wx.EVT_MENU(self, ID_SELECTALL, self.OnSelectAll)
-        wx.EVT_MENU(self, ID_FIND, self.OnShowFind)
-        wx.EVT_MENU(self, ID_FIND_REPLACE, self.OnShowFindReplace)
-        wx.EVT_MENU(self, ID_PREF, self.OnPreferences)
+        self.Bind(wx.EVT_MENU, self.DispatchToControl)
+        self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
+        self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, id=ID_FIND_REPLACE)
+        self.Bind(wx.EVT_MENU, self.OnQuickFind, id=ID_QUICK_FIND)
+        self.Bind(wx.EVT_MENU, self.OnPreferences, id=ID_PREF)
 
         # View Menu Events
-        wx.EVT_MENU(self, ID_ZOOM_OUT, self.OnZoom)
-        wx.EVT_MENU(self, ID_ZOOM_IN, self.OnZoom)
-        wx.EVT_MENU(self, ID_ZOOM_NORMAL, self.OnZoom)
-        wx.EVT_MENU(self, ID_SHOW_WS, self.OnShowWS)
-        wx.EVT_MENU(self, ID_VIEW_TOOL, self.OnViewTb)
+        self.Bind(wx.EVT_MENU, self.OnViewTb, id=ID_VIEW_TOOL)
 
         # Format Menu Events
-        wx.EVT_MENU(self, ID_WORD_WRAP, self.OnWrap)
-        wx.EVT_MENU(self, ID_FONT, self.OnFont)
+        self.Bind(wx.EVT_MENU, self.OnFont, id=ID_FONT)
 
-        # Settings Menu Events
-        wx.EVT_MENU(self, ID_SYNTAX, self.OnSyntaxHL)
-        wx.EVT_MENU(self, ID_INDENT_GUIDES, self.OnIndentGuides)
-        wx.EVT_MENU(self, ID_BRACKETHL, self.OnHLBrackets)
-        wx.EVT_MENU(self, ID_KWHELPER, self.OnKeyWordHelp)
-
-        ## Language Menu Events (Sub of Settings)
-        wx.EVT_MENU(self, wx.ID_ANY, self.OnSetLexer)
+        # Tool Menu
+        self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
 
         # Help Menu Events
-        wx.EVT_MENU(self, ID_ABOUT, self.OnAbout)
+        self.Bind(wx.EVT_MENU, self.OnAbout, id=ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_HOMEPAGE)
+        self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_CONTACT)
+
         #---- End Menu Setup ----#
 
         #---- Actions to Take on other Events ----#
-        # Drop Events
-        self.Bind(wx.EVT_DROP_FILES, self.nb.control.dt.OnDropFiles)
-
         # Frame
         self.Bind(wx.EVT_CLOSE, self.OnExit)
 
         # Find Dialog
-        self.Bind(wx.EVT_FIND, self.OnFind)
-        self.Bind(wx.EVT_FIND_NEXT, self.OnFind)
-        self.Bind(wx.EVT_FIND_REPLACE, self.OnFind)
-        self.Bind(wx.EVT_FIND_REPLACE_ALL, self.OnFind)
-        self.Bind(wx.EVT_FIND_CLOSE, self.OnFindClose)
+        self.Bind(wx.EVT_FIND, self.nb.FindService.OnFind)
+        self.Bind(wx.EVT_FIND_NEXT, self.nb.FindService.OnFind)
+        self.Bind(wx.EVT_FIND_REPLACE, self.nb.FindService.OnFind)
+        self.Bind(wx.EVT_FIND_REPLACE_ALL, self.nb.FindService.OnFind)
+        self.Bind(wx.EVT_FIND_CLOSE, self.nb.FindService.OnFindClose)
 
         # Text Control Events #TODO move to stc
         self.nb.control.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
@@ -369,10 +364,12 @@ class MainWindow(wx.Frame):
                 else:
                     break
             except IndexError:
-                dev_tool.DEBUGP("[main] [exception] Trapped Commandline IndexError on Init")
+                self.LOG("[main] [exception] Trapped Commandline IndexError on Init")
                 pass
 
         #---- Show the Frame ----#
+        if PROFILE.has_key('ALPHA'):
+            self.SetTransparent(PROFILE['ALPHA'])
         if PROFILE['SET_WPOS'] and PROFILE.has_key('WPOS') and \
           isinstance(PROFILE['WPOS'], tuple) and len(PROFILE['WPOS']) == 2:
             self.SetPosition(PROFILE['WPOS'])
@@ -383,19 +380,6 @@ class MainWindow(wx.Frame):
     ### End Init ###
 
     ### Begin Function Definitions ###
-
-    #---- File Menu Functions ----#
-    def OnNew(self, evt):
-        """New File"""
-        self.nb.NewPage()
-        self.nb.GoCurrentPage()
-        self.UpdateToolBar()
-
-    def OnOpen(self, evt):
-        """Open File"""
-        self.DoOpen(evt)
-        self.UpdateToolBar()
-
     def DoOpen(self, evt, file_name=''):
         """ Do the work of opening a file and placing it
         in a new notebook page.
@@ -430,40 +414,63 @@ class MainWindow(wx.Frame):
             else:
                 pass
         else:
-            dev_tool.DEBUGP("[main_info] CMD Open File: " + file_name)
+            self.LOG("[main_info] CMD Open File: " + file_name)
             filename = util.GetFileName(file_name)
             dirname = util.GetPathName(file_name)
             self.nb.OpenPage(dirname, filename)
 
+    def LoadFileHistory(self, size):
+        """Loads file history from profile"""
+        file_key = "FILE"
+        i = size - 1 
+
+        while i >= 0:
+            key = file_key + str(i)
+            try:
+                self.filehistory.AddFileToHistory(PROFILE[key])
+            except KeyError: 
+                self.LOG("[main] [exception] Invalid Key on LoadFileHistory")
+                pass
+
+            i -= 1
+
+        return size - i
+
+    def OnNew(self, evt):
+        """New File"""
+        self.nb.NewPage()
+        self.nb.GoCurrentPage()
+        self.UpdateToolBar()
+
+    def OnOpen(self, evt):
+        """Open File"""
+        self.DoOpen(evt)
+        self.UpdateToolBar()
+
+    def OnFileHistory(self, evt):
+        """ Open a File from the File History """
+        fileNum = evt.GetId() - wx.ID_FILE1
+        file_handle = self.filehistory.GetHistoryFile(fileNum)
+
+        # Check if file still exists
+        if not os.path.exists(file_handle):
+            mdlg = wx.MessageDialog(self, "file: " + file_handle,
+                                          _("The file you selected could not "
+                                          "be found\n" 
+                                          "Perhaps its been moved or deleted"),
+                                     wx.OK | wx.ICON_WARNING)
+            mdlg.CenterOnParent()
+            mdlg.ShowModal()
+            mdlg.Destroy()
+            # Remove offending file from history
+            self.filehistory.RemoveFileFromHistory(fileNum)
+        else:
+            # Open File
+            self.DoOpen(evt, file_handle)
+
     def OnClosePage(self, evt):
         """Close a page"""
         self.nb.ClosePage()
-
-    def ModifySave(self):
-        """Called when document has been modified prompting
-        a message dialog asking if the user would like to save
-        the document before closing.
-
-        """
-        if self.nb.control.filename == "":
-            name = self.nb.GetPageText(self.nb.GetSelection()) #"This Document "
-        else:
-            name = self.nb.control.filename
-
-        dlg = wx.MessageDialog(self, 
-                                _("The file: \"%s\" has been modified since the last "
-                                  "save point.\n Would you like to save the changes?") % name, 
-                               _("Save Changes?"), 
-                               wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL)
-        result = dlg.ShowModal()
-        dlg.Destroy()
-
-        if result == wx.ID_YES:
-            self.OnSave(ID_SAVE)
-        else:
-            pass
-
-        return result
 
     def OnSave(self, evt):
         """Save"""
@@ -480,7 +487,10 @@ class MainWindow(wx.Frame):
                 dlg.ShowModal()
                 dlg.Destroy()
         else:
-            self.OnSaveAs(ID_SAVEAS)
+            ret_val = self.OnSaveAs(ID_SAVEAS)
+            if ret_val == wx.ID_OK:
+                self.filehistory.AddFileToHistory(os.path.join(self.nb.control.dirname, 
+                                                              ssself.nb.control.filename))
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt):
@@ -522,6 +532,7 @@ class MainWindow(wx.Frame):
             path = dlg.GetPath()
             profiler.WriteProfile(path)
             self.PushStatusText(_("Profile Saved as: %s") % profile, SB_INFO)
+            dlg.Destroy()
         else:
             pass
 
@@ -541,57 +552,25 @@ class MainWindow(wx.Frame):
             pass
 
         # Update editor to reflect loaded profile
-        if PROFILE['SYNTAX']:
-            self.nb.control.highlight = False
-            self.nb.control.SyntaxOnOff()
-        else:
-            self.nb.control.highlight = True
-            self.nb.control.SyntaxOnOff()
-
-        if PROFILE['WRAP']:
-            self.nb.control.WrapOnOff(True)
-        else:
-            self.nb.control.WrapOnOff(False)
-
-        if PROFILE['GUIDES']:
-            self.nb.control.IndentGuideOnOff(True)
-        else:
-            self.nb.control.IndentGuideOnOff(False)
-
-        if PROFILE['BRACKETHL']:
-            self.nb.control.ToggleBracketHL(True)
-        else:
-            self.nb.control.ToggleBracketHL(False)
-
-        if PROFILE['KWHELPER']:
-            self.nb.control.kwhelp = False
-            self.nb.control.KeyWordHelpOnOff()
-        else:
-            self.nb.control.kwhelp = True
-            self.nb.control.KeyWordHelpOnOff()
-
-        evt.Skip()
-
-    def LoadFileHistory(self, size):
-        """Loads file history from profile"""
-        file_key = "FILE"
-        i = size - 1 
-
-        while i >= 0:
-            key = file_key + str(i)
-            try:
-                self.filehistory.AddFileToHistory(PROFILE[key])
-            except KeyError: 
-                dev_tool.DEBUGP("[main] [exception] Invalid Key on LoadFileHistory")
-                pass
-
-            i -= 1
-
-        return size - i
+        # TODO this should update all controls in the notebook not just the top level one
+        self.nb.control.SyntaxOnOff(PROFILE['SYNTAX'])
+        self.nb.control.SetWrapMode(PROFILE['WRAP'])
+        self.nb.control.SetIndentationGuides(PROFILE['GUIDES'])
+        self.nb.control.ToggleBracketHL(PROFILE['BRACKETHL'])
+        self.nb.control.KeyWordHelpOnOff(PROFILE['KWHELPER'])
 
     def OnPrint(self, evt):
-        """Prints contents of current control to printer device"""
-        self.PreviewText()
+        """Handles printing related events"""
+        e_id = evt.GetId()
+        printer = ed_print.ED_Printer()
+        if e_id == ID_PRINT:
+           printer.Print(self.nb.control.GetText(), self.nb.control.filename)
+        elif e_id == ID_PRINT_PRE:
+           printer.Preview(self.nb.control.GetText(), self.nb.control.filename)
+        elif e_id == ID_PRINT_SU:
+           printer.PageSetup()
+        else:
+           evt.Skip()
 
     def OnExit(self, evt):
         """Exit"""
@@ -599,25 +578,15 @@ class MainWindow(wx.Frame):
         # the event again
         self.Unbind(wx.EVT_CLOSE)
 
-        # Save Window Size/Position for next launch
-        f_size = self.GetSize()
-        if wx.Platform == '__WXMAC__': #HACK workaround for possible bug in wxPython 2.8
-            PROFILE['WSIZE'] = (f_size[0], f_size[1] - 32)
-        else:
-            PROFILE['WSIZE'] = f_size
-        PROFILE['WPOS'] = self.GetPosition()
-        dev_tool.DEBUGP("[main_evt] [exit] Closing editor at pos=" + 
-                        str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
-
         # Cleanup Controls
         controls = self.nb.GetPageCount()
-        dev_tool.DEBUGP("[main_evt] [exit] Number of controls: " + str(controls))
+        self.LOG("[main_evt] [exit] Number of controls: " + str(controls))
 
         while controls:
             if controls <= 0:
                 self.Close(True)
 
-            dev_tool.DEBUGP("[main_evt] [exit] Requesting Page Close")
+            self.LOG("[main_evt] [exit] Requesting Page Close")
             result = self.nb.ClosePage()
             if result == wx.ID_CANCEL:
                 break
@@ -632,112 +601,44 @@ class MainWindow(wx.Frame):
                 self.Bind(wx.EVT_CLOSE,self.OnExit)
                 return
         except UnboundLocalError:
-            dev_tool.DEBUGP("[main_evt] [exit] [exception] Trapped UnboundLocalError OnExit")
+            self.LOG("[main_evt] [exit] [exception] Trapped UnboundLocalError OnExit")
             pass
 
-        # If we get to here we are exiting for sure so cleanup
-        # additional items and save the user settings
-
-        # Update profile loader
-        profiler.UpdateProfileLoader()
-
-        # Update File History in Profile
-        profiler.AddFileHistoryToProfile(self.filehistory)
-
+        ### If we get to here there is no turning back so cleanup ###
+        ### additional items and save the user settings
+        
+        # Save Window Size/Position for next launch
+        #HACK workaround for possible bug in wxPython 2.8
+        if wx.Platform == '__WXMAC__' and self.GetToolBar():
+            self.toolbar.Destroy()
+        PROFILE['WSIZE'] = self.GetSize()
+        PROFILE['WPOS'] = self.GetPosition()
+        self.LOG("[main_evt] [exit] Closing editor at pos=" + 
+                        str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
+        
         # Update profile
+        profiler.UpdateProfileLoader()
+        profiler.AddFileHistoryToProfile(self.filehistory)
         profiler.WriteProfile(PROFILE['MYPROFILE'])
 
         # Cleanup file history
         try:
             del self.filehistory
         except AttributeError:
-            dev_tool.DEBUGP("[main_evt] [exit] [exception] Trapped AttributeError OnExt")
+            self.LOG("[main_evt] [exit] [exception] Trapped AttributeError OnExt")
             pass
 
         # Finally close the application
-        self.Close(True)
-
-    def OnFileHistory(self, evt):
-        """ Open a File from the File History """
-        fileNum = evt.GetId() - wx.ID_FILE1
-        file_handle = self.filehistory.GetHistoryFile(fileNum)
-
-        # Check if file still exists
-        if not os.path.exists(file_handle):
-            mdlg = wx.MessageDialog(self, "file: " + file_handle,
-                                          _("The file you selected could not "
-                                          "be found\n" 
-                                          "Perhaps its been moved or deleted"),
-                                     wx.OK | wx.ICON_WARNING)
-            mdlg.CenterOnParent()
-            mdlg.ShowModal()
-            mdlg.Destroy()
-            # Remove offending file from history
-            self.filehistory.RemoveFileFromHistory(fileNum)
-        else:
-            # Open File
-            self.DoOpen(evt, file_handle)
+        self.LOG("[main_info] Exiting MainLoop...")
+        wx.Exit()
 
     #---- End File Menu Functions ----#
 
     #---- Edit Menu Functions ----#
-    def OnUndo(self, evt):
-        """Undo"""
-        self.nb.control.Undo()
-        self.UpdateToolBar()
-
-    def OnRedo(self, evt):
-        """Redo"""
-        self.nb.control.Redo()
-        self.UpdateToolBar()
-
-    def OnCut(self, evt):
-        """Cut"""
-        self.nb.control.Cut()
-        self.UpdateToolBar()
-
-    def OnCopy(self, evt):
-        """Copy"""
-        self.nb.control.Copy()
-        self.UpdateToolBar()
-
-    def OnPaste(self, evt):
-        """Paste"""
-        self.nb.control.Paste()
-        self.UpdateToolBar()
-
-    def OnSelectAll(self, evt):
-        """Select All"""
-        self.nb.control.SelectAll()
-        evt.Skip()
-
-    def OnShowFind(self, evt):
-        """Show a Find dialog"""
-        data = wx.FindReplaceData()
-        data.SetFlags(wx.FR_DOWN)
-        self.find_dlg = wx.FindReplaceDialog(self.nb, data, _("Find"), 
-                                             wx.FR_NOUPDOWN |
-                                             wx.FR_NOWHOLEWORD)	# TODO
-        self.find_dlg.data = data # save reference to data
-        self.find_dlg.CenterOnParent()
-        self.find_dlg.Show()
-
-    def OnShowFindReplace(self, evt):
-        """Show a find/replace dialog"""
-        data = wx.FindReplaceData()
-        data.SetFlags(wx.FR_DOWN)
-        self.find_dlg = wx.FindReplaceDialog(self.nb, data, _("Find/Replace"),
-                                             wx.FR_REPLACEDIALOG |
-                                             wx.FR_NOUPDOWN |
-                                             wx.FR_NOWHOLEWORD)		# TODO
-        self.find_dlg.data = data # save reference to data
-        self.find_dlg.CenterOnParent()
-        self.find_dlg.Show()
-
     def OnFind(self, evt):
         """Actually do the work of Finding text in a document"""
-        dlg = self.find_dlg
-
+        dlg = self.nb.FindService._find_dlg
+        dlg.data = self.nb.FindService._data
         # Set of events to map to identifiers
         e_map = { wx.wxEVT_COMMAND_FIND : "FIND",
                   wx.wxEVT_COMMAND_FIND_NEXT : "FIND_NEXT",
@@ -753,7 +654,7 @@ class MainWindow(wx.Frame):
             evtType = "**Unknown Event Type**"
 
         # Process Special search flags
-        eflags = self.find_dlg.data.GetFlags() - 1
+        eflags = dlg.data.GetFlags() - 1
         eflag_map = { wx.FR_MATCHCASE : "MATCH_CASE", 
                       wx.FR_WHOLEWORD : "WHOLE_WORD",
                       wx.FR_MATCHCASE + wx.FR_WHOLEWORD : "WORD_CASE"
@@ -775,10 +676,9 @@ class MainWindow(wx.Frame):
                 dlg.findstring = dlg.data.GetFindString().lower()
 
             loc = textstring.find(dlg.findstring, start)
-
             if loc == -1 and start != 0:
                 # string not found, start at beginning again
-                dev_tool.DEBUGP("[main_evt] [find] starting at top again")
+                self.LOG("[main_evt] [find] starting at top again")
                 start = 0
                 loc = textstring.find(dlg.findstring, start)
 
@@ -840,15 +740,11 @@ class MainWindow(wx.Frame):
         else:
             pass
 
-    def OnFindClose(self, evt):
-        """Destroy Find Dialog on cancel to avoid memory leaks"""
-        dev_tool.DEBUGP("[main_evt] Find Dialog Destroyed")
-        self.find_dlg.Destroy()
-        evt.Skip()
-
     def OnPreferences(self, evt):
         """Open the Preference Panel"""
-        dlg = prefdlg.PrefDlg(self)
+        # Import dialog if now since we need it
+        import prefdlg
+        dlg = prefdlg.PrefDlg(self, self.LOG)
         dlg.CenterOnParent()
         dlg.ShowModal()
         dlg.Destroy()
@@ -856,28 +752,14 @@ class MainWindow(wx.Frame):
     #---- End Edit Menu Functions ----#
 
     #---- View Menu Functions ----#
-    def OnZoom(self, evt):
-        """Zoom in or out on a document"""
-        mode = evt.GetId()
-        zoom_level = self.nb.control.DoZoom(mode)
-        return 0
-
-    def OnShowWS(self, evt):
-        """Toggle Whitespace Visibility"""
-        if PROFILE['SHOW_WS']:
-            self.nb.control.SetViewWhiteSpace(False)
-            PROFILE['SHOW_WS'] = False
-        else:
-            self.nb.control.SetViewWhiteSpace(True)
-            PROFILE['SHOW_WS'] = True
-
     def OnViewTb(self, evt):
         """Toggles visibility of toolbar"""
         if PROFILE['TOOLBAR'] and self.toolbar != None:
             self.toolbar.Destroy()
+            del self.toolbar
             PROFILE['TOOLBAR'] = False
         else:
-            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY, 16)
+            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY)
             self.SetToolBar(self.toolbar)
             PROFILE['TOOLBAR'] = True
             self.UpdateToolBar()
@@ -886,14 +768,6 @@ class MainWindow(wx.Frame):
     #---- End View Menu Functions ----#
 
     #---- Format Menu Functions ----#
-    def OnWrap(self, evt):
-        """Word Wrap"""
-        self.nb.control.WrapOnOff()
-        if self.nb.control.GetWrapMode():
-            self.PushStatusText("Word Wrap On", SB_INFO)
-        else:	
-            self.PushStatusText("Word Wrap Off", SB_INFO)
-
     def OnFont(self, evt):
         """Font"""
         #TODO this is a quick stubin finish me later
@@ -903,64 +777,24 @@ class MainWindow(wx.Frame):
 
         if result == wx.ID_OK:
             font = data.GetChosenFont()
-            self.nb.control.StyleSetFont(0, font)
+            self.nb.control.SetGlobalFont(self.nb.control.FONT_TAG_MONO, font.GetFaceName())
+            self.nb.control.UpdateAllStyles()
         dlg.Destroy()
 
     #---- End Format Menu Functions ----#
 
-    #---- Settings Menu Functions ----#
-    def OnSyntaxHL(self, evt):
-        """Turn Syntax Highlighting on and off"""
-        self.nb.control.SyntaxOnOff()
-        if self.nb.control.highlight:
-            self.PushStatusText(_("Syntax Highlighting On"), SB_INFO)
-        else:
-            self.PushStatusText(_("Syntax Highlighting Off"), SB_INFO)
-        return
+    #---- Tools Menu Functions ----#
+    def OnStyleEdit(self, evt):
+        """Opens the style editor and handles the setting of
+        the return data. Probably wont be used everytime so dont
+        import it till its needed.
 
-    def OnIndentGuides(self, evt):
-        """Turn Indentation Guides on and off"""
-        self.nb.control.IndentGuideOnOff()
-        if self.nb.control.GetIndentationGuides():
-            self.PushStatusText(_("Indentation Guides On"), SB_INFO)
-        else:
-            self.PushStatusText(_("Indentation Guides Off"), SB_INFO)
-        return
-
-    def OnHLBrackets(self, evt):
-        """Turns Bracket Highlighting on and off"""
-        self.nb.control.ToggleBracketHL()
-        if self.nb.control.brackethl:
-             self.PushStatusText(_("Bracket Highlighting On"), SB_INFO)
-        else:
-            self.PushStatusText(_("Bracket Highlighting Off"), SB_INFO)
-        return
-
-    def OnKeyWordHelp(self, evt):
-        """Turn KeyWordHelp On and Off"""
-        self.nb.control.KeyWordHelpOnOff()
-        if self.nb.control.kwhelp:
-            self.PushStatusText(_("Keyword Helper On"), SB_INFO)
-        else:
-            self.PushStatusText(_("Keyword Helper Off"), SB_INFO)
-        return
-
-    ### Language Menu Functions
-    def OnSetLexer(self, evt):
-        """Manualy Set Lexer from Menu Selection"""
-        lang = evt.GetId()
-        # Dont trap event if it has nothing to do with setting a lexer
-        if lang < 600 or lang > 699:
-            evt.Skip()
-            return 1
-
-        if lang in EXT_DICT:
-            self.nb.control.FindLexer(EXT_DICT[lang])
-        else:
-            self.nb.control.FindLexer("txt")
-        return 0
-
-    #---- End Settings Menu Functions ----#
+        """
+        import style_editor
+        dlg = style_editor.StyleEditor(self, log=self.LOG)
+        dlg.CenterOnParent()
+        dlg.ShowModal()
+        dlg.Destroy()
 
     #---- Help Menu Functions ----#
     def OnAbout(self, evt):
@@ -968,18 +802,32 @@ class MainWindow(wx.Frame):
         info = wx.AboutDialogInfo()
         year = time.localtime()
         desc = ["Editra is a programmers text editor.",
-                "Written in 100%% Python.\n",
+                "Written in 100%% Python.",
+                "Homepage: " + home_page + "\n",
                 "Platform Info: (python %s,%s)", 
                 "License: GPL v2 (see COPYING.txt for full license)"]
         desc = "\n".join(desc)
         py_version = sys.version.split()[0]
-        wx_info = ", ".join(wx.PlatformInfo[1:])
+        platform = list(wx.PlatformInfo[1:])
+        platform[0] += (" " + wx.VERSION_STRING)
+        wx_info = ", ".join(platform)
         info.SetCopyright("Copyright(C) %d Cody Precord" % year[0])
         info.SetName(prog_name.title())
         info.SetDescription(desc % (py_version, wx_info))
         info.SetVersion(version)
         about = wx.AboutBox(info)
         del about
+
+    def OnHelp(self, evt):
+        """Handles the majority of the help menu functions"""
+        import webbrowser
+        e_id = evt.GetId()
+        if e_id == ID_HOMEPAGE:
+            webbrowser.open(home_page, 1)
+        elif e_id == ID_CONTACT:
+            webbrowser.open(u'mailto:%s' % contact_mail)
+        else:
+            evt.Skip()
 
     #---- End Help Menu Functions ----#
 
@@ -989,108 +837,96 @@ class MainWindow(wx.Frame):
         in menus of dialogs such as open and saveas
 
         """
-        #TODO there are much more file types available since this was written
-        # Update ME Should request data from stc that in turn generates it
-        # from the syntax module thus elimating any future need to update this.
-        filetypes = [ "All Files (*.*)|*.*|", "Assembly Files (*.asm)|*.asm|", 
-                      "Batch Files (*.bat)|*.bat|", "C Files (*.c)|*.c|", 
-                      "CPP Files (*.cpp)|*.cpp|", "CSS Files (*.css)|*.css|",
-                      "Header Files (*.h)|*.h|", 
-                      "Html Files (*.htm *.html)|*.htm *.html|",
-                      "Java Files (*.java)|*.java|", "Makefiles | Makefile*|", 
-                      "Lisp Files (*.lisp) |*.lisp|", "Pascal Files (*.p)|*.p|", 
-                      "Perl Files (*.pl)|*.pl|", "PHP Files (*.php)|*.php|",
-                      "Python Files (*.py)|*.py|", "Ruby Files (*.rb)|*.rb|", 
-                      "Shell Scripts (*.sh)|*.sh *.csh *.ksh|", 
-                      "SQL Files (*.sql)|*.sql|", "TeX Files (*.tex)|*.tex|", 
-                      "Text Files (*.txt)|*.txt|", "Visual Basic (*.vb)|*.vb"
-                   ]
-
-        typestr = ''.join(filetypes)
+        filefilters = syntax.GenFileFilters()
+        typestr = ''.join(filefilters)
         return typestr
 
-    # Line / Column Indicator functions
+    def DispatchToControl(self, evt):
+        """Catches control events and passes them to the text control
+        as necessary.
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        e_type = evt.GetEventType()
+        menu_ids = syntax.SyntaxIds()
+        menu_ids.extend([ID_SHOW_EOL, ID_SHOW_WS, ID_INDENT_GUIDES, ID_SYNTAX,
+                         ID_KWHELPER, ID_WORD_WRAP, ID_BRACKETHL, ID_ZOOM_IN,
+                         ID_ZOOM_OUT, ID_ZOOM_NORMAL, ID_EOL_MAC, ID_EOL_UNIX,
+                         ID_EOL_WIN, ID_JOIN_LINES, ID_CUT_LINE, ID_COPY_LINE,
+                         ID_INDENT, ID_UNINDENT, ID_TRANSPOSE, ID_NEXT_MARK,
+                         ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM])
+        if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
+            # If event is from the toolbar manually send it to the control as
+            # the events from the toolbar do not propagate to the control.
+            self.nb.control.ControlDispatch(evt)
+            self.UpdateToolBar()
+        elif e_id in menu_ids:
+            self.nb.control.ControlDispatch(evt)
+        else:
+            evt.Skip()
+            return
+
     def OnKeyUp(self, evt):
         """ Update Line/Column indicator based on position """
         line, column = self.nb.control.GetPos()
         if line >= 0 and column >= 0:
             self.SetStatusText(_("Line: %d  Column: %d") % (line, column), SB_ROWCOL)
+            self.UpdateToolBar()
+
+    def OnMenuHighlight(self, evt):
+        """HACK for GTK, submenus dont seem to fire a EVT_MENU_OPEN"""
+        if evt.GetId() == ID_LEXER:
+            self.UpdateMenu(self.languagemenu)
         else:
-            pass
-        self.UpdateToolBar()
-        evt.Skip()
+            evt.Skip()
+
+    def BindLangMenu(self):
+        """Binds Language Menu Ids to event handler"""
+        for l_id in syntax.SyntaxIds():
+            self.Bind(wx.EVT_MENU, self.DispatchToControl, id=l_id)
+
+    def OnQuickFind(self, evt):
+        self._cmdbar.Show()
 
     # Menu Helper Functions
     #TODO this is fairly stupid, write a more general solution
-    def UpdateMenu(self, menu):
+    def UpdateMenu(self, evt):
         """ Update Status of a Given Menu """
-        menu = menu.GetMenu()
+        if evt.GetClassName() == "wxMenuEvent":
+            menu = evt.GetMenu()
+            # HACK MSW GetMenu returns None on submenu open events
+            if menu == None:
+                menu = self.languagemenu
+        else:
+            menu = evt
 
         if menu == self.languagemenu:
-            dev_tool.DEBUGP("[main_evt] Updating Settings/Lexer Menu")
-            lexer = self.nb.control.GetLexer()
-
-            if lexer == wx.stc.STC_LEX_CPP or lexer == wx.stc.STC_LEX_HTML:
-                file_ext = util.GetExtension(self.nb.control.filename).lower()
-            else:
-                file_ext = 0
-
+            self.LOG("[main_evt] Updating Settings/Lexer Menu")
+            lang_id = self.nb.control.lang_id
             for menu_item in menu.GetMenuItems():
                 item_id = menu_item.GetId()
                 if menu.IsChecked(item_id):
-                    menu.Check(item_id, 0)
-
-                if LANG_DICT[item_id] == lexer:
-                    if not file_ext:
-                        menu.Check(item_id, -1)
-                    elif file_ext == EXT_DICT[item_id]:
-                        menu.Check(item_id, -1)
-                else:
-                    pass
+                    menu.Check(item_id, False)
+                if item_id == lang_id or \
+                   (menu_item.GetLabel() == 'Plain Text' and lang_id == 0):
+                    menu.Check(item_id, True)
         elif menu == self.editmenu:
-            dev_tool.DEBUGP("[main_evt] Updating Edit Menu")
-            if self.nb.control.CanUndo():
-                menu.Enable(ID_UNDO, True)
-            else:
-                menu.Enable(ID_UNDO, False)
-
-            if self.nb.control.CanRedo():
-                menu.Enable(ID_REDO, True)
-            else:
-                menu.Enable(ID_REDO, False)
-
-            if self.nb.control.CanPaste():
-                menu.Enable(ID_PASTE, True)
-            else:
-                menu.Enable(ID_PASTE, False)
-
+            self.LOG("[main_evt] Updating Edit Menu")
+            menu.Enable(ID_UNDO, self.nb.control.CanUndo())
+            menu.Enable(ID_REDO, self.nb.control.CanRedo())
+            menu.Enable(ID_PASTE, self.nb.control.CanPaste())
             sel1, sel2 = self.nb.control.GetSelection()
-            if sel1 != sel2:
-                menu.Enable(ID_COPY, True)
-                menu.Enable(ID_CUT, True)
-            else:
-                menu.Enable(ID_COPY, False)
-                menu.Enable(ID_CUT, False)
+            menu.Enable(ID_COPY, sel1 != sel2)
+            menu.Enable(ID_CUT, sel1 != sel2)
         elif menu == self.settingsmenu:
-            dev_tool.DEBUGP("[menu_evt] Updating Settings Menu")
-            if self.nb.control.kwhelp:
-                menu.Check(ID_KWHELPER, -1)
-            else:
-                menu.Check(ID_KWHELPER, 0)
-
-            if self.nb.control.highlight:
-                menu.Check(ID_SYNTAX, -1)
-            else:
-                menu.Check(ID_SYNTAX, 0)
-
-            if self.nb.control.brackethl:
-                menu.Check(ID_BRACKETHL, -1)
-            else:
-                menu.Check(ID_BRACKETHL, 0)
-
+            self.LOG("[menu_evt] Updating Settings Menu")
+            menu.Check(ID_KWHELPER, self.nb.control.kwhelp)
+            menu.Check(ID_SYNTAX, self.nb.control.highlight)
+            menu.Check(ID_BRACKETHL, self.nb.control.brackethl)
         elif menu == self.viewmenu:
             zoom = self.nb.control.GetZoom()
-            dev_tool.DEBUGP("[menu_evt] Updating View Menu: zoom = " + str(zoom))
+            self.LOG("[menu_evt] Updating View Menu: zoom = " + str(zoom))
             if zoom == 0:
                 self.viewmenu.Enable(ID_ZOOM_NORMAL, False)
                 self.viewmenu.Enable(ID_ZOOM_IN, True)
@@ -1107,17 +943,18 @@ class MainWindow(wx.Frame):
                 self.viewmenu.Enable(ID_ZOOM_NORMAL, True)
                 self.viewmenu.Enable(ID_ZOOM_IN, True)
                 self.viewmenu.Enable(ID_ZOOM_OUT, True)
-
-            if self.nb.control.GetIndentationGuides():
-                menu.Check(ID_INDENT_GUIDES, -1)
-            else:
-                menu.Check(ID_INDENT_GUIDES, 0)
+            menu.Check(ID_SHOW_WS, bool(self.nb.control.GetViewWhiteSpace()))
+            menu.Check(ID_SHOW_EOL, bool(self.nb.control.GetViewEOL()))
+            menu.Check(ID_INDENT_GUIDES, bool(self.nb.control.GetIndentationGuides()))
+            menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
         elif menu == self.formatmenu:
-            dev_tool.DEBUGP("[menu_evt] Updating Format Menu")
-            if self.nb.control.GetWrapMode():
-                menu.Check(ID_WORD_WRAP, -1)
-            else:
-                menu.Check(ID_WORD_WRAP, 0)
+            self.LOG("[menu_evt] Updating Format Menu")
+            menu.Check(ID_WORD_WRAP, bool(self.nb.control.GetWrapMode()))
+        elif menu == self.lineformat:
+            self.LOG("[menu_evt] Updating EOL Mode Menu")
+            eol = self.nb.control.GetEOLModeId()
+            for id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
+                menu.Check(id, eol == id)
         else:
             pass
 
@@ -1128,34 +965,35 @@ class MainWindow(wx.Frame):
         # Skip the work if toolbar is invisible
         if(self.toolbar == None):
             return -1;
+        self.toolbar.EnableTool(ID_UNDO, self.nb.control.CanUndo())
+        self.toolbar.EnableTool(ID_REDO, self.nb.control.CanRedo())
+        self.toolbar.EnableTool(ID_PASTE, self.nb.control.CanPaste())
 
-        if self.nb.control.CanUndo():
-            self.toolbar.EnableTool(ID_UNDO, True)
-        else:
-            self.toolbar.EnableTool(ID_UNDO, False)
+    def ModifySave(self):
+        """Called when document has been modified prompting
+        a message dialog asking if the user would like to save
+        the document before closing.
 
-        if self.nb.control.CanRedo():
-            self.toolbar.EnableTool(ID_REDO, True)
+        """
+        if self.nb.control.filename == "":
+            name = self.nb.GetPageText(self.nb.GetSelection())
         else:
-            self.toolbar.EnableTool(ID_REDO, False)
+            name = self.nb.control.filename
 
-        if self.nb.control.CanPaste():
-            self.toolbar.EnableTool(ID_PASTE, True)
-        else:
-            self.toolbar.EnableTool(ID_PASTE, False)
+        dlg = wx.MessageDialog(self, 
+                                _("The file: \"%s\" has been modified since the last "
+                                  "save point.\n Would you like to save the changes?") % name, 
+                               _("Save Changes?"), 
+                               wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+        result = dlg.ShowModal()
+        dlg.Destroy()
+
+        if result == wx.ID_YES:
+            self.OnSave(ID_SAVE)
+
+        return result
     #---- End Misc Functions ----#
 
-    #HACK implment a more complete solution
-    def PreviewText(self):
-        """Print Preview and print function"""
-        prt = printout.PrintTable(self)
-        prt.SetHeader("FILE: " + self.nb.control.filename)
-        data = self.nb.control.GetText().split("\n")
-        prt.data = data
-        prt.Preview()
     ### End Function Definitions ###
 
 ### End Class Definition ####
-
-### End Script ###
-

@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -44,8 +44,6 @@ __revision__ = "$Id: $"
 import os
 import sys
 import wx
-import wx.html
-import wx.lib.wxpTag
 import ed_glob
 import dev_tool
 
@@ -54,48 +52,41 @@ _ = wx.GetTranslation
 
 
 #---- Drag And Drop File Support ----#
-class FileDropTarget(wx.FileDropTarget):
+class DropTarget(wx.FileDropTarget):
     """Impliments Drag and Drop Files Support for the editor"""
-    def __init__(self, control, frame):
+    def __init__(self, control, frame, log):
         """Initialize a Drop Target Object"""
         wx.FileDropTarget.__init__(self)
         self.control   = control # MainWindow Text Control
         self.window    = frame.frame
-        self.pathname  = ''
-        self.file_path = ''
-        self.filename  = ''
+        self.LOG       = log
 
-    def OnDropFiles(self, x_ord, y_ord, evt):
-        """Catches the drop file and passes it to open function if it is
-        a valid file type of file (i.e not a directory/binary file)
+    def OnDropFiles(self, x_ord, y_ord, filenames):
+        """Catches the drop file(s), validates, and passes them to the 
+        open function.
 
         """
-        #Get Drop File Path from drop event
-        self.file_path = evt[0]
-        self.filename = GetFileName(self.file_path)
-        self.pathname = GetPathName(self.file_path)
-        dev_tool.DEBUGP("[fdt_evt] File Dropped: " + self.file_path)
+        # Check file properties and make a "clean" list of file(s) to open
+        valid_files = list()
+        for fname in filenames:
+            self.LOG("[fdt_evt] File(s) Dropped: " + fname)
+            if (not os.path.exists(fname)) or (not os.path.isfile(fname)):
+                self.window.PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
+            else:
+                valid_files.append(fname)
 
-        # Check if file exists and is actually a file
-        if (not os.path.exists(self.file_path)) or (not os.path.isfile(self.file_path)):
-            self.window.PushStatusText(_("Invalid file: %s") % self.file_path, ed_glob.SB_INFO)
-        else:
-            self.OpenDropFile()
+        self.OpenDropFiles(valid_files)
 
         return
-        
-    def OpenDropFile(self):
-        """Opens dropped text file in a new page"""
-        if self.pathname == self.filename or self.pathname == "":
-            self.window.nb.OpenPage(self.pathname + GetPathChar(), 
-                                    self.filename)
-        else:
-            self.window.nb.OpenPage(self.pathname, self.filename)
 
-        #Update statusbar
-        self.window.PushStatusText(_("Opened file: %s") % self.file_path, ed_glob.SB_INFO)
-
-        return self.file_path
+    def OpenDropFiles(self, filenames):
+        """Opens dropped text file(s)"""
+        for fname in filenames:
+            pathname = GetPathName(fname)
+            the_file = GetFileName(fname)
+            self.window.nb.OpenPage(pathname, the_file)
+            self.window.PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
+        return
 
 #---- End FileDropTarget ----#
 
@@ -174,14 +165,13 @@ def ResolvAbsPath(rel_path):
 
     return apath + path_char + rpath
 
-def HasConfig():
-    """ Checks if the user has a config file
-    present or not. Returns True if config file
-    exists or False if it does not.
+def HasConfigDir(loc=""):
+    """ Checks if the user has a config directory and returns True 
+    if the config directory exists or False if it does not.
 
     """
     if os.path.exists(wx.GetHomeDir() + GetPathChar() + u"." + 
-                      ed_glob.prog_name + GetPathChar() + "profiles"):
+                      ed_glob.prog_name + GetPathChar() + loc):
         return True
     else:
         return False
@@ -226,17 +216,17 @@ def CreateConfigDir():
 
 def ResolvConfigDir(config_dir):
     """Checks for a user config directory and if it is not
-    found it then Resolves the absolute path of executables 
-    directory from the relative execution path. Then resolves 
-    the location of the specified directory as it relates to
-    the executable directory, and returns that path as a
+    found it then resolves the absolute path of the executables 
+    directory from the relative execution path. This is then used 
+    to find the location of the specified directory as it relates 
+    to the executable directory, and returns that path as a
     string.
 
     """
     user_config = ( wx.GetHomeDir() + GetPathChar() + "." +
                     ed_glob.prog_name + GetPathChar() + config_dir )
 
-    # First Check for existing config
+    # First Check for existing user config
     if os.path.exists(user_config):
         return user_config + GetPathChar()
 
@@ -272,9 +262,7 @@ def ResolvConfigDir(config_dir):
         elif pro_path == "":
             pro_path = os.getcwd()
             pieces = pro_path.split(path_char)
-            if pieces[-1] == ed_glob.prog_name or pieces[-1] == u"Editra":
-                pass
-            else:
+            if pieces[-1] not in [ed_glob.prog_name.lower(), ed_glob.prog_name]:
                 pro_path = path_char.join(pieces[:-1])
         else:
             pro_path = ResolvAbsPath(pro_path)
@@ -297,7 +285,7 @@ def ResolvConfigDir(config_dir):
 def GetResources(resource):
     """Returns a list of resource directories from a given toplevel config dir"""
     rec_dir = ResolvConfigDir(resource)
-    rec_lst = []
+    rec_lst = list()
     if not os.path.exists(rec_dir):
         return -1
     else:
@@ -307,6 +295,25 @@ def GetResources(resource):
                 rec_lst.append(rec.title())
 
         return rec_lst
+
+def GetResourceFiles(resource, trim=True):
+    """Gets a list of resource files from a directory and trims the
+    file extentions from the names if trim is set to True (default).
+
+    """
+    rec_dir = ResolvConfigDir(resource)
+    rec_list = list()
+    if not os.path.exists(rec_dir):
+        return -1
+    else:
+        recs = os.listdir(rec_dir)
+        for rec in recs:
+            if os.path.isfile(rec_dir + rec):
+                if trim:
+                    rec = rec.split(u".")[0]
+                rec_list.append(rec.title())
+        rec_list.sort()
+        return rec_list
 
 # String Manupulation/Conversion Utilities
 def StrToTuple(tu_str):

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: editra 0.0.85\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-25 23:52-0600\n"
+"POT-Creation-Date: 2007-02-26 05:20-0600\n"
 "PO-Revision-Date: 2007-01-24 05:12-600\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ENGLISH <staff@editra.org>\n"
@@ -15,120 +15,149 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../src/prefdlg.py:376
-#, python-format
-msgid ""
-"\n"
-"You are running version: %s"
-msgstr ""
-
-#: ../../src/ed_main.py:789
+#: ../../src/ed_main.py:699
 #, python-format
 msgid "'%s' Not Found in File"
 msgstr ""
 
-#: ../../src/ed_main.py:279
+#: ../../src/ed_main.py:252
 msgid "About"
 msgstr ""
 
-#: ../../src/ed_main.py:837
+#: ../../src/ed_main.py:747
 msgid "All Done"
 msgstr ""
 
-#: ../../src/prefdlg.py:304
+#: ../../src/prefdlg.py:383
 msgid "AntiAliasing"
 msgstr ""
 
-#: ../../src/prefdlg.py:337
+#: ../../src/prefdlg.py:420
 msgid "Appearance"
 msgstr ""
 
-#: ../../src/prefdlg.py:109
+#: ../../src/prefdlg.py:110
 msgid "Apply"
 msgstr ""
 
-#: ../../src/ed_main.py:269 ../../src/prefdlg.py:257
+#: ../../src/ed_main.py:237 ../../src/prefdlg.py:316
 msgid "Bracket Highlighting"
 msgstr ""
 
-#: ../../src/ed_main.py:937
-msgid "Bracket Highlighting Off"
-msgstr ""
-
-#: ../../src/ed_main.py:935
-msgid "Bracket Highlighting On"
-msgstr ""
-
-#: ../../src/prefdlg.py:107
+#: ../../src/prefdlg.py:109
 msgid "Cancel"
 msgstr ""
 
-#: ../../src/ed_main.py:260
+#: ../../src/ed_main.py:211
 msgid "Change Font Settings"
 msgstr ""
 
-#: ../../src/ed_main.py:405
+#: ../../src/ed_main.py:359
 msgid "Choose a File"
 msgstr ""
 
-#: ../../src/ed_main.py:490
+#: ../../src/ed_main.py:470
 msgid "Choose a Save Location"
 msgstr ""
 
-#: ../../src/ed_main.py:209
+#: ../../src/ed_main.py:154
 msgid "Close Current Page"
 msgstr ""
 
-#: ../../src/ed_main.py:209
+#: ../../src/ed_main.py:154
 msgid "Close Page"
 msgstr ""
 
-#: ../../src/prefdlg.py:282
+#: ../../src/prefdlg.py:354
 msgid "Code"
 msgstr ""
 
-#: ../../src/ed_main.py:268
+#: ../../src/ed_main.py:236
 msgid "Color Highlight Code Syntax"
 msgstr ""
 
-#: ../../src/ed_main.py:227 ../../src/ed_toolbar.py:139
+#: ../../src/prefdlg.py:330
+msgid "Color Scheme"
+msgstr ""
+
+#: ../../src/ed_main.py:163
+msgid "Configure Printer"
+msgstr ""
+
+#: ../../src/ed_main.py:174 ../../src/ed_toolbar.py:165
 msgid "Copy"
 msgstr ""
 
-#: ../../src/ed_main.py:227 ../../src/ed_toolbar.py:140
+#: ../../src/ed_main.py:184
+msgid "Copy Current Line"
+msgstr ""
+
+#: ../../src/ed_main.py:183
+msgid "Copy Line"
+msgstr ""
+
+#: ../../src/ed_main.py:174 ../../src/ed_toolbar.py:166
 msgid "Copy Selected Text to Clipboard"
 msgstr ""
 
-#: ../../src/ed_main.py:226 ../../src/ed_toolbar.py:141
+#: ../../src/ed_main.py:173 ../../src/ed_toolbar.py:167
 msgid "Cut"
 msgstr ""
 
-#: ../../src/ed_main.py:226 ../../src/ed_toolbar.py:142
+#: ../../src/ed_main.py:182
+msgid "Cut Current Line"
+msgstr ""
+
+#: ../../src/ed_main.py:181
+msgid "Cut Line"
+msgstr ""
+
+#: ../../src/ed_main.py:173 ../../src/ed_toolbar.py:168
 msgid "Cut Selected Text from File"
 msgstr ""
 
-#: ../../src/ed_main.py:477 ../../src/ed_main.py:503
+#: ../../src/ed_main.py:231 ../../src/prefdlg.py:369
+msgid "EOL Mode"
+msgstr ""
+
+#: ../../src/ed_main.py:454 ../../src/ed_main.py:483
 #, python-format
 msgid "ERROR: Failed to save %s"
 msgstr ""
 
-#: ../../src/ed_main.py:284
+#: ../../src/ed_main.py:261
 msgid "Edit"
 msgstr ""
 
-#: ../../src/ed_main.py:238
+#: ../../src/ed_main.py:194
 msgid "Edit Preferences / Settings"
 msgstr ""
 
-#: ../../src/ed_main.py:220
+#: ../../src/ed_main.py:249
+msgid "Edit the way syntax is highlighted"
+msgstr ""
+
+#: ../../src/prefdlg.py:268
+msgid "Editor Mode: "
+msgstr ""
+
+#: ../../src/ed_main.py:256
+msgid "Email Project Staff Members"
+msgstr ""
+
+#: ../../src/ed_main.py:232
+msgid "End of line character formatting"
+msgstr ""
+
+#: ../../src/ed_main.py:167
 msgid "Exit"
 msgstr ""
 
-#: ../../src/ed_main.py:220
+#: ../../src/ed_main.py:167
 msgid "Exit the Program"
 msgstr ""
 
-#: ../../src/ed_main.py:478 ../../src/ed_main.py:498
+#: ../../src/ed_main.py:455 ../../src/ed_main.py:478
 #, python-format
 msgid ""
 "Failed to save file: %s\n"
@@ -137,128 +166,145 @@ msgid ""
 "%d"
 msgstr ""
 
-#: ../../src/prefdlg.py:256
+#: ../../src/prefdlg.py:315
 msgid "Features"
 msgstr ""
 
-#: ../../src/ed_main.py:283
+#: ../../src/ed_main.py:260
 msgid "File"
 msgstr ""
 
-#: ../../src/prefdlg.py:328
+#: ../../src/prefdlg.py:411
 msgid "File History Depth"
 msgstr ""
 
-#: ../../src/ed_main.py:234 ../../src/ed_main.py:719
-#: ../../src/ed_toolbar.py:146
+#: ../../src/ed_main.py:190 ../../src/ed_main.py:620
+#: ../../src/ed_toolbar.py:172
 msgid "Find"
 msgstr ""
 
-#: ../../src/ed_main.py:234 ../../src/ed_toolbar.py:146
+#: ../../src/ed_main.py:190 ../../src/ed_toolbar.py:172
 msgid "Find Text"
 msgstr ""
 
-#: ../../src/ed_main.py:236 ../../src/ed_toolbar.py:148
+#: ../../src/ed_main.py:192 ../../src/ed_toolbar.py:174
 msgid "Find and Replace Text"
 msgstr ""
 
-#: ../../src/ed_main.py:235 ../../src/ed_main.py:730
-#: ../../src/ed_toolbar.py:147
+#: ../../src/ed_main.py:191 ../../src/ed_main.py:637
+#: ../../src/ed_toolbar.py:173
 msgid "Find/Replace"
 msgstr ""
 
-#: ../../src/ed_main.py:260
+#: ../../src/ed_main.py:211
 msgid "Font"
 msgstr ""
 
-#: ../../src/ed_main.py:286 ../../src/prefdlg.py:289
+#: ../../src/ed_main.py:263 ../../src/prefdlg.py:361
 msgid "Format"
 msgstr ""
 
-#: ../../src/ed_main.py:288
+#: ../../src/ed_main.py:223 ../../src/ed_main.py:226 ../../src/ed_main.py:229
+#, python-format
+msgid "Format all EOL characters to %s Mode"
+msgstr ""
+
+#: ../../src/ed_main.py:266
 msgid "Help"
 msgstr ""
 
-#: ../../src/ed_main.py:270
+#: ../../src/ed_main.py:238
 msgid "Highlight Brackets/Braces"
 msgstr ""
 
-#: ../../src/prefdlg.py:339
+#: ../../src/prefdlg.py:426
+msgid "Icon Size"
+msgstr ""
+
+#: ../../src/prefdlg.py:422
 msgid "Icon Theme"
 msgstr ""
 
-#: ../../src/ed_main.py:249 ../../src/prefdlg.py:261
+#: ../../src/ed_main.py:213
+msgid "Indent Lines"
+msgstr ""
+
+#: ../../src/ed_main.py:214
+msgid "Indent the selected lines"
+msgstr ""
+
+#: ../../src/ed_main.py:204 ../../src/prefdlg.py:320
 msgid "Indentation Guides"
 msgstr ""
 
-#: ../../src/ed_main.py:928
-msgid "Indentation Guides Off"
-msgstr ""
-
-#: ../../src/ed_main.py:926
-msgid "Indentation Guides On"
-msgstr ""
-
-#: ../../src/util.py:81
+#: ../../src/util.py:73
 #, python-format
 msgid "Invalid file: %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:420
+#: ../../src/prefdlg.py:553
 msgid "Item"
 msgstr ""
 
-#: ../../src/ed_main.py:271 ../../src/prefdlg.py:259
+#: ../../src/ed_main.py:185
+msgid "Join Line(s)"
+msgstr ""
+
+#: ../../src/ed_main.py:186
+msgid "Join the Selected Lines"
+msgstr ""
+
+#: ../../src/ed_main.py:239 ../../src/prefdlg.py:318
 msgid "Keyword Helper"
 msgstr ""
 
-#: ../../src/ed_main.py:946
-msgid "Keyword Helper Off"
-msgstr ""
-
-#: ../../src/ed_main.py:944
-msgid "Keyword Helper On"
-msgstr ""
-
-#: ../../src/prefdlg.py:225
+#: ../../src/prefdlg.py:279
 msgid "Language: "
 msgstr ""
 
-#: ../../src/ed_main.py:274
+#: ../../src/ed_main.py:243
 msgid "Lexers"
 msgstr ""
 
-#: ../../src/ed_main.py:1018
+#: ../../src/ed_main.py:890
 #, python-format
 msgid "Line: %d  Column: %d"
 msgstr ""
 
-#: ../../src/ed_main.py:216
+#: ../../src/ed_main.py:161
 msgid "Load Profile"
 msgstr ""
 
-#: ../../src/ed_main.py:216 ../../src/ed_main.py:531
+#: ../../src/ed_main.py:161 ../../src/ed_main.py:512
 msgid "Load a Custom Profile"
 msgstr ""
 
-#: ../../src/ed_main.py:539
+#: ../../src/ed_main.py:520
 #, python-format
 msgid "Loaded Profile: %s"
 msgstr ""
 
-#: ../../src/ed_main.py:275
+#: ../../src/prefdlg.py:294
+msgid "Locale Settings"
+msgstr ""
+
+#: ../../src/ed_main.py:222 ../../src/ed_main.py:223 ../../src/prefdlg.py:371
+msgid "Macintosh (\\r)"
+msgstr ""
+
+#: ../../src/ed_main.py:245
 msgid "Manually Set a Lexer/Syntax"
 msgstr ""
 
-#: ../../src/prefdlg.py:303 ../../src/prefdlg.py:369
+#: ../../src/prefdlg.py:382 ../../src/prefdlg.py:475
 msgid "Misc"
 msgstr ""
 
-#: ../../src/ed_main.py:202 ../../src/ed_toolbar.py:129
+#: ../../src/ed_main.py:147 ../../src/ed_toolbar.py:155
 msgid "New"
 msgstr ""
 
-#: ../../src/ed_main.py:788
+#: ../../src/ed_main.py:698
 msgid "Not Found"
 msgstr ""
 
@@ -266,255 +312,318 @@ msgstr ""
 msgid "Ok"
 msgstr ""
 
-#: ../../src/ed_main.py:203 ../../src/ed_toolbar.py:130
+#: ../../src/ed_main.py:148 ../../src/ed_toolbar.py:156
 msgid "Open"
 msgstr ""
 
-#: ../../src/ed_main.py:206
+#: ../../src/ed_main.py:151
 msgid "Open Recent"
 msgstr ""
 
-#: ../../src/util.py:96
+#: ../../src/util.py:87
 #, python-format
 msgid "Opened file: %s"
 msgstr ""
 
-#: ../../src/ed_main.py:228 ../../src/ed_toolbar.py:143
+#: ../../src/ed_main.py:163
+msgid "Page Setup"
+msgstr ""
+
+#: ../../src/ed_main.py:175 ../../src/ed_toolbar.py:169
 msgid "Paste"
 msgstr ""
 
-#: ../../src/ed_main.py:229 ../../src/ed_toolbar.py:144
+#: ../../src/ed_main.py:176 ../../src/ed_toolbar.py:170
 msgid "Paste Text from Clipboard to File"
 msgstr ""
 
-#: ../../src/ed_main.py:238 ../../src/prefdlg.py:93
+#: ../../src/ed_main.py:194 ../../src/prefdlg.py:93
 msgid "Preferences"
 msgstr ""
 
-#: ../../src/ed_main.py:218 ../../src/ed_toolbar.py:133
+#: ../../src/ed_main.py:164
+msgid "Preview Printout"
+msgstr ""
+
+#: ../../src/ed_main.py:165 ../../src/ed_toolbar.py:159
 msgid "Print"
 msgstr ""
 
-#: ../../src/ed_main.py:218 ../../src/ed_toolbar.py:134
+#: ../../src/ed_main.py:165 ../../src/ed_toolbar.py:160
 msgid "Print Current File"
 msgstr ""
 
-#: ../../src/ed_main.py:517 ../../src/ed_main.py:532
+#: ../../src/ed_main.py:164
+msgid "Print Preview"
+msgstr ""
+
+#: ../../src/ed_main.py:497 ../../src/ed_main.py:513
 msgid "Profile"
-msgstr ""
-
-#: ../../src/ed_main.py:525
-#, python-format
-msgid "Profile Saved as: %s"
-msgstr ""
-
-#: ../../src/prefdlg.py:249
-msgid "Profile Viewer"
-msgstr ""
-
-#: ../../src/ed_main.py:272
-msgid "Provides a Contextual Help Menu Listing Standard Keywords/Functions"
-msgstr ""
-
-#: ../../src/ed_main.py:207
-msgid "Recently Opened Files"
-msgstr ""
-
-#: ../../src/ed_main.py:224 ../../src/ed_toolbar.py:137
-msgid "Redo"
-msgstr ""
-
-#: ../../src/ed_main.py:224 ../../src/ed_toolbar.py:137
-msgid "Redo Last Undo"
-msgstr ""
-
-#: ../../src/prefdlg.py:358
-msgid "Remember Window Position on Exit"
-msgstr ""
-
-#: ../../src/prefdlg.py:355
-msgid "Remember Window Size on Exit"
-msgstr ""
-
-#: ../../src/ed_main.py:837
-msgid "Replace All Finished"
-msgstr ""
-
-#: ../../src/ed_main.py:211 ../../src/ed_toolbar.py:131
-msgid "Save"
-msgstr ""
-
-#: ../../src/ed_main.py:212
-msgid "Save As"
-msgstr ""
-
-#: ../../src/ed_main.py:457
-msgid "Save Changes?"
-msgstr ""
-
-#: ../../src/ed_main.py:211 ../../src/ed_toolbar.py:132
-msgid "Save Current File"
-msgstr ""
-
-#: ../../src/ed_main.py:215
-msgid "Save Current Settings to a New Profile"
-msgstr ""
-
-#: ../../src/ed_main.py:479 ../../src/ed_main.py:499
-msgid "Save Error"
-msgstr ""
-
-#: ../../src/ed_main.py:214
-msgid "Save Profile"
 msgstr ""
 
 #: ../../src/ed_main.py:505
 #, python-format
+msgid "Profile Saved as: %s"
+msgstr ""
+
+#: ../../src/prefdlg.py:308
+msgid "Profile Viewer"
+msgstr ""
+
+#: ../../src/ed_main.py:255
+msgid "Project Contact"
+msgstr ""
+
+#: ../../src/ed_main.py:253
+msgid "Project Homepage"
+msgstr ""
+
+#: ../../src/ed_main.py:240
+msgid "Provides a Contextual Help Menu Listing Standard Keywords/Functions"
+msgstr ""
+
+#: ../../src/ed_search.py:117
+msgid "Recent Searches"
+msgstr ""
+
+#: ../../src/ed_main.py:152
+msgid "Recently Opened Files"
+msgstr ""
+
+#: ../../src/ed_main.py:171 ../../src/ed_toolbar.py:163
+msgid "Redo"
+msgstr ""
+
+#: ../../src/ed_main.py:171 ../../src/ed_toolbar.py:163
+msgid "Redo Last Undo"
+msgstr ""
+
+#: ../../src/prefdlg.py:461
+msgid "Remember Window Position on Exit"
+msgstr ""
+
+#: ../../src/prefdlg.py:458
+msgid "Remember Window Size on Exit"
+msgstr ""
+
+#: ../../src/ed_main.py:747
+msgid "Replace All Finished"
+msgstr ""
+
+#: ../../src/ed_main.py:156 ../../src/ed_toolbar.py:157
+msgid "Save"
+msgstr ""
+
+#: ../../src/ed_main.py:157
+msgid "Save As"
+msgstr ""
+
+#: ../../src/ed_main.py:1009
+msgid "Save Changes?"
+msgstr ""
+
+#: ../../src/ed_main.py:156 ../../src/ed_toolbar.py:158
+msgid "Save Current File"
+msgstr ""
+
+#: ../../src/ed_main.py:160
+msgid "Save Current Settings to a New Profile"
+msgstr ""
+
+#: ../../src/ed_main.py:456 ../../src/ed_main.py:479
+msgid "Save Error"
+msgstr ""
+
+#: ../../src/ed_main.py:159
+msgid "Save Profile"
+msgstr ""
+
+#: ../../src/ed_main.py:485
+#, python-format
 msgid "Saved File As: %s"
 msgstr ""
 
-#: ../../src/ed_main.py:475
+#: ../../src/ed_main.py:452
 #, python-format
 msgid "Saved File: %s"
 msgstr ""
 
-#: ../../src/ed_main.py:231
+#: ../../src/ed_main.py:178
 msgid "Select All"
 msgstr ""
 
-#: ../../src/ed_main.py:232
+#: ../../src/ed_main.py:179
 msgid "Select All Text in Document"
 msgstr ""
 
-#: ../../src/ed_main.py:287 ../../src/prefdlg.py:327
+#: ../../src/ed_main.py:264 ../../src/prefdlg.py:410
 msgid "Settings"
 msgstr ""
 
-#: ../../src/ed_main.py:250
+#: ../../src/ed_main.py:201 ../../src/prefdlg.py:385
+msgid "Show EOL Markers"
+msgstr ""
+
+#: ../../src/ed_main.py:205
 msgid "Show Indentation Guides"
 msgstr ""
 
-#: ../../src/ed_main.py:253
+#: ../../src/ed_main.py:208
 msgid "Show Toolbar"
 msgstr ""
 
-#: ../../src/ed_main.py:245 ../../src/prefdlg.py:306
+#: ../../src/ed_main.py:202 ../../src/prefdlg.py:387
 msgid "Show Whitespace"
 msgstr ""
 
-#: ../../src/ed_main.py:246
+#: ../../src/ed_main.py:203
 msgid "Show Whitespace Markers"
 msgstr ""
 
-#: ../../src/ed_main.py:202 ../../src/ed_toolbar.py:129
+#: ../../src/ed_main.py:147 ../../src/ed_toolbar.py:155
 msgid "Start a New File"
 msgstr ""
 
-#: ../../src/ed_main.py:154 ../../src/ed_main.py:156 ../../src/ed_main.py:158
-#: ../../src/ed_main.py:160 ../../src/ed_main.py:162 ../../src/ed_main.py:165
-#: ../../src/ed_main.py:166 ../../src/ed_main.py:168 ../../src/ed_main.py:170
-#: ../../src/ed_main.py:173 ../../src/ed_main.py:175 ../../src/ed_main.py:177
-#: ../../src/ed_main.py:180 ../../src/ed_main.py:181 ../../src/ed_main.py:184
-#: ../../src/ed_main.py:185 ../../src/ed_main.py:187 ../../src/ed_main.py:190
-#: ../../src/ed_main.py:191 ../../src/ed_main.py:194 ../../src/ed_main.py:195
-#: ../../src/ed_main.py:198
+#: ../../src/prefdlg.py:291
+msgid "Startup Settings"
+msgstr ""
+
+#: ../../src/ed_main.py:248
+msgid "Style Editor"
+msgstr ""
+
+#: ../../src/syntax/syntax.py:167
 #, python-format
 msgid "Switch Lexer to %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:267
+#: ../../src/prefdlg.py:326
 msgid "Syntax"
 msgstr ""
 
-#: ../../src/ed_main.py:267 ../../src/prefdlg.py:268
+#: ../../src/ed_main.py:235 ../../src/prefdlg.py:327
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: ../../src/ed_main.py:919
-msgid "Syntax Highlighting Off"
-msgstr ""
-
-#: ../../src/ed_main.py:917
-msgid "Syntax Highlighting On"
-msgstr ""
-
-#: ../../src/prefdlg.py:290
+#: ../../src/prefdlg.py:362
 msgid "Tab Width"
 msgstr ""
 
-#: ../../src/prefdlg.py:320
+#: ../../src/prefdlg.py:403
 msgid "Text"
 msgstr ""
 
-#: ../../src/ed_main.py:669
+#: ../../src/ed_main.py:429
 msgid ""
 "The file you selected could not be found\n"
 "Perhaps its been moved or deleted"
 msgstr ""
 
-#: ../../src/ed_main.py:455
+#: ../../src/ed_main.py:1007
 #, python-format
 msgid ""
 "The file: \"%s\" has been modified since the last save point.\n"
 " Would you like to save the changes?"
 msgstr ""
 
-#: ../../src/ed_main.py:252
+#: ../../src/ed_main.py:207
 msgid "Toolbar"
 msgstr ""
 
-#: ../../src/ed_main.py:223 ../../src/ed_toolbar.py:136
+#: ../../src/ed_main.py:265
+msgid "Tools"
+msgstr ""
+
+#: ../../src/prefdlg.py:441
+msgid "Transparency"
+msgstr ""
+
+#: ../../src/ed_main.py:187
+msgid "Transpose Line"
+msgstr ""
+
+#: ../../src/ed_main.py:188
+msgid "Transpose the currentline with the previous one"
+msgstr ""
+
+#: ../../src/ed_main.py:170 ../../src/ed_toolbar.py:162
 msgid "Undo"
 msgstr ""
 
-#: ../../src/ed_main.py:223 ../../src/ed_toolbar.py:136
+#: ../../src/ed_main.py:170 ../../src/ed_toolbar.py:162
 msgid "Undo Last Action"
 msgstr ""
 
-#: ../../src/prefdlg.py:384
+#: ../../src/ed_main.py:215
+msgid "Unindent Lines"
+msgstr ""
+
+#: ../../src/ed_main.py:216
+msgid "Unindent the selected lines"
+msgstr ""
+
+#: ../../src/ed_main.py:225 ../../src/ed_main.py:226 ../../src/prefdlg.py:371
+msgid "Unix (\\n)"
+msgstr ""
+
+#: ../../src/prefdlg.py:492
 msgid "Update"
 msgstr ""
 
-#: ../../src/prefdlg.py:375
+#: ../../src/prefdlg.py:481
 msgid "Update Status"
 msgstr ""
 
-#: ../../src/prefdlg.py:349
+#: ../../src/prefdlg.py:452
 msgid "Use Metal Style (OS X Only)"
 msgstr ""
 
-#: ../../src/prefdlg.py:308
+#: ../../src/prefdlg.py:389
 msgid "Use Tabs Instead of Whitespaces"
 msgstr ""
 
-#: ../../src/prefdlg.py:421
+#: ../../src/prefdlg.py:554
 msgid "Value"
 msgstr ""
 
-#: ../../src/ed_main.py:285
+#: ../../src/ed_main.py:262
 msgid "View"
 msgstr ""
 
-#: ../../src/ed_main.py:516
+#: ../../src/ed_main.py:254
+#, python-format
+msgid "Visit the project homepage %s"
+msgstr ""
+
+#: ../../src/ed_main.py:496
 msgid "Where to Save Profile?"
 msgstr ""
 
-#: ../../src/ed_main.py:258 ../../src/prefdlg.py:297
+#: ../../src/ed_main.py:228 ../../src/ed_main.py:229 ../../src/prefdlg.py:371
+msgid "Windows (\\r\\n)"
+msgstr ""
+
+#: ../../src/ed_main.py:218 ../../src/prefdlg.py:376
 msgid "Word Wrap"
 msgstr ""
 
-#: ../../src/ed_main.py:259
+#: ../../src/ed_main.py:219
 msgid "Wrap Text Horizontally"
 msgstr ""
 
-#: ../../src/ed_main.py:243
+#: ../../src/prefdlg.py:482
+#, python-format
+msgid "You are running version: %s"
+msgstr ""
+
+#: ../../src/ed_main.py:199
 msgid "Zoom Default"
 msgstr ""
 
-#: ../../src/ed_main.py:242
+#: ../../src/ed_main.py:198
 msgid "Zoom In"
 msgstr ""
 
-#: ../../src/ed_main.py:241
+#: ../../src/ed_main.py:197
 msgid "Zoom Out"
 msgstr ""

@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                          #
 #    cprecord@editra.org                                                      #
 #                                                                             #
-#    This program is free software; you can redistribute it and#or modify     #
+#    Editra is free software; you can redistribute it and#or modify           #
 #    it under the terms of the GNU General Public License as published by     #
 #    the Free Software Foundation; either version 2 of the License, or        #
 #    (at your option) any later version.                                      #
 #                                                                             #
-#    This program is distributed in the hope that it will be useful,          #
+#    Editra is distributed in the hope that it will be useful,                #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
 #    GNU General Public License for more details.                             #
@@ -102,12 +102,12 @@ syntax_items = [ ('STC_H_DEFAULT', 'default_style'),
                  ('STC_H_ASPPAT', 'array_style'),
                  ('STC_H_ATTRIBUTE', 'keyword2_style'),
                  ('STC_H_ATTRIBUTEUNKNOWN', 'error_style'),
-         #        ('STC_H_CDATA', 'operator_style'), # Style ME
+                 ('STC_H_CDATA', 'default_style'), # Style ME
                  ('STC_H_COMMENT', 'comment_style'),
                  ('STC_H_DOUBLESTRING', 'string_style'),
-             #    ('STC_H_ENTITY', 'scalar_style'), # Style ME
+                 ('STC_H_ENTITY', 'default_style'), # Style ME
                  ('STC_H_NUMBER', 'number_style'),
-            #     ('STC_H_OTHER', 'scalar_style'),
+                 ('STC_H_OTHER', 'default_style'),  # Style Me
                  ('STC_H_QUESTION', 'scalar_style'),
                  ('STC_H_SCRIPT', 'funct_style'), # STYLE ME
             #     ('STC_H_SGML_1ST_PARAM', 'array_style'), # STYLE ME

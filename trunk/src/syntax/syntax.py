@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                          #
 #    cprecord@editra.org                                                      #
 #                                                                             #
-#    This program is free software; you can redistribute it and#or modify     #
+#    Editra is free software; you can redistribute it and#or modify           #
 #    it under the terms of the GNU General Public License as published by     #
 #    the Free Software Foundation; either version 2 of the License, or        #
 #    (at your option) any later version.                                      #
 #                                                                             #
-#    This program is distributed in the hope that it will be useful,          #
+#    Editra is distributed in the hope that it will be useful,                #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
 #    GNU General Public License for more details.                             #
@@ -60,6 +60,7 @@ __revision__ = "$Id: Exp $"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
+import wx
 import sys
 import synglob
 
@@ -77,6 +78,7 @@ KEYWORDS = 0
 LEXER    = 1
 SYNSPEC  = 2
 PROPERTIES = 3
+LANGUAGE = 4
 
 # Dynamically loaded modules are put here to keep them accessable to all text
 # controls that access this module, so that they dont need to be reloaded.
@@ -102,7 +104,6 @@ def LoadModule(modname):
     if modname == None:
         return False
     if IsModLoaded(modname):
-       print modname + " Has already been loaded"
        pass
     else:
         try:
@@ -131,6 +132,8 @@ def SyntaxData(langstr):
         lex_cfg = synglob.EXT_REG['txt']
 
     syn_data[LEXER] = lex_cfg[LEXER_ID]
+    if lex_cfg[LANG_ID] == synglob.ID_LANG_TXT:
+        syn_data[LANGUAGE] = lex_cfg[LANG_ID]
 
     # Check if module is loaded and load if necessary
     if not LoadModule(lex_cfg[MODULE]):
@@ -145,5 +148,81 @@ def SyntaxData(langstr):
     syn_data[SYNSPEC] = syntax_spec
     props = mod.Properties(lex_cfg[LANG_ID])
     syn_data[PROPERTIES] = props
+    syn_data[LANGUAGE] = lex_cfg[LANG_ID]
 
     return syn_data
+
+def GenLexerMenu():
+    """Generates a menu of available syntax configurations"""
+    lex_menu = wx.Menu()
+    
+    f_types = dict()
+    for key in synglob.EXT_REG:
+        f_types[synglob.EXT_REG[key][DESC_STR]] = synglob.EXT_REG[key][LANG_ID]
+    f_order = list(f_types)
+    f_order.sort()
+
+    for lang in f_order:
+        lex_menu.Append(f_types[lang], lang, 
+                         _("Switch Lexer to %s") % lang, wx.ITEM_CHECK)
+
+    return lex_menu
+
+def GenFileFilters():
+    """Generates a list of file filters"""
+    # Build dictionary of File types and associated extensions
+    f_dict = dict()
+    for key in synglob.EXT_REG:
+        ftype = synglob.EXT_REG[key][DESC_STR]
+        if f_dict.has_key(ftype):
+            f_dict[ftype].append(key)
+        else:
+            f_dict[ftype] = [key]
+
+    # Convert extention list into a formated string
+    for key in f_dict:
+        f_dict[key].sort()
+        f_dict[key] = u";*.".join(f_dict[key])
+        f_dict[key] = u";*." + f_dict[key]
+
+    # Build the final list of properly formated strings
+    filters = list()
+    for key in f_dict:
+        tmp = u" (%s)|%s|" % (f_dict[key][1:], f_dict[key][1:])
+        filters.append(key + tmp)
+    filters.sort()
+    filters.insert(0, u"All Files (*.*)|*.*|")
+    filters[-1] = filters[-1][:-1] # IMPORTANT trim last '|' from item in list
+    return filters
+
+def GetLexerList():
+    """Gets a list of unique file lexer configurations available""" 
+    f_types = dict()
+    for key in synglob.EXT_REG:
+        f_types[synglob.EXT_REG[key][DESC_STR]] = synglob.EXT_REG[key][LANG_ID]
+    f_order = list(f_types)
+    f_order.sort()
+    return f_order
+
+def SyntaxIds():
+    """Gets a list of all Syntax Ids and returns it"""
+    s_glob = dir(synglob)
+    s_ids = list()
+    for item in s_glob:
+        if len(item) > 2 and item[0:2] == "ID":
+            s_ids.append(item)
+    
+    # Fetch actual values
+    ret_ids = list()
+    for id in s_ids:
+        ret_ids.append(getattr(synglob, id))
+
+    return ret_ids
+
+def GetExtFromId(id):
+    """Takes a language ID and fetches an appropriate file extension string"""
+    if synglob.EXT_DICT.has_key(id):
+        return synglob.EXT_DICT[id]
+    else:
+        return "txt"
+

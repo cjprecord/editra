@@ -2,12 +2,12 @@
 #  Copyright (C) 2007 Cody Precord                                         #
 #  cprecord@editra.org                                                     #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -40,7 +40,9 @@ __revision__ = "$Id Exp $"
 # Dependancies
 
 import wx
+import glob
 import ed_glob
+import ed_search
 import util
 
 _ = wx.GetTranslation
@@ -53,7 +55,7 @@ TOOL_SET = {}
 
 class ED_ToolBar(wx.ToolBar):
     """Toolbar wrapper class"""
-    def __init__(self, parent, tb_id, icon_size, style=0):
+    def __init__(self, parent, tb_id, icon_size=0, style=0):
         """Initializes the toolbar"""
         self.platform = wx.Platform
         if self.platform == '__WXMSW__':
@@ -64,15 +66,17 @@ class ED_ToolBar(wx.ToolBar):
                                 wx.NO_BORDER  | wx.TB_FLAT | 
                                 wx.TB_DOCKABLE | wx.TB_TEXT)
         else:
-            #icon_size = 32 #TODO Mac icons are suggested to be 32x32 with the native toolbar
-            wx.ToolBar.__init__(self, parent, tb_id, size=(icon_size,-1), 
+            wx.ToolBar.__init__(self, parent, tb_id,
                                 style=wx.TB_FLAT | wx.TB_NODIVIDER | wx.NO_BORDER)
-        self.tool_size = wx.Size(icon_size, icon_size)
+        self.tool_loc = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
+                        ed_glob.PROFILE['ICONS'] + util.GetPathChar() + u"toolbar" + \
+                        util.GetPathChar()
+        self.tool_size = self.GetToolSize()
         self.SetToolBitmapSize(self.tool_size)
         self.CreateDefaultIcons(self.tool_size)
         self.PopulateTools()
 
-	#-- Bind Events --#
+        #-- Bind Events --#
 
         #-- End Bind Events --#
         self.Realize()
@@ -81,26 +85,44 @@ class ED_ToolBar(wx.ToolBar):
 
     #---- Function Definitions----#
 
+    def GetToolSize(self):
+        """Gets the size of the icons to be used in the toolbar and
+        returns that size as a wxSize object.
+
+        """
+        icons = glob.glob(self.tool_loc + "*.png")
+        if len(icons) < 1:
+            return wx.Size(16, 16)
+        else:
+            icon =  wx.Bitmap(icons[0], wx.BITMAP_TYPE_PNG)
+            i_size = icon.GetSize()
+            if ed_glob.PROFILE['ICON_SZ'][0] < i_size[0]:
+                i_size = ed_glob.PROFILE['ICON_SZ']
+            return i_size
+
     #TODO this is just a quick hack to make things work for now
     def CreateDefaultIcons(self, tool_size):
         """Creates the Icons to be used in the toolbar"""
-        # TODO check this path to see if it is valid before trying to use it
-        stock_dir = (ed_glob.CONFIG['PIXMAPS_DIR'] + u"toolbar" + util.GetPathChar() +
-                     ed_glob.PROFILE['ICONS'] + util.GetPathChar())
-        # wx 2.8 uses a native mac toolbar and the builtin wx icons look like complete
-        # garbage in it so provide some custom pixmaps instead.
-        if wx.Platform == '__WXMAC__' or ed_glob['ICONS'].lower() != u"stock":
-            TOOL_SET["new"]   = wx.Bitmap(stock_dir + "new.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["open"]  = wx.Bitmap(stock_dir + "open.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["save"]  = wx.Bitmap(stock_dir + "save.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["print"] = wx.Bitmap(stock_dir + "print.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["undo"]  = wx.Bitmap(stock_dir + "undo.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["redo"]  = wx.Bitmap(stock_dir + "redo.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["copy"]  = wx.Bitmap(stock_dir + "copy.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["cut"]   = wx.Bitmap(stock_dir + "cut.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["paste"] = wx.Bitmap(stock_dir + "paste.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["find"]  = wx.Bitmap(stock_dir + "find.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["findr"] = wx.Bitmap(stock_dir + "findr.png", wx.BITMAP_TYPE_PNG)
+        if wx.Platform in ['__WXMAC__', '__WXMSW__'] or ed_glob.PROFILE['ICONS'].lower() != u"stock":
+            # TODO check this path to see if it is valid before trying to use it
+            stock_dir = self.tool_loc
+
+            TOOL_SET["new"]   = wx.Image(stock_dir + "new.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["open"]  = wx.Image(stock_dir + "open.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["save"]  = wx.Image(stock_dir + "save.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["print"] = wx.Image(stock_dir + "print.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["undo"]  = wx.Image(stock_dir + "undo.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["redo"]  = wx.Image(stock_dir + "redo.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["copy"]  = wx.Image(stock_dir + "copy.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["cut"]   = wx.Image(stock_dir + "cut.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["paste"] = wx.Image(stock_dir + "paste.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["find"]  = wx.Image(stock_dir + "find.png", wx.BITMAP_TYPE_PNG)
+            TOOL_SET["findr"] = wx.Image(stock_dir + "findr.png", wx.BITMAP_TYPE_PNG)
+      #      if TOOL_SET["new"].GetSize()[0] != ed_glob.PROFILE['ICON_SZ'][0]:
+      #          for tool in TOOL_SET:
+      #              TOOL_SET[tool] = TOOL_SET[tool].Rescale(tool_size[0], tool_size[1])
+            for tool in TOOL_SET:
+                TOOL_SET[tool] = wx.BitmapFromImage(TOOL_SET[tool])
         else:
             TOOL_SET["new"]   = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, tool_size)
             TOOL_SET["open"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tool_size)
@@ -148,7 +170,4 @@ class ED_ToolBar(wx.ToolBar):
                            _("Find and Replace Text"))
         self.AddSeparator()
 
-    #---- Event Handlers ----#
-#    def OnEnableTools(self, evt):
-#        """Enables and disables tools based on their availability"""
 	
