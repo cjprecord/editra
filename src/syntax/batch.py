@@ -97,6 +97,10 @@ syntax_items = [ ('STC_BAT_DEFAULT', "default_style"),
                  ('STC_BAT_LABEL', "class_style"),
                  ('STC_BAT_OPERATOR', "operator_style"),
                  ('STC_BAT_WORD', "keyword_style") ]
+
+#---- Extra Properties ----#
+fold = ("fold", "1")
+
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -110,6 +114,9 @@ def SyntaxSpec(type=0):
     SYNTAX = syntax_items
     return SYNTAX
 
+def Properties(type=0):
+    """Returns a list of extra properties to set"""
+    return [fold]
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

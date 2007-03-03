@@ -387,7 +387,7 @@ syntax_items = [ ('STC_HPHP_DEFAULT', 'default_style'),
                  ('STC_HPHP_COMMENTLINE', 'comment_style'),
                  ('STC_HPHP_COMPLEX_VARIABLE', 'pre_style'), #STYLE ME
                  ('STC_HPHP_HSTRING', 'string_style'),
-                 ('STC_HPHP_HSTRIN_VARIABLE', 'scalar_style'), # STYLE ME
+                 ('STC_HPHP_HSTRING_VARIABLE', 'scalar_style'), # STYLE ME
                  ('STC_HPHP_NUMBER', 'number_style'),
                  ('STC_HPHP_OPERATOR', 'operator_style'),
                  ('STC_HPHP_SIMPLESTRING', 'string_style'),

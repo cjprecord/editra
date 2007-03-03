@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -52,32 +52,37 @@ import re
 import wx			 # wxPython Modules
 from ed_glob import CONFIG, version, prog_name
 import ed_stc 			 # Editra Styled Text Control
-import dev_tool			 # Editra Debug tools
-import extern.FlatNotebook as FNB
-# import wx.lib.flatnotebook as FNB # Included as part of wxpython 2.8
+import ed_search
+import wx.lib.flatnotebook as FNB
+
 #---- Class Globals ----#
+# HACK till proper artprovider can be written
 IMG = {}
+
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 class ED_Pages(FNB.FlatNotebook):
     """ Editra tabbed pages class """
-    def __init__(self, parent, id_num):
+    def __init__(self, parent, id_num, log):
         """Initialize a notebook with a blank text control in it"""
         FNB.FlatNotebook.__init__(self, parent, id_num, 
                                   style=FNB.FNB_FANCY_TABS | 
                                         FNB.FNB_X_ON_TAB | 
                                         FNB.FNB_SMART_TABS |
                                         FNB.FNB_BACKGROUND_GRADIENT
+                                        # FNB.FNB_HIDE_ON_SINGLE_TAB
                             )
 
         # Notebook attributes
+        self.LOG = log
+        self.FindService = ed_search.TextFinder(self, self.GetCurrentCtrl)
         self.pg_num = -1              # Track page numbers for ID creation
         self.control = ed_stc.EDSTC   # Current Control page
         self.frame = parent           # MainWindow
         self.tab_close = -1           # Tab icon
 
         # Set Additional Style Parameters
-        self.SetNonActiveTabTextColour(wx.ColourRGB(666666))
+        self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
 
         # Notebook Events
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
@@ -98,13 +103,24 @@ class ED_Pages(FNB.FlatNotebook):
         """Adds a page to the notebook"""
         FNB.FlatNotebook.AddPage(self, control, title, imageId=self.tab_close)
 
+    def GetCurrentCtrl(self):
+        """Returns the control of the currently selected
+        page in the notebook.
+
+        """
+        if hasattr(self, 'control'):
+            return self.control
+        else:
+            return None
+
     def NewPage(self):
         """Create a new notebook page with a blank text control"""
         self.pg_num += 1
         # Create a new blank page and put it in the notebook
         self.control = ed_stc.EDSTC(self, self.pg_num,
-                                    style=wx.TE_MULTILINE|wx.TE_RICH2)
-        dev_tool.DEBUGP("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
+                                   style=wx.TE_MULTILINE|wx.TE_RICH2, 
+                                   log = self.LOG)
+        self.LOG("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
         self.SetPageImage(self.GetSelection(), IMG['TXT'])
 
@@ -126,7 +142,8 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Create control to place text on
         self.control = ed_stc.EDSTC(self, self.pg_num,
-                                    style = wx.TE_MULTILINE|wx.TE_RICH2)
+                                    style = wx.TE_MULTILINE|wx.TE_RICH2, 
+                                    log = self.LOG)
 
         # Pass directory and file name info to control object to save reference
         self.control.dirname = path
@@ -137,9 +154,7 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Open file and put text into the control
         if os.path.exists(path2file):
-            file_handle = open(path2file,'r')
-            self.control.SetText(file_handle.read())
-            file_handle.close()
+            self.control.LoadFile(path2file)
         else:
             # Set Tab title for blank new file
             self.SetPageText(self.pg_num, self.control.filename)
@@ -147,7 +162,7 @@ class ED_Pages(FNB.FlatNotebook):
         # Add file to history list
         self.frame.filehistory.AddFileToHistory(path2file)
 
-        dev_tool.DEBUGP("[nb_evt] Opened Page: ID = " + str(self.GetSelection()))
+        self.LOG("[nb_evt] Opened Page: ID = " + str(self.GetSelection()))
 
         # Set style
         self.control.FindLexer()
@@ -160,7 +175,7 @@ class ED_Pages(FNB.FlatNotebook):
         ftype = ftype[-1].upper()
         pg_num = self.GetSelection()
         if ftype in IMG:
-            dev_tool.DEBUGP("[nb_info] Set Page Image to: " + ftype)
+            self.LOG("[nb_info] Set Page Image to: " + ftype)
             self.SetPageImage(pg_num, IMG[ftype])
         else:
             self.SetPageImage(pg_num, IMG['TXT'])
@@ -171,16 +186,14 @@ class ED_Pages(FNB.FlatNotebook):
     def GoCurrentPage(self):
         """Move Focus to Currently Selected Page"""
         current_page = self.GetSelection()
-
         if current_page < 0:
             return current_page
 
-        dev_tool.DEBUGP("[nb_info] Current Page = " + str(current_page))
+        self.LOG("[nb_info] Current Page = " + str(current_page))
 
         control = self.GetPage(current_page)
         control.SetFocus()
         self.control = control
-
         return current_page
 
     #---- Event Handlers ----#
@@ -207,7 +220,7 @@ class ED_Pages(FNB.FlatNotebook):
 
     def OnPageChanging(self, evt):
         """Page changing event handler."""
-        dev_tool.DEBUGP("[nb_evt] Page Changed to " + str(evt.GetSelection())) 
+        self.LOG("[nb_evt] Page Changed to " + str(evt.GetSelection())) 
         evt.Skip()
 
     def OnPageChanged(self, evt):
@@ -231,21 +244,21 @@ class ED_Pages(FNB.FlatNotebook):
 
         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
 
-        dev_tool.DEBUGP("[nb_evt] Control Changing from Page: " + str(evt.GetOldSelection()) + 
-                        " to Page: " + str(evt.GetSelection()) + "\n" +
-                        "[nb_info] It has file named: " + self.control.filename + "\n" +
-                        "[nb_info] In DIR: " + self.control.dirname)
+        self.LOG("[nb_evt] Control Changing from Page: " + str(evt.GetOldSelection()) + 
+                " to Page: " + str(evt.GetSelection()) + "\n" +
+                "[nb_info] It has file named: " + self.control.filename + "\n" +
+                "[nb_info] In DIR: " + self.control.dirname)
         self.frame.UpdateToolBar()
         evt.Skip()
 
     def OnPageClosing(self, evt):
         """Checks page status to flag warnings before closing"""
-        dev_tool.DEBUGP("[nb_evt] Closing Page: #" + str(self.GetSelection()))
+        self.LOG("[nb_evt] Closing Page: #" + str(self.GetSelection()))
         evt.Skip()
 
     def OnPageClosed(self, evt):
         """Handles Paged Closed Event"""
-        dev_tool.DEBUGP("[nb_evt] Closed Page: #" + str(self.GetSelection()))
+        self.LOG("[nb_evt] Closed Page: #" + str(self.GetSelection()))
         evt.Skip()
     #---- End Event Handlers ----#
 
@@ -285,6 +298,7 @@ class ED_Pages(FNB.FlatNotebook):
         IMG["PY"] = wx.Bitmap(img_dir + "python.png", wx.BITMAP_TYPE_PNG)
         IMG["RB"] = wx.Bitmap(img_dir + "ruby.png", wx.BITMAP_TYPE_PNG)
         IMG["SH"] = wx.Bitmap(img_dir + "shell.png", wx.BITMAP_TYPE_PNG)
+        IMG["TCL"] = wx.Bitmap(img_dir + "tcl.png", wx.BITMAP_TYPE_PNG)
         IMG["TEX"] = wx.Bitmap(img_dir + "tex.png", wx.BITMAP_TYPE_PNG)
         IMG["TXT"] = wx.Bitmap(img_dir + "text.png", wx.BITMAP_TYPE_PNG)
 
@@ -304,6 +318,7 @@ class ED_Pages(FNB.FlatNotebook):
         IMG["PY"] = il.Add(IMG["PY"])
         IMG["RB"] = il.Add(IMG["RB"])
         IMG["SH"] = il.Add(IMG["SH"])
+        IMG["TCL"] = il.Add(IMG["TCL"])
         IMG["TEX"] = il.Add(IMG["TEX"])
         IMG["TXT"] = il.Add(IMG["TXT"])
 
@@ -312,7 +327,7 @@ class ED_Pages(FNB.FlatNotebook):
         IMG["KSH"] = IMG["SH"]
 
         self.SetImageList(il)
-        dev_tool.DEBUGP("[nb_info] Created Image List: Size = " + str(self.GetImageList().GetImageCount()))
+        self.LOG("[nb_info] Created Image List: Size = " + str(self.GetImageList().GetImageCount()))
         return 0
 
     def UpdatePageImage(self):
@@ -320,11 +335,28 @@ class ED_Pages(FNB.FlatNotebook):
         pg_num = self.GetSelection()
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
-        dev_tool.DEBUGP("[nb_info] Updating Page Image: Page " + str(pg_num))
-        if ftype in IMG:
+        self.LOG("[nb_info] Updating Page Image: Page " + str(pg_num))
+        if IMG.has_key(ftype):
             self.SetPageImage(pg_num, IMG[ftype])
         else:
             self.SetPageImage(pg_num, IMG["TXT"])
+
+    def GetTextControls(self):
+        """Gets all the currently oppend text controls"""
+        children = self.GetChildren()
+        controls = list()
+        for child in children:
+            if hasattr(child, '__name__') and child.__name__ == u"EditraTextCtrl":
+                controls.append(child)
+        return controls
+
+    def UpdateTextControls(self):
+        """Updates all text controls to use any new settings that have
+        been changed since initialization.
+
+        """
+        for control in self.GetTextControls():
+            control.UpdateAllStyles()
 
 #---- End Function Definitions ----#
 

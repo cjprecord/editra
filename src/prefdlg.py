@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                         #
 #    cprecord@editra.org                                                     #
 #                                                                            #
-#    This program is free software; you can redistribute it and#or modify    #
+#    Editra is free software; you can redistribute it and#or modify          #
 #    it under the terms of the GNU General Public License as published by    #
 #    the Free Software Foundation; either version 2 of the License, or       #
 #    (at your option) any later version.                                     #
 #                                                                            #
-#    This program is distributed in the hope that it will be useful,         #
+#    Editra is distributed in the hope that it will be useful,               #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of          #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           #
 #    GNU General Public License for more details.                            #
@@ -64,26 +64,26 @@ import sys
 import ed_glob
 import ed_i18n
 import util
-import dev_tool
 
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 
 #----------------------------------------------------------------------------#
-# ID's
+# ID's For Validator
 ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL, 
             ed_glob.ID_KWHELPER, ed_glob.ID_SYNTAX, ed_glob.ID_INDENT_GUIDES,
             ed_glob.ID_WORD_WRAP, ed_glob.ID_PREF_TABS, ed_glob.ID_PREF_TABW,
             ed_glob.ID_SHOW_WS, ed_glob.ID_PREF_METAL, ed_glob.ID_PREF_FHIST,
-            ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON ]
+            ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON,
+            ed_glob.ID_PREF_MODE, ed_glob.ID_SHOW_EOL, ed_glob.ID_PREF_SYNTHEME,
+            ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE]
 
 #----------------------------------------------------------------------------#
 
 class PrefDlg(wx.Dialog):
     """Preference Dialog Class"""
-    def __init__(self, parent):
+    def __init__(self, parent, log):
         """Initialize the Preference Dialog"""
-        dev_tool.DEBUGP("[prefdlg_info] Preference Dialog Initializing...")
         pre = wx.PreDialog()
 
         if wx.Platform == '__WXMAC__' and ed_glob.PROFILE.has_key('METAL'):
@@ -94,43 +94,46 @@ class PrefDlg(wx.Dialog):
         self.PostCreate(pre)
 
         # Attributes
+        self.LOG = log
         self.act_ids = []
         self.act_objs = []
 
+        self.LOG("[prefdlg_info] Preference Dialog Initializing...")
         # Create Notebook
         sizer = wx.BoxSizer(wx.VERTICAL)
-        self.ntb = PrefPages(self, -1)
+        self.ntb = PrefPages(self, wx.ID_ANY, log)
         sizer.Add(self.ntb, 0, wx.EXPAND)
 
         # Create the buttons
         b_sizer = wx.BoxSizer(wx.HORIZONTAL)
         cancel_b = wx.Button(self, wx.ID_CANCEL, _("Cancel"))
-        cancel_b.SetDefault()
         apply_b = wx.Button(self, wx.ID_APPLY, _("Apply"))
-        apply_b.SetDefault()
         ok_b = wx.Button(self, wx.ID_OK, _("Ok"))
         ok_b.SetDefault()
         b_sizer.Add(cancel_b, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
         b_sizer.Add(apply_b, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         b_sizer.Add(ok_b, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-
         sizer.Add(b_sizer, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
         sizer.Fit(self)
 
+        # Styling
+        if ed_glob.PROFILE.has_key('ALPHA'):
+            self.SetTransparent(ed_glob.PROFILE['ALPHA'])
+
         # Event Handlers
         self.Bind(wx.EVT_BUTTON, self.OnOk, ok_b)
         self.Bind(wx.EVT_BUTTON, self.OnApply, apply_b)
-        dev_tool.DEBUGP("[prefdlg_info] Preference Dialog Created")
+        self.LOG("[prefdlg_info] Preference Dialog Created")
 
     #---- End Init ----#
 
     #---- Function Definitions ----#
     def OnOk(self, evt):
         """Checks all pages for changes and applys them"""
-        dev_tool.DEBUGP("[pref_evt] Clicked Ok, Applying Changes")
+        self.LOG("[pref_evt] Clicked Ok, Applying Changes")
         pages = self.ntb.GetChildren()
         # Gather all values that are valid
         for page in pages:
@@ -139,12 +142,12 @@ class PrefDlg(wx.Dialog):
             self.ValidateItems(items, objects)
         if len(self.act_ids) > 0:     
             self.UpdateProfile()
-            dev_tool.DEBUGP("[pref_info] All changes have been applied")
+            self.LOG("[pref_info] All changes have been applied")
         evt.Skip()
         
     def OnApply(self, evt):
         """Applys preference changes"""
-        dev_tool.DEBUGP("[pref_evt] Clicked Apply, Applying changes on selected page.")
+        self.LOG("[pref_evt] Clicked Apply, Applying changes on selected page.")
         page = self.ntb.GetSelection()
         page = self.ntb.GetPage(page)
         objects = page.GetChildren()
@@ -152,7 +155,7 @@ class PrefDlg(wx.Dialog):
         self.ValidateItems(items, objects)
         if len(self.act_ids) > 0:
             self.UpdateProfile()
-            dev_tool.DEBUGP("[pref_info] Changes Applied")
+            self.LOG("[pref_info] Changes Applied")
         evt.Skip()
 
     def ValidateItems(self, item_lst, obj_lst):
@@ -182,7 +185,14 @@ class PrefDlg(wx.Dialog):
         """
         for obj in self.act_objs:
             value = obj.GetValue()
+            ob_id = obj.GetId()
             # TODO This is does not do any value validation
+            # If a string value as been set to an empty string ignore it and
+            # keep the old value.
+            if value == "":
+                continue
+            if ob_id == ed_glob.ID_PREF_ICONSZ:
+                value = (int(value), int(value))
             prof_key = ed_glob.ID_2_PROF[self.act_ids[self.act_objs.index(obj)]]
             ed_glob.PROFILE[prof_key] = value
 
@@ -190,17 +200,24 @@ class PrefDlg(wx.Dialog):
     #---- End Function Definitions ----#
 
 #----------------------------------------------------------------------------#
+# Class Globals
+PREF_WIDTH = 550
+PREF_HEIGHT = 300
 
 class PrefPages(wx.Notebook):
     """Notebook to hold pages for Preference Dialog"""
-    def __init__(self, parent, id_num):
+    def __init__(self, parent, id_num, log):
         """Initializes the notebook"""
-        wx.Notebook.__init__(self, parent, id_num, size = (500, 300),
+        wx.Notebook.__init__(self, parent, id_num, size = (PREF_WIDTH, PREF_HEIGHT),
                              style = wx.NB_TOP
                             )
 
+        # Attributes
+        self.LOG = log
+
         # Events
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.Bind(wx.EVT_CHOICE, self.OnChoice, id=ed_glob.ID_PREF_SYNTHEME)
 
         # Initialize Preference Pages
         self.GeneralPage()
@@ -213,6 +230,30 @@ class PrefPages(wx.Notebook):
     #---- End Init ----#
 
     #---- Function Definitions ----#
+    def OnChoice(self, evt):
+        """Handles Choice Control Actions"""
+        evt_id = evt.GetId()
+        evt_obj = evt.GetEventObject()
+        if evt_id == ed_glob.ID_PREF_SYNTHEME:
+            main_win = self.GetGrandParent()
+            ed_glob.PROFILE['SYNTHEME'] = evt_obj.GetValue()
+            main_win.nb.UpdateTextControls()
+        else:
+            evt.Skip()
+
+    def OnSetTransparent(self, evt):
+        """Sets the transparency of the editor while the slider
+        is being dragged.
+
+        """
+        if evt.GetId() == ed_glob.ID_TRANSPARENCY:
+            grandpappy = self.GetGrandParent() # Main Window
+            pappy = self.GetParent()
+            trans = evt.GetEventObject()
+            value = trans.GetValue()
+            grandpappy.SetTransparent(value)
+            pappy.SetTransparent(value)
+            ed_glob.PROFILE['ALPHA'] = value
 
     def GeneralPage(self):
         """Creates the general preferences page"""
@@ -222,18 +263,36 @@ class PrefPages(wx.Notebook):
                      "to be restarted before taking effect."]
 
         info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt))
+        
+        # Startup Settings
+        mode_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Editor Mode: "))
+        mode_c = ExChoice(gen_panel, ed_glob.ID_PREF_MODE,
+                          choices=['CODE', 'DEBUG', 'GUI_DEBUG'],
+                          default=ed_glob.PROFILE['MODE'])
+        mode_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        mode_sizer.Add((15,0))
+        mode_sizer.Add(mode_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        mode_sizer.Add((5,0))
+        mode_sizer.Add(mode_c, 0, wx.ALIGN_CENTER_VERTICAL)
+
+        # Locale Settings
         lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Language: "), pos=wx.Point(50,130))
         lang_c = ed_i18n.LangListCombo(gen_panel, ed_glob.ID_PREF_LANG, ed_glob.PROFILE['LANG'])
-#ExChoice(gen_panel, id=ed_glob.ID_PREF_LANG,
-#                           choices=util.GetResources(u"locale"), 
-#                           default=ed_glob.PROFILE['LANG'].title())
         lang_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        lang_sizer.Add((15,0))
         lang_sizer.Add(lang_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        lang_sizer.Add((5,0))
         lang_sizer.Add(lang_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
+        # Build Page
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(info, 0, wx.CENTER)
-        sizer.Add(lang_sizer, 80, wx.BOTTOM)
+        sizer.Add((15,15))
+        sizer.Add(self.SectionHead(gen_panel, _("Startup Settings")))
+        sizer.Add(mode_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
+        sizer.Add((15,45))
+        sizer.Add(self.SectionHead(gen_panel, _("Locale Settings")))
+        sizer.Add(lang_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
         gen_panel.SetSizer(sizer)
 
         self.AddPage(gen_panel, u"General")
@@ -243,7 +302,7 @@ class PrefPages(wx.Notebook):
         prof_panel = wx.Panel(self, wx.ID_ANY)
         # Bind size evt to this panel
         prof_panel.Bind(wx.EVT_SIZE, self.OnSize)
-        # Add Profile Editor to Panel
+        # Add Profile Viewer to Panel
         self.list = ProfileListCtrl(prof_panel)
 
         self.AddPage(prof_panel, _("Profile Viewer"))
@@ -253,7 +312,7 @@ class PrefPages(wx.Notebook):
         code_panel = wx.Panel(self, wx.ID_ANY)
 
         # Feature Settings
-        feat_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Features") + u":")
+        feat_lbl = self.SectionHead(code_panel, _("Features"))
         br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, _("Bracket Highlighting"))
         br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
         cc_cb = wx.CheckBox(code_panel, ed_glob.ID_KWHELPER, _("Keyword Helper"))
@@ -264,19 +323,32 @@ class PrefPages(wx.Notebook):
         feat_sizer.AddMany([br_cb, cc_cb, ind_cb]) 
 
         # Syntax Settings
-        syn_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Syntax") + u":")
+        syn_lbl = self.SectionHead(code_panel, _("Syntax"))
         syn_cb = wx.CheckBox(code_panel, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
         syn_cb.SetValue(ed_glob.PROFILE['SYNTAX'])
 
-        syn_sizer = wx.BoxSizer(wx.VERTICAL)
-        syn_sizer.AddMany([syn_cb]) 
+        syn_theme_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Color Scheme") + u": ")
+        syn_theme = ExChoice(code_panel, ed_glob.ID_PREF_SYNTHEME,
+                              choices=util.GetResourceFiles(u'styles'),
+                              default=str(ed_glob.PROFILE['SYNTHEME']))
+
+        # Build Section
+        syn_sizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        syn_sizer1.Add(syn_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        syn_sizer1.Add((80,0))
+        syn_sizer1.Add(syn_theme_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        syn_sizer1.Add(syn_theme, 0, wx.RIGHT)
+        syn_sizer2 = wx.BoxSizer(wx.VERTICAL)
+        syn_sizer2.Add(syn_sizer1, 0, wx.RIGHT) 
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add(feat_lbl, 0, wx.ALL, 10)
-        border.Add(feat_sizer, 0, wx.LEFT, 20)
-        border.Add(syn_lbl, 0, wx.ALL, 10)
-        border.Add(syn_sizer, 0, wx.LEFT, 20)
+        border.Add((15, 15))
+        border.Add(feat_lbl, 0, wx.LEFT)
+        border.Add(feat_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
+        border.Add((15, 15))
+        border.Add(syn_lbl, 0, wx.LEFT)
+        border.Add(syn_sizer2, 0, wx.BOTTOM | wx.LEFT, 30)
         code_panel.SetSizer(border)
 
         self.AddPage(code_panel, _("Code"))
@@ -286,65 +358,96 @@ class PrefPages(wx.Notebook):
         text_panel = wx.Panel(self, wx.ID_ANY)
 
         # Format Section Label
-        format_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("Format") + u":")
+        format_lbl = self.SectionHead(text_panel,  _("Format"))
         tw_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("Tab Width") + u":  ")
         tw_cb = ExChoice(text_panel, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
-                          default=ed_glob.PROFILE['TABWIDTH'])
+                          default=str(ed_glob.PROFILE['TABWIDTH']))
         tabw_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tabw_sizer.Add(tw_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         tabw_sizer.Add(tw_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        eol_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("EOL Mode") + u":  ")
+        eol_cb = ExChoice(text_panel, ed_glob.ID_EOL_MODE,
+                          choices=[_("Macintosh (\\r)"), _("Unix (\\n)"), _("Windows (\\r\\n)")],
+                          default=ed_glob.PROFILE['EOL'])
+        eol_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        eol_sizer.Add(eol_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        eol_sizer.Add(eol_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         ww_cb = wx.CheckBox(text_panel, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
         ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
         format_sizer = wx.BoxSizer(wx.VERTICAL)
-        format_sizer.AddMany([tabw_sizer, ww_cb]) 
+        format_sizer.AddMany([tabw_sizer, ((5,5)), eol_sizer, ((5,5)), ww_cb]) 
 
         # Misc Section
-        misc_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("Misc") + u":")
+        misc_lbl = self.SectionHead(text_panel,  _("Misc"))
         aa_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_AALIAS, _("AntiAliasing"))
         aa_cb.SetValue(ed_glob.PROFILE['AALIASING'])
+        seol_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_EOL, _("Show EOL Markers"))
+        seol_cb.SetValue(ed_glob.PROFILE['SHOW_EOL'])
         sws_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_WS, _("Show Whitespace"))
         sws_cb.SetValue(ed_glob.PROFILE['SHOW_WS'])
         ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, _("Use Tabs Instead of Whitespaces"))
         ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
         misc_sizer = wx.BoxSizer(wx.VERTICAL)
-        misc_sizer.AddMany([aa_cb, sws_cb, ut_cb]) 
+        misc_sizer.AddMany([aa_cb, seol_cb, sws_cb, ut_cb]) 
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add(format_lbl, 0, wx.ALL, 10)
-        border.Add(format_sizer, 0, wx.LEFT, 20)
-        border.Add(misc_lbl, 0, wx.ALL, 10)
-        border.Add(misc_sizer, 0, wx.LEFT, 20)
+        border.Add((15,15))
+        border.Add(format_lbl, 0, wx.LEFT)
+        border.Add(format_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
+        border.Add((15,15))
+        border.Add(misc_lbl, 0, wx.LEFT)
+        border.Add(misc_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
         text_panel.SetSizer(border)
         self.AddPage(text_panel, _("Text"))
 
     def MiscPage(self):
-        """Theme preference page"""
+        """Misc preference page"""
         misc_panel = wx.Panel(self, wx.ID_ANY)
 
         # Misc Settings Section
-        set_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Settings") + u":  ")
+        set_lbl = self.SectionHead(misc_panel, _("Settings"))
         fh_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("File History Depth") + u":  ")
         fh_cb = ExChoice(misc_panel, ed_glob.ID_PREF_FHIST,
                           choices=['1','2','3','4','5','6','7','8','9'],
-                          default=ed_glob.PROFILE['FHIST_LVL'])
+                          default=str(ed_glob.PROFILE['FHIST_LVL']))
         fh_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fh_sizer.Add(fh_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        fh_sizer.Add(fh_cb, 1, wx.ALIGN_CENTER_VERTICAL)
+        fh_sizer.Add(fh_cb, 0, wx.ALIGN_CENTER_VERTICAL)
 
         # Various Appearance Settings
-        app_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Appearance") + u":")
+        app_lbl = self.SectionHead(misc_panel, _("Appearance"))
         app_sizer = wx.BoxSizer(wx.VERTICAL)
         tb_icont = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Theme") + u": ")
         tb_icon = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICON,
-                            choices=util.GetResources(u"pixmaps" + util.GetPathChar() + u"toolbar"), 
+                            choices=util.GetResources(u"pixmaps" + util.GetPathChar() + u"theme"), 
                             default=ed_glob.PROFILE['ICONS'].title())
+        tb_isz_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Size") + u": ")
+        tb_isz_ch = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICONSZ,
+                              choices=['16', '24', '32'],
+                              default=str(ed_glob.PROFILE['ICON_SZ'][0]))
         tbi_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        tbi_sizer.Add(tb_icont, 1, wx.ALIGN_CENTER_VERTICAL)
-        tbi_sizer.Add(tb_icon, 1, wx.ALIGN_CENTER_VERTICAL)
-        app_sizer.Add(tbi_sizer, 1, wx.ALIGN_CENTER_VERTICAL)
+        tbi_sizer.Add(tb_icont, 0, wx.ALIGN_LEFT)
+        tbi_sizer.Add(tb_icon, 0, wx.ALIGN_LEFT)
+        tbi_sizer.Add((40,0))
+        tbi_sizer.Add(tb_isz_lbl, 0, wx.RIGHT)
+        tbi_sizer.Add(tb_isz_ch, 0, wx.RIGHT)
+        app_sizer.Add(tbi_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
 
+        # MAC and MSW support transparency settings
+        if wx.Platform in ['__WXMAC__', '__WXMSW__']:
+            trans_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            trans_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Transparency") + u" ")
+            trans = wx.Slider(misc_panel, ed_glob.ID_TRANSPARENCY, ed_glob.PROFILE['ALPHA'], 100, 255, 
+                               style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+            trans.SetTickFreq(5, 1)
+            trans_sizer.Add(trans_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+            trans_sizer.Add(trans, 0, wx.ALIGN_LEFT)
+            app_sizer.Add(trans_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
+            self.Bind(wx.EVT_SLIDER, self.OnSetTransparent, id=ed_glob.ID_TRANSPARENCY)
+
+        # Activate Metal Style Windows for OSX
         if wx.Platform == '__WXMAC__':
             m_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_METAL, _("Use Metal Style (OS X Only)"))
             if ed_glob.PROFILE.has_key('METAL'):
@@ -354,17 +457,20 @@ class PrefPages(wx.Notebook):
             app_sizer.Add(m_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         ws_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WSIZE, _("Remember Window Size on Exit"))
         ws_cb.SetValue(ed_glob.PROFILE['SET_WSIZE'])
-        app_sizer.Add(ws_cb, 1, wx.ALIGN_CENTER_VERTICAL)
+        app_sizer.Add(ws_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         wp_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WPOS, _("Remember Window Position on Exit"))
         wp_cb.SetValue(ed_glob.PROFILE['SET_WPOS'])
-        app_sizer.Add(wp_cb, 1, wx.ALIGN_CENTER_VERTICAL)
+        app_sizer.Add(wp_cb, 0, wx.ALIGN_CENTER_VERTICAL)
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add(set_lbl, 0, wx.ALL, 10)
-        border.Add(fh_sizer, 0, wx.LEFT, 20)
-        border.Add(app_lbl, 0, wx.ALL, 10)
-        border.Add(app_sizer, 0, wx.LEFT, 20)
+        border.Add((15,15))
+        border.Add(set_lbl, 0, wx.LEFT)
+        border.Add((15,10))
+        border.Add(fh_sizer, 0, wx.LEFT, 30)
+        border.Add((15,15))
+        border.Add(app_lbl, 0, wx.LEFT)
+        border.Add(app_sizer, 0, wx.LEFT, 30)
         misc_panel.SetSizer(border)
         self.AddPage(misc_panel, _("Misc"))
 
@@ -372,22 +478,49 @@ class PrefPages(wx.Notebook):
         """Update Status page"""
         upd_panel = wx.Panel(self, wx.ID_ANY)
 
-        info = wx.StaticText(upd_panel, wx.ID_ANY, _("Update Status") + u":")
-        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, _("\nYou are running version: %s") % ed_glob.version)
+        info = self.SectionHead(upd_panel, _("Update Status") + u":")
+        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, _("You are running version: %s") % ed_glob.version)
 
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add(info, 0, wx.LEFT, 10)
-        border.Add(ver_info, 1, wx.LEFT, 10)
+        border.Add((15,15))
+        border.Add(info, 0, wx.LEFT)
+        border.Add((15,10))
+        border.Add(ver_info, 1, wx.LEFT, 20)
 
         upd_panel.SetSizer(border)
 
         self.AddPage(upd_panel, _("Update"))
 
+    def SectionHead(self, parent, title):
+        """"Creates a section heading on a given page with a given
+        title as a sizer object.
+
+        """
+        # Create the return container
+        ret_obj = wx.BoxSizer(wx.HORIZONTAL)
+
+        # Build the objects
+        heading = wx.StaticText(parent, wx.ID_ANY, title)
+        h_width = (int(parent.GetParent().GetSize()[0] * .90) - heading.GetSize()[0])
+        divider = wx.StaticLine(parent, wx.ID_ANY, size=(h_width,2))
+
+        # Build Heading
+        ret_obj.Add((15,0))
+        ret_obj.Add(heading, 0, wx.ALIGN_TOP | wx.ALIGN_LEFT)
+        ret_obj.Add((10,0))
+        l_sizer = wx.BoxSizer(wx.VERTICAL)
+        l_sizer.Add((0,8))
+        l_sizer.Add(divider, 2, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER)
+        l_sizer.Add((0,10))
+        ret_obj.Add(l_sizer)
+        return ret_obj
+
+    #---- Event Handlers ----#
     def OnPageChanged(self, evt):
         """Actions to do after a page change"""
         curr = evt.GetSelection()
         txt = self.GetPageText(curr)
-        dev_tool.DEBUGP("[prefdlg_evt] Page Changed to " + txt)
+        self.LOG("[prefdlg_evt] Page Changed to " + txt)
         evt.Skip()
 
     def OnSize(self, evt):
@@ -447,8 +580,7 @@ class ExChoice(wx.Choice):
     """
     def __init__(self, parent, id, pos=(-1,-1), size=(-1,-1), choices=[], default=None):
         """Constructs a Choice Control"""
-        wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices,
-                            style=wx.CB_SORT)
+        wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices)
         if default != None:
             self.SetStringSelection(default)
 

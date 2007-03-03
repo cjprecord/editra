@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Editra Development Team                               #
 #    staff@editra.org                                                         #
 #                                                                             #
-#    This program is free software; you can redistribute it and#or modify     #
+#    Editra is free software; you can redistribute it and#or modify           #
 #    it under the terms of the GNU General Public License as published by     #
 #    the Free Software Foundation; either version 2 of the License, or        #
 #    (at your option) any later version.                                      #
 #                                                                             #
-#    This program is distributed in the hope that it will be useful,          #
+#    Editra is distributed in the hope that it will be useful,                #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
 #    GNU General Public License for more details.                             #
@@ -24,7 +24,7 @@
 # AUTHOR: Cody Precord                                                        #
 #                                                                             #
 # SUMMARY:                                                                    #
-# Lexer configuration module for Pythnon.                                     #
+# Lexer configuration module for Python.                                      #
 #                                                                             #
 # TODO:                                                                       #
 #                                                                             #
@@ -55,6 +55,7 @@ syntax_items = [ ('STC_P_DEFAULT', 'default_style'),
                  ('STC_P_CLASSNAME', 'class_style'),
                  ('STC_P_COMMENTBLOCK', 'comment_style'),
                  ('STC_P_COMMENTLINE', 'comment_style'),
+                 ('STC_P_DECORATOR', 'default_style'),
                  ('STC_P_DEFNAME', 'keyword3_style'),
                  ('STC_P_IDENTIFIER', 'default_style'),
                  ('STC_P_NUMBER', 'number_style'),
@@ -63,7 +64,8 @@ syntax_items = [ ('STC_P_DEFAULT', 'default_style'),
                  ('STC_P_STRINGEOL', 'stringeol_style'),
                  ('STC_P_TRIPLE', 'string_style'),
                  ('STC_P_TRIPLEDOUBLE', 'string_style'),
-                 ('STC_P_WORD', 'keyword_style') ]
+                 ('STC_P_WORD', 'keyword_style'),
+                 ('STC_P_WORD2', 'default_style')]
 
 #---- Extra Properties ----#
 fold = ("fold", "1")

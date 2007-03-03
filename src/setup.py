@@ -2,12 +2,12 @@
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -49,39 +49,33 @@ AUTHOR = "Cody Precord"
 AUTHOR_EMAIL = "staff@editra.org"
 
 DATA_FILES = [ 
-              ("src", ["dev_tool.py", "editra.py", "ed_glob.py",  
-                       "ed_main.py", "ed_pages.py", "ed_stc.py", "ed_theme.py",
-                       "ed_toolbar.py", "__init__.py", "prefdlg.py", 
-                       "profiler.py", "setup.py", "util.py"]),
-	      ("src/extern", ["extern/FlatNotebook.py", "extern/__init__.py",
-			      "extern/README"]),
-	      ("src/syntax", ["syntax/README", "syntax/asm.py", "syntax/asm68k.py",
-		      	      "syntax/batch.py", "syntax/cpp.py", "syntax/css.py",
-			      "syntax/html.py", "syntax/java.py", "syntax/javascript.py", 
-			      "syntax/latex.py", "syntax/lisp.py", "syntax/make.py", "syntax/masm.py",
-			      "syntax/mssql.py", "syntax/nasm.py", "syntax/nsis.py",
-			      "syntax/pascal.py", "syntax/perl.py", "syntax/php.py",
-			      "syntax/postscript.py", "syntax/python.py", "syntax/ruby.py",
-			      "syntax/sh.py", "syntax/sql.py", "syntax/synglob.py",
-			      "syntax/syntax.py", "syntax/vhdl.py", "syntax/visualbasic.py",
-			      "syntax/xml.py", "syntax/__init__.py" ]),
+              ("src", glob.glob("*.py")),
+              ("src/extern", ["extern/__init__.py", "extern/README"]),
+              ("src/syntax", glob.glob("syntax/*.py syntax/README")),
               ("pixmaps", ["../pixmaps/editra.png", "../pixmaps/editra.ico",
                            "../pixmaps/editra.icns"]),
               ("pixmaps/mime", glob.glob("../pixmaps/mime/*.png")),
-              ("pixmaps/toolbar/Stock", glob.glob('../pixmaps/toolbar/Nuovo/*')),
-              ("templates", ["../templates/py"]),
+              ("pixmaps/theme/Stock", glob.glob("../pixmaps/theme/Stock/*")),
+              ("pixmaps/theme/Stock/toolbar", glob.glob("../pixmaps/theme/Stock/toolbar/*.png")),
+              ("pixmaps/theme/Stock/menu", glob.glob("../pixmaps/theme/Stock/menu/*.png")),
+              ("templates", glob.glob("../templates/*")),
               ("profiles", ["../profiles/default.pp",
                             "../profiles/.loader", 
                             "../profiles/default.pp.sample"]),
               ("locale/en_US/LC_MESSAGES", ["../locale/en_US/LC_MESSAGES/Editra.mo"]),
               ("locale/ja_JP/LC_MESSAGES", ["../locale/ja_JP/LC_MESSAGES/Editra.mo"]),
+              ("scripts", ["../scripts/clean_dir.sh"]),
+              ("scripts/i18n", glob.glob("../scripts/i18n/*.po")),
+              ("styles", glob.glob("../styles/*.ess")),
+	      ("test_data", glob.glob("../test_data/*")),
+              ("docs", glob.glob("../docs/*.txt")),
               "../README.txt","../CHANGELOG.txt","../COPYING.txt"
-	     ]
+            ]
 
 DESCRIPTION = "Code Editor"
 
 ICON = { 'Win' : "../pixmaps/editra.ico",
-          'Mac' : "../pixmaps/editra.icns"
+         'Mac' : "../pixmaps/editra.icns"
 }
 
 INCLUDES = ['syntax.*']
@@ -176,5 +170,3 @@ elif __platform__ == "darwin":
 #---- Other Platform(s) ----#
 else:
     print "\nCurrently we dont have a setup script that works for: " + __platform__
-    print "\nPlease feel free to write one for us if you want and it will be inluded in future release"
- 

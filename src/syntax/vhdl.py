@@ -83,7 +83,7 @@ vhdl_ukw = (6, "")
 
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_VHDL_DEFAULT', 'default_style'),
-                 ('STC_VHDL_STRINGEOL', 'class2_style'),
+                 ('STC_VHDL_STRINGEOL', 'stringeol_style'),
                  ('STC_VHDL_COMMENT', 'comment_style'),
                  ('STC_VHDL_COMMENTLINEBANG', 'comment_style'),
                  ('STC_VHDL_IDENTIFIER', 'default_style'),

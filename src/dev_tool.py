@@ -1,13 +1,13 @@
 ############################################################################
 #    Copyright (C) 2007 by Cody Precord                                    #
-#    staff@editra.org                                                      #
+#    cprecord@editra.org                                                   #
 #                                                                          #
-#    This program is free software; you can redistribute it and#or modify  #
+#    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
 #    (at your option) any later version.                                   #
 #                                                                          #
-#    This program is distributed in the hope that it will be useful,       #
+#    Editra is distributed in the hope that it will be useful,             #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
 #    GNU General Public License for more details.                          #
@@ -22,6 +22,7 @@
 __revision__ = "$Id: Exp $"
 
 import os
+import codecs
 import time
 from ed_glob import PROFILE
 
@@ -40,36 +41,39 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
        ERROR = Serious problem has occured
        
     """
-    # Turn off normal debugging messages when not in Debug mod
-    if mode == "std" and PROFILE['MODE'] != 'DEBUG':
+    # Turn off normal debugging messages when not in Debug mode
+    if mode == "std" and not 'DEBUG' in PROFILE['MODE']:
         return 0
 
     # Build time string for tstamp
     now = time.localtime(time.time())
-    now = "[" + str(now[3]) + ":" + str(now[4]) + ":" + str(now[5]) + "]"
+    now = u"[" + str(now[3]).zfill(2) + u":" + \
+          str(now[4]).zfill(2) + u":" + str(now[5]).zfill(2) + u"]"
 
     # Format Statement
-    s_lst = statement.split("\n")
+    statement = unicode(statement)
+    s_lst = statement.split(u"\n")
     
     if mode == "std":
         for line in s_lst:
-            print now + " " + line
+            out = now + u" " + line
+            print out.encode('utf-8', 'replace')
         return 0
     elif mode == "log":
         logfile = os.environ.get('EDITRA_LOG')
-        if logfile == None:
-            print "EDITRA_LOG enviroment variable not set!!!"
-            print "Outputting log information to default log \'editra_tmp.log\'"
+        if logfile == None or not os.path.exists(logfile):
+            print u"EDITRA_LOG enviroment variable not set!!!"
+            print u"Outputting log information to default log \'editra_tmp.log\'"
             logfile = 'editra_tmp.log'
-        file_handle = open(logfile, mode="a")
+        file_handle = codecs.open(logfile, mode="ab", encoding='utf-8', errors='replace')
         if log_lvl != none:
-            file_handle.write(log_lvl + ": " + statement + "\n")
+            file_handle.write(log_lvl + u": " + statement + "\n")
         else:
-            file_handle.write("MSG: " +  statement + "\n")
+            file_handle.write(u"MSG: " +  statement + "\n")
         file_handle.close()
         return 0	
     else:
-        print "Improper DEBUG MODE: Defaulting to stdout"
+        print u"Improper DEBUG MODE: Defaulting to stdout"
         print statement
         return 1
 

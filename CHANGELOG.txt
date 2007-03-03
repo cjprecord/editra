@@ -6,22 +6,91 @@ Change Log:
 
 Changes since last release:
 
-
-VERSION 0.0.xx
+VERSION 0.0.xxx
 DATE xx/xx/xxxx
-Twelth Snapshot Release
+13th Snapshot Release
+
+NEWS:
+    Binaries built on updated wxPython 2.8.1 this fixed some performance issues
+with the some of the stc controls, most notably the python documents which now
+do not cause the cpu and ram usage to go out of control on the wxMAC platform.
+
+NEW: [features/improvements]
++Text control fold margin is now styled to match the syntax scheme's default
+foreground and background colors.
++Bookmark system for marking lines and quickly navigating to them
++New search system with support for regular expression search and replace
+
+BUG FIXES:
++Fixed bug in config directory creation
++Improper file creation/deletion fixed in Windows Installer
+
+#---------------------------------------------------------------------------------#
+VERSION 0.0.90
+DATE 02/27/2007
+Twelfth Snapshot Release
 
 NEWS:
  Updated program to run on Python 2.5 and wxPython 2.8
 
+ The translations of the editor now use the standard gettext system with mo/po
+ files. All display strings have been converted to be used in this system.
+
+ Highlighting color schemes can be customized through writing style sheets to
+ describe the theme you want the text to be highlighted in. Style sheets can be
+ written very easily by using the new builtin style editor which allows for on
+ the fly testing and customization of the text controls styles, can export all
+ settings to a style sheet in Editra Style Sheet format.
+
+ Fairly major rewrite of how events are handled and managed. Streamlined allot
+ of the code as well as removing redundant operations and old code that is no
+ longer in use.
+
 NEW: [features/improvements]
-+New native About Dialog
++New i18n management system / completed internationalization of editor
++A style management system for changing the highlighting theme of the syntax
+ highlighter. 
++A scripting language and parser for creating style sheets to define the style
+ of the highlighter. see docs/editra_style_sheet.txt for the complete v1.0 specifications.
++Some basic UTF-8 support is back
++A style editor dialog for customizing the syntax highlighting.
++Near complete Japanese Translation
++Printing Support
++New About Dialog
++Line Edit Commands (Join, Cut, Copy, Transpose)
++Line ending character(s) visibility can be toggled
++Line ending format can be toggled between (unix, macintosh, and windows)
+ format.
++Added (Ada, Smalltalk, tcl/tk) highlighting support
++More efficient event handling
++Support for Transparency on OS X and Windows
++More robust profile system
++Mac OS X version is now more compliant to Mac UI Standards
++Toolbar now supports custom icons and changing tool sizes
++More Help options in Help Menu
++Many minor performance tweaks.
 
 BUG FIXES:
-+Negative window positioning now moves the window back into visible space on load
-
++Negative window positioning now moves the window back into visible space on 
+ load
++Dropping multiple files on the editor now opens all of them instead of just
+ one.
++Debugging messages now properly handle Unicode output
++Fixed a number of layout issues in the preference dialog
++Fixed broken batch syntax configuration file
++File dialog filters now work properly for all supported file types
++Numerous event handling issues fixed on GTK/MSW
++Only allow one file dialog at a time to avoid lost object errors on destroy
++Profile loading now properly traps the menu event
++New installs now properly update user profiles
++Fixed path resolution to allow for script execution from any relative path
++Font dialog now actually changes the font
++Save profile dialog is now properly deleted on closer fixing a minor memory
+leak.
++All file handles are now properly closed after they are not needed
++Fixed minor display problem in debugging messages
 #---------------------------------------------------------------------------------#
-VERSION 0.0.84
+VERSION 0.0.83
 DATE 01/15/2007
 Eleventh Snapshot Release
 
@@ -32,7 +101,7 @@ NEWS:
 
   The main cleanup effort was focused on the text control code. This lead to a
   complete reworking of the syntax management code into its own separate subsystem.
-  This allowed for some minor performance improvments as well as a slightly smaller
+  This allowed for some minor performance improvements as well as a slightly smaller
   memory footprint since the editor now dynamically loads syntax settings/specs 
   only when they are needed instead of preloading all supported syntax/style specs
   like it previously did.
@@ -61,7 +130,7 @@ NEW: [features/improvements]
 
 BUG FIXES:
 +Proper setting of page images
-+Menu Updateing Fixes
++Menu Updating Fixes
 +Proper handling of file save/saveas errors
 
 #---------------------------------------------------------------------------------#
@@ -70,13 +139,13 @@ DATE 12/02/2006
 Tenth Snapshot Release
 
 NEWS:
-  I've been fairly busy and hopefully it shows. I did a more thourough testing
+  I've been fairly busy and hopefully it shows. I did a more thorough testing
   of the program and was able to flush out a fair number of bugs, while at the
   same time making some big improvements in usability and new features.
 
   Major UI upgrades and improvements to page management/layout system.
 
-  The initial implimentation of the the plugin system for customizing the
+  The initial implementation of the plugin system for customizing the
   menus language is in place. It is a fairly simple system uses a custom
   python module as the language source. For a more complete explanation see
   the sample English module in the languages directory of your installation.
@@ -86,7 +155,7 @@ NEWS:
   Changing the language however requires closing and restarting the editor before
   the changes will take effect.
 
-  UTF8 Support has temporarly been disabled until a number of bugs related to
+  UTF-8 Support has temporarily been disabled until a number of bugs related to
   it can be resolved.
 
 NEW: [Features/Improvements]
@@ -105,13 +174,13 @@ BUG FIXES:
   +File history properly tracks files after a 'Save As'
   +Language menu improperly checking currently language fixed
   +Find/Replace All, now works when replace string differs in size from the
-  seach string.
+  search string.
   +Clipboard Bugs (Double/Triple copy/cut/pastes, improper event firing)
   +Improper EOL characters on OSX
   +Irregular window creation locations now appear predictable locations
   +Exit not checking buffer modification properly
   +Exit failure after save/saveas fixed
-  +Proper error handleing when unsupported filetype is opened
+  +Proper error handling when unsupported file type is opened
   +Improper window sizing after toolbar is added/removed
   +Toolbar now updates properly
   +Misc minor memory leaks cleaned up
@@ -124,7 +193,7 @@ NEWS:
   Project has new name "Editra", this was done in order to give the
   project a name that was not being used by another project.
   
-  Mac OSX applet now available (Universial Binary).
+  Mac OSX applet now available (Universal Binary).
 
 NEW:
   +Improved Language Support (C, CPP, Java, Header files)
@@ -264,21 +333,19 @@ VERSION 0.0.30:
 Fourth Snapshot Release
 
 NEW:
-  +Color Contexting and bracket highlighting for code editing 
-	+Supported Languages Thus Far: Python (.py), C (.c), CPP (.cpp), C/CPP Header Files (.h)
++Color Contexting and bracket highlighting for code editing 
++Supported Languages Thus Far: Python (.py), C (.c), CPP (.cpp), C/CPP Header Files (.h)
 				       Makefiles, and Lisp (.lisp)  
-  +Color Contexting for Doxygen syntax in C and CPP file documentation
-  +Drag and Drop File support
-  +Now possible to change font / font style (Currently limited to 1 font/style per document)
-  +Find/Replace Dialog
-	+Replace
-	+Replace All
-  +Settings menu added as place holder for future configuration options
-  +Theme Info file added to pixmaps directory
-  +Dockable toolbar (GTK ONLY)
-  +View Menu
-  	+Zoom In, Zoom Out, Zoom Default
-  +Line Number Indication in left margin of control
++Color Contexting for Doxygen syntax in C and CPP file documentation
++Drag and Drop File support
++Now possible to change font / font style (Currently limited to 1 font/style per document)
++Find/Replace Dialog
++Settings menu added as place holder for future configuration options
++Theme Info file added to pixmaps directory
++Dockable toolbar (GTK ONLY)
++View Menu
++Zoom In, Zoom Out, Zoom Default
++Line Number Indication in left margin of control
 
 BUG FIXES:
   +Fixed SaveAs dialog title bar display bug that was created once the Cancel button was pushed.
@@ -297,8 +364,8 @@ NEW:
   +Added Word Wrap on/off option
   +Title bar file name notification
   +Line / Column Notification in Status Bar
-  +Font Selection (Probably doesnt work yet)
-  +Find / Find Replace Text (Try it but its probably broken)
+  +Font Selection
+  +Find / Find Replace Text 
   +Print Dialog (still no printing)
   +Right Click Context Menu on text window
   +Select All Function
