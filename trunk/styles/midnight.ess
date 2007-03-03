@@ -1,0 +1,200 @@
+default_style {
+		fore: #FFFFFF;
+		back: #000000;
+		face: %(mono)s;
+		size: %(size)d;
+}
+
+array_style {
+		fore: #EE8B02 bold;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+btick_style {
+		fore: #8959F6 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+char_style {
+		fore: #FF3AFF;
+		back: #000000;
+		face: %(mono)s;
+		size: %(size)d;
+}
+
+class_style {
+		fore: #2E8B57 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+class2_style {
+		fore: #2E8B57 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+ctrl_char {
+		fore: #FFFFFF;
+		back: #000000;
+		face: %(mono)s;
+}
+
+comment_style {
+		fore: #0033CC;
+		back: #000000;
+		face: %(mono)s;
+		size: %(size)d;
+}
+
+directive_style {
+		fore: #0000FF;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+dockey_style {
+		fore: #0000FF;
+		back: #000000;
+		size: %(size)d;
+}
+
+error_style {
+		fore: #DD0101;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+funct_style {
+		fore: #008B8B italic;
+		back: #000000;
+		size: %(size)d;
+}
+
+global_style {
+		fore: #007F7F bold;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+here_style {
+		fore: #CA61CA bold;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+ideol_style {
+		fore: #E0C0E0;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+keyword_style {
+		fore: #A52B2B bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+keyword2_style {
+		fore: #2E8B57 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+keyword3_style {
+		fore: #008B8B bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+keyword4_style {
+		fore: #9D2424;
+		back: #000000;
+		size: %(size)d;
+}
+
+line_num {
+		fore: #FFFFFF;
+		back: #000000;
+		size: %(size2)d;
+}
+
+number_style {
+		fore: #DD0101;
+		back: #000000;
+		size: %(size)d;
+}
+
+number2_style {
+		fore: #DD0101 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+operator_style {
+		fore: #FFFFFF bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+pre_style {
+		fore: #AB39F2 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+pre2_style {
+		fore: #AB39F2 bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+regex_style {
+		fore: #008B8B bold;
+		back: #000000;
+		size: %(size)d;
+}
+
+scalar_style {
+		fore: #AB37F2 bold;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+scalar2_style {
+		fore: #AB37F2;
+		back: #000000;
+		face: %(other)s;
+		size: %(size)d;
+}
+
+string_style {
+		fore: #FF3AFF bold;
+		back: #000000;
+		face: %(mono)s;
+		size: %(size)d;
+}
+
+stringeol_style {
+		fore: #000000 bold;
+		back: #EEC0EE;
+		face: %(other)s;
+		size: %(size)d eol;
+}
+
+unknown_style {
+		fore: #FFFFFF bold;
+		back: #DD0101 eol;
+		face: %(other)s;
+		size: %(size)d;
+}
+
