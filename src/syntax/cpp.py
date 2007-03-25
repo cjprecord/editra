@@ -41,7 +41,7 @@ import synglob
 
 # C Keywords
 c_keywords = ("goto break return continue asm case default if else switch "
-              "while for do sizeof typeof")
+              "while for do sizeof typeof ")
 
 # C Types/Structures/Storage Classes
 c_types = ("int long short char void signed unsigned float double "
@@ -53,7 +53,7 @@ c_types = ("int long short char void signed unsigned float double "
            "uint_fast8_t uint_fast16_t uint_fast32_t uint_fast64_t "
            "intptr_t uintptr_t intmax_t uintmax_t __label__ __complex__ "
            "__volatile__ struct union enum typedef static register auto "
-           "volatile extern const inline __attribute__")
+           "volatile extern const inline __attribute__ ")
 
 # C/CPP Documentation Keywords (includes Doxygen keywords)
 doc_keywords = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph \\category " 
@@ -63,17 +63,17 @@ doc_keywords = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph \\category
                    "\\mainpage \\name \\namespace \\page \\par \\paragraph \\param "
                    "\\return \\retval \\section \\struct \\subpage \\subsection " 
                    "\\subsubsection \\test \\todo \\typedef \\union \\var \\verbatim "
-                   "\\version \\warning \\$ \\@ \\~ \\< \\> \\# \\% HACK")
+                   "\\version \\warning \\$ \\@ \\~ \\< \\> \\# \\% HACK ")
 
 # CPP Keyword Extensions
 cpp_keywords = ("new delete this friend using throw try catch opperator "
                 "typeid and bitor or xor compl bitand and_eq or_eq xor_eq "
                 "not not_eq const_cast static_cast dynamic_cast "
-                "reinterpret_cast true false")
+                "reinterpret_cast true false ")
 
 # CPP Type/Structure/Storage Class Extensions
 cpp_types = ("public protected private inline virtual explicit export bool "
-             "wchar_t mutable class typename template namespace")
+             "wchar_t mutable class typename template namespace ")
 
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_C_DEFAULT', 'default_style'),

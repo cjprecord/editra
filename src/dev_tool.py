@@ -65,11 +65,12 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
             print u"EDITRA_LOG enviroment variable not set!!!"
             print u"Outputting log information to default log \'editra_tmp.log\'"
             logfile = 'editra_tmp.log'
-        file_handle = codecs.open(logfile, mode="ab", encoding='utf-8', errors='replace')
+        file_handle = file(logfile, mode="ab")
+        writer = codecs.lookup('utf-8')[3](file_handle)
         if log_lvl != none:
-            file_handle.write(log_lvl + u": " + statement + "\n")
+            writer.write(log_lvl + u": " + statement + "\n")
         else:
-            file_handle.write(u"MSG: " +  statement + "\n")
+            writer.write(u"MSG: " +  statement + "\n")
         file_handle.close()
         return 0	
     else:

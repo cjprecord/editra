@@ -83,6 +83,8 @@ LANGUAGE = 4
 # Dynamically loaded modules are put here to keep them accessable to all text
 # controls that access this module, so that they dont need to be reloaded.
 LOADED_SYN = {}
+
+_ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
 
 # TODO this class will replace the library eventually

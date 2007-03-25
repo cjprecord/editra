@@ -76,7 +76,8 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_SHOW_WS, ed_glob.ID_PREF_METAL, ed_glob.ID_PREF_FHIST,
             ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON,
             ed_glob.ID_PREF_MODE, ed_glob.ID_SHOW_EOL, ed_glob.ID_PREF_SYNTHEME,
-            ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE]
+            ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
+            ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN ]
 
 #----------------------------------------------------------------------------#
 
@@ -115,9 +116,9 @@ class PrefDlg(wx.Dialog):
         b_sizer.Add(ok_b, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         sizer.Add(b_sizer, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
+        sizer.Fit(self)
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
-        sizer.Fit(self)
 
         # Styling
         if ed_glob.PROFILE.has_key('ALPHA'):
@@ -202,7 +203,7 @@ class PrefDlg(wx.Dialog):
 #----------------------------------------------------------------------------#
 # Class Globals
 PREF_WIDTH = 550
-PREF_HEIGHT = 300
+PREF_HEIGHT = 350
 
 class PrefPages(wx.Notebook):
     """Notebook to hold pages for Preference Dialog"""
@@ -211,7 +212,6 @@ class PrefPages(wx.Notebook):
         wx.Notebook.__init__(self, parent, id_num, size = (PREF_WIDTH, PREF_HEIGHT),
                              style = wx.NB_TOP
                             )
-
         # Attributes
         self.LOG = log
 
@@ -265,19 +265,32 @@ class PrefPages(wx.Notebook):
         info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt))
         
         # Startup Settings
-        mode_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Editor Mode: "))
+        ## Editor Mode
+        mode_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Editor Mode") + u": ")
         mode_c = ExChoice(gen_panel, ed_glob.ID_PREF_MODE,
                           choices=['CODE', 'DEBUG', 'GUI_DEBUG'],
                           default=ed_glob.PROFILE['MODE'])
         mode_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        mode_sizer.Add((15,0))
+        mode_sizer.Add((15,15))
         mode_sizer.Add(mode_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        mode_sizer.Add((5,0))
+        mode_sizer.Add((5,15))
         mode_sizer.Add(mode_c, 0, wx.ALIGN_CENTER_VERTICAL)
+        ## Print Mode
+        pmode_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Printer Mode") + u": ")
+        pmode_c = ExChoice(gen_panel, ed_glob.ID_PRINT_MODE,
+                           choices=['Black/White', 'Colour/White', 'Colour/Default',
+                                    'Inverse', 'Normal'],
+                           default=ed_glob.PROFILE['PRINT_MODE'])
+        mode_sizer.Add((20,20))
+        mode_sizer.Add(pmode_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        mode_sizer.Add((5,5))
+        mode_sizer.Add(pmode_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
         # Locale Settings
-        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Language: "), pos=wx.Point(50,130))
-        lang_c = ed_i18n.LangListCombo(gen_panel, ed_glob.ID_PREF_LANG, ed_glob.PROFILE['LANG'])
+        lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, 
+                                 _("Language") + u": ", pos=wx.Point(50,130))
+        lang_c = ed_i18n.LangListCombo(gen_panel, ed_glob.ID_PREF_LANG, 
+                                       ed_glob.PROFILE['LANG'])
         lang_sizer = wx.BoxSizer(wx.HORIZONTAL)
         lang_sizer.Add((15,0))
         lang_sizer.Add(lang_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
@@ -295,7 +308,7 @@ class PrefPages(wx.Notebook):
         sizer.Add(lang_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
         gen_panel.SetSizer(sizer)
 
-        self.AddPage(gen_panel, u"General")
+        self.AddPage(gen_panel, _("General"))
 
     def ProfilePage(self):
         """Creates the profile editor page"""
@@ -319,18 +332,22 @@ class PrefPages(wx.Notebook):
         cc_cb.SetValue(ed_glob.PROFILE['KWHELPER'])
         ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"))
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
+        fold_cb = wx.CheckBox(code_panel, ed_glob.ID_FOLDING, _("Code Folding"))
+        fold_cb.SetValue(ed_glob.PROFILE['CODE_FOLD'])
         feat_sizer = wx.BoxSizer(wx.VERTICAL)
-        feat_sizer.AddMany([br_cb, cc_cb, ind_cb]) 
+        feat_sizer.AddMany([br_cb, fold_cb, cc_cb, ind_cb]) 
 
-        # Syntax Settings
-        syn_lbl = self.SectionHead(code_panel, _("Syntax"))
+        # Syntax / Completion Settings
+        syn_lbl = self.SectionHead(code_panel, _("Syntax && Completion"))
         syn_cb = wx.CheckBox(code_panel, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
         syn_cb.SetValue(ed_glob.PROFILE['SYNTAX'])
 
         syn_theme_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Color Scheme") + u": ")
         syn_theme = ExChoice(code_panel, ed_glob.ID_PREF_SYNTHEME,
-                              choices=util.GetResourceFiles(u'styles'),
+                              choices=util.GetResourceFiles(u'styles', get_all=True),
                               default=str(ed_glob.PROFILE['SYNTHEME']))
+        comp_cb = wx.CheckBox(code_panel, ed_glob.ID_AUTOCOMP, _("Auto-Completion"))
+        comp_cb.SetValue(ed_glob.PROFILE['AUTO_COMP'])
 
         # Build Section
         syn_sizer1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -339,14 +356,15 @@ class PrefPages(wx.Notebook):
         syn_sizer1.Add(syn_theme_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         syn_sizer1.Add(syn_theme, 0, wx.RIGHT)
         syn_sizer2 = wx.BoxSizer(wx.VERTICAL)
-        syn_sizer2.Add(syn_sizer1, 0, wx.RIGHT) 
+        syn_sizer2.Add(syn_sizer1, 0, wx.RIGHT)
+        syn_sizer2.Add(comp_cb, 0, wx.ALIGN_LEFT)
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
         border.Add((15, 15))
         border.Add(feat_lbl, 0, wx.LEFT)
         border.Add(feat_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
-        border.Add((15, 15))
+        border.Add((10, 10))
         border.Add(syn_lbl, 0, wx.LEFT)
         border.Add(syn_sizer2, 0, wx.BOTTOM | wx.LEFT, 30)
         code_panel.SetSizer(border)
@@ -363,9 +381,15 @@ class PrefPages(wx.Notebook):
         tw_cb = ExChoice(text_panel, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
                           default=str(ed_glob.PROFILE['TABWIDTH']))
+        ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, _("Use Tabs Instead of Whitespaces"))
+        ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
+        tab_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tabw_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        tab_sizer.Add(ut_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        tab_sizer.Add((40,40))
         tabw_sizer.Add(tw_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         tabw_sizer.Add(tw_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        tab_sizer.Add(tabw_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
         eol_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("EOL Mode") + u":  ")
         eol_cb = ExChoice(text_panel, ed_glob.ID_EOL_MODE,
                           choices=[_("Macintosh (\\r)"), _("Unix (\\n)"), _("Windows (\\r\\n)")],
@@ -376,7 +400,7 @@ class PrefPages(wx.Notebook):
         ww_cb = wx.CheckBox(text_panel, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
         ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
         format_sizer = wx.BoxSizer(wx.VERTICAL)
-        format_sizer.AddMany([tabw_sizer, ((5,5)), eol_sizer, ((5,5)), ww_cb]) 
+        format_sizer.AddMany([eol_sizer, tab_sizer, ww_cb]) 
 
         # Misc Section
         misc_lbl = self.SectionHead(text_panel,  _("Misc"))
@@ -384,19 +408,20 @@ class PrefPages(wx.Notebook):
         aa_cb.SetValue(ed_glob.PROFILE['AALIASING'])
         seol_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_EOL, _("Show EOL Markers"))
         seol_cb.SetValue(ed_glob.PROFILE['SHOW_EOL'])
+        sln_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_LN, _("Show Line Numbers"))
+        sln_cb.SetValue(ed_glob.PROFILE['SHOW_LN'])
         sws_cb = wx.CheckBox(text_panel, ed_glob.ID_SHOW_WS, _("Show Whitespace"))
         sws_cb.SetValue(ed_glob.PROFILE['SHOW_WS'])
-        ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, _("Use Tabs Instead of Whitespaces"))
-        ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
+
         misc_sizer = wx.BoxSizer(wx.VERTICAL)
-        misc_sizer.AddMany([aa_cb, seol_cb, sws_cb, ut_cb]) 
+        misc_sizer.AddMany([aa_cb, seol_cb, sln_cb, sws_cb]) 
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
         border.Add((15,15))
         border.Add(format_lbl, 0, wx.LEFT)
         border.Add(format_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
-        border.Add((15,15))
+        border.Add((10,10))
         border.Add(misc_lbl, 0, wx.LEFT)
         border.Add(misc_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
         text_panel.SetSizer(border)
@@ -439,12 +464,15 @@ class PrefPages(wx.Notebook):
         if wx.Platform in ['__WXMAC__', '__WXMSW__']:
             trans_sizer = wx.BoxSizer(wx.HORIZONTAL)
             trans_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Transparency") + u" ")
-            trans = wx.Slider(misc_panel, ed_glob.ID_TRANSPARENCY, ed_glob.PROFILE['ALPHA'], 100, 255, 
-                               style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+            trans = wx.Slider(misc_panel, ed_glob.ID_TRANSPARENCY, 
+                              ed_glob.PROFILE['ALPHA'], 100, 255, 
+                              style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
             trans.SetTickFreq(5, 1)
             trans_sizer.Add(trans_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
             trans_sizer.Add(trans, 0, wx.ALIGN_LEFT)
+            app_sizer.Add((5,5))
             app_sizer.Add(trans_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
+            app_sizer.Add((5,5))
             self.Bind(wx.EVT_SLIDER, self.OnSetTransparent, id=ed_glob.ID_TRANSPARENCY)
 
         # Activate Metal Style Windows for OSX
@@ -540,9 +568,9 @@ class ProfileListCtrl(wx.ListCtrl,
     def __init__(self, parent):
         """Initializes the Profile List Control"""
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
-                               wx.DefaultPosition, wx.DefaultSize, 
-                               style = wx.LC_REPORT | wx.LC_SORT_ASCENDING |
-                                       wx.LC_VRULES)
+                             wx.DefaultPosition, wx.DefaultSize, 
+                             style = wx.LC_REPORT | wx.LC_SORT_ASCENDING |
+                                     wx.LC_VRULES)
 
         listmix.ListCtrlAutoWidthMixin.__init__(self)
         self.PopulateProfileView()
@@ -559,7 +587,7 @@ class ProfileListCtrl(wx.ListCtrl,
         prof.sort()
 
         for key in prof:
-            val = str(ed_glob.PROFILE[key])
+            val = unicode(ed_glob.PROFILE[key])
             index = self.InsertStringItem(sys.maxint, key)
             self.SetStringItem(index, 0, key)
             self.SetStringItem(index, 1, val)

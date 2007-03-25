@@ -52,17 +52,19 @@ __revision__ = "$Id:  $"
 import os
 import wx, wx.stc
 from ed_glob import *
-import syntax.syntax as syntax
+from syntax import syntax
+from autocomp import autocomp
 import util
 import ed_style
 
 _ = wx.GetTranslation
+MARK_MARGIN = 0
+NUM_MARGIN  = 1
+FOLD_MARGIN = 2
 #-------------------------------------------------------------------------#
-
 class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text in"""
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
-
     def __init__(self, parent, win_id,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
                  style=0, log=wx.EmptyString, useDT=True):
@@ -71,9 +73,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         wx.stc.StyledTextCtrl.__init__(self, parent, win_id, pos, size, style)
-        ed_style.StyleMgr.__init__(self, os.path.join(CONFIG['STYLES_DIR'], PROFILE['SYNTHEME'] + u".ess"), log)
+        ed_style.StyleMgr.__init__(self, self.GetStyleSheet(), log)
 
-        # Set Text Box Attributes
+        # Set Control Attributes
         self.SetWrapMode(PROFILE['WRAP']) 
         self.SetViewWhiteSpace(PROFILE['SHOW_WS'])
         self.SetUseAntiAliasing(PROFILE['AALIASING'])
@@ -83,11 +85,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetIndentationGuides(PROFILE['GUIDES'])
         self.SetEOLFromString(PROFILE['EOL'])
         self.SetViewEOL(PROFILE['SHOW_EOL'])
+        self.SetModEventMask(wx.stc.STC_PERFORMED_UNDO | wx.stc.STC_PERFORMED_REDO | \
+                             wx.stc.STC_MOD_DELETETEXT | wx.stc.STC_MOD_INSERTTEXT | \
+                             wx.stc.STC_PERFORMED_USER)
 
         #---- Drop Target ----#
-        # TODO how can we have a file drop target and text drop at same time
         if useDT:
-            self.fdt = util.DropTarget(self, parent, log)
+            self.fdt = util.DropTargetFT(parent)
             self.SetDropTarget(self.fdt)
 
         # Attributes
@@ -100,7 +104,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.old_pos = -1			# Carat begins at top of file
         self.column = 0
         self.line = 0
+        self._autocomp_svc = autocomp.AutoCompService(self)
+        self._use_autocomp = PROFILE['AUTO_COMP']
         self.brackethl = PROFILE["BRACKETHL"]
+        self.folding = PROFILE['CODE_FOLD']
         self.kwhelp = PROFILE["KWHELPER"]
         self.highlight = PROFILE["SYNTAX"]
         self.keywords = [ ' ' ]		# Keywords list
@@ -108,27 +115,38 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.lang_id = 0
 
         # Set Up Margins 
-        self.SetMarginType(0, wx.stc.STC_MARGIN_SYMBOL)
-        self.SetMarginMask(0, self.ED_STC_MASK_MARKERS)
-        self.SetMarginSensitive(0, True)
-        self.SetMarginWidth(0, 12)
+        self.SetMarginType(MARK_MARGIN, wx.stc.STC_MARGIN_SYMBOL)
+        self.SetMarginMask(MARK_MARGIN, self.ED_STC_MASK_MARKERS)
+        self.SetMarginSensitive(MARK_MARGIN, True)
+        self.SetMarginWidth(MARK_MARGIN, 12)
 
         ## Outer Left Margin Line Number Indication
-        self.SetMarginType(1, wx.stc.STC_MARGIN_NUMBER)
-        self.SetMarginMask(1, 0)
-        self.SetMarginWidth(1, 30)
+        self.SetMarginType(NUM_MARGIN, wx.stc.STC_MARGIN_NUMBER)
+        self.SetMarginMask(NUM_MARGIN, 0)
+        if PROFILE['SHOW_LN']:
+            self.SetMarginWidth(NUM_MARGIN, 30)
+        else:
+            self.SetMarginWidth(NUM_MARGIN, 0)
 
         ## Inner Left Margin Setup Folders
-        self.SetMarginType(2, wx.stc.STC_MARGIN_SYMBOL)
-        self.SetMarginMask(2, wx.stc.STC_MASK_FOLDERS)
-        self.SetMarginSensitive(2, True)
-        self.SetMarginWidth(2, 12)
+        self.SetMarginType(FOLD_MARGIN, wx.stc.STC_MARGIN_SYMBOL)
+        self.SetMarginMask(FOLD_MARGIN, wx.stc.STC_MASK_FOLDERS)
+        self.SetMarginSensitive(FOLD_MARGIN, True)
+        if self.folding:
+            self.SetMarginWidth(FOLD_MARGIN, 12)
+        else:
+            self.SetMarginWidth(FOLD_MARGIN, 0)
 
         # Set Default Styles used by all documents
         if self.highlight:
             self.UpdateBaseStyles()
         else:
             self.StyleDefault()
+
+        # Configure Autocompletion
+        # NOTE: must be done after syntax configuration
+        if self._use_autocomp:
+            self.ConfigureAutoComp()
 
         ### Folder Marker Styles
         self.DefineMarkers()
@@ -137,6 +155,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if self.brackethl:
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
         self.Bind(wx.stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
+        self.Bind(wx.EVT_CHAR, self.OnChar)
         if PROFILE["KWHELPER"]:
             self.Bind(wx.EVT_KEY_DOWN, self.KeyWordHelp)
        #---- End Init ----#
@@ -144,13 +163,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     __name__ = u"EditraTextCtrl"
 
     #---- Begin Function Definitions ----#
-    def GetPos(self):
+    def GetPos(self, key):
         """ Update Line/Column information """
         pos = self.GetCurrentPos()
         self.line = self.GetCurrentLine()
         self.column = self.GetColumn(pos)
         if (self.old_pos != pos):
             self.old_pos = pos
+            if self._use_autocomp:
+                key_code = key.GetKeyCode()
+                if key_code == wx.WXK_RETURN:
+                    self._autocomp_svc.UpdateNamespace(True)
             return (self.line + 1, self.column)
         else:
             return (-1, -1)
@@ -177,27 +200,120 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetFoldMarginHiColour(True, fore)
         self.SetFoldMarginColour(True, fore)
 
+    def FindTagById(self, id):
+        """Find the style tag that is associated with the given
+        Id. If not found it returns an empty string.
+
+        """
+        for data in self.syntax_set:
+            if id == getattr(wx.stc, data[0]):
+                return data[1]
+        return wx.EmptyString
+
+    def GetAutoComplete(self):
+        """Is Autocomplete being used by this instance"""
+        return self._use_autocomp
+
+    def GetStyleSheet(self):
+        """Finds the current style sheet and returns its path. The
+        Lookup is done by first looking in the users config directory
+        and if it is not found there it looks for one on the system
+        level and if that fails it returns None.
+
+        """
+        if PROFILE['SYNTHEME'].split(u'.')[-1] != u"ess":
+            style = (PROFILE['SYNTHEME'] + u".ess").lower()
+        else:
+            style = PROFILE['SYNTHEME'].lower()
+        user = os.path.join(CONFIG['STYLES_DIR'], style)
+        sys = os.path.join(CONFIG['SYS_STYLES_DIR'], style)
+        if os.path.exists(user):
+            return user
+        elif os.path.exists(sys):
+            return sys
+        else:
+            return None
+
     def KeyWordHelp(self, evt):
         """Bring up Keyword List for Current Language"""
-        #HACK this is just a test implimentation
-        if self.CallTipActive():
-            self.CallTipCancel()
-            # key = e.KeyCode()
-
         # Toggle Autocomp window by pressing button again
         if self.AutoCompActive() and evt.AltDown():
             self.AutoCompCancel()
             return
-
-        if evt.AltDown() and len(self.keywords) > 1:
+        elif evt.AltDown() and len(self.keywords) > 1:
             pos = self.GetCurrentPos()
             pos2 = self.WordStartPosition(pos, True)
             context = pos - pos2
-            self.AutoCompSetIgnoreCase(True)
             self.AutoCompShow(context, self.keywords)
-
         else:
             evt.Skip()
+
+    #TODO autocomp and calltip lookup can be very cpu/time expensive
+    #     when active the lookup should be done on a separate thread
+    #     to help from slowing the input into the buffer
+    def OnChar(self, evt):
+        """Handles Char events that arent caught by the
+        KEY_DOWN event.
+
+        """
+        if not self._use_autocomp:
+            evt.Skip()
+            return True
+
+        key_code = evt.GetKeyCode()
+        if key_code in self._autocomp_svc.GetAutoCompKeys():
+            if self.AutoCompActive():
+                self.AutoCompCancel()
+            command = self.GetCommandStr() + chr(key_code)
+            self.AddText(chr(key_code))
+            if self._use_autocomp:
+                self.ShowAutoCompOpt(command)
+        elif key_code in self._autocomp_svc.GetCallTipKeys():
+            if self.AutoCompActive():
+                self.AutoCompCancel()
+            command = self.GetCommandStr()
+            self.AddText(chr(key_code))
+            if self._use_autocomp:
+                self.ShowCallTip(command)
+        else:
+            evt.Skip()
+        return
+
+    def GetCommandStr(self):
+        curr_pos = self.GetCurrentPos()
+        start = curr_pos - 1
+        col = self.GetColumn(curr_pos)
+        cmd_lmt = list(self._autocomp_svc.GetAutoCompStops())
+        for key in self._autocomp_svc.GetAutoCompKeys():
+            if chr(key) in cmd_lmt:
+                cmd_lmt.remove(chr(key))
+        while self.GetTextRange(start, curr_pos)[0] not in cmd_lmt \
+              and col - (curr_pos - start) > 0:
+            start -= 1
+        s_col = self.GetColumn(start)
+        if s_col != 0:
+            start += 1
+        cmd = self.GetTextRange(start, curr_pos)
+        return cmd.strip()
+  
+    def ShowAutoCompOpt(self, command, offset=0):
+        """Shows the autocompletion options list for the command"""
+        lst = self._autocomp_svc.GetAutoCompList(command)
+        if len(lst):
+            options = u' '.join(lst)
+            self.AutoCompShow(0, options)
+
+    def ShowCallTip(self, command):
+        """Shows call tip for given command"""
+        if self.CallTipActive():
+            self.CallTipCancel()
+        tip = self._autocomp_svc.GetCallTip(command)
+        if len(tip):
+            curr_pos = self.GetCurrentPos()
+            tip_pos = curr_pos - (len(command) + 1)
+            fail_safe = curr_pos - self.GetColumn(curr_pos)
+            tip_pos = max(tip_pos, fail_safe)
+            self.CallTipShow(tip_pos, tip)
 
     def OnUpdateUI(self, evt):
         """Check for matching braces"""
@@ -232,7 +348,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def OnMarginClick(self, evt):
         """Open and Close Folders as Needed"""
-        if evt.GetMargin() == 2:
+        if evt.GetMargin() == FOLD_MARGIN:
             if evt.GetShift() and evt.GetControl():
                 self.FoldAll()
             else:
@@ -251,12 +367,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                             self.Expand(lineClicked, True, True, 100)
                     else:
                         self.ToggleFold(lineClicked)
-        elif evt.GetMargin() == 0:
+        elif evt.GetMargin() == MARK_MARGIN:
             lineClicked = self.LineFromPosition(evt.GetPosition())
             if self.MarkerGet(lineClicked):
-                self.MarkerDelete(lineClicked, 0)
+                self.MarkerDelete(lineClicked, MARK_MARGIN)
             else:
-                self.MarkerAdd(lineClicked, 0)
+                self.MarkerAdd(lineClicked, MARK_MARGIN)
 
     def FoldAll(self):
         """Fold Tree In or Out"""
@@ -339,6 +455,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # many shell scripts that often dont use file extensions
         self.ConfigureLexer(ext)
         self.Colourise(0, -1)
+        # Configure Autocompletion
+        # NOTE: must be done after syntax configuration
+        if self._use_autocomp:
+            self.ConfigureAutoComp()
         return 0
 
     def ControlDispatch(self, evt):
@@ -355,7 +475,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                   ID_CUT_LINE : self.LineCut,   ID_BRACKETHL : self.ToggleBracketHL,
                   ID_COPY_LINE : self.LineCopy, ID_SYNTAX : self.SyntaxOnOff,
                   ID_INDENT : self.Tab,         ID_UNINDENT : self.BackTab,
-                  ID_TRANSPOSE: self.LineTranspose
+                  ID_TRANSPOSE : self.LineTranspose, ID_SELECTALL: self.SelectAll,
+                  ID_FOLDING : self.FoldingOnOff, ID_SHOW_LN : self.ToggleLineNumbers
         }
         if e_obj.GetClassName() == "wxToolBar":
             self.LOG("[stc_evt] Caught Event Generated by ToolBar")
@@ -377,13 +498,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                      ID_DEL_ALL_BM]:
             n = self.GetCurrentLine()
             if e_id == ID_ADD_BM:
-                self.MarkerAdd(n, 0)
+                self.MarkerAdd(n, MARK_MARGIN)
                 return
             elif e_id == ID_DEL_BM:
-                self.MarkerDelete(n, 0)
+                self.MarkerDelete(n, MARK_MARGIN)
                 return
             elif e_id == ID_DEL_ALL_BM:
-                self.MarkerDeleteAll(0)
+                self.MarkerDeleteAll(MARK_MARGIN)
                 return
             elif e_id == ID_NEXT_MARK:
                 if self.MarkerGet(n):
@@ -405,13 +526,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetTargetEnd(self.GetSelectionEnd())
             self.LinesJoin()
         elif e_id == ID_INDENT_GUIDES:
-            self.SetIndentationGuides(not bool(self.GetIndentationGuides))
+            self.SetIndentationGuides(not bool(self.GetIndentationGuides()))
         elif e_id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
             self.ConvertLineMode(e_id)
         elif e_id in syntax.SyntaxIds():
             f_ext = syntax.GetExtFromId(e_id)
             self.LOG("[stc_evt] Manually Setting Lexer to " + str(f_ext))
             self.FindLexer(f_ext)
+        elif e_id == ID_AUTOCOMP:
+            self.SetAutoComplete(not self.GetAutoComplete())
         else:
             evt.Skip()
 
@@ -436,6 +559,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                   }
         return eol_map[eol_mode]
 
+    def SetAutoComplete(self, value):
+        """Turns Autocompletion on and off"""
+        if isinstance(value, bool):
+            self._use_autocomp = value
+            if value:
+                self._autocomp_svc.LoadCompProvider(self.GetLexer())
+
     def SetEOLFromString(self, mode_str):
         """Sets the EOL mode from a string descript"""
         mode_map = { 'Macintosh (\\r\\n)' : wx.stc.STC_EOL_CR,
@@ -446,6 +576,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetEOLMode(mode_map[mode_str])
         else:
             self.SetEOLMode(wx.stc.STC_EOL_LF)
+
+    def FoldingOnOff(self, set=False):
+        """Turn code folding on and off"""
+        if not self.folding or set:
+            self.LOG("[stc_evt] Code Folding Turned On")
+            self.folding = True
+            self.SetMarginWidth(FOLD_MARGIN, 12)
+        else:
+            self.LOG("[stc_evt] Code Folding Turned Off")
+            self.folding = False
+            self.SetMarginWidth(FOLD_MARGIN, 0)
 
     def SyntaxOnOff(self, set=False):
         """Turn Syntax Highlighting on and off"""
@@ -470,7 +611,16 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.LOG("[stc_evt] Bracket Highlighting Turned Off")
             self.brackethl = False
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
-            
+
+    def ToggleLineNumbers(self, set=False):
+        """Toggles the visibility of the line number margin"""
+        if not self.GetMarginWidth(NUM_MARGIN) or set:
+            self.LOG("[stc_evt] Showing Line Numbers")
+            self.SetMarginWidth(NUM_MARGIN, 30)
+        else:
+            self.LOG("[stc_evt] Hiding Line Numbers")
+            self.SetMarginWidth(NUM_MARGIN, 0)
+
     def KeyWordHelpOnOff(self, set=False):
         """Turns KeyWord Help on and off"""
         if not self.kwhelp or set:
@@ -523,6 +673,19 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetZoom(0)
         return self.GetZoom()
 
+    def ConfigureAutoComp(self):
+        """Sets up the Autocompleter, the autocompleter
+        configuration depends on the currently set lexer
+
+        """
+        self.AutoCompSetAutoHide(False)
+        self._autocomp_svc.LoadCompProvider(self.GetLexer())
+        case = self._autocomp_svc.GetIgnoreCase()
+        self.AutoCompSetIgnoreCase(case)
+        stops = self._autocomp_svc.GetAutoCompStops()
+        self.AutoCompStops(stops)
+        self._autocomp_svc.UpdateNamespace(True)
+
     def ConfigureLexer(self, file_ext):
         """Sets Lexer and Lexer Keywords for the specifed file extension"""
         syn_data = syntax.SyntaxData(file_ext)
@@ -570,7 +733,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # Set Extra Properties
         self.SetProperties(props)
         return True
-     
+
     def SetKeyWords(self, kw_lst):
         """Sets the keywords from a list of keyword sets
         PARAM: kw_lst [ (KWLVL, "KEWORDS"), (KWLVL2, "KEYWORDS2"), ect...]
@@ -658,7 +821,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """Updates the base styles of editor to the current settings"""
         self.keywords = [ ' ' ]
         self.StyleDefault()
-
         self.SetMargins(0, 0)
         # Global default styles for all languages
         self.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, self.GetStyleByName('default_style'))
@@ -666,13 +828,16 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.StyleSetSpec(wx.stc.STC_STYLE_CONTROLCHAR, self.GetStyleByName('ctrl_char'))
         self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, self.GetStyleByName('brace_good'))
         self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, self.GetStyleByName('brace_bad'))
+        calltip = self.GetItemByName('calltip')
+        self.CallTipSetBackground(calltip.GetBack())
+        self.CallTipSetForeground(calltip.GetFore())
         self.SetCaretForeground(self.GetDefaultForeColour())
         self.DefineMarkers()
 
     def UpdateAllStyles(self, spec_style=None):
         """Refreshes all the styles and attributes of the control"""
         if spec_style == None:
-            self.LoadStyleSheet(os.path.join(CONFIG['STYLES_DIR'], PROFILE['SYNTHEME'] + u".ess"))
+            self.LoadStyleSheet(self.GetStyleSheet())
         else:
             self.LoadStyleSheet(os.path.join(CONFIG['STYLES_DIR'], spec_style + u".ess"))
         self.UpdateBaseStyles()
@@ -681,4 +846,3 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Refresh()
 
     #---- End Style Definitions ----#
-
