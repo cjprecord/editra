@@ -1,0 +1,27 @@
+/* Comments About This File */
+
+/*** Some tags and psuedo class defs  ***/
+a {
+    text-decoration 	: none;
+}
+
+a:link {
+   color                  : #456;
+}
+
+.tiny {
+   font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", sans-serif;
+   color                  : #666;
+   font-size              : 10px;
+   line-height            : 10px;
+}
+
+.warning { background: yellow; }
+
+/*** Ids defs ***/
+#docpane {
+	width: 98%;
+	padding-top: 10px;
+	margin: 5px;
+}
+
