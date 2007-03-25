@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-03-21 00:33-0500\n"
+"POT-Creation-Date: 2007-03-25 08:05-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgstr ""
 msgid "AntiAliasing"
 msgstr ""
 
-#: ../../src/prefdlg.py:443
+#: ../../src/prefdlg.py:445
 msgid "Appearance"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: ../../src/prefdlg.py:434
+#: ../../src/prefdlg.py:436
 msgid "File History Depth"
 msgstr ""
 
@@ -284,11 +284,11 @@ msgstr ""
 msgid "Highlight Brackets/Braces"
 msgstr ""
 
-#: ../../src/prefdlg.py:449
+#: ../../src/prefdlg.py:451
 msgid "Icon Size"
 msgstr ""
 
-#: ../../src/prefdlg.py:445
+#: ../../src/prefdlg.py:447
 msgid "Icon Theme"
 msgstr ""
 
@@ -309,7 +309,7 @@ msgstr ""
 msgid "Invalid file: %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:579
+#: ../../src/prefdlg.py:581
 msgid "Item"
 msgstr ""
 
@@ -337,7 +337,7 @@ msgstr ""
 msgid "Line Edit"
 msgstr ""
 
-#: ../../src/ed_main.py:821
+#: ../../src/ed_main.py:817
 #, python-format
 msgid "Line: %d  Column: %d"
 msgstr ""
@@ -367,7 +367,7 @@ msgstr ""
 msgid "Manually Set a Lexer/Syntax"
 msgstr ""
 
-#: ../../src/prefdlg.py:406 ../../src/prefdlg.py:501
+#: ../../src/prefdlg.py:406 ../../src/prefdlg.py:503
 msgid "Misc"
 msgstr ""
 
@@ -494,11 +494,11 @@ msgstr ""
 msgid "Redo Last Undo"
 msgstr ""
 
-#: ../../src/prefdlg.py:487
+#: ../../src/prefdlg.py:489
 msgid "Remember Window Position on Exit"
 msgstr ""
 
-#: ../../src/prefdlg.py:484
+#: ../../src/prefdlg.py:486
 msgid "Remember Window Size on Exit"
 msgstr ""
 
@@ -533,7 +533,7 @@ msgstr ""
 msgid "Save As"
 msgstr ""
 
-#: ../../src/ed_main.py:950
+#: ../../src/ed_main.py:946
 msgid "Save Changes?"
 msgstr ""
 
@@ -571,7 +571,7 @@ msgstr ""
 msgid "Select All Text in Document"
 msgstr ""
 
-#: ../../src/ed_main.py:315 ../../src/prefdlg.py:433
+#: ../../src/ed_main.py:315 ../../src/prefdlg.py:435
 msgid "Settings"
 msgstr ""
 
@@ -587,7 +587,7 @@ msgstr ""
 msgid "Show Line Number Margin"
 msgstr ""
 
-#: ../../src/ed_main.py:232
+#: ../../src/ed_main.py:232 ../../src/prefdlg.py:411
 msgid "Show Line Numbers"
 msgstr ""
 
@@ -595,7 +595,7 @@ msgstr ""
 msgid "Show Toolbar"
 msgstr ""
 
-#: ../../src/ed_main.py:234 ../../src/prefdlg.py:411
+#: ../../src/ed_main.py:234 ../../src/prefdlg.py:413
 msgid "Show Whitespace"
 msgstr ""
 
@@ -615,7 +615,7 @@ msgstr ""
 msgid "Style Editor"
 msgstr ""
 
-#: ../../src/syntax/syntax.py:167
+#: ../../src/syntax/syntax.py:169
 #, python-format
 msgid "Switch Lexer to %s"
 msgstr ""
@@ -632,7 +632,7 @@ msgstr ""
 msgid "Tab Width"
 msgstr ""
 
-#: ../../src/prefdlg.py:426
+#: ../../src/prefdlg.py:428
 msgid "Text"
 msgstr ""
 
@@ -642,7 +642,7 @@ msgid ""
 "Perhaps its been moved or deleted"
 msgstr ""
 
-#: ../../src/ed_main.py:948
+#: ../../src/ed_main.py:944
 #, python-format
 msgid ""
 "The file: \"%s\" has been modified since the last save point.\n"
@@ -657,7 +657,7 @@ msgstr ""
 msgid "Tools"
 msgstr ""
 
-#: ../../src/prefdlg.py:464
+#: ../../src/prefdlg.py:466
 msgid "Transparency"
 msgstr ""
 
@@ -689,11 +689,11 @@ msgstr ""
 msgid "Unix (\\n)"
 msgstr ""
 
-#: ../../src/prefdlg.py:518
+#: ../../src/prefdlg.py:520
 msgid "Update"
 msgstr ""
 
-#: ../../src/prefdlg.py:507
+#: ../../src/prefdlg.py:509
 msgid "Update Status"
 msgstr ""
 
@@ -701,7 +701,7 @@ msgstr ""
 msgid "Use Auto Completion when available"
 msgstr ""
 
-#: ../../src/prefdlg.py:478
+#: ../../src/prefdlg.py:480
 msgid "Use Metal Style (OS X Only)"
 msgstr ""
 
@@ -709,7 +709,7 @@ msgstr ""
 msgid "Use Tabs Instead of Whitespaces"
 msgstr ""
 
-#: ../../src/prefdlg.py:580
+#: ../../src/prefdlg.py:582
 msgid "Value"
 msgstr ""
 
@@ -746,7 +746,7 @@ msgstr ""
 msgid "Wrap Text Horizontally"
 msgstr ""
 
-#: ../../src/prefdlg.py:508
+#: ../../src/prefdlg.py:510
 #, python-format
 msgid "You are running version: %s"
 msgstr ""
