@@ -42,20 +42,23 @@ import ed_glob
 __platform__ = os.sys.platform
 
 #---- Global Settings ----#
-APP = ['editra.py']
+APP = ['Editra.py']
 
 AUTHOR = "Cody Precord"
 
 AUTHOR_EMAIL = "staff@editra.org"
 
+YEAR = 2007
+
 DATA_FILES = [ 
               ("src", glob.glob("*.py")),
+	      ("src/autocomp", glob.glob("autocomp/*.py")),
               ("src/extern", ["extern/__init__.py", "extern/README"]),
               ("src/syntax", glob.glob("syntax/*.py syntax/README")),
               ("pixmaps", ["../pixmaps/editra.png", "../pixmaps/editra.ico",
                            "../pixmaps/editra.icns"]),
               ("pixmaps/mime", glob.glob("../pixmaps/mime/*.png")),
-              ("pixmaps/theme/Stock", glob.glob("../pixmaps/theme/Stock/*")),
+              ("pixmaps/theme/Stock", glob.glob("../pixmaps/theme/Stock/[A-Z]*")),
               ("pixmaps/theme/Stock/toolbar", glob.glob("../pixmaps/theme/Stock/toolbar/*.png")),
               ("pixmaps/theme/Stock/menu", glob.glob("../pixmaps/theme/Stock/menu/*.png")),
               ("templates", glob.glob("../templates/*")),
@@ -67,7 +70,7 @@ DATA_FILES = [
               ("scripts", ["../scripts/clean_dir.sh"]),
               ("scripts/i18n", glob.glob("../scripts/i18n/*.po")),
               ("styles", glob.glob("../styles/*.ess")),
-	      ("test_data", glob.glob("../test_data/*")),
+              ("test_data", glob.glob("../test_data/*")),
               ("docs", glob.glob("../docs/*.txt")),
               "../README.txt","../CHANGELOG.txt","../COPYING.txt"
             ]
@@ -75,7 +78,7 @@ DATA_FILES = [
 DESCRIPTION = "Code Editor"
 
 ICON = { 'Win' : "../pixmaps/editra.ico",
-         'Mac' : "../pixmaps/editra.icns"
+         'Mac' : "../pixmaps/Editra.icns"
 }
 
 INCLUDES = ['syntax.*']
@@ -113,6 +116,17 @@ manifest_template = '''
 </assembly>
 '''
 
+PLIST = dict(CFBundleName = ed_glob.prog_name,
+             CFBundleShortVersionString = ed_glob.version,
+             CFBundleGetInfoString = ed_glob.prog_name + " " + ed_glob.version,
+             CFBundleExecutable = ed_glob.prog_name,
+             CFBundleIdentifier = "com.editor.%s" % ed_glob.prog_name.lower(),
+             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=["*"],
+                                           CFBundleTypeRole="Editor"),
+                                     ],
+             NSHumanReadableCopyright = u"Copyright %s %d" % (AUTHOR, YEAR)
+             )
+
 RT_MANIFEST = 24
 #---- End Global Settings ----#
 
@@ -130,7 +144,7 @@ if __platform__ == "win32":
         name = NAME, 
         version = VERSION, 
         options = {"py2exe" : {"compressed" : 1, "optimize" : 2, "includes" : INCLUDES }},
-        windows = [{"script": "editra.py","icon_resources": [(1, ICON['Win'])], "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
+        windows = [{"script": "Editra.py","icon_resources": [(1, ICON['Win'])], "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
@@ -151,7 +165,8 @@ elif __platform__ == "darwin":
                           iconfile = ICON['Mac'], 
                           argv_emulation = True,
                           optimize = True,
-                          includes = INCLUDES)
+                          includes = INCLUDES,
+                          plist = PLIST)
 
     setup(
         app = APP,

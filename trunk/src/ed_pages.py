@@ -50,9 +50,10 @@ import os			 # Python Modules
 import sys
 import re
 import wx			 # wxPython Modules
-from ed_glob import CONFIG, version, prog_name
-import ed_stc 			 # Editra Styled Text Control
+import ed_glob
+import ed_stc 		# Editra Styled Text Control
 import ed_search
+import util
 import wx.lib.flatnotebook as FNB
 
 #---- Class Globals ----#
@@ -70,13 +71,13 @@ class ED_Pages(FNB.FlatNotebook):
                                         FNB.FNB_X_ON_TAB | 
                                         FNB.FNB_SMART_TABS |
                                         FNB.FNB_BACKGROUND_GRADIENT
-                                        # FNB.FNB_HIDE_ON_SINGLE_TAB
+                                        #FNB.FNB_HIDE_ON_SINGLE_TAB
                             )
 
         # Notebook attributes
         self.LOG = log
         self.FindService = ed_search.TextFinder(self, self.GetCurrentCtrl)
-        self.pg_num = -1              # Track page numbers for ID creation
+        self.pg_num = 0               # Track page numbers for ID creation
         self.control = ed_stc.EDSTC   # Current Control page
         self.frame = parent           # MainWindow
         self.tab_close = -1           # Tab icon
@@ -101,6 +102,7 @@ class ED_Pages(FNB.FlatNotebook):
     #---- Function Definitions ----#
     def AddPage(self, control, title):
         """Adds a page to the notebook"""
+        self.pg_num += 1
         FNB.FlatNotebook.AddPage(self, control, title, imageId=self.tab_close)
 
     def GetCurrentCtrl(self):
@@ -115,11 +117,8 @@ class ED_Pages(FNB.FlatNotebook):
 
     def NewPage(self):
         """Create a new notebook page with a blank text control"""
-        self.pg_num += 1
         # Create a new blank page and put it in the notebook
-        self.control = ed_stc.EDSTC(self, self.pg_num,
-                                   style=wx.TE_MULTILINE|wx.TE_RICH2, 
-                                   log = self.LOG)
+        self.control = ed_stc.EDSTC(self, self.pg_num, log = self.LOG)
         self.LOG("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
         self.SetPageImage(self.GetSelection(), IMG['TXT'])
@@ -138,12 +137,18 @@ class ED_Pages(FNB.FlatNotebook):
         if os.path.exists(path2file) and (not os.path.isfile(path2file)):
             return
 
-        self.pg_num += 1
+        if self.HasFileOpen(path2file):
+            mdlg = wx.MessageDialog(self, _("Open File") + u"?", 
+                                    _("File is already open in an existing page."
+                                      "\nDo you wish to open it again?"),
+                                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_INFORMATION)
+            result = mdlg.ShowModal()
+            mdlg.Destroy()
+            if result == wx.ID_NO:
+                return
 
         # Create control to place text on
-        self.control = ed_stc.EDSTC(self, self.pg_num,
-                                    style = wx.TE_MULTILINE|wx.TE_RICH2, 
-                                    log = self.LOG)
+        self.control = ed_stc.EDSTC(self, self.pg_num, log = self.LOG)
 
         # Pass directory and file name info to control object to save reference
         self.control.dirname = path
@@ -196,7 +201,45 @@ class ED_Pages(FNB.FlatNotebook):
         self.control = control
         return current_page
 
+    def GetTextControls(self):
+        """Gets all the currently oppend text controls"""
+        children = self.GetChildren()
+        controls = list()
+        for child in children:
+            if hasattr(child, '__name__') and child.__name__ == u"EditraTextCtrl":
+                controls.append(child)
+        return controls
+
+    def HasFileOpen(self, fpath):
+        """Checks if one of the currently active buffers has
+        the named file in it.
+
+        """
+        ctrls = self.GetTextControls()
+        for ctrl in ctrls:
+            if fpath == os.path.join(ctrl.dirname, ctrl.filename):
+                return True
+        return False
+
     #---- Event Handlers ----#
+    def OnDrop(self, files):
+        """Opens drop files"""
+        # Check file properties and make a "clean" list of file(s) to open
+        valid_files = list()
+        for fname in files:
+            self.LOG("[fdt_evt] File(s) Dropped: " + fname)
+            if (not os.path.exists(fname)) or (not os.path.isfile(fname)):
+                self.GetParent().PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
+            else:
+                valid_files.append(fname)
+
+        for fname in valid_files:
+            pathname = util.GetPathName(fname)
+            the_file = util.GetFileName(fname)
+            self.OpenPage(pathname, the_file)
+            self.GetParent().PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
+        return
+
     def OnLeftUp(self, evt):
         """Traps clicks sent to page close buttons and 
         redirects the action to the ClosePage function
@@ -235,7 +278,7 @@ class ED_Pages(FNB.FlatNotebook):
 
         self.frame.SetTitle(self.control.filename + " - " + "file://" + 
                       self.control.dirname + self.control.path_char + 
-                      self.control.filename + " - " + prog_name + " v" + version)
+                      self.control.filename + " - " + ed_glob.prog_name + " v" + ed_glob.version)
 
         matchstrn = re.compile('Untitled*')
 
@@ -285,7 +328,7 @@ class ED_Pages(FNB.FlatNotebook):
         #HACK should use themimetypemanager to handle filetypes/images ect
         #     just cant seem to get it to work properly on the mac right now.
         # Get Images
-        img_dir = CONFIG['MIME_DIR']
+        img_dir = ed_glob.CONFIG['MIME_DIR']
         IMG["C"] = wx.Bitmap(img_dir + "c.png", wx.BITMAP_TYPE_PNG)
         IMG["CPP"] = wx.Bitmap(img_dir + "cpp.png", wx.BITMAP_TYPE_PNG)
         IMG["CSS"] = wx.Bitmap(img_dir + "css.png", wx.BITMAP_TYPE_PNG)
@@ -305,7 +348,7 @@ class ED_Pages(FNB.FlatNotebook):
         # Create Image List
         il = wx.ImageList(16, 16)
 
-        # Add Images to List and restore indexs to IMG dictionary
+        # Add Images to List and store index in IMG dictionary
         IMG["C"] = il.Add(IMG["C"])
         IMG["CPP"] = il.Add(IMG["CPP"])
         IMG["CSS"] = il.Add(IMG["CSS"])
@@ -340,15 +383,6 @@ class ED_Pages(FNB.FlatNotebook):
             self.SetPageImage(pg_num, IMG[ftype])
         else:
             self.SetPageImage(pg_num, IMG["TXT"])
-
-    def GetTextControls(self):
-        """Gets all the currently oppend text controls"""
-        children = self.GetChildren()
-        controls = list()
-        for child in children:
-            if hasattr(child, '__name__') and child.__name__ == u"EditraTextCtrl":
-                controls.append(child)
-        return controls
 
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have

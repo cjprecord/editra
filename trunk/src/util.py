@@ -43,6 +43,7 @@ __revision__ = "$Id: $"
 # Dependancies
 import os
 import sys
+import codecs
 import wx
 import ed_glob
 import dev_tool
@@ -50,49 +51,102 @@ import dev_tool
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
+# Found this while playing around with the PyPe source code finally
+# solved the problem of allowing drag n drop text at the same time as
+# drag and drop files.
+class DropTargetFT(wx.PyDropTarget):
+    def __init__(self, window):
+        wx.PyDropTarget.__init__(self)
+        self.window = window
+        self.initObjects()
 
-#---- Drag And Drop File Support ----#
-class DropTarget(wx.FileDropTarget):
-    """Impliments Drag and Drop Files Support for the editor"""
-    def __init__(self, control, frame, log):
-        """Initialize a Drop Target Object"""
-        wx.FileDropTarget.__init__(self)
-        self.control   = control # MainWindow Text Control
-        self.window    = frame.frame
-        self.LOG       = log
+    def initObjects(self):
+        self.data = wx.DataObjectComposite()
+        self.textDataObject = wx.TextDataObject()
+        self.fileDataObject = wx.FileDataObject()
+        self.data.Add(self.textDataObject, True)
+        self.data.Add(self.fileDataObject, False)
+        self.SetDataObject(self.data)
 
-    def OnDropFiles(self, x_ord, y_ord, filenames):
-        """Catches the drop file(s), validates, and passes them to the 
-        open function.
+    def OnEnter(self, x, y, dragResult):
+        return dragResult
 
-        """
-        # Check file properties and make a "clean" list of file(s) to open
-        valid_files = list()
-        for fname in filenames:
-            self.LOG("[fdt_evt] File(s) Dropped: " + fname)
-            if (not os.path.exists(fname)) or (not os.path.isfile(fname)):
-                self.window.PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
+    def OnDrop(self, x=0, y=0):
+        return True
+
+    def OnDragOver(self, x, y, dragResult):
+        return dragResult
+
+    def OnData(self, x, y, dragResult):
+        if self.GetData():
+            files = self.fileDataObject.GetFilenames()
+            text = self.textDataObject.GetText()
+            
+            if len(files) > 0:
+                self.window.OnDrop(files)
+            elif(len(text) > 0):
+                if SetClipboardText(text):
+                    win = self.window.GetCurrentCtrl()
+                    if True:
+                        p = win.PositionFromPointClose(x,y)
+                        win.SetSelection(p,p)
+                        win.Paste()
             else:
-                valid_files.append(fname)
-
-        self.OpenDropFiles(valid_files)
-
-        return
-
-    def OpenDropFiles(self, filenames):
-        """Opens dropped text file(s)"""
-        for fname in filenames:
-            pathname = GetPathName(fname)
-            the_file = GetFileName(fname)
-            self.window.nb.OpenPage(pathname, the_file)
-            self.window.PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
-        return
-
+                self.window.SetStatusText("can't read this dropped data")
+        self.initObjects()
 #---- End FileDropTarget ----#
 
 #---- Misc Common Function Library ----#
+def SetClipboardText(txt):
+    do = wx.TextDataObject()
+    do.SetText(txt)
+    if wx.TheClipboard.Open():
+        wx.TheClipboard.SetData(do)
+        wx.TheClipboard.Close()
+        return 1
+    return 0
 
 # File Helper Functions
+def GetFileReader(file_name):
+    """Returns a file stream reader object for reading the
+    supplied file name. It returns a utf-8 reader if the host
+    system supports it other wise it will return an ascii reader.
+    If there is an error in creating the file reader the function 
+    will return a negative number.
+
+    """
+    try:
+        file_h = file(file_name, "rb")
+    except:
+        dev_tool.DEBUGP("[file_reader] Failed to open file %s" % file_name)
+        return -1
+    try:
+        reader = codecs.lookup('utf-8')[2](file_h)
+    except:
+        dev_tool.DEBUGP('[file_reader] Failed to get UTF-8 Reader')
+        reader = file_h
+    return reader
+
+def GetFileWriter(file_name):
+    """Returns a file stream writer object for reading the
+    supplied file name. It returns a utf-8 reader if the host
+    system supports it other wise it will return an ascii reader.
+    If there is an error in creating the file reader the function 
+    will return a negative number.
+
+    """
+    try:
+        file_h = file(file_name, "wb")
+    except:
+        dev_tool.DEBUGP("[file_writer] Failed to open file %s" % file_name)
+        return -1
+    try:
+        writer = codecs.lookup('utf-8')[3](file_h)
+    except:
+        dev_tool.DEBUGP('[file_writer] Failed to get UTF-8 Writer')
+        writer = file_h
+    return writer
+
 def GetPathChar():
     """Returns the path character for the OS running the program"""
     if wx.Platform == '__WXMSW__':
@@ -137,7 +191,6 @@ def GetIds(obj_lst):
     id_list = []
     for obj in obj_lst:
         id_list.append(obj.GetId())
-
     return id_list
 
 def ResolvAbsPath(rel_path):
@@ -177,8 +230,8 @@ def HasConfigDir(loc=""):
         return False
 
 def CreateConfigDir():
-    """ Creates the config directory its sub directories
-    and any of the default config files.
+    """ Creates the user config directory its default sub 
+    directories and any of the default config files.
 
     """
 
@@ -214,7 +267,7 @@ def CreateConfigDir():
     from profiler import UpdateProfileLoader
     UpdateProfileLoader()
 
-def ResolvConfigDir(config_dir):
+def ResolvConfigDir(config_dir, sys_only=False):
     """Checks for a user config directory and if it is not
     found it then resolves the absolute path of the executables 
     directory from the relative execution path. This is then used 
@@ -223,15 +276,28 @@ def ResolvConfigDir(config_dir):
     string.
 
     """
-    user_config = ( wx.GetHomeDir() + GetPathChar() + "." +
-                    ed_glob.prog_name + GetPathChar() + config_dir )
 
-    # First Check for existing user config
-    if os.path.exists(user_config):
-        return user_config + GetPathChar()
+    if not sys_only:
+        # Try to look for a user dir
+        user_config = ( wx.GetHomeDir() + GetPathChar() + "." +
+                        ed_glob.prog_name + GetPathChar() + config_dir )
+        if os.path.exists(user_config):
+            return user_config + GetPathChar()
 
-    #---- Begin Resolve Config Directory ----#
-    path = sys.argv[0]
+    # The following lines are used only when Editra is installed as a
+    # Python Package. If it fails then editra has been installed and is
+    # being run in some other manner.
+    base = u''
+    for key in sys.path_importer_cache:
+        if os.path.basename(key) == 'Editra':
+            base = key
+    if base != u'':
+        return os.path.join(base, config_dir) + GetPathChar()
+
+    # If we get here we need to do some platform dependant lookup
+    # to find everything. This is probably much more of a mess than
+    # need be.
+    path = sys.argv[0] #os.path.dirname(os.path.abspath(sys.argv[0]))
     path_char = GetPathChar()
 
     # If it is a link get the real path
@@ -253,7 +319,6 @@ def ResolvConfigDir(config_dir):
             pro_path = path_char.join(pieces[:-1])
         else:
             pro_path = ResolvAbsPath(pro_path)
-
     else:
         pro_path = path_char.join(pieces[:-2])
 
@@ -279,7 +344,6 @@ def ResolvConfigDir(config_dir):
     else:
         pro_path = ( os.path.normpath(pro_path) + 
                      path_char + config_dir + path_char )
-
     return pro_path
 
 def GetResources(resource):
@@ -296,24 +360,53 @@ def GetResources(resource):
 
         return rec_lst
 
-def GetResourceFiles(resource, trim=True):
+def GetResourceFiles(resource, trim=True, get_all=False):
     """Gets a list of resource files from a directory and trims the
     file extentions from the names if trim is set to True (default).
+    If the get_all parameter is set to True the function will return
+    a set of unique items by looking up both the user and system level
+    files and combining them, the default behavior returns the user
+    level files if they exist or the system level files if the
+    user ones do not exist.
 
     """
     rec_dir = ResolvConfigDir(resource)
+    if get_all:
+        rec_dir2 = ResolvConfigDir(resource, True)
     rec_list = list()
     if not os.path.exists(rec_dir):
         return -1
     else:
         recs = os.listdir(rec_dir)
+        if get_all and os.path.exists(rec_dir2):
+            recs.extend(os.listdir(rec_dir2))
         for rec in recs:
-            if os.path.isfile(rec_dir + rec):
+            if os.path.isfile(rec_dir + rec) or \
+              (get_all and os.path.isfile(rec_dir2 + rec)):
                 if trim:
                     rec = rec.split(u".")[0]
                 rec_list.append(rec.title())
         rec_list.sort()
-        return rec_list
+        return list(set(rec_list))
+
+# GUI helper functions
+def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
+    """ Brighten/Darken input colour by percent and adjust alpha
+    channel if needed. Returns the modified color.
+
+    """ 
+    end_color = wx.WHITE
+    rd = end_color.Red() - color.Red()
+    gd = end_color.Green() - color.Green()
+    bd = end_color.Blue() - color.Blue()
+    high = 100
+
+    # We take the percent way of the color from color -. white
+    i = percent
+    r = color.Red() + ((i*rd*100)/high)/100
+    g = color.Green() + ((i*gd*100)/high)/100
+    b = color.Blue() + ((i*bd*100)/high)/100
+    return wx.Colour(r, g, b, alpha)
 
 # String Manupulation/Conversion Utilities
 def StrToTuple(tu_str):
@@ -344,4 +437,38 @@ def StrToTuple(tu_str):
 
     return tuple(ret_tu)
 
-            
+class IntValidator(wx.PyValidator):
+    """A Generic integer validator"""
+    def __init__(self, min=0, max=0):
+        wx.PyValidator.__init__(self)
+        self._min = min
+        self._max = max
+
+        # Event managment
+        self.Bind(wx.EVT_CHAR, self.OnChar)
+
+    def Clone(self):
+        """Clones the current validator"""
+        return IntValidator(self._min, self._max)
+
+    def Validate(self, win):
+        """Validate an window value"""
+        ctrl = self.GetWindow()
+        val = ctrl.GetValue()      
+        return val.isdigit()
+
+    def OnChar(self, event):
+        """Process values as they are entered into the control"""
+        key = event.GetKeyCode()
+        if key < wx.WXK_SPACE or key == wx.WXK_DELETE or key > 255:
+            event.Skip()
+            return
+
+        if chr(key) in '0123456789':
+            event.Skip()
+            return
+
+        if not wx.Validator_IsSilent():
+            wx.Bell()
+
+        return

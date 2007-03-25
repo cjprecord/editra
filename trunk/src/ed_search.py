@@ -46,15 +46,6 @@ import dev_tool
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-class QueryData(wx.FindReplaceData):
-    """A container class for holding various data related to finding text"""
-    def __init__(self, flags=0):
-        """Initializes the default data"""
-        wx.FindReplaceData.__init__(self, flags)
-        self.SetFlag(wx.FR_DOWN)
-
-        # Attributes
-        
 class TextFinder:
     """Provides an object to manage finding text in documents
     through various different methods, plain text, regex, ect...
@@ -69,11 +60,15 @@ class TextFinder:
         self._replace_dlg = None
         self._find_dlg    = None
         self._pool        = None
+        self._scroll      = 0
         self._start       = 0
         self._last_found  = 0
         self.FetchPool    = callable
         self._data        = wx.FindReplaceData()
         self._data.SetFlags(wx.FR_DOWN)
+
+    def GetData(self):
+        return self._data
 
     def OnFind(self, evt):
         """Does the work of finding the text"""
@@ -89,7 +84,7 @@ class TextFinder:
 
         # Get the Search Flags
         s_flags = self._data.GetFlags()
-
+        print s_flags       # TESTING 
         # Fetch the Search Pool and Query
         pool = self.FetchPool()
         query = self._data.GetFindString()
@@ -106,24 +101,30 @@ class TextFinder:
            #     found = pool.SearchPrev(flag_map[s_flags], query)
            # else:
             found = pool.SearchNext(s_flags | wx.stc.STC_FIND_REGEXP, query)
-            if found != -1:
+            if found > 0:
                 pool.SetCurrentPos(found)
                 # HACK to ensure selection is visible
                 sel = pool.GetSelection()
                 pool.SetSelection(sel[1], sel[0])
             else:
+                # Try search from top
                 self.SetStart(pool)
+                self.SetScroll(pool)
                 pool.SetCurrentPos(0)
                 pool.SetSelection(0,0)
+                pool.SearchAnchor()
                 found = pool.SearchNext(s_flags | wx.stc.STC_FIND_REGEXP, query)
             if found < 0:
+                # We couldnt find it anywhere so set screen back to start position
+                pool.ScrollToLine(self._scroll)
                 pool.SetCurrentPos(self._start)
                 pool.SetSelection(self._start, self._start)
-                dlg = wx.MessageDialog(self._parent, _("The search string \"%s\" was not found"
-                                                      " in the document") % query,
-                                       _("Not Found"), wx.OK | wx.ICON_INFORMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
+                wx.Bell() # alert user to unfound string
+            else:
+                pool.SetCurrentPos(found)
+                # HACK to ensure selection is visible
+                sel = pool.GetSelection()
+                pool.SetSelection(sel[1], sel[0])
 
             self._last_found = found
         elif search_id == wx.wxEVT_COMMAND_FIND_REPLACE:
@@ -132,9 +133,10 @@ class TextFinder:
         elif search_id == wx.wxEVT_COMMAND_FIND_REPLACE_ALL:
             replacestring = evt.GetReplaceString()
             self.SetStart(pool) # Save Start point
+            self.SetScroll(pool) # Save scroll pos
             pool.SetTargetStart(0)
             pool.SetTargetEnd(pool.GetLength())
-            pool.SetSearchFlags(flag_map[s_flags - wx.FR_DOWN])
+            pool.SetSearchFlags(flag_map[s_flags - wx.FR_DOWN] | wx.stc.STC_FIND_REGEXP)
             replaced = 0
             while pool.SearchInTarget(query) > 0:
                 pool.SetSelection(pool.GetTargetStart(), pool.GetTargetEnd())
@@ -142,6 +144,7 @@ class TextFinder:
                 pool.SetTargetStart(pool.GetTargetEnd() - (len(query) - len(replacestring)))
                 pool.SetTargetEnd(pool.GetLength())
                 replaced += 1
+            pool.ScrollToLine(self._scroll)
             pool.SetCurrentPos(self._start) # Move cursor back to start
             pool.SetSelection(self._start, self._start)
             dlg = wx.MessageDialog(self._parent, 
@@ -191,6 +194,14 @@ class TextFinder:
         """Set the find services search flags"""
         self._data.SetFlags(flags)
 
+    def SetScroll(self, pool):
+        """Sets the value of the scroll attribute to the value of the
+        current position in the search pool.
+
+        """
+        self._scroll = pool.GetFirstVisibleLine()
+        return True
+
     def SetStart(self, pool):
         """Sets the value of the start attribute to the value of the
         current position in the search pool.
@@ -205,7 +216,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
 
     """
     def __init__(self, parent, id, value="", menulen=0, pos=wx.DefaultPosition, 
-               size=wx.DefaultSize, style=wx.TE_PROCESS_ENTER):
+               size=wx.DefaultSize, style=wx.TE_PROCESS_ENTER | wx.TE_RICH2):
         """Initializes the Search Control"""
         wx.SearchCtrl.__init__(self, parent, id, value, pos, size, style)
         
@@ -213,12 +224,12 @@ class ED_SearchCtrl(wx.SearchCtrl):
         self._parent     = parent
         # TEMP HACK
         self.FindService = parent.GetParent().nb.FindService
-        self.histlen     = menulen            # Length of history to keep
-        self.recent      = list()             # The History List
+        self._flags      = wx.FR_DOWN
+        self._recent     = list()             # The History List
         self._last       = None
         self.rmenu       = self.MakeMenu()     # Menu to display search history
-        self.max_menu    = 6                  # Max length of history menu
-        
+        self.max_menu    = menulen            # Max length of history menu
+
         # Recent Search Menu
         self.SetMenu(self.rmenu)
 
@@ -229,13 +240,23 @@ class ED_SearchCtrl(wx.SearchCtrl):
         self.Bind(wx.EVT_MENU, self.OnHistMenu)
 
     #---- Functions ----#
-    def MakeMenu(self):
-        """Initializes the Search History Menu"""
-        menu = wx.Menu()
-        lbl = menu.Append(wx.ID_ANY, _("Recent Searches"))
-        lbl.Enable(False)
-        menu.AppendSeparator()
-        return menu
+    def ClearSearchFlag(self, flag):
+        """Clears a previously set search flag"""
+        self._flags ^= flag
+
+    def GetSearchData(self):
+        """Gets the find data from the controls FindService"""
+        if hasattr(self.FindService, "GetData"):
+            return self.FindService.GetData()
+        else:
+            return None
+
+    def GetHistory(self):
+        """Gets and returns the history list of the control"""
+        if hasattr(self, "_recent"):
+            return self._recent
+        else:
+            return list()
 
     def InsertHistoryItem(self, value):
         """Inserts a search query value into the top of the history stack"""
@@ -252,10 +273,59 @@ class ED_SearchCtrl(wx.SearchCtrl):
         n_item = wx.MenuItem(self.rmenu, wx.NewId(), value)
         self.rmenu.InsertItem(2, n_item)
 
+        # Update History list
+        self._recent.insert(0, value)
+        if len(self._recent) > self.max_menu:
+            self._recent.pop()
+
         # Check Menu Length
         m_len = self.rmenu.GetMenuItemCount()
         if m_len > self.max_menu:
             self.rmenu.RemoveItem(m_items[-1])
+
+    # XXX ditch these and make the caller check the bitmask
+    def IsMatchCase(self):
+        """Returns True if the search control is set to search
+        in Match Case mode.
+
+        """
+        data = self.GetSearchData()
+        if data != None:
+            if wx.FR_MATCHCASE & data.GetFlags():
+                return True
+        return False
+
+    def IsWholeWord(self):
+        """Returns True if the search control is set to search
+        in Whole Word mode.
+
+        """
+        data = self.GetSearchData()
+        if data != None:
+            if wx.FR_WHOLEWORD & data.GetFlags():
+                return True
+        return False
+
+    def MakeMenu(self):
+        """Initializes the Search History Menu"""
+        menu = wx.Menu()
+        lbl = menu.Append(wx.ID_ANY, _("Recent Searches"))
+        lbl.Enable(False)
+        menu.AppendSeparator()
+        return menu
+
+    def SetHistory(self, hist_list):
+        """Populates the history list from a list of
+        string values.
+
+        """
+        hist_list.reverse()
+        for item in hist_list:
+            self.InsertHistoryItem(item)
+
+    def SetSearchFlag(self, flags):
+        """Sets the search data flags"""
+        self._flags |= flags
 
     #---- End Functions ----#
 
@@ -267,7 +337,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
             dev_tool.DEBUGP("[search_evt] Search Text Entered %s" % str(self.GetValue()))
             self.InsertHistoryItem(self.GetValue())
             self.FindService.SetQueryString(self.GetValue())
-            self.FindService.SetSearchFlags(wx.FR_DOWN)
+            self.FindService.SetSearchFlags(self._flags)
             if self.GetValue() != self._last:
                 s_cmd = wx.wxEVT_COMMAND_FIND
             else:
@@ -275,11 +345,35 @@ class ED_SearchCtrl(wx.SearchCtrl):
             self._last = self.GetValue()
             self.FindService.OnFind(wx.FindDialogEvent(s_cmd))
         elif e_type == wx.wxEVT_KEY_UP:
+            e_key = evt.GetKeyCode()
             tmp = self.GetValue()
+            # Dont do search 
+            if tmp == wx.EmptyString or evt.CmdDown() or e_key == wx.WXK_COMMAND:
+                return
             if len(self.GetValue()) > 0:
                 self.ShowCancelButton(True)
             else:
                 self.ShowCancelButton(False)
+            self.FindService.SetQueryString(self.GetValue())
+            self.FindService.SetSearchFlags(self._flags)
+            self.FindService.OnFind(wx.FindDialogEvent(wx.wxEVT_COMMAND_FIND))
+        else:
+            evt.Skip()
+            return
+
+        # Give feedback on whether text was found or not
+        if self.FindService._last_found < 0 and len(self.GetValue()) > 0:
+            chgd = self.SetForegroundColour(wx.RED)
+            if chgd:
+                wx.Bell() # Beep on the first not found char
+            
+        else:
+            # ?wxBUG? cant set text back to black after changing color
+            # But setting it to this almost black color works. Most likely its
+            # due to bit masking but I havent looked at the source so I am not
+            # sure
+            chgd = self.SetForegroundColour(wx.ColorRGB(0 | 1 | 0))
+        self.Refresh()
 
     def OnCancel(self, evt):
         """Cancels the Search Query"""
@@ -290,7 +384,10 @@ class ED_SearchCtrl(wx.SearchCtrl):
         """Sets the search controls value to the selected menu item"""
         item_id = evt.GetId()
         item = self.rmenu.FindItemById(item_id)
-        self.SetValue(item.GetLabel())
+        if item != None:
+            self.SetValue(item.GetLabel())
+        else:
+            evt.Skip()
 
     #---- End Event Handlers ----#
 

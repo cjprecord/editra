@@ -53,27 +53,28 @@ __revision__ = "$Id: $"
 #--------------------------------------------------------------------------#
 # Dependancies
 
-import os			# Python OS libraries
-import sys			# Python System libraries
+import os
+import sys
 import time
-import wx			# wxPython libraries
-from ed_glob import *		# Global Variables
-import util 			# Misc Helper functions
-import profiler                 # Profile Toolkit
-import ed_toolbar               # Toolbar Class
-import ed_pages                 # Notebook Class
+import wx
+from ed_glob import *
+import util
+import profiler
+import ed_toolbar
+import ed_pages
 import ed_print
 import ed_cmdbar
 import syntax.syntax as syntax
+import generator
 
 # Function Aliases
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-
 class MainWindow(wx.Frame):
-    """This is the main class that glues everything together"""
+    """Editras Main Window"""
     def __init__(self, parent, id, wsize, title, log):
+        """Initialiaze the Frame and Event Handlers"""
         wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=wsize,
                           style=wx.DEFAULT_FRAME_STYLE | wx.NO_FULL_REPAINT_ON_RESIZE)
 
@@ -99,7 +100,7 @@ class MainWindow(wx.Frame):
                 self.SetExtraStyle(wx.FRAME_EX_METAL)
 
         #---- Sizers to hold subapplets ----#
-       # self.sizer = wx.BoxSizer()
+        self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         #---- Setup File History ----#
         self.filehistory = wx.FileHistory(int(PROFILE['FHIST_LVL']))
@@ -108,15 +109,17 @@ class MainWindow(wx.Frame):
         self.toolbar = None
 
         #---- Notebook to hold editor windows ----#
-        self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.nb = ed_pages.ED_Pages(self, -1, log)
         self.sizer.Add(self.nb, 6, wx.EXPAND)
         self.sizer.Layout()
         self.SendSizeEvent()
         self.SetSizer(self.sizer)
 
-        #---- Command Bar
-        self._cmdbar = ed_cmdbar.CommandBar(self, wx.ID_ANY)
+        #---- Setup Printer ----#
+        self.printer = ed_print.ED_Printer(self, self.nb.GetCurrentCtrl)
+
+        #---- Command Bar ----#
+        self._cmdbar = ed_cmdbar.CommandBar(self, ID_COMMAND_BAR)
         self._cmdbar.Hide()
 
         #---- Status bar on bottom of window ----#
@@ -193,10 +196,10 @@ class MainWindow(wx.Frame):
                             _("Cut Current Line"))
         self.linemenu.Append(ID_COPY_LINE, _("Copy Line") + "\tCtrl+Y",
                             _("Copy Current Line"))
-        self.linemenu.Append(ID_JOIN_LINES, _("Join Line(s)") + "\tCtrl+J",
+        self.linemenu.Append(ID_JOIN_LINES, _("Join Lines") + "\tCtrl+J",
                             _("Join the Selected Lines"))
         self.linemenu.Append(ID_TRANSPOSE, _("Transpose Line") + "\tCtrl+T",
-                            _("Transpose the currentline with the previous one"))
+                            _("Transpose the current line with the previous one"))
         self.editmenu.AppendMenu(ID_LINE_EDIT, _("Line Edit"), self.linemenu,
                                 _("Commands that affect an entire line"))
         self.bookmenu = wx.Menu()
@@ -209,10 +212,11 @@ class MainWindow(wx.Frame):
         self.editmenu.AppendMenu(ID_BOOKMARK, _("Bookmarks"),  self.bookmenu,
                                 _("Add add and remove bookmarks"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+F", _("Find Text"))
+        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"))
         self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 
                              _("Find and Replace Text"))
-        self.editmenu.Append(ID_QUICK_FIND, _("Quick Find") + "\tCtrl+/", _("Open the Quick Find Bar"))
+        self.editmenu.Append(ID_QUICK_FIND, _("Quick Find") + "\tCtrl+F", 
+                            _("Open the Quick Find Bar"))
         self.editmenu.AppendSeparator()
         self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"))
 
@@ -221,12 +225,17 @@ class MainWindow(wx.Frame):
         self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"))
         self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", _("Zoom Default"))
         self.viewmenu.AppendSeparator()
-        self.viewmenu.Append(ID_SHOW_EOL, _("Show EOL Markers"), _("Show EOL Markers"), wx.ITEM_CHECK)
-        self.viewmenu.Append(ID_SHOW_WS, _("Show Whitespace"), 
-                             _("Show Whitespace Markers"), wx.ITEM_CHECK)
         self.viewmenu.Append(ID_INDENT_GUIDES, _("Indentation Guides"), 
                              _("Show Indentation Guides"), wx.ITEM_CHECK)
+        self.viewmenu.Append(ID_SHOW_EOL, _("Show EOL Markers"), _("Show EOL Markers"), 
+                             wx.ITEM_CHECK)
+        self.viewmenu.Append(ID_SHOW_LN, _("Show Line Numbers"), 
+                            _("Show Line Number Margin"), wx.ITEM_CHECK)
+        self.viewmenu.Append(ID_SHOW_WS, _("Show Whitespace"), 
+                             _("Show Whitespace Markers"), wx.ITEM_CHECK)
         self.viewmenu.AppendSeparator()
+        self.viewmenu.Append(ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
+                            _("Goto Line Number"))
         self.viewmenu.Append(ID_NEXT_MARK, _("Next Bookmark") + u"\tCtrl+Right", 
                             _("View Line of Next Bookmark"))
         self.viewmenu.Append(ID_PRE_MARK, _("Previous Bookmark") + u"\tCtrl+Left", 
@@ -260,13 +269,17 @@ class MainWindow(wx.Frame):
                                   _("End of line character formatting"))
 
         # Settings Menu Items
-        self.settingsmenu.Append(ID_SYNTAX, _("Syntax Highlighting"), 
-                                 _("Color Highlight Code Syntax"), wx.ITEM_CHECK)
+        self.settingsmenu.Append(ID_AUTOCOMP, _("Auto-Completion"),
+                                _("Use Auto Completion when available"), wx.ITEM_CHECK)
         self.settingsmenu.Append(ID_BRACKETHL, _("Bracket Highlighting"), 
                                  _("Highlight Brackets/Braces"), wx.ITEM_CHECK)
+        self.settingsmenu.Append(ID_FOLDING, _("Code Folding"),
+                                _("Enable Code Foldering"), wx.ITEM_CHECK)
         self.settingsmenu.Append(ID_KWHELPER,_("Keyword Helper"), 
                                  _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"), 
                                 wx.ITEM_CHECK)
+        self.settingsmenu.Append(ID_SYNTAX, _("Syntax Highlighting"), 
+                                 _("Color Highlight Code Syntax"), wx.ITEM_CHECK)
         self.languagemenu = syntax.GenLexerMenu()
         self.settingsmenu.AppendMenu(ID_LEXER, _("Lexers"), 
                                      self.languagemenu,
@@ -275,13 +288,23 @@ class MainWindow(wx.Frame):
         # Tools Menu
         self.toolsmenu.Append(ID_STYLE_EDIT, _("Style Editor"), 
                              _("Edit the way syntax is highlighted"))
+        self.toolsmenu.AppendSeparator()
+        self.genmenu = wx.Menu()
+        self.genmenu.Append(ID_HTML_GEN, _("Generate %s") % u"HTML",
+                           _("Generate an HTML page from the current document"))
+        self.toolsmenu.AppendMenu(ID_GENERATOR, _("Generator"), self.genmenu,
+                                 _("Generate Code"))
 
         # Help Menu Items
-        self.helpmenu.Append(ID_ABOUT, _("About") + u"...", _("About") + u"...")
+        self.helpmenu.Append(ID_ABOUT, _("&About") + u"...", _("About") + u"...")
         self.helpmenu.Append(ID_HOMEPAGE, _("Project Homepage"), 
                             _("Visit the project homepage %s") % home_page)
         self.helpmenu.Append(ID_CONTACT, _("Project Contact"),
                             _("Email Project Staff Members"))
+
+        # On mac, do this to make help menu appear in correct location
+        if wx.Platform == '__WXMAC__':
+            wx.GetApp().SetMacHelpMenuTitleName(_("Help"))
 
         #---- Menu Bar ----#
         self.menubar = wx.MenuBar()
@@ -293,6 +316,10 @@ class MainWindow(wx.Frame):
         self.menubar.Append(self.toolsmenu, _("Tools"))
         self.menubar.Append(self.helpmenu, _("Help"))
         self.SetMenuBar(self.menubar)
+
+        # Bind Extra key commands
+  #      accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, ord('K'), ID_SHOW_KWHELPER)])
+  #      self.SetAcceleratorTable(accel)
 
         #---- Actions to take on menu events ----#
         self.Bind(wx.EVT_MENU_OPEN, self.UpdateMenu)
@@ -321,6 +348,7 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnPreferences, id=ID_PREF)
 
         # View Menu Events
+        self.Bind(wx.EVT_MENU, self.OnGoto, id=ID_GOTO_LINE)
         self.Bind(wx.EVT_MENU, self.OnViewTb, id=ID_VIEW_TOOL)
 
         # Format Menu Events
@@ -328,6 +356,7 @@ class MainWindow(wx.Frame):
 
         # Tool Menu
         self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
+        self.Bind(wx.EVT_MENU, self.OnGenHtml, id=ID_HTML_GEN)
 
         # Help Menu Events
         self.Bind(wx.EVT_MENU, self.OnAbout, id=ID_ABOUT)
@@ -346,9 +375,6 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_FIND_REPLACE, self.nb.FindService.OnFind)
         self.Bind(wx.EVT_FIND_REPLACE_ALL, self.nb.FindService.OnFind)
         self.Bind(wx.EVT_FIND_CLOSE, self.nb.FindService.OnFindClose)
-
-        # Text Control Events #TODO move to stc
-        self.nb.control.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
 
         #---- End other event actions ----#
 
@@ -490,7 +516,7 @@ class MainWindow(wx.Frame):
             ret_val = self.OnSaveAs(ID_SAVEAS)
             if ret_val == wx.ID_OK:
                 self.filehistory.AddFileToHistory(os.path.join(self.nb.control.dirname, 
-                                                              ssself.nb.control.filename))
+                                                              self.nb.control.filename))
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt):
@@ -517,6 +543,7 @@ class MainWindow(wx.Frame):
                               prog_name + u" v" + version)
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.UpdatePageImage()
+            return result
         else:
             pass
 
@@ -562,13 +589,14 @@ class MainWindow(wx.Frame):
     def OnPrint(self, evt):
         """Handles printing related events"""
         e_id = evt.GetId()
-        printer = ed_print.ED_Printer()
+        pmode = PROFILE['PRINT_MODE'].replace(u'/', u'_').lower()
+        self.printer.SetColourMode(pmode)
         if e_id == ID_PRINT:
-           printer.Print(self.nb.control.GetText(), self.nb.control.filename)
+           self.printer.Print()
         elif e_id == ID_PRINT_PRE:
-           printer.Preview(self.nb.control.GetText(), self.nb.control.filename)
+           self.printer.Preview()
         elif e_id == ID_PRINT_SU:
-           printer.PageSetup()
+           self.printer.PageSetup()
         else:
            evt.Skip()
 
@@ -627,6 +655,7 @@ class MainWindow(wx.Frame):
         except AttributeError:
             self.LOG("[main_evt] [exit] [exception] Trapped AttributeError OnExt")
             pass
+        self._cmdbar.Destroy()
 
         # Finally close the application
         self.LOG("[main_info] Exiting MainLoop...")
@@ -635,111 +664,6 @@ class MainWindow(wx.Frame):
     #---- End File Menu Functions ----#
 
     #---- Edit Menu Functions ----#
-    def OnFind(self, evt):
-        """Actually do the work of Finding text in a document"""
-        dlg = self.nb.FindService._find_dlg
-        dlg.data = self.nb.FindService._data
-        # Set of events to map to identifiers
-        e_map = { wx.wxEVT_COMMAND_FIND : "FIND",
-                  wx.wxEVT_COMMAND_FIND_NEXT : "FIND_NEXT",
-                  wx.wxEVT_COMMAND_FIND_REPLACE : "REPLACE",
-                  wx.wxEVT_COMMAND_FIND_REPLACE_ALL : "REPLACE_ALL",
-                }
-
-        # Get Search Type
-        etype = evt.GetEventType()
-        if etype in e_map:
-            evtType = e_map[etype]
-        else:
-            evtType = "**Unknown Event Type**"
-
-        # Process Special search flags
-        eflags = dlg.data.GetFlags() - 1
-        eflag_map = { wx.FR_MATCHCASE : "MATCH_CASE", 
-                      wx.FR_WHOLEWORD : "WHOLE_WORD",
-                      wx.FR_MATCHCASE + wx.FR_WHOLEWORD : "WORD_CASE"
-                    }
-        if eflags in eflag_map:
-            eflags = eflag_map[eflags]
-        else:
-            eflags = "**Uknown Search Flag**"
-
-        if evtType in ["FIND", "FIND_NEXT"]:
-            line_count = self.nb.control.GetLineCount()
-            last = self.nb.control.GetLineEndPosition(line_count)
-            start = self.nb.control.GetCurrentPos()
-            if eflags in ["MATCH_CASE", "WORD_CASE"]:
-                textstring = self.nb.control.GetTextRange(0, last)
-                dlg.findstring = dlg.data.GetFindString()
-            else:
-                textstring = self.nb.control.GetTextRange(0, last).lower()
-                dlg.findstring = dlg.data.GetFindString().lower()
-
-            loc = textstring.find(dlg.findstring, start)
-            if loc == -1 and start != 0:
-                # string not found, start at beginning again
-                self.LOG("[main_evt] [find] starting at top again")
-                start = 0
-                loc = textstring.find(dlg.findstring, start)
-
-            if loc == -1:
-                # Couldn't Find the string let user know
-                mdlg = wx.MessageDialog(self, _("Not Found"),
-                                        _("\'%s\' Not Found in File"),
-                                        wx.OK | wx.ICON_INFORMATION)
-                mdlg.ShowModal()
-                mdlg.Destroy()
-
-            self.nb.control.SetCurrentPos(loc)
-            self.nb.control.SetSelection(loc, loc + len(dlg.findstring))
-
-        elif evtType == "REPLACE":
-            replacestring = evt.GetReplaceString()
-            self.nb.control.ReplaceSelection(replacestring)
-
-        elif evtType == "REPLACE_ALL":
-            replacestring = evt.GetReplaceString()
-            if eflags in ["MATCH_CASE", "WORD_CASE"]:
-                dlg.findstring = dlg.data.GetFindString()
-            else:
-                dlg.findstring = dlg.data.GetFindString().lower()
-
-            if replacestring != dlg.findstring:
-                # Find all instances and replace with replacestring
-                line_count = self.nb.control.GetLineCount()
-                last = self.nb.control.GetLineEndPosition(line_count)
-                start = 0
-                loc = 0
-                while 1:
-                    if eflags in ["MATCH_CASE", "WORD_CASE"]:
-                        textstring = self.nb.control.GetTextRange(loc, last)
-                    else:
-                        textstring = self.nb.control.GetTextRange(loc, last).lower()
-                    loc = textstring.find(dlg.findstring, start)
-
-                    # Text not found
-                    if loc == -1:
-                        break
-
-                    if self.nb.control.GetCurrentPos() != loc:
-                        self.nb.control.SetCurrentPos(loc)
-                    self.nb.control.SetSelection(loc, loc + len(dlg.findstring))
-                    self.nb.control.ReplaceSelection(replacestring)
-                    start = self.nb.control.GetCurrentPos()
-                    loc = 0
-
-                    # Document size may have changed so lets check
-                    line_count = self.nb.control.GetLineCount()
-                    last = self.nb.control.GetLineEndPosition(line_count)
-
-            # Notify that replace all is finished
-            mdlg = wx.MessageDialog(self, _("Replace All Finished"), _("All Done"), 
-                                    wx.OK | wx.ICON_INFORMATION)
-            mdlg.ShowModal()
-            mdlg.Destroy()
-        else:
-            pass
-
     def OnPreferences(self, evt):
         """Open the Preference Panel"""
         # Import dialog if now since we need it
@@ -752,6 +676,15 @@ class MainWindow(wx.Frame):
     #---- End Edit Menu Functions ----#
 
     #---- View Menu Functions ----#
+    def OnGoto(self, evt):
+        """Shows the Goto Line control"""
+        e_id = evt.GetId()
+        if e_id == ID_GOTO_LINE:
+            self._cmdbar.Show(ed_cmdbar.ID_LINE_CTRL)
+            self.sizer.Layout()
+        else:
+            evt.Skip()
+
     def OnViewTb(self, evt):
         """Toggles visibility of toolbar"""
         if PROFILE['TOOLBAR'] and self.toolbar != None:
@@ -763,7 +696,6 @@ class MainWindow(wx.Frame):
             self.SetToolBar(self.toolbar)
             PROFILE['TOOLBAR'] = True
             self.UpdateToolBar()
-        self.SetInitialSize()
 
     #---- End View Menu Functions ----#
 
@@ -795,6 +727,13 @@ class MainWindow(wx.Frame):
         dlg.CenterOnParent()
         dlg.ShowModal()
         dlg.Destroy()
+
+    def OnGenHtml(self, evt):
+        """Generates html and opens the generated code in a new page"""
+        html = generator.Html(self.nb.GetCurrentCtrl())
+        self.nb.NewPage()
+        self.nb.control.SetText(unicode(html))
+        self.nb.control.FindLexer('html')
 
     #---- Help Menu Functions ----#
     def OnAbout(self, evt):
@@ -855,29 +794,38 @@ class MainWindow(wx.Frame):
                          ID_ZOOM_OUT, ID_ZOOM_NORMAL, ID_EOL_MAC, ID_EOL_UNIX,
                          ID_EOL_WIN, ID_JOIN_LINES, ID_CUT_LINE, ID_COPY_LINE,
                          ID_INDENT, ID_UNINDENT, ID_TRANSPOSE, ID_NEXT_MARK,
-                         ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM])
+                         ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM,
+                         ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN])
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
             # the events from the toolbar do not propagate to the control.
-            self.nb.control.ControlDispatch(evt)
-            self.UpdateToolBar()
+            if e_obj.GetClassName() == "wxToolBar" or e_id == ID_REDO:
+                self.nb.control.ControlDispatch(evt)
+                self.UpdateToolBar()
+            else:
+                evt.Skip()
         elif e_id in menu_ids:
             self.nb.control.ControlDispatch(evt)
         else:
             evt.Skip()
-            return
+        return
 
     def OnKeyUp(self, evt):
         """ Update Line/Column indicator based on position """
-        line, column = self.nb.control.GetPos()
+        line, column = self.nb.control.GetPos(evt)
         if line >= 0 and column >= 0:
             self.SetStatusText(_("Line: %d  Column: %d") % (line, column), SB_ROWCOL)
             self.UpdateToolBar()
 
     def OnMenuHighlight(self, evt):
-        """HACK for GTK, submenus dont seem to fire a EVT_MENU_OPEN"""
+        """HACK for GTK, submenus dont seem to fire a EVT_MENU_OPEN
+        but do fire a MENU_HIGHLIGHT
+
+        """
         if evt.GetId() == ID_LEXER:
             self.UpdateMenu(self.languagemenu)
+        elif evt.GetId() == ID_EOL_MODE:
+            self.UpdateMenu(self.lineformat)
         else:
             evt.Skip()
 
@@ -887,17 +835,20 @@ class MainWindow(wx.Frame):
             self.Bind(wx.EVT_MENU, self.DispatchToControl, id=l_id)
 
     def OnQuickFind(self, evt):
-        self._cmdbar.Show()
+        self._cmdbar.Show(ed_cmdbar.ID_SEARCH_CTRL)
+        self.sizer.Layout()
 
     # Menu Helper Functions
     #TODO this is fairly stupid, write a more general solution
     def UpdateMenu(self, evt):
         """ Update Status of a Given Menu """
+        menu2 = None
         if evt.GetClassName() == "wxMenuEvent":
             menu = evt.GetMenu()
             # HACK MSW GetMenu returns None on submenu open events
             if menu == None:
                 menu = self.languagemenu
+                menu2 = self.lineformat
         else:
             menu = evt
 
@@ -911,6 +862,12 @@ class MainWindow(wx.Frame):
                 if item_id == lang_id or \
                    (menu_item.GetLabel() == 'Plain Text' and lang_id == 0):
                     menu.Check(item_id, True)
+            # HACK real ugly needed for MSW
+            if menu2 != None:
+                self.LOG("[menu_evt] Updating EOL Mode Menu")
+                eol = self.nb.control.GetEOLModeId()
+                for id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
+                    menu2.Check(id, eol == id)
         elif menu == self.editmenu:
             self.LOG("[main_evt] Updating Edit Menu")
             menu.Enable(ID_UNDO, self.nb.control.CanUndo())
@@ -921,8 +878,10 @@ class MainWindow(wx.Frame):
             menu.Enable(ID_CUT, sel1 != sel2)
         elif menu == self.settingsmenu:
             self.LOG("[menu_evt] Updating Settings Menu")
+            menu.Check(ID_AUTOCOMP, self.nb.control.GetAutoComplete())
             menu.Check(ID_KWHELPER, self.nb.control.kwhelp)
             menu.Check(ID_SYNTAX, self.nb.control.highlight)
+            menu.Check(ID_FOLDING, self.nb.control.folding)
             menu.Check(ID_BRACKETHL, self.nb.control.brackethl)
         elif menu == self.viewmenu:
             zoom = self.nb.control.GetZoom()
@@ -945,6 +904,7 @@ class MainWindow(wx.Frame):
                 self.viewmenu.Enable(ID_ZOOM_OUT, True)
             menu.Check(ID_SHOW_WS, bool(self.nb.control.GetViewWhiteSpace()))
             menu.Check(ID_SHOW_EOL, bool(self.nb.control.GetViewEOL()))
+            menu.Check(ID_SHOW_LN, bool(self.nb.control.GetMarginWidth(1)))
             menu.Check(ID_INDENT_GUIDES, bool(self.nb.control.GetIndentationGuides()))
             menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
         elif menu == self.formatmenu:
@@ -963,7 +923,7 @@ class MainWindow(wx.Frame):
     def UpdateToolBar(self, evt=0):
         """Update Tool Status"""
         # Skip the work if toolbar is invisible
-        if(self.toolbar == None):
+        if not hasattr(self, 'toolbar') or self.toolbar == None:
             return -1;
         self.toolbar.EnableTool(ID_UNDO, self.nb.control.CanUndo())
         self.toolbar.EnableTool(ID_REDO, self.nb.control.CanRedo())
@@ -995,5 +955,3 @@ class MainWindow(wx.Frame):
     #---- End Misc Functions ----#
 
     ### End Function Definitions ###
-
-### End Class Definition ####

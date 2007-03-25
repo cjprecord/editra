@@ -41,7 +41,7 @@ __revision__ = "$Id: Exp $"
 import os
 import glob
 import wx
-import  wx.lib.colourselect as  csel
+import wx.lib.colourselect as  csel
 import ed_glob
 import ed_stc
 from ed_style import StyleItem
@@ -155,6 +155,7 @@ class StyleEditor(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnExport, id=wx.ID_SAVE)
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_LISTBOX, self.OnListBox)
         self.Bind(csel.EVT_COLOURSELECT, self.OnColor)
         self.preview.Bind(wx.EVT_LEFT_UP, self.OnTextRegion)
@@ -169,7 +170,7 @@ class StyleEditor(wx.Dialog):
         """
         diff = False
         for key in self.styles_orig:
-            if str(self.styles_orig[key]) != str(self.styles_new[key]):
+            if unicode(self.styles_orig[key]) != unicode(self.styles_new[key]):
                 diff = True
                 break
         result = wx.ID_NO
@@ -177,7 +178,7 @@ class StyleEditor(wx.Dialog):
             dlg = wx.MessageDialog(self, _("Some styles have been changed would "
                                           "you like to save before exiting?"),
                                    _("Save Styles"), 
-                                   style=wx.YES_NO | wx.YES_DEFAULT | wx.ICON_INFORMATION)
+                                   style=wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
             dlg.CenterOnParent()
             result = dlg.ShowModal()
             dlg.Destroy()
@@ -193,7 +194,7 @@ class StyleEditor(wx.Dialog):
         new_dict = dict()
         for tag in style_dict:
             new_dict[tag] = StyleItem()
-            new_dict[tag].SetAttrFromStr(str(style_dict[tag]))
+            new_dict[tag].SetAttrFromStr(unicode(style_dict[tag]))
         return new_dict
         
     def EnableSettings(self, enable=True):
@@ -205,37 +206,51 @@ class StyleEditor(wx.Dialog):
 
     def ExportStyleSheet(self):
         """Writes the style sheet data out to a style sheet"""
+        if ed_glob.CONFIG['STYLES_DIR'] == ed_glob.CONFIG['SYS_STYLES_DIR']:
+            user_config = os.path.join(wx.GetHomeDir(), 
+                                        "." + ed_glob.prog_name, 'styles')
+            if not os.path.exists(user_config):
+                try:
+                    os.mkdir(user_config)
+                except:
+                    pass
+                else:
+                    ed_glob.CONFIG['STYLES_DIR'] = user_config
+
         dlg = wx.FileDialog(self, _("Export Style Sheet"),
                             ed_glob.CONFIG['STYLES_DIR'],
                             wildcard = _("Editra Style Sheet") + " (*.ess)|*.ess",
-                            style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+                            style = wx.FD_SAVE | wx.OVERWRITE_PROMPT)
         dlg.CenterOnParent()
         result = dlg.ShowModal()
+
         if result == wx.ID_OK:
             sheet_path = dlg.GetPath()
+            if u'ess' != sheet_path.split(u'.')[-1]:
+                sheet_path += u".ess"
             dlg.Destroy()
+            writer = util.GetFileWriter(sheet_path)
             try:
-                file_h = open(sheet_path, "w")
-                file_h.write(self.GenerateStyleSheet())
-                file_h.close()
+                writer.write(self.GenerateStyleSheet())
+                writer.close()
                 # Update Style Sheet Control
-                ss_lst = util.GetResourceFiles(u'styles')
+                ss_lst = util.GetResourceFiles(u'styles', get_all=True)
                 ss_c = self.FindWindowById(ed_glob.ID_PREF_SYNTHEME)
                 sel = ss_c.GetStringSelection()
                 ss_c.SetItems(ss_lst)
                 ss_c.SetStringSelection(sel)
+                self.styles_orig = self.DuplicateStyleDict(self.styles_new)
             except IOError,msg:
                 self.LOG('[style_editor] [exception] Failed to export style sheet')
                 self.LOG('[style_editor] [sys error] %s' % msg)
-        else:
-            pass
+        return result
 
     def GenerateStyleSheet(self):
         """Generates a style sheet from the dialogs style data"""
         sty_sheet = list()
         for tag in self.styles_new:
             sty_sheet.append(tag + u" {\n")
-            sdat = str(self.styles_new[tag])
+            sdat = unicode(self.styles_new[tag])
             sdat = sdat.split(u",")
             stage1 = wx.EmptyString
             for atom in sdat:
@@ -345,7 +360,7 @@ class StyleEditor(wx.Dialog):
         ss_sizer = wx.BoxSizer(wx.HORIZONTAL)
         ss_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY,
                                _("Style Theme") + u": ")
-        ss_lst = util.GetResourceFiles(u'styles')
+        ss_lst = util.GetResourceFiles(u'styles', get_all=True)
         ss_lst.sort()
         ss_choice = wx.Choice(self.ctrl_pane, ed_glob.ID_PREF_SYNTHEME,
                               choices=ss_lst)
@@ -426,6 +441,10 @@ class StyleEditor(wx.Dialog):
         else:
             evt.Skip()
 
+    def OnClose(self, evt):
+        """Handles the window closer event"""
+        self.OnOk(evt)
+
     def OnColor(self, evt):
         """Handles color selection events"""
         e_id = evt.GetId()
@@ -455,12 +474,11 @@ class StyleEditor(wx.Dialog):
         """
         style_id = self.preview.GetStyleAt(self.preview.GetCurrentPos())
         tag_lst = self.FindWindowById(ID_STYLES)
-        for data in self.preview.syntax_set:
-            if style_id == getattr(wx.stc, data[0]):
-                tag_lst.SetStringSelection(data[1])
-                self.UpdateSettingsPane(self.styles_new[data[1]])
-                self.EnableSettings()
-                break
+        data = self.preview.FindTagById(style_id)
+        if data != wx.EmptyString:
+            tag_lst.SetStringSelection(data)
+            self.UpdateSettingsPane(self.styles_new[data])
+            self.EnableSettings()
         evt.Skip()
 
     def OnListBox(self, evt):
@@ -486,8 +504,12 @@ class StyleEditor(wx.Dialog):
         result = self.DiffStyles()
         if result == wx.ID_NO:
             evt.Skip()
+        elif result == wx.ID_CANCEL:
+            self.LOG('[style_editor] Info Canceled closer')
         else:
-            print "SAVE FILE"
+            result = self.ExportStyleSheet()
+            if result != wx.ID_CANCEL:
+                evt.Skip()
 
     def OnExport(self, evt):
         """Catches save button event"""

@@ -21,7 +21,7 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: profiler.py                                                        #
-# LANGUAGE: Python	                                                        #
+# LANGUAGE: Python	                                                   #
 #                                                                          #
 # SUMMARY:                                                                 #
 # This collection of functions handle user profiles for the editor.        #
@@ -41,24 +41,24 @@
 # EOF marks the end of file, no configuration data will be read past       #
 # this keyword.                                                            #
 #                                                                          #
-#   LABLES		VALUES                                         #
+#   LABLES              VALUES                                             #
 # ----------------------------------------                                 #
-#  MODE			CODE, DEBUG                                    #
-#  THEME	                   DEFAULT                                        #
-#  ICONS                    STOCK, ...                                     #
-#  LANG			ENGLISH, JAPANESE                              #
-#  WRAP                     On, Off	                                     #
-#  SYNTAX                   On, Off	                                     #
-#  GUIDES                   On, Off                                        #
-#  KWHELPER                 On, Off	                                      #
-#  TOOLBAR                  On, Off                                        #
-#  LASTFILE                 path/to/file                                   #
+#  MODE	                CODE, DEBUG                                        #
+#  THEME                DEFAULT                                            #
+#  ICONS                STOCK                                              #
+#  LANG	                ENGLISH, JAPANESE                                  #
+#  WRAP                 On, Off, True, False	                           #
+#  SYNTAX               On, Off, True, False                               #
+#  GUIDES               On, Off, True, False	                           #
+#  KWHELPER             On, Off, True, False	                           #
+#  TOOLBAR              On, Off, True, False	                           #
+#  LASTFILE             path/to/file                                       #
 #                                                                          #
 # METHODS:                                                                 #
 # ReadProfile: Reads a profile into the profile dictionary                 #
 # WriteProfile: Writes a profile dictionary to a file	                   #
 # LoadProfile: Checks loader for last used profile	                   #
-# UpdateProfileLoader: Updates loader after changes to profile	          #
+# UpdateProfileLoader: Updates loader after changes to profile	           #
 #--------------------------------------------------------------------------#
 """
 
@@ -114,7 +114,6 @@ def CalcVersionValue(ver_str="0.0.0"):
 
 def GetLoader():
     """Finds the loader to use"""
-
     user_home = wx.GetHomeDir() + util.GetPathChar()
     rel_prof_path = ("." + prog_name + util.GetPathChar() + 
                      "profiles" + util.GetPathChar() + ".loader")
@@ -127,20 +126,21 @@ def GetLoader():
     return LOADER
 
 def GetProfileStr():
-    """Reads the profile string from the loader and returns it"""
-    LOADER = GetLoader()
+    """Reads the profile string from the loader and returns it.
+    The profile string must be the first line in the loader file.
 
-    try:
-        file_handle = open(LOADER, mode="r")
-    except IOError:
+    """
+    LOADER = GetLoader()
+    reader = util.GetFileReader(LOADER)
+    if reader == -1:
         dev_tool.DEBUGP("[profiler] [exception] Failed to open profile loader")
         # So return the default
         dev_tool.DEBUGP("[prof_info] Trying Default Profile")
         return CONFIG['PROFILE_DIR'] + u"default.pp"
 
-    profile = file_handle.readline()
+    profile = reader.readline()
     profile = profile.split("\n")[0] # strip newline from end
-    file_handle.close()
+    reader.close()
     return profile
 
 def LoadProfile():
@@ -171,24 +171,30 @@ def ProfileVersionStr():
     string is not found it returns a zero version string.
     """
     loader = GetLoader()
-
-    try:
-        file_handle = open(loader, mode="r")
-    except IOError:
+    reader = util.GetFileReader(loader)
+    if reader == -1:
         dev_tool.DEBUGP('[profile] [exception] Failed to open loader')
         return "0.0.0"
 
+    if isinstance(reader, file):
+        conv = str
+    else:
+        conv = unicode
+
     ret_val = "0.0.0"
+    count = 0
     while True:
-        value = file_handle.readline()
+        count += 1
+        value = reader.readline()
         value = value.split()
         if len(value) > 0:
             if value[0] == u'VERSION':
                 ret_val = value[1]
                 break
-        else:
+        # Give up after 20 lines if version string not found
+        if count > 20:
             break
-    file_handle.close()
+    reader.close()
 
     return ret_val
 
@@ -197,14 +203,17 @@ def ReadProfile(profile):
     profile dictionary.
 
     """
-
-    try:
-        file_handle = open(profile, mode="r")
-    except IOError:
+    reader = util.GetFileReader(profile)
+    if reader == -1:
         dev_tool.DEBUGP("[profiler] [exception] Loading Profile: " + profile +
                         "\n[prof_warn] Loaded Default Profile Settings")
         PROFILE['MYPROFILE'] = os.path.join(os.path.split(profile)[0], u"default.pp")
         return 1
+
+    if isinstance(reader, file):
+        conv = str
+    else:
+        conv = unicode
 
     lable = ""
     val = ""
@@ -213,7 +222,7 @@ def ReadProfile(profile):
 
     # Parse File
     while 1:
-        line = file_handle.readline()
+        line = reader.readline()
 
         if line != "" and line[0] != "#":
             values = line.split()
@@ -230,14 +239,14 @@ def ReadProfile(profile):
                     val = int(val)
 
                 # If val is a bool convert it from string
-                if val in [u"True", u"On"]:
+                if val in [conv("True"), conv("On")]:
                     val = True
-                elif val in [u"False", u"Off"]:
+                elif val in [conv("False"), conv("Off")]:
                     val = False
                 else:
                     pass
 
-                if lable in ['WSIZE', 'WPOS', 'ICON_SZ']:
+                if lable in [conv('WSIZE'), conv('WPOS'), conv('ICON_SZ')]:
                     val = util.StrToTuple(val)
 
                 PROFILE[lable] = val
@@ -254,7 +263,7 @@ def ReadProfile(profile):
 
     # Save this profile as my profile
     PROFILE['MYPROFILE'] = profile
-    file_handle.close()
+    reader.close()
     dev_tool.DEBUGP("[prof_info] Loaded Profile: " + profile)
     return 0
 
@@ -262,31 +271,40 @@ def UpdateProfileLoader():
     """Updates Loader File"""
 
     LOADER = GetLoader()
-
-    try:
-        file_handle = open(LOADER, mode="w")
-    except IOError:
+    writer = util.GetFileWriter(LOADER)
+    if writer == -1:
         dev_tool.DEBUGP("[profiler] [exception] Failed to open profile loader for writting")
         return 1
 
-    file_handle.write(PROFILE['MYPROFILE'])
-    file_handle.write(u"\nVERSION\t" + version)
-    file_handle.close()
+    if isinstance(writer, file):
+        conv = str
+    else:
+        conv = unicode
+
+    writer.write(conv(PROFILE['MYPROFILE']))
+    writer.write(u"\nVERSION\t" + version)
+    writer.close()
     return 0
 
-# TODO exception handling for condition when a read only profile is loaded
-#      this writting will fail
 def WriteProfile(profile):
     """Writes a profile to a file"""
-    file_handle = open(profile, mode="w")
+    writer = util.GetFileWriter(profile)
+    if writer == -1:
+        return -1
+
+    if isinstance(writer, file):
+        conv = str
+    else:
+        conv = unicode
     header = u"# " + profile + u"\n# Editra " + version + u" Profile\n" \
+              + u"# You are welcome to edit this file but be aware that if it\n" \
+              + u"# is your active profile it will be overwritten the next\n" \
+              + u"# time you close the editor.\n" \
               + u"#\n# Lable\t\t\tValue #" + \
               u"\n#-----------------------------#\n"
 
-    file_handle.write(header)
-    file_handle.close()
+    writer.write(header)
 
-    file_handle = open(profile, mode="a")
     prof_keys = PROFILE.keys()
     prof_keys.sort()
 
@@ -298,11 +316,11 @@ def WriteProfile(profile):
             prof_keys.remove('WPOS')
 
     for item in prof_keys:
-        file_handle.write(str(item) + "\t\t" + str(PROFILE[item]) + "\n")
+        writer.write(conv(item) + u"\t\t" + conv(PROFILE[item]) + u"\n")
 
-    file_handle.write("\n\nEOF\n")
+    writer.write(u"\n\nEOF\n")
     dev_tool.DEBUGP("[prof_info] Wrote out Profile: " + profile)
 
     PROFILE['MYPROFILE'] = profile
-    file_handle.close()
+    writer.close()
     return 0

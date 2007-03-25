@@ -39,7 +39,7 @@ __revision__ = "$Id: $"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.0.90'
+version = __version__ = u'0.0.94'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
@@ -110,6 +110,7 @@ ID_PREF_WPOS     = NewId()
 ID_PREF_ICON     = NewId()
 ID_PREF_ICONSZ   = NewId()
 ID_PREF_MODE     = NewId()
+ID_PRINT_MODE    = NewId()
 ID_TRANSPARENCY  = NewId()
 
 # View Menu IDs
@@ -117,9 +118,13 @@ ID_ZOOM_OUT      = NewId()
 ID_ZOOM_IN       = NewId()
 ID_ZOOM_NORMAL   = NewId()
 ID_SHOW_EOL      = NewId()
+ID_SHOW_LN       = NewId()
 ID_SHOW_WS       = NewId()
 ID_INDENT_GUIDES = NewId()
 ID_VIEW_TOOL     = NewId()
+ID_GOTO_LINE     = NewId()
+ID_NEXT_MARK     = NewId()
+ID_PRE_MARK      = NewId()
 
 # Format Menu IDs
 ID_FONT          = NewId()
@@ -130,19 +135,21 @@ ID_EOL_WIN       = NewId()
 ID_WORD_WRAP     = NewId()
 ID_INDENT        = NewId()
 ID_UNINDENT      = NewId()
-ID_NEXT_MARK     = NewId()
-ID_PRE_MARK      = NewId()
 
 # Settings Menu IDs
+ID_AUTOCOMP      = NewId()
 ID_SYNTAX        = NewId()
 ID_SYN_ON        = NewId()
 ID_SYN_OFF       = NewId()
+ID_FOLDING       = NewId()
 ID_BRACKETHL     = NewId()
 ID_KWHELPER      = NewId()
 ID_LEXER         = NewId()
 
 # Tool Menu IDs
 ID_STYLE_EDIT    = NewId()
+ID_GENERATOR     = NewId()
+ID_HTML_GEN      = NewId()
 
 # Help Menu IDs
 ID_ABOUT         = wxID_ABOUT
@@ -154,6 +161,7 @@ ID_YES           = NewId()
 ID_NO            = NewId()
 ID_CANCEL        = NewId()
 ID_COMMAND_LINE_OPEN = NewId()
+ID_COMMAND_BAR   = NewId()
 
 # Statusbar IDs
 SB_INFO          = 0
@@ -167,7 +175,9 @@ SB_ROWCOL        = 1
 PROFILE = {
            'ALPHA'      : 255,
            'AALIASING'  : True,
+           'AUTO_COMP'  : True,
            'BRACKETHL'  : True,
+           'CODE_FOLD'  : True,
            'DEFAULT'    : False,
            'KWHELPER'   : True,
            'EOL'        : 'Unix (\\n)',
@@ -178,7 +188,9 @@ PROFILE = {
            'LANG'       : 'Default',
            'MODE'       : 'CODE',
            'MYPROFILE'  : 'default.pp',
+           'PRINT_MODE' : 'BLACK/WHITE',
            'SHOW_EOL'   : False,
+           'SHOW_LN'    : True,
            'SYNTAX'     : True,
            'SYNTHEME'   : 'Default',
            'TABWIDTH'   : 8,
@@ -195,7 +207,9 @@ PROFILE = {
 # Dictionary to map object ids to Profile keys
 ID_2_PROF = {
              ID_PREF_AALIAS       : 'AALIASING',
+             ID_AUTOCOMP          : 'AUTO_COMP',
              ID_BRACKETHL         : 'BRACKETHL',
+             ID_FOLDING           : 'CODE_FOLD',
              ID_KWHELPER          : 'KWHELPER',
              ID_EOL_MODE          : 'EOL',
              ID_PREF_FHIST        : 'FHIST_LVL',
@@ -206,6 +220,7 @@ ID_2_PROF = {
              ID_PREF_TABS         : 'USETABS',
              ID_PREF_TABW         : 'TABWIDTH',
              ID_SHOW_EOL          : 'SHOW_EOL',
+             ID_SHOW_LN           : 'SHOW_LN',
              ID_SHOW_WS           : 'SHOW_WS',
              ID_TRANSPARENCY      : 'ALPHA',
              ID_WORD_WRAP         : 'WRAP',
@@ -214,5 +229,6 @@ ID_2_PROF = {
              ID_PREF_WPOS         : 'SET_WPOS',
              ID_PREF_ICON         : 'ICONS',
              ID_PREF_ICONSZ       : 'ICON_SZ',
-             ID_PREF_MODE         : 'MODE'
+             ID_PREF_MODE         : 'MODE',
+             ID_PRINT_MODE        : 'PRINT_MODE'
 }
