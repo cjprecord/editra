@@ -1,10 +1,13 @@
 ../../src/dev_tool.py
 ../../src/ed_glob.py
+../../src/ed_i18n.py
 ../../src/ed_main.py
 ../../src/ed_pages.py
+../../src/ed_print.py
+../../src/ed_search.py
 ../../src/ed_stc.py 
 ../../src/ed_toolbar.py
-../../src/editra.py
+../../src/Editra.py
 ../../src/prefdlg.py
 ../../src/profiler.py
 ../../src/util.py
