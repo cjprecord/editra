@@ -1,29 +1,120 @@
 Editra 
-Cody Precord 2005-2006
+Cody Precord 2005-2007
 LICENSE: GPLv2
 
 Change Log:
 
 Changes since last release:
 
-VERSION 0.0.xxx
-DATE xx/xx/xxxx
+VERSION 0.0.xx
+DATE xx/xx/2007
+14th Snapshot Release
+
+NEWS:
+    Included in this version is an experimental implimentation of an
+autocompletion/calltip provider for python documents. It is capable of looking
+up and providing autompletion lists and calltips for top level defined objects
+only. For example this means that if you have imported the wx namespace into
+the document with a statement like this.
+
+        import wx
+
+You will be able to get autocompletion/calltip help for anything in the wx
+namespace. (i.e if you type 'wx.' into the editor a list of possible items from
+the wx namespace will be provided). But this support does not extend to locally
+created objects in your file.
+
+        class MyFrame(wx.Frame):
+        ...
+
+If this class is defined in the current working file its namespace is unable to be
+looked up under the current model. Meaning that if you type 'MyFrame.' you will
+not recieve a list of autocomplete options for the MyFrame class or its parent
+wx.Frame class). This limitiation is being imposed on purpose currently do
+to some rather unpleasant issues that arise from time to time as well as some
+performance issues. Hopefully as soon as I think of somthing clever to get around
+these issues I will be able to lift this limitation.
+
+   There is also an update to the style sheet behavior in this version. Now when
+writing your own custom style sheets the only definition that needs to have all
+attributes specifed is the 'default_style' tag. All other tags with undefined
+attributes will inherit them from the 'default_style'. This saves allot of repition
+in defining style parameters for the various tags.
+
+NEW: [features/improvements]
++Experimental Autocompletion support for python files
++Custom Style Sheets are even easier to write
++Better handling of user level config/resource files
++Editor now checks when opening a file to see if the file is already open in an
+   existing buffer and asks if you want to open it again if its already open.
++Drag and Drop text is now supported
++Command Bar Search now has match case/ whole word options
++Line number margin visibilty can be toggled
++Generated HTML files are now on average 20-50% smaller in size.
++A first draft of a platform independent setup script.
+
+BUG FIXES:
++Improper window sizing after removing toolbar from view
++Style editor now properly catches clicks on the frames close button
++Unicode handled properly in Style Editor
++Adding missing attribute to SQL highlighter
++Can now cut/copy/paste in and out of all dialogs
++Fixed some bugs in the style sheet parser
++Fixed some sizing issues when switching controls in the command bar
++Indentation Guide Visibility can be properly toggled again
+
+#---------------------------------------------------------------------------------#
+VERSION 0.0.94
+DATE 03/12/2007
 13th Snapshot Release
 
 NEWS:
-    Binaries built on updated wxPython 2.8.1 this fixed some performance issues
+    Binaries built on updated wxPython 2.8.1.1 this fixed some performance issues
 with the some of the stc controls, most notably the python documents which now
 do not cause the cpu and ram usage to go out of control on the wxMAC platform.
+
+   New UI component, the "Command Bar" is a narrow bar that is shown directly 
+above the status bar. It is used to house various different controls that give 
+quick and convenient access to various common commands.
+
+   The text search system was completely rewritten and now has support for 
+regular expression search and replaces. The search procedure has also been
+fairly optimized over the previous one to use less memory and clock time. A new 
+"quick" search control can be opened in the Command Bar by hitting 
+"Ctrl+F" (MSW/GTK) or "Cmd+F" (MAC) which allows for searching text without 
+opening a separate dialog. The traditional dialog still offers more options
+and is available by hitting "Ctrl+Shift+F" (MSW/GTK) or "Cmd+Shift+F" (MAC)
+
+  An HTML generator that outputs a fully styled html page that is styled to
+look the same as the text does in the editor window.
 
 NEW: [features/improvements]
 +Text control fold margin is now styled to match the syntax scheme's default
 foreground and background colors.
 +Bookmark system for marking lines and quickly navigating to them
 +New search system with support for regular expression search and replace
++Search history is saved from search to search in a single session
++Command Bar, a multi-purpose window for housing controls in the bottom of
+editing pane.
++A Firefox like Search Bar, housed in the Command Bar (Ctrl+F) to access
++A Goto Line control, housed in the Command Bar (Ctrl+G) to access
++Color printing modes
++Code Folding can be turned on and off
++An HTML generator for generating html pages from text files
++Broader Unicode support
 
 BUG FIXES:
-+Fixed bug in config directory creation
++Fixed bug in config directory creation caused by the logger
 +Improper file creation/deletion fixed in Windows Installer
++Improper keywordlist formatting in cpp syntax module
++EOL mode menu updating (GTK/MSW)
++Select All works again on (MSW)
++Printing now scales all text to fit within the print canvas size properly
++Writing of Unicode data to log files now works
++Save As no properly adds file to history under all conditions
++Fixed multiple Help menus from being displayed on OSX
++Fixed a dialog closer issues in the style editor
++Fixed various Unicode bugs/errors throughout the editor
 
 #---------------------------------------------------------------------------------#
 VERSION 0.0.90
@@ -291,7 +382,7 @@ NEW:
   	- (Hit CTRL to bring up list & ESC to close it) Windows
 	- (Hit CTRL SHIFT to bring it up & ESC to close) Linux
   +Basic Printing Support (finally)
-  +Full Unicode Support
+  +Unicode Support
   +AntiAliasing
   +Holding Ctrl and scrolling mouse wheel will zoom in or out
 
