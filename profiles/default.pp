@@ -6,6 +6,7 @@
 AALIASING	True
 BRACKETHL	True
 DEFAULT		False
+EOL		Unix (\n)
 FHIST_LVL	5
 GUIDES		True
 ICONS		Stock
