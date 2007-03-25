@@ -1,0 +1,85 @@
+############################################################################
+#    Copyright (C) 2007 Cody Precord                                       #
+#    cprecord@editra.org                                                   #
+#									   #
+#    Editra is free software; you can redistribute it and#or modify        #
+#    it under the terms of the GNU General Public License as published by  #
+#    the Free Software Foundation; either version 2 of the License, or     #
+#    (at your option) any later version.                                   #
+#                                                                          #
+#    Editra is distributed in the hope that it will be useful,             #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#    GNU General Public License for more details.                          #
+#                                                                          #
+#    You should have received a copy of the GNU General Public License     #
+#    along with this program; if not, write to the                         #
+#    Free Software Foundation, Inc.,                                       #
+#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
+############################################################################
+
+"""
+#--------------------------------------------------------------------------#
+# FILE:                                                           #
+# AUTHOR:                                                      #
+# LANGUAGE: Python                                                         #
+# SUMMARY:                                                                 #
+#    Provides completion and calltip support for          #
+#                                                                          #
+# METHODS:
+#
+#
+#
+#--------------------------------------------------------------------------#
+"""
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__cvsid__ = "$Id: Exp $"
+__revision__ = "$Revision:  $"
+
+#--------------------------------------------------------------------------#
+# Dependancies
+import sys
+
+#--------------------------------------------------------------------------#
+
+class Completer:
+    """Code completer provider"""
+    def __init__(self):
+        """Initiliazes the completer"""
+        # Key values to activate autocompletion on
+        self._autocomp_keys = []
+        # Character values to stop autocompletion on
+        self._autocomp_stop = u' '
+        # Key values to activate a calltip call on
+        self._calltip_keys = []
+        # List for collecting atoms in
+        self._collector = []
+
+    def GetAutoCompKeys(self):
+        """Returns the list of key codes for activating the
+        autocompletion.
+
+        """
+        if hasattr(self, "_autocomp_keys"):
+            return self._autocomp_keys
+        else:
+            return list()
+
+    def GetAutoCompStops(self):
+        """Returns a string of characters that should cancel
+        the autocompletion lookup.
+
+        """
+        if hasattr(self, '_autocomp_stop'):
+            return self._autocomp_stop
+        else:
+            return u''
+
+    def GetCallTipKeys(self):
+        """Returns the list of keys to activate a calltip on"""
+        if hasattr(self, '_calltip_keys'):
+            return self._calltip_keys
+        else:
+            return list()
+
