@@ -1,11 +1,16 @@
 brace_good {
-		fore: #FFFFFF;
-		back: #0000FF bold;
+	fore: #FFFFFF;
+	back: #0000FF bold;
 }
 
 brace_bad {
            fore: #000000;
            back: #FF0000 bold;
+}
+
+calltip { 
+           fore: #404040;
+           back: #FFFFB8;
 }
 
 ctrl_char {
@@ -14,7 +19,7 @@ ctrl_char {
 }
 
 line_num { 
-		fore: #000000;
+                fore: #000000;
                 back: #C0C0C0; 
                 face: %(other)s; 
                 size: %(size2)d;
@@ -22,15 +27,12 @@ line_num {
 
 array_style { 
                 fore: #EE8B02 bold; 
-                back: #F6F6F6; 
                 face: %(other)s;
-                size: %(size)d;
 }
 
 btick_style { 
                 fore: #8959F6 bold; 
-		back: #FFFFFF;
-                size: %(size)d;
+	back: #FFFFFF;
 }
 
 default_style { 
@@ -42,39 +44,29 @@ default_style {
 
 char_style { 
                 fore: #FF3AFF; 
-		back: #FFFFFF;
-                face: %(mono)s; 
-                size: %(size)d;
+	back: #FFFFFF;
 }
 
 class_style { 
                 fore: #2E8B57 bold; 
-                back: #F6F6F6; 
-                size: %(size)d;
 }
 
 class2_style { 
                 fore: #2E8B57 bold; 
-		back: #FFFFFF;
-                size: %(size)d;
+	back: #FFFFFF;
 }
 
 comment_style { 
                 fore: #838383; 
-                back: #F6F6F6; 
-                face: %(mono)s; 
-                size: %(size)d;
 }
 
 directive_style { 
                 fore: #0000FF bold; 
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 dockey_style { 
                 fore: #0000FF; 
-                size: %(size)d;
 }
 
 error_style { 
@@ -85,121 +77,92 @@ error_style {
 
 funct_style { 
                 fore: #008B8B italic; 
-                back: #F6F6F6; 
-                size: %(size)d;
 }
 
 global_style { 
                 fore: #007F7F bold; 
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 here_style { 
                 fore: #CA61CA bold; 
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 ideol_style { 
                 fore: #E0C0E0; 
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 keyword_style { 
-                fore: #A52B2B bold; 
-                back: #F6F6F6; 
-                size: %(size)d;
+                fore: #A52B2B bold;
 }
 
 keyword2_style { 
                 fore: #2E8B57 bold; 
-                back: #F6F6F6; 
-                size: %(size)d;
 }
 
 keyword3_style { 
-                fore: #008B8B bold; 
-                back: #F6F6F6; 
-                size: %(size)d;
+                fore: #008B8B bold;
 }
 
 keyword4_style { 
-                fore: #9D2424; 
-                size: %(size)d;
+                fore: #9D2424;
 }
 
 margin_style { 
-                fore: #FFFFFF; 
+                fore: #FFFFFF;
                 back: #000000;
 }
 
 number_style { 
-                fore: #DD0101; 
-                back: #F6F6F6; 
-                face: %(mono)s; 
-                size: %(size)d;
+                fore: #DD0101;
 }
 
 number2_style { 
-                fore: #DD0101 bold; 
-                back: #F6F6F6; 
-                face: %(mono)s;
-                size: %(size)d;
+                fore: #DD0101 bold;
 }
 
 operator_style { 
                 fore: #000000; 
-                back: #F6F6F6; 
                 face: %(mono)s bold; 
-                size: %(size)d;
 }
 
 pre_style { 
                 fore: #AB39F2 bold; 
-                size: %(size)d;
 }
 
 pre2_style { 
                 fore: #AB39F2 bold; 
-                back: #F6F6F6; 
-                size: %(size)d;
 }
 
 regex_style { 
                 fore: #008B8B; 
-                size: %(size)d;
 }
 
 scalar_style { 
                 fore: #AB37F2 bold; 
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 scalar2_style { 
                 fore: #AB37F2; 
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 string_style { 
                 fore: #FF3AFF bold;
-                face: %(mono)s; 
-                size: %(size)d;
+                back: #FFFFFF;
 }
 
 stringeol_style { 
                 fore: #000000 bold;
                 back: #EEC0EE eol;
                 face: %(other)s; 
-                size: %(size)d;
 }
 
 unknown_style { 
                 fore: #FFFFFF bold; 
                 back: #DD0101 eol; 
                 face: %(other)s;
-                size: %(size)d
 }

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ############################################################################
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
@@ -20,15 +22,11 @@
 
 """
 #--------------------------------------------------------------------------#
-# FILE:							   
-# AUTHOR:
+# FILE:	Editra						   
+# AUTHOR: Cody Precord
 # LANGUAGE: Python							   
 # SUMMARY:
-#
-#
-# METHODS:
-#
-#
+#    Editor Launcher
 #
 #--------------------------------------------------------------------------#
 """
@@ -39,9 +37,16 @@ __revision__ = "$Revision:  $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import wx
-import ed_glob
+try:
+    from src.Editra import Main
+except ImportError:
+    try:
+        from Editra.src.Editra import Main
+    except:
+        print "Can not find the package directory for Editra!!!"
+	exit()
 
 #--------------------------------------------------------------------------#
-
+if __name__ == '__main__':
+    Main()
 
