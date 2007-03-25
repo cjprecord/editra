@@ -52,6 +52,7 @@ NEW: [features/improvements]
 +Line number margin visibilty can be toggled
 +Generated HTML files are now on average 20-50% smaller in size.
 +A first draft of a platform independent setup script.
++More complete Japanese Translations
 
 BUG FIXES:
 +Improper window sizing after removing toolbar from view
