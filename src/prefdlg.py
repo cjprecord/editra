@@ -271,9 +271,9 @@ class PrefPages(wx.Notebook):
                           choices=['CODE', 'DEBUG', 'GUI_DEBUG'],
                           default=ed_glob.PROFILE['MODE'])
         mode_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        mode_sizer.Add((15,15))
+        mode_sizer.Add((15, 15))
         mode_sizer.Add(mode_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        mode_sizer.Add((5,15))
+        mode_sizer.Add((5, 15))
         mode_sizer.Add(mode_c, 0, wx.ALIGN_CENTER_VERTICAL)
         ## Print Mode
         pmode_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Printer Mode") + u": ")
@@ -281,29 +281,29 @@ class PrefPages(wx.Notebook):
                            choices=['Black/White', 'Colour/White', 'Colour/Default',
                                     'Inverse', 'Normal'],
                            default=ed_glob.PROFILE['PRINT_MODE'])
-        mode_sizer.Add((20,20))
+        mode_sizer.Add((20, 20))
         mode_sizer.Add(pmode_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        mode_sizer.Add((5,5))
+        mode_sizer.Add((5, 5))
         mode_sizer.Add(pmode_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
         # Locale Settings
         lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, 
-                                 _("Language") + u": ", pos=wx.Point(50,130))
+                                 _("Language") + u": ", pos=wx.Point(50, 130))
         lang_c = ed_i18n.LangListCombo(gen_panel, ed_glob.ID_PREF_LANG, 
                                        ed_glob.PROFILE['LANG'])
         lang_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        lang_sizer.Add((15,0))
+        lang_sizer.Add((15, 0))
         lang_sizer.Add(lang_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        lang_sizer.Add((5,0))
+        lang_sizer.Add((5, 0))
         lang_sizer.Add(lang_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
         # Build Page
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(info, 0, wx.CENTER)
-        sizer.Add((15,15))
+        sizer.Add((15, 15))
         sizer.Add(self.SectionHead(gen_panel, _("Startup Settings")))
         sizer.Add(mode_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
-        sizer.Add((15,45))
+        sizer.Add((15, 45))
         sizer.Add(self.SectionHead(gen_panel, _("Locale Settings")))
         sizer.Add(lang_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
         gen_panel.SetSizer(sizer)
@@ -352,7 +352,7 @@ class PrefPages(wx.Notebook):
         # Build Section
         syn_sizer1 = wx.BoxSizer(wx.HORIZONTAL)
         syn_sizer1.Add(syn_cb, 0, wx.ALIGN_CENTER_VERTICAL)
-        syn_sizer1.Add((80,0))
+        syn_sizer1.Add((80, 0))
         syn_sizer1.Add(syn_theme_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         syn_sizer1.Add(syn_theme, 0, wx.RIGHT)
         syn_sizer2 = wx.BoxSizer(wx.VERTICAL)
@@ -386,7 +386,7 @@ class PrefPages(wx.Notebook):
         tab_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tabw_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tab_sizer.Add(ut_cb, 0, wx.ALIGN_CENTER_VERTICAL)
-        tab_sizer.Add((40,40))
+        tab_sizer.Add((40, 40))
         tabw_sizer.Add(tw_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         tabw_sizer.Add(tw_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         tab_sizer.Add(tabw_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
@@ -418,10 +418,10 @@ class PrefPages(wx.Notebook):
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add((15,15))
+        border.Add((15, 15))
         border.Add(format_lbl, 0, wx.LEFT)
         border.Add(format_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
-        border.Add((10,10))
+        border.Add((10, 10))
         border.Add(misc_lbl, 0, wx.LEFT)
         border.Add(misc_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
         text_panel.SetSizer(border)
@@ -455,7 +455,7 @@ class PrefPages(wx.Notebook):
         tbi_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tbi_sizer.Add(tb_icont, 0, wx.ALIGN_LEFT)
         tbi_sizer.Add(tb_icon, 0, wx.ALIGN_LEFT)
-        tbi_sizer.Add((40,0))
+        tbi_sizer.Add((40, 0))
         tbi_sizer.Add(tb_isz_lbl, 0, wx.RIGHT)
         tbi_sizer.Add(tb_isz_ch, 0, wx.RIGHT)
         app_sizer.Add(tbi_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
@@ -470,9 +470,9 @@ class PrefPages(wx.Notebook):
             trans.SetTickFreq(5, 1)
             trans_sizer.Add(trans_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
             trans_sizer.Add(trans, 0, wx.ALIGN_LEFT)
-            app_sizer.Add((5,5))
+            app_sizer.Add((5, 5))
             app_sizer.Add(trans_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
-            app_sizer.Add((5,5))
+            app_sizer.Add((5, 5))
             self.Bind(wx.EVT_SLIDER, self.OnSetTransparent, id=ed_glob.ID_TRANSPARENCY)
 
         # Activate Metal Style Windows for OSX
@@ -492,11 +492,11 @@ class PrefPages(wx.Notebook):
 
         # Build Page
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add((15,15))
+        border.Add((15, 15))
         border.Add(set_lbl, 0, wx.LEFT)
-        border.Add((15,10))
+        border.Add((15, 10))
         border.Add(fh_sizer, 0, wx.LEFT, 30)
-        border.Add((15,15))
+        border.Add((15, 15))
         border.Add(app_lbl, 0, wx.LEFT)
         border.Add(app_sizer, 0, wx.LEFT, 30)
         misc_panel.SetSizer(border)
@@ -507,12 +507,13 @@ class PrefPages(wx.Notebook):
         upd_panel = wx.Panel(self, wx.ID_ANY)
 
         info = self.SectionHead(upd_panel, _("Update Status") + u":")
-        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, _("You are running version: %s") % ed_glob.version)
+        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, 
+                                 _("You are running version: %s") % ed_glob.version)
 
         border = wx.BoxSizer(wx.VERTICAL)
-        border.Add((15,15))
+        border.Add((15, 15))
         border.Add(info, 0, wx.LEFT)
-        border.Add((15,10))
+        border.Add((15, 10))
         border.Add(ver_info, 1, wx.LEFT, 20)
 
         upd_panel.SetSizer(border)
@@ -530,16 +531,16 @@ class PrefPages(wx.Notebook):
         # Build the objects
         heading = wx.StaticText(parent, wx.ID_ANY, title)
         h_width = (int(parent.GetParent().GetSize()[0] * .90) - heading.GetSize()[0])
-        divider = wx.StaticLine(parent, wx.ID_ANY, size=(h_width,2))
+        divider = wx.StaticLine(parent, wx.ID_ANY, size=(h_width, 2))
 
         # Build Heading
-        ret_obj.Add((15,0))
+        ret_obj.Add((15, 0))
         ret_obj.Add(heading, 0, wx.ALIGN_TOP | wx.ALIGN_LEFT)
-        ret_obj.Add((10,0))
+        ret_obj.Add((10, 0))
         l_sizer = wx.BoxSizer(wx.VERTICAL)
-        l_sizer.Add((0,8))
+        l_sizer.Add((0, 8))
         l_sizer.Add(divider, 2, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER)
-        l_sizer.Add((0,10))
+        l_sizer.Add((0, 10))
         ret_obj.Add(l_sizer)
         return ret_obj
 
@@ -606,7 +607,7 @@ class ExChoice(wx.Choice):
     wx.Choice to have a default selected value on init.
 
     """
-    def __init__(self, parent, id, pos=(-1,-1), size=(-1,-1), choices=[], default=None):
+    def __init__(self, parent, id, pos=(-1, -1), size=(-1, -1), choices=[], default=None):
         """Constructs a Choice Control"""
         wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices)
         if default != None:

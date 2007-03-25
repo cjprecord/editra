@@ -55,12 +55,15 @@ _ = wx.GetTranslation
 # solved the problem of allowing drag n drop text at the same time as
 # drag and drop files.
 class DropTargetFT(wx.PyDropTarget):
+    """Drop target capable of accepting dropped files and text"""
     def __init__(self, window):
+        """Initializes the Drop target"""
         wx.PyDropTarget.__init__(self)
         self.window = window
         self.initObjects()
 
     def initObjects(self):
+        """Initializes the text and file data objects"""
         self.data = wx.DataObjectComposite()
         self.textDataObject = wx.TextDataObject()
         self.fileDataObject = wx.FileDataObject()
@@ -69,15 +72,19 @@ class DropTargetFT(wx.PyDropTarget):
         self.SetDataObject(self.data)
 
     def OnEnter(self, x, y, dragResult):
+        """Handles the window enter event"""
         return dragResult
 
     def OnDrop(self, x=0, y=0):
+        """Gets the drop cords"""
         return True
 
     def OnDragOver(self, x, y, dragResult):
+        """Gets the drag results/cords"""
         return dragResult
 
     def OnData(self, x, y, dragResult):
+        """Gets and processes the dropped data"""
         if self.GetData():
             files = self.fileDataObject.GetFilenames()
             text = self.textDataObject.GetText()
@@ -88,8 +95,8 @@ class DropTargetFT(wx.PyDropTarget):
                 if SetClipboardText(text):
                     win = self.window.GetCurrentCtrl()
                     if True:
-                        p = win.PositionFromPointClose(x,y)
-                        win.SetSelection(p,p)
+                        p = win.PositionFromPointClose(x, y)
+                        win.SetSelection(p, p)
                         win.Paste()
             else:
                 self.window.SetStatusText("can't read this dropped data")
@@ -98,6 +105,7 @@ class DropTargetFT(wx.PyDropTarget):
 
 #---- Misc Common Function Library ----#
 def SetClipboardText(txt):
+    """Copies text to the clipboard"""
     do = wx.TextDataObject()
     do.SetText(txt)
     if wx.TheClipboard.Open():

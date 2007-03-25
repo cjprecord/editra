@@ -210,7 +210,7 @@ class MainWindow(wx.Frame):
         self.bookmenu.Append(ID_DEL_ALL_BM, _("Remove All Bookmarks"),
                             _("Remove all bookmarks from the current document"))
         self.editmenu.AppendMenu(ID_BOOKMARK, _("Bookmarks"),  self.bookmenu,
-                                _("Add add and remove bookmarks"))
+                                _("Add and remove bookmarks"))
         self.editmenu.AppendSeparator()
         self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"))
         self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 

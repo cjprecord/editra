@@ -1,7 +1,7 @@
 ############################################################################
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
-#									   #
+#                                                                          #
 #    Editra is free software; you can redistribute it and#or modify        #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
@@ -22,7 +22,7 @@
 #--------------------------------------------------------------------------#
 # FILE:	style_editor.py                                                    #
 # AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python							   #
+# LANGUAGE: Python                                                         #
 # SUMMARY:                                                                 #
 #    Provides an editor dialog for editing styles and generating style     #
 # sheets to use with editra's styled text controls.                        #
@@ -601,11 +601,11 @@ class StyleEditor(wx.Dialog):
         ctrl = self.FindWindowById(id)
         ctrl_t = ctrl.GetClassName()
         if ctrl_t == 'wxCheckBox':
-           val = ctrl.GetValue()
+            val = ctrl.GetValue()
         elif ctrl_t == 'wxChoice':
-           val = ctrl.GetStringSelection()
+            val = ctrl.GetStringSelection()
         elif ctrl_t == 'wxBitmapButton':
-           val = ctrl.GetLabel()
+            val = ctrl.GetLabel()
         else:
             return False
 

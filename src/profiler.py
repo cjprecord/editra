@@ -176,11 +176,6 @@ def ProfileVersionStr():
         dev_tool.DEBUGP('[profile] [exception] Failed to open loader')
         return "0.0.0"
 
-    if isinstance(reader, file):
-        conv = str
-    else:
-        conv = unicode
-
     ret_val = "0.0.0"
     count = 0
     while True:

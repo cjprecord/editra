@@ -165,9 +165,9 @@ class Html:
                 self.css[key].SetBackground(wx.EmptyString)
             if default.GetColor() == self.css[key].GetColor():
                 self.css[key].SetColor(wx.EmptyString)
-            for item in default._decor:
-                if item in self.css[key]._decor:
-                    self.css[key]._decor.remove(item)
+            for item in default.GetDecorators():
+                if item in self.css[key].GetDecorators():
+                    self.css[key].RemoveDecorator(item)
 
     def TransformText(self, text):
         """Does character substitution on a string and returns
@@ -178,7 +178,6 @@ class Html:
         text = text.replace('(C)', "&copy;")   # Copyright symbol
         text = text.replace('<', "&lt;")       # Less Than Symbols
         text = text.replace('>', "&gt;")       # Greater Than Symbols
-        #text = text.replace('\t', "&nbsp;" * int(ed_glob.PROFILE['TABWIDTH'])) # Tab Width
         text = text.replace("\"", "&quot;")
         return text
 
@@ -259,6 +258,10 @@ class CssItem:
         """Returns the Font/Fore Color"""
         return self._fore
 
+    def GetDecorators(self):
+        """Returns the list of decorators"""
+        return self._decor
+
     def GetFont(self):
         """Returns the Font Name"""
         return self._font
@@ -266,6 +269,13 @@ class CssItem:
     def GetFontSize(self):
         """Returns the Font Size"""
         return self._size
+
+    def RemoveDecorator(self, item):
+        """Removes a specifed decorator from the decorator set"""
+        if item in self._decor:
+            self._decor.remove(item)
+        else:
+            pass
 
     def SetBackground(self, hex_str):
         """Sets the Background Color"""
