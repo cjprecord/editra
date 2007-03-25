@@ -233,7 +233,7 @@ class StyleItem:
                 tmp = cur_val.split(u",")
                 tmp[0] = value
                 value = u",".join(tmp)
-        setattr(self, attr, value) # TODO if the attr does not exist will this fail?
+        setattr(self, attr, value)
 
 #-----------------------------------------------------------------------------#
 
@@ -410,7 +410,7 @@ class StyleMgr:
                 item.SetAttrFromStr(val)
                 return item
             else:
-                 return self.styles[name]
+                return self.styles[name]
         else:
             return StyleItem()
 
@@ -610,7 +610,8 @@ class StyleMgr:
                     # Validate values
                     v1ok = v2ok = False
                     if len(values) and attrib[0] in "fore back":
-                        if values[0][0] == u"#" and len(values[0]) == 7 and values[0][1:].isalnum():
+                        if values[0][0] == u"#" and len(values[0]) == 7 and \
+                           values[0][1:].isalnum():
                             v1ok = True
                     elif len(values) and attrib[0] in "face size": 
                         # TODO these regular expressions are wrong
@@ -625,8 +626,9 @@ class StyleMgr:
                     if len(values) == 2 and values[1] in STY_EX_ATTRIBUTES:
                         v2ok = True
                     elif len(values) == 2:
-                        self.LOG("[styles] [syntax_warning] Unknown extra attribute '" + \
-                                values[1] + "' in attribute: " + attrib[0])
+                        self.LOG("[styles] [syntax_warning] Unknown extra " + \
+                                 "attribute '" + values[1] + \
+                                 "' in attribute: " + attrib[0])
 
                     if v1ok and v2ok:
                         value = u",".join(values)
@@ -690,7 +692,8 @@ class StyleMgr:
                 try:
                     style_dict[style].GetFore()
                 except AttributeError:
-                    self.LOG("[styles] [error] Invalid data in style dictionary")
+                    self.LOG("[styles] [error] Invalid data " \
+                             "in style dictionary")
                     return False
 
             if not hasattr(self, "styles"):
@@ -699,5 +702,6 @@ class StyleMgr:
             self.styles = self.PackStyleSet(self.styles)
             return True
         else:
-            self.LOG("[styles] [error] SetStyles expects a dictionary of StyleItems")
+            self.LOG("[styles] [error] SetStyles expects a " \
+                     "dictionary of StyleItems")
             return False

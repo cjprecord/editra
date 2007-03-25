@@ -67,7 +67,7 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
             logfile = 'editra_tmp.log'
         file_handle = file(logfile, mode="ab")
         writer = codecs.lookup('utf-8')[3](file_handle)
-        if log_lvl != none:
+        if log_lvl != "none":
             writer.write(log_lvl + u": " + statement + "\n")
         else:
             writer.write(u"MSG: " +  statement + "\n")
