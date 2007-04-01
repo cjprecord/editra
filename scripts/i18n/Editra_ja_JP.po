@@ -106,7 +106,7 @@ msgstr ""
 
 #: ../../src/ed_main.py:204
 msgid "Commands that affect an entire line"
-msgstr ""
+msgstr "行全体に影響するコマンド"
 
 #: ../../src/ed_main.py:176
 msgid "Configure Printer"
@@ -254,19 +254,19 @@ msgstr "一般"
 #: ../../src/ed_main.py:293
 #, python-format
 msgid "Generate %s"
-msgstr ""
+msgstr "%sを作る"
 
 #: ../../src/ed_main.py:296
 msgid "Generate Code"
-msgstr ""
+msgstr "コードを作る"
 
 #: ../../src/ed_main.py:294
 msgid "Generate an HTML page from the current document"
-msgstr ""
+msgstr "現在のドキュメントからHTMLページを作る"
 
 #: ../../src/ed_main.py:295
 msgid "Generator"
-msgstr ""
+msgstr "ジェネレーター"
 
 #: ../../src/ed_main.py:237
 msgid "Goto Line"
@@ -302,7 +302,7 @@ msgstr "選択した行をインデントする"
 
 #: ../../src/ed_main.py:228 ../../src/prefdlg.py:333
 msgid "Indentation Guides"
-msgstr ""
+msgstr "行の字下がりのガイド"
 
 #: ../../src/ed_pages.py:232
 #, python-format
@@ -335,7 +335,7 @@ msgstr ""
 
 #: ../../src/ed_main.py:203
 msgid "Line Edit"
-msgstr ""
+msgstr "行を編集する"
 
 #: ../../src/ed_main.py:817
 #, python-format
@@ -357,7 +357,7 @@ msgstr "読み込まれたプロフィール: %s"
 
 #: ../../src/prefdlg.py:307
 msgid "Locale Settings"
-msgstr ""
+msgstr "地域設定"
 
 #: ../../src/ed_main.py:259 ../../src/ed_main.py:260 ../../src/prefdlg.py:395
 msgid "Macintosh (\\r)"
@@ -377,7 +377,7 @@ msgstr "新規作成"
 
 #: ../../src/ed_main.py:239
 msgid "Next Bookmark"
-msgstr ""
+msgstr "次のブックマーク"
 
 #: ../../src/prefdlg.py:112
 msgid "Ok"
@@ -406,7 +406,7 @@ msgstr ""
 
 #: ../../src/ed_main.py:176
 msgid "Page Setup"
-msgstr ""
+msgstr "ページ設定"
 
 #: ../../src/ed_print.py:166
 #, python-format

@@ -104,10 +104,7 @@ def GetLangId(lang_n):
 
 #---- Language List Combo Box----#
 class LangListCombo(wx.combo.BitmapComboBox):
-    """Combines the data from a LangLstCtrl into a combo select box.
-    Populates it self with the available translations for the editor on init.
-
-    """
+    """Combines a langlistctrl and a BitmapComboBox"""
     def __init__(self, parent, id, default=None):
         """Initializes the combobox"""
         self.default = default
@@ -123,27 +120,3 @@ class LangListCombo(wx.combo.BitmapComboBox):
             self.Append(lang_d, bit_m)
         if default:
             self.SetValue(default)
-
-        # Bind Events
-        # wxMacBug? clicking outside of control to close the selection list 
-        #      causes the value of the control to be set to None/Empty String.
-        #      Also clicking on the drop down button and releasing it without
-        #      making a new selection also causes this behavior. So need to
-        #      catch these events and reset the selection when it gets set to
-        #      an empty string. The event handler that these events are
-        #      sent to catch most conditions except if the inital click on the
-        #      the drop button and then click off. The BitmapComboBox is 
-        #      currently stated as being "abit klunky" on the Mac so this may 
-        #      be clarified in a future update.
-        self.Bind(wx.EVT_LEFT_UP, self.OnComboClick, self)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnComboClick, self)
-        self.Bind(wx.EVT_MOUSE_CAPTURE_LOST, self.OnComboClick, self)
-
-    def OnComboClick(self, evt):
-        """Event handler for clicks in the combo box"""
-        sel = self.GetValue()
-        if sel == "" or sel == None:
-            self.SetValue(self.default)
-        dev_tool.DEBUGP("[ed_i18n] [obj_evt] LangListCombo Clicked")
-        evt.Skip()
-        
