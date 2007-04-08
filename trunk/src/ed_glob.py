@@ -39,7 +39,7 @@ __revision__ = "$Id: $"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.0.94'
+version = __version__ = u'0.0.96'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
@@ -52,13 +52,13 @@ from wx import ID_EXIT as wxID_EXIT
 #---- Configuration Locations ----#
 
 # Values set when main loads
-CONFIG = { 
-          'PROFILE_DIR' : "", 
-          'PIXMAPS_DIR' : "",
-          'MIME_DIR'    : "",
-          'THEME_DIR'   : "",
-          'LANG_DIR'    : "",
-          'EXTERN_DIR'  : ""
+CONFIG = {
+          'CACHE_DIR'   : "",   # Holds temp data about documents
+          'PROFILE_DIR' : "",   # User Profile Direcotry
+          'PIXMAPS_DIR' : "",   # Graphics Directory
+          'MIME_DIR'    : "",   # MIME type graphics
+          'THEME_DIR'   : "",   # Theme Directory
+          'LANG_DIR'    : "",   # Locale Data Direcotry
 }
 
 #---- Object ID's ----#
@@ -112,6 +112,7 @@ ID_PREF_ICONSZ   = NewId()
 ID_PREF_MODE     = NewId()
 ID_PRINT_MODE    = NewId()
 ID_TRANSPARENCY  = NewId()
+ID_PREF_SPOS     = NewId()
 
 # View Menu IDs
 ID_ZOOM_OUT      = NewId()
@@ -135,9 +136,12 @@ ID_EOL_WIN       = NewId()
 ID_WORD_WRAP     = NewId()
 ID_INDENT        = NewId()
 ID_UNINDENT      = NewId()
+ID_COMMENT       = NewId()
+ID_UNCOMMENT     = NewId()
 
 # Settings Menu IDs
 ID_AUTOCOMP      = NewId()
+ID_AUTOINDENT    = NewId()
 ID_SYNTAX        = NewId()
 ID_SYN_ON        = NewId()
 ID_SYN_OFF       = NewId()
@@ -176,6 +180,7 @@ PROFILE = {
            'ALPHA'      : 255,
            'AALIASING'  : True,
            'AUTO_COMP'  : True,
+           'AUTO_INDENT': True,
            'BRACKETHL'  : True,
            'CODE_FOLD'  : True,
            'DEFAULT'    : False,
@@ -184,11 +189,12 @@ PROFILE = {
            'FHIST_LVL'  : 5,
            'GUIDES'     : True,
            'ICONS'      : 'Stock',
-           'ICON_SZ'    : (32,32),
+           'ICON_SZ'    : (24,24),
            'LANG'       : 'Default',
            'MODE'       : 'CODE',
            'MYPROFILE'  : 'default.pp',
            'PRINT_MODE' : 'BLACK/WHITE',
+           'SAVE_POS'   : True,
            'SHOW_EOL'   : False,
            'SHOW_LN'    : True,
            'SYNTAX'     : True,
@@ -208,6 +214,7 @@ PROFILE = {
 ID_2_PROF = {
              ID_PREF_AALIAS       : 'AALIASING',
              ID_AUTOCOMP          : 'AUTO_COMP',
+             ID_AUTOINDENT        : 'AUTO_INDENT',
              ID_BRACKETHL         : 'BRACKETHL',
              ID_FOLDING           : 'CODE_FOLD',
              ID_KWHELPER          : 'KWHELPER',
@@ -225,6 +232,7 @@ ID_2_PROF = {
              ID_TRANSPARENCY      : 'ALPHA',
              ID_WORD_WRAP         : 'WRAP',
              ID_PREF_METAL        : 'METAL',
+             ID_PREF_SPOS         : 'SAVE_POS',
              ID_PREF_WSIZE        : 'SET_WSIZE',
              ID_PREF_WPOS         : 'SET_WPOS',
              ID_PREF_ICON         : 'ICONS',

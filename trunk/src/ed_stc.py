@@ -89,6 +89,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                              wx.stc.STC_MOD_DELETETEXT | wx.stc.STC_MOD_INSERTTEXT | \
                              wx.stc.STC_PERFORMED_USER)
 
+        self.CmdKeyAssign(ord('-'), wx.stc.STC_SCMOD_CTRL, wx.stc.STC_CMD_ZOOMOUT)
+        self.CmdKeyAssign(ord('+'), wx.stc.STC_SCMOD_CTRL | wx.stc.STC_SCMOD_SHIFT, \
+                          wx.stc.STC_CMD_ZOOMIN)
         #---- Drop Target ----#
         if useDT:
             self.fdt = util.DropTargetFT(parent)
@@ -100,18 +103,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.filename = ''	                # This controls File
         self.dirname = ''			# Files Directory
         self.path_char = util.GetPathChar()	# Path Character / 0r \
-        self.zoom = 0			        # Default Zoom Level
-        self.old_pos = -1			# Carat begins at top of file
+        self.zoom = 0
+        self.old_pos = -1
         self.column = 0
         self.line = 0
         self._autocomp_svc = autocomp.AutoCompService(self)
         self._use_autocomp = PROFILE['AUTO_COMP']
+        self._autoindent = PROFILE['AUTO_INDENT']
         self.brackethl = PROFILE["BRACKETHL"]
         self.folding = PROFILE['CODE_FOLD']
         self.kwhelp = PROFILE["KWHELPER"]
         self.highlight = PROFILE["SYNTAX"]
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
+        self._comment = list()
         self.lang_id = 0
 
         # Set Up Margins 
@@ -156,13 +161,58 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
         self.Bind(wx.stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
         self.Bind(wx.EVT_CHAR, self.OnChar)
-        if PROFILE["KWHELPER"]:
-            self.Bind(wx.EVT_KEY_DOWN, self.KeyWordHelp)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
        #---- End Init ----#
 
     __name__ = u"EditraTextCtrl"
 
     #---- Begin Function Definitions ----#
+    def Comment(self, uncomment=False):
+        """(Un)Comments a line or a selected block of text
+        in a document.
+
+        """
+        if self.GetLexer() == wx.stc.STC_LEX_NULL or not len(self._comment):
+            return
+        else:
+            sel = self.GetSelection()
+            start = self.LineFromPosition(sel[0])
+            end = self.LineFromPosition(sel[1])
+            c_start = self._comment[0] + " "
+            c_end = u''
+            if len(self._comment) > 1:
+                c_end = " " + self._comment[1]
+            if end > start and self.GetColumn(sel[1]) == 0:
+                end = end - 1
+            self.BeginUndoAction()
+            try:
+                nchars = 0
+                lines = range(start, end+1)
+                lines.reverse()
+                for lineNumber in lines:
+                    lstart = self.PositionFromLine(lineNumber)
+                    lend = self.GetLineEndPosition(lineNumber)
+                    text = self.GetTextRange(lstart, lend)
+                    if len(text.strip()):
+                        if not uncomment:
+                            text = c_start + text + c_end
+                            nchars = nchars + len(c_start + c_end)
+                        else:
+                            text = text.replace(c_start, u'', 1)
+                            if len(c_end):
+                                text = text.replace(c_end, u'', 1)
+                            nchars = nchars - len(c_start + c_end)
+                        self.SetTargetStart(lstart)
+                        self.SetTargetEnd(lend)
+                        self.ReplaceTarget(text)
+            finally:
+                self.EndUndoAction()
+                self.SetSelection(sel[0], sel[1] + nchars)
+
+    def GetAutoIndent(self):
+        """Returns whether auto-indent is being used"""
+        return self._autoindent
+
     def GetPos(self, key):
         """ Update Line/Column information """
         pos = self.GetCurrentPos()
@@ -214,6 +264,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """Is Autocomplete being used by this instance"""
         return self._use_autocomp
 
+    def GetFileName(self):
+        """Returns the full path name of the current file"""
+        return "".join([self.dirname, self.path_char, self.filename])
+
     def GetStyleSheet(self):
         """Finds the current style sheet and returns its path. The
         Lookup is done by first looking in the users config directory
@@ -234,17 +288,33 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             return None
 
-    def KeyWordHelp(self, evt):
-        """Bring up Keyword List for Current Language"""
+    def OnKeyDown(self, evt):
+        """Handles keydown dependent events"""
         # Toggle Autocomp window by pressing button again
-        if self.AutoCompActive() and evt.AltDown():
+        k_code = evt.GetKeyCode()
+        if self.kwhelp and self.AutoCompActive() and evt.AltDown():
             self.AutoCompCancel()
             return
-        elif evt.AltDown() and len(self.keywords) > 1:
+        elif self.kwhelp and evt.AltDown() and len(self.keywords) > 1:
             pos = self.GetCurrentPos()
             pos2 = self.WordStartPosition(pos, True)
             context = pos - pos2
             self.AutoCompShow(context, self.keywords)
+        elif self._autoindent and k_code == wx.WXK_RETURN:
+            if self.GetSelectedText():
+                self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
+                return
+            line = self.GetCurrentLine()
+            text = self.GetTextRange(self.PositionFromLine(line), self.GetCurrentPos())
+            if text.strip() == u'':
+                self.AddText(self.GetEOLChar() + text)
+                self.EnsureCaretVisible()
+                return
+            indent = self.GetLineIndentation(line)
+            i_space = indent / self.GetTabWidth()
+            ndent = self.GetEOLChar() + self.GetIndentChar() * i_space
+            self.AddText(ndent + ((indent - (self.GetTabWidth() * i_space)) * u' '))
+            self.EnsureCaretVisible()
         else:
             evt.Skip()
 
@@ -476,7 +546,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                   ID_COPY_LINE : self.LineCopy, ID_SYNTAX : self.SyntaxOnOff,
                   ID_INDENT : self.Tab,         ID_UNINDENT : self.BackTab,
                   ID_TRANSPOSE : self.LineTranspose, ID_SELECTALL: self.SelectAll,
-                  ID_FOLDING : self.FoldingOnOff, ID_SHOW_LN : self.ToggleLineNumbers
+                  ID_FOLDING : self.FoldingOnOff, ID_SHOW_LN : self.ToggleLineNumbers,
+                  ID_COMMENT : self.Comment, ID_AUTOINDENT : self.ToggleAutoIndent
         }
         if e_obj.GetClassName() == "wxToolBar":
             self.LOG("[stc_evt] Caught Event Generated by ToolBar")
@@ -535,6 +606,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.FindLexer(f_ext)
         elif e_id == ID_AUTOCOMP:
             self.SetAutoComplete(not self.GetAutoComplete())
+        elif e_id == ID_UNCOMMENT:
+            self.Comment(True)
         else:
             evt.Skip()
 
@@ -549,6 +622,23 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                   }
         self.ConvertEOLs(eol_map[mode_id])
         self.SetEOLMode(eol_map[mode_id])
+
+    def GetEOLChar(self):
+        """Gets the eol character used in document"""
+        m_id = self.GetEOLModeId()
+        if m_id == ID_EOL_MAC:
+            return '\r'
+        elif m_id == ID_EOL_WIN:
+            return '\r\n'
+        else:
+            return '\n'
+
+    def GetIndentChar(self):
+        """Gets the indentation char used in document"""
+        if self.GetUseTabs():
+            return '\t'
+        else:
+            return ' ' * self.GetTabWidth()
 
     def GetEOLModeId(self):
         """Gets the id of the eol format"""
@@ -601,6 +691,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.StyleDefault()
         return 0
 
+    def ToggleAutoIndent(self, set=False):
+        """Toggles Auto-indent On and Off"""
+        if not self._autoindent or set:
+            self._autoindent = True
+        else:
+            self._autoindent = False
+
     def ToggleBracketHL(self, set=False):
         """Toggle Bracket Highlighting On and Off"""
         if not self.brackethl or set:
@@ -626,11 +723,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if not self.kwhelp or set:
             self.LOG("[stc_evt] Keyword Helper On")
             self.kwhelp = True
-            self.Bind(wx.EVT_KEY_DOWN, self.KeyWordHelp)
         else:
             self.LOG("[stc_evt] Keyword Helper Off")
             self.kwhelp = False
-            self.Unbind(wx.EVT_KEY_DOWN)
         return 0
 
     def Save(self):
@@ -724,6 +819,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.LOG("[stc] [exception] No Extra Properties to Set")
             props = []
 
+        try:
+            comment = syn_data[syntax.COMMENT]
+        except KeyError:
+            self.LOG("[stc] [exception] No Comment Pattern to set")
+            comment = []
+
         # Set Lexer
         self.SetLexer(lexer)
         # Set Keywords
@@ -732,6 +833,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetSyntax(synspec)
         # Set Extra Properties
         self.SetProperties(props)
+        # Set Comment Pattern
+        self._comment = comment
+
         return True
 
     def SetKeyWords(self, kw_lst):

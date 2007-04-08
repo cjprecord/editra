@@ -139,7 +139,7 @@ ID_MAP = { ID_SEARCH_CTRL : [ID_FIND_LBL, ID_SEARCH_CTRL, ID_MATCH_CASE,
 #-----------------------------------------------------------------------------#
 
 class CommandBar(wx.Panel):
-    """Creates a pane that houses various different command
+    """Creates a panel that houses various different command
     controls for the editor.
 
     """

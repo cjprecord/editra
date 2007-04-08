@@ -237,6 +237,14 @@ def HasConfigDir(loc=""):
     else:
         return False
 
+def MakeConfigDir(name):
+    """Makes a user config direcotry"""
+    config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.prog_name
+    try:
+        os.mkdir(config_dir + GetPathChar() + name)
+    except:
+        pass
+							
 def CreateConfigDir():
     """ Creates the user config directory its default sub 
     directories and any of the default config files.
@@ -249,12 +257,15 @@ def CreateConfigDir():
     config_file = ed_glob.CONFIG['PROFILE_DIR'] + u"default.pp"
     loader = ed_glob.CONFIG['PROFILE_DIR'] + u".loader"
     dest_file = profile_dir + GetPathChar() + u"default.pp"
+    doc_cache = config_dir + GetPathChar() + u"cache"
 
     #---- Create Directories ----#
     if not os.path.exists(config_dir):
         os.mkdir(config_dir)
     if not os.path.exists(profile_dir):
         os.mkdir(profile_dir)
+    if not os.path.exists(doc_cache):
+        os.mkdir(doc_cache)
 
     dev_tool.DEBUGP("[util_info] Config_Dir: " + config_file)
     dev_tool.DEBUGP("[util_info] DEST: " + dest_file)

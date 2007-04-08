@@ -71,13 +71,18 @@ SRC_SCRIPTS = [ ("src", glob.glob("src/*.py")),
                 ("src/autocomp", glob.glob("src/autocomp/*.py")),
                 ("src/extern", ["src/extern/__init__.py", "src/extern/README"]),
                 ("src/syntax", glob.glob("src/syntax/*.py")),
+                ("scripts", ["scripts/clean_dir.sh"]),
+                ("scripts/i18n", glob.glob("scripts/i18n/*.po")),
 ]
 
 DATA_FILES = [ 
               ("pixmaps", ["pixmaps/editra.png", "pixmaps/editra.ico",
                            "pixmaps/editra.icns"]),
               ("pixmaps/mime", glob.glob("pixmaps/mime/*.png")),
-              ("pixmaps/theme/Stock", glob.glob("pixmaps/theme/Stock/[A-Z]*")),
+              ("pixmaps/theme/Stock",["pixmaps/theme/Stock/AUTHORS",
+               "pixmaps/theme/Stock/COPYING",
+               "pixmaps/theme/Stock/DONATE",
+               "pixmaps/theme/Stock/README"]),
               ("pixmaps/theme/Stock/toolbar", glob.glob("pixmaps/theme/Stock/toolbar/*.png")),
               ("pixmaps/theme/Stock/menu", glob.glob("pixmaps/theme/Stock/menu/*.png")),
               ("templates", glob.glob("templates/*")),
@@ -86,8 +91,6 @@ DATA_FILES = [
                             "profiles/default.pp.sample"]),
               ("locale/en_US/LC_MESSAGES", ["locale/en_US/LC_MESSAGES/Editra.mo"]),
               ("locale/ja_JP/LC_MESSAGES", ["locale/ja_JP/LC_MESSAGES/Editra.mo"]),
-              ("scripts", ["scripts/clean_dir.sh"]),
-              ("scripts/i18n", glob.glob("scripts/i18n/*.po")),
               ("styles", glob.glob("styles/*.ess")),
               ("test_data", glob.glob("test_data/*")),
               ("docs", glob.glob("docs/*.txt")),
@@ -95,12 +98,12 @@ DATA_FILES = [
             ]
 
 DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py",
-        "pixmaps/editra.png", "pixmaps/editra.ico", 'Editra',
-       "pixmaps/editra.icns", "pixmaps/mime/*.png", "pixmaps/theme/Stock/[A-Z]*",
-        "pixmaps/theme/Stock/toolbar/*.png", "pixmaps/theme/Stock/menu/*.png", "profiles/default.pp",
-        "profiles/.loader", 
-        "profiles/default.pp.sample", "locale/en_US/LC_MESSAGES/Editra.mo", 
-        "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "test_data/*", "README.txt","CHANGELOG.txt","COPYING.txt"
+         "pixmaps/editra.png", "pixmaps/editra.ico", 'Editra',
+         "pixmaps/editra.icns", "pixmaps/mime/*.png", "pixmaps/theme/Stock/[A-Z]*",
+         "pixmaps/theme/Stock/toolbar/*.png", "pixmaps/theme/Stock/menu/*.png", 
+         "profiles/default.pp", "profiles/.loader", "profiles/default.pp.sample",
+         "locale/en_US/LC_MESSAGES/Editra.mo", "locale/ja_JP/LC_MESSAGES/Editra.mo", 
+         "styles/*.ess", "test_data/*", "README.txt","CHANGELOG.txt","COPYING.txt"
 ]
 
 DESCRIPTION = "Code Editor"
@@ -167,11 +170,16 @@ if __platform__ == "win32" and 'py2exe' in sys.argv:
         print "\n!! You dont have py2exe installed. Cant build a standalone .exe !!\n"
         exit()
 
+    # Hack for py2exe
+    sys.path.append(os.path.abspath('src/'))
+
     setup(
         name = NAME, 
         version = VERSION, 
         options = {"py2exe" : {"compressed" : 1, "optimize" : 2, "includes" : INCLUDES }},
-        windows = [{"script": "Editra.py","icon_resources": [(1, ICON['Win'])], "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
+        windows = [{"script": "src/Editra.py",
+                    "icon_resources": [(1, ICON['Win'])], 
+                    "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
