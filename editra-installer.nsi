@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Editra"
-!define PRODUCT_VERSION "0.0.90"
+!define PRODUCT_VERSION "0.0.96"
 !define PRODUCT_PUBLISHER "Cody Precord"
 !define PRODUCT_WEB_SITE "http://editra.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\editra.exe"
@@ -44,7 +44,7 @@ SetCompressor lzma
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "editra.win32.0.0.94.exe"
+OutFile "editra.win32.0.0.96.exe"
 InstallDir "$PROGRAMFILES\Editra"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -301,7 +301,7 @@ Section Uninstall
   Delete "$DESKTOP\Editra.lnk"
   Delete "$SMPROGRAMS\Editra\Editra.lnk"
   RMDir "$SMPROGRAMS\Editra"
-  RMDir "$INSTDIR\doc"
+  RMDir "$INSTDIR\docs"
   RMDir "$INSTDIR\locale\en_US\LC_MESSAGES"
   RMDir "$INSTDIR\locale\en_US"
   RMDir "$INSTDIR\locale\ja_JP\LC_MESSAGES"

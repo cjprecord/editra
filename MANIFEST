@@ -45,9 +45,16 @@ pixmaps/theme/Stock/toolbar/undo.png
 profiles/.loader
 profiles/default.pp
 profiles/default.pp.sample
+scripts/i18n/Editra_en_US.po
+scripts/i18n/Editra_ja_JP.po
+scripts/i18n/app.fil
+scripts/i18n/gen_lang.sh
+scripts/i18n/messages.pot
+scripts/i18n/mk18n.py
 src/Editra.py
 src/__init__.py
 src/dev_tool.py
+src/doctools.py
 src/ed_art.py
 src/ed_cmdbar.py
 src/ed_glob.py

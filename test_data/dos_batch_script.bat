@@ -1,3 +1,5 @@
+rem Comment Line
+
 :BEGIN
 set HELLO="WORLD"
 set WORLD="HELLO"
