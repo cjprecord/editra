@@ -27,7 +27,7 @@
 # Lexer configuration module for HTML/DHTML/SGML.                             #
 #                                                                             #
 # TODO:                                                                       #
-# Add Netscaep/Microsoft Tag Extenstions (maybe)                              #
+# Add Netscape/Microsoft Tag Extenstions (maybe)                              #
 # Styleing needs lots of tweaking                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -149,6 +149,10 @@ def SyntaxSpec(type=0):
 def Properties(type=0):
     """Extra Properties"""
     return [ fold, fld_html ]
+
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return [ u'<!--', u'-->' ]
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

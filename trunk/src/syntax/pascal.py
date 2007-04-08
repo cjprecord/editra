@@ -50,7 +50,7 @@ pas_keywords = (0, "and array asm begin case cdecl class const constructor "
                    "until uses var virtual while with write xor")
 
 # Pascal Classwords (Types)
-pas_classword = (1, "array boolean char integer file pointer real set string "
+pas_classwords = (1, "array boolean char integer file pointer real set string "
                     "text variant write read default public protected private "
                     "property published stored")
 
@@ -60,10 +60,10 @@ pas_funct = ("pack unpack Dispose New Abs Arctan Cos Exp Ln Sin Sqr Sqrt Eof "
              "Ord Round Trunc")
 
 #---- Syntax Style Specs ----#
-# Pascal Lexer Uses C values, but need to adjust styles according le
+# Pascal Lexer Uses C values, but need to adjust styles accordingly
 # TODO test these styles the are probably a bit off
 syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
-                 ('STC_C_COMMENTLINE', 'comment_style'),
+                 ('STC_C_COMMENT', 'comment_style'),
                  ('STC_C_COMMENTDOC', 'comment_style'),
                  ('STC_C_COMMENTDOCKEYWORD', 'dockey_style'),
                  ('STC_C_COMMENTDOCKEYWORDERROR', 'error_style'),
@@ -101,6 +101,10 @@ def SyntaxSpec(type=0):
 def Properties(type=0):
     """Returns a list of extra properties to set"""
     return [ fld_comment ]
+
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return [ u'{', u'}' ]
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

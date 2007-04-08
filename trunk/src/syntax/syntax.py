@@ -74,11 +74,14 @@ LEXER_ID    = 2
 MODULE      = 3
 
 # Constants for getting values from SyntaxData's return dictionary
-KEYWORDS = 0
-LEXER    = 1
-SYNSPEC  = 2
-PROPERTIES = 3
-LANGUAGE = 4
+KEYWORDS = 0    # Keyword set(s)
+LEXER    = 1    # Lexer to use
+SYNSPEC  = 2    # Highligter specs
+PROPERTIES = 3  # Extra Properties
+LANGUAGE = 4    # Language ID
+COMMENT = 5     # Gets the comment characters pattern
+
+COMMENT_KEY = u"#"
 
 # Dynamically loaded modules are put here to keep them accessable to all text
 # controls that access this module, so that they dont need to be reloaded.
@@ -144,14 +147,11 @@ def SyntaxData(langstr):
 
     # This little bit of code fetches the keyword/syntax spec set(s) from the specified module
     mod = LOADED_SYN[lex_cfg[MODULE]]  #HACK
-    keyword_set = mod.Keywords(lex_cfg[LANG_ID])
-    syn_data[KEYWORDS] = keyword_set
-    syntax_spec = mod.SyntaxSpec(lex_cfg[LANG_ID])
-    syn_data[SYNSPEC] = syntax_spec
-    props = mod.Properties(lex_cfg[LANG_ID])
-    syn_data[PROPERTIES] = props
+    syn_data[KEYWORDS] = mod.Keywords(lex_cfg[LANG_ID])
+    syn_data[SYNSPEC] = mod.SyntaxSpec(lex_cfg[LANG_ID])
+    syn_data[PROPERTIES] = mod.Properties(lex_cfg[LANG_ID])
     syn_data[LANGUAGE] = lex_cfg[LANG_ID]
-
+    syn_data[COMMENT] = mod.CommentPattern(lex_cfg[LANG_ID])
     return syn_data
 
 def GenLexerMenu():

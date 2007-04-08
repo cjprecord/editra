@@ -127,6 +127,14 @@ def SyntaxSpec(type=0):
 def Properties(type=0):
     """Returns a list of extra properties to set"""
     return [fold, fold_pre]
+
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    if type == synglob.ID_LANG_CPP:
+        return [ u'//' ]
+    else:
+        return [ u'/*', u'*/' ]
+
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

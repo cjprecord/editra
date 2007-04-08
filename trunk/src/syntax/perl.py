@@ -120,6 +120,10 @@ def SyntaxSpec(type=0):
 def Properties(type=0):
     """Extra Properties"""
     return [ fold ]
+
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return [ u'#' ]
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

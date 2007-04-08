@@ -123,6 +123,10 @@ def Properties(type=0):
     """Returns a list of extra properties"""
     PROPS = [ fld_comment, fld_compact ]
     return PROPS
+
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return [ u'#' ]
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
