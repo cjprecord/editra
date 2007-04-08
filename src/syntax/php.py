@@ -416,6 +416,11 @@ def Properties(type=0):
     # TODO why doesnt folding work??
     return [ ("fold", "1"), ("fold.html", "1") ]
 
+# TODO currently unsupported because of difficulties due to having
+#      other inline code such as html that require different
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return list()
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

@@ -35,7 +35,7 @@ __revision__ = "$Id: Exp $"
 
 #-----------------------------------------------------------------------------#
 # Dependancies
-
+import synglob
 
 #-----------------------------------------------------------------------------#
 
@@ -58,16 +58,23 @@ italian = (5, "")
 romanian = (6, "")
 
 # LaTeXt
-# There are no keyword settings available for LaTeXt
+# There are no keyword settings available for LaTeX
 
 #---- Syntax Style Specs ----#
 # TeX
-syntax_items = [ ('STC_TEX_DEFAULT', 'default_style'),
+syntax_items1 = [ ('STC_TEX_DEFAULT', 'default_style'),
                  ('STC_TEX_COMMAND', 'keyword_style'),
                  ('STC_TEX_GROUP', 'scalar_style'),
                  ('STC_TEX_SPECIAL', 'operator_style'),
                  ('STC_TEX_SYMBOL', 'number_style'),
                  ('STC_TEX_TEXT', 'default_style') ]
+
+# LaTeX
+syntax_items2 = [ ('STC_L_DEFAULT', 'default_style'),
+                 ('STC_L_COMMAND', 'pre_style'),
+                 ('STC_L_COMMENT', 'comment_style'),
+                 ('STC_L_MATH', 'operator_style'),
+                 ('STC_L_TAG', 'keyword_style')]
 
 #---- Extra Properties ----#
 # None
@@ -76,17 +83,25 @@ syntax_items = [ ('STC_TEX_DEFAULT', 'default_style'),
 #---- Required Module Functions ----#
 def Keywords(type=0):
     """Returns Keyword Specifications List"""
-    KEYWORDS = [tex_kw]
-    return KEYWORDS
+    if type == synglob.ID_LANG_TEX:
+        return [tex_kw]
+    else:
+        return list()
 
 def SyntaxSpec(type=0):
     """Syntax Specifications List"""
-    return syntax_items
+    if type == synglob.ID_LANG_TEX:
+        return syntax_items1
+    else:
+        return syntax_items2
 
 def Properties(type=0):
     """Extra Properties"""
     return []
 
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return [ u'%' ]
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

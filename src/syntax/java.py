@@ -62,7 +62,7 @@ doc_keywords = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph \\category
 
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
-                 ('STC_C_COMMENTLINE', 'comment_style'),
+                 ('STC_C_COMMENT', 'comment_style'),
                  ('STC_C_COMMENTDOC', 'comment_style'),
                  ('STC_C_COMMENTDOCKEYWORD', 'dockey_style'),
                  ('STC_C_COMMENTDOCKEYWORDERROR', 'error_style'),
@@ -103,6 +103,10 @@ def SyntaxSpec(type=0):
 def Properties(type=0):
     """Returns a list of extra properties to set"""
     return [fold, fold_pre]
+
+def CommentPattern(type=0):
+    """Returns a list of characters used to comment a block of code"""
+    return [ u'//' ]
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
