@@ -202,7 +202,7 @@ class Completer:
                 return False
             text = self._buffer.GetText()
         if self._buffer.dirname not in self._syspath:
-            self._syspath.insert(0, self.buffer._dirname)
+            self._syspath.insert(0, self._buffer.dirname)
         syspath = sys.path
         sys.path = self._syspath
         text = text.replace('\r\n', '\n')
@@ -227,7 +227,7 @@ class Completer:
                 self._locals.update(newspace)
                 return True
         finally:
-            del module # Free some memory
+            del module # Free tmp module
             sys.path = syspath
             for m in sys.modules.keys():
                 if m not in self._modules:

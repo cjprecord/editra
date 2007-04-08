@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.5
+#!/usr/bin/env python
 ############################################################################
 #    Copyright (C) 2007 Cody Precord                                       #
 #    cprecord@editra.org                                                   #
@@ -76,8 +76,8 @@ class Editra(wx.App):
         """Returns the logging function used by the app"""
         return self._log
 
-def Main():
-    """Configures and Runs an instance of Editra"""
+def InitConfig():
+    """Initializes the configuration data"""
     # 1. Set Resource location globals
     ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
@@ -87,9 +87,18 @@ def Main():
     ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
     ed_glob.CONFIG['SYS_STYLES_DIR'] = util.ResolvConfigDir("styles", True)
     ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test_data", True)
+    if not util.HasConfigDir("cache"):
+        util.MakeConfigDir("cache")
+    ed_glob.CONFIG['CACHE_DIR'] = util.ResolvConfigDir("cache")
+
+def Main():
+    """Configures and Runs an instance of Editra"""
+    # 1. Set Resource location globals
+    InitConfig()
 
     # 2. Load Profile Settings
     import profiler
+    PROFILE_UPDATED = False
     if util.HasConfigDir():
         if profiler.ProfileIsCurrent():
             profiler.LoadProfile()
@@ -97,9 +106,10 @@ def Main():
             dev_tool.DEBUGP("[main_info] Updating Profile to current version")
             profiler.WriteProfile(profiler.GetProfileStr())
             profiler.LoadProfile()
+            PROFILE_UPDATED = True
     else:
         util.CreateConfigDir()
-        profiler.LoadProfile()
+        InitConfig()
 
     # 3. Create Application
     dev_tool.DEBUGP("[main_info] Initializing Application...")
@@ -116,6 +126,10 @@ def Main():
     language = gettext.translation(ed_glob.prog_name, ed_glob.CONFIG['LANG_DIR'],
                                     [the_locale.GetCanonicalName()], fallback=True)
     language.install()
+
+    if PROFILE_UPDATED:
+        alert = wx.MessageBox(_("Your profile has been updated to the latest version"),
+                              _("Profile Updated"))
 
     _frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
                                     ed_glob.prog_name, EDITRA.GetLog())

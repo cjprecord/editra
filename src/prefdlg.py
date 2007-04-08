@@ -77,7 +77,8 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON,
             ed_glob.ID_PREF_MODE, ed_glob.ID_SHOW_EOL, ed_glob.ID_PREF_SYNTHEME,
             ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
-            ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN ]
+            ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN,
+            ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT]
 
 #----------------------------------------------------------------------------#
 
@@ -144,6 +145,7 @@ class PrefDlg(wx.Dialog):
         if len(self.act_ids) > 0:     
             self.UpdateProfile()
             self.LOG("[pref_info] All changes have been applied")
+        self.GetParent().nb.UpdateTextControls()
         evt.Skip()
         
     def OnApply(self, evt):
@@ -156,6 +158,7 @@ class PrefDlg(wx.Dialog):
         self.ValidateItems(items, objects)
         if len(self.act_ids) > 0:
             self.UpdateProfile()
+            self.GetParent().nb.UpdateTextControls()
             self.LOG("[pref_info] Changes Applied")
         evt.Skip()
 
@@ -326,16 +329,18 @@ class PrefPages(wx.Notebook):
 
         # Feature Settings
         feat_lbl = self.SectionHead(code_panel, _("Features"))
+        ai_cb = wx.CheckBox(code_panel, ed_glob.ID_AUTOINDENT, _("Auto-Indent"))
+        ai_cb.SetValue(ed_glob.PROFILE['AUTO_INDENT'])
         br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, _("Bracket Highlighting"))
         br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
-        cc_cb = wx.CheckBox(code_panel, ed_glob.ID_KWHELPER, _("Keyword Helper"))
-        cc_cb.SetValue(ed_glob.PROFILE['KWHELPER'])
+        kh_cb = wx.CheckBox(code_panel, ed_glob.ID_KWHELPER, _("Keyword Helper"))
+        kh_cb.SetValue(ed_glob.PROFILE['KWHELPER'])
         ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"))
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
         fold_cb = wx.CheckBox(code_panel, ed_glob.ID_FOLDING, _("Code Folding"))
         fold_cb.SetValue(ed_glob.PROFILE['CODE_FOLD'])
         feat_sizer = wx.BoxSizer(wx.VERTICAL)
-        feat_sizer.AddMany([br_cb, fold_cb, cc_cb, ind_cb]) 
+        feat_sizer.AddMany([ai_cb, br_cb, fold_cb, ind_cb, kh_cb]) 
 
         # Syntax / Completion Settings
         syn_lbl = self.SectionHead(code_panel, _("Syntax && Completion"))
@@ -440,6 +445,11 @@ class PrefPages(wx.Notebook):
         fh_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fh_sizer.Add(fh_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         fh_sizer.Add(fh_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        set_sizer = wx.BoxSizer(wx.VERTICAL)
+        set_sizer.Add(fh_sizer, 0, wx.ALIGN_LEFT)
+        pos_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_SPOS, _("Remember Document Positions"))
+        pos_cb.SetValue(ed_glob.PROFILE['SAVE_POS'])
+        set_sizer.Add(pos_cb, 0, wx.ALIGN_LEFT)
 
         # Various Appearance Settings
         app_lbl = self.SectionHead(misc_panel, _("Appearance"))
@@ -495,7 +505,7 @@ class PrefPages(wx.Notebook):
         border.Add((15, 15))
         border.Add(set_lbl, 0, wx.LEFT)
         border.Add((15, 10))
-        border.Add(fh_sizer, 0, wx.LEFT, 30)
+        border.Add(set_sizer, 0, wx.LEFT, 30)
         border.Add((15, 15))
         border.Add(app_lbl, 0, wx.LEFT)
         border.Add(app_sizer, 0, wx.LEFT, 30)

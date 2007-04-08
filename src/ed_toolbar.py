@@ -118,9 +118,10 @@ class ED_ToolBar(wx.ToolBar):
             TOOL_SET["paste"] = wx.Image(stock_dir + "paste.png", wx.BITMAP_TYPE_PNG)
             TOOL_SET["find"]  = wx.Image(stock_dir + "find.png", wx.BITMAP_TYPE_PNG)
             TOOL_SET["findr"] = wx.Image(stock_dir + "findr.png", wx.BITMAP_TYPE_PNG)
-      #      if TOOL_SET["new"].GetSize()[0] != ed_glob.PROFILE['ICON_SZ'][0]:
-      #          for tool in TOOL_SET:
-      #              TOOL_SET[tool] = TOOL_SET[tool].Rescale(tool_size[0], tool_size[1])
+            if TOOL_SET["new"].GetSize()[0] != ed_glob.PROFILE['ICON_SZ'][0] and \
+               wx.Platform != '__WXMAC__':
+                for tool in TOOL_SET:
+                    TOOL_SET[tool].Rescale(tool_size[0], tool_size[1])
             for tool in TOOL_SET:
                 TOOL_SET[tool] = wx.BitmapFromImage(TOOL_SET[tool])
         else:

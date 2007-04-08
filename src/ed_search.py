@@ -55,7 +55,10 @@ class TextFinder:
 
     """
     def __init__(self, parent, callable):
-        """Initializes the Service"""
+        """Initializes the Text Finding Service, the callable argument
+        needs to return reference to stc to perform the search in.
+
+        """
         self._parent      = parent
         self._replace_dlg = None
         self._find_dlg    = None
@@ -84,7 +87,6 @@ class TextFinder:
 
         # Get the Search Flags
         s_flags = self._data.GetFlags()
-        print s_flags       # TESTING 
         # Fetch the Search Pool and Query
         pool = self.FetchPool()
         query = self._data.GetFindString()

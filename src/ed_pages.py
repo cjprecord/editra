@@ -54,6 +54,7 @@ import ed_glob
 import ed_stc 		# Editra Styled Text Control
 import ed_search
 import util
+import doctools
 import wx.lib.flatnotebook as FNB
 
 #---- Class Globals ----#
@@ -77,6 +78,8 @@ class ED_Pages(FNB.FlatNotebook):
         # Notebook attributes
         self.LOG = log
         self.FindService = ed_search.TextFinder(self, self.GetCurrentCtrl)
+        self.DocMgr = doctools.DocPositionMgr(ed_glob.CONFIG['CACHE_DIR'] + \
+                                              util.GetPathChar() + u'positions')
         self.pg_num = 0               # Track page numbers for ID creation
         self.control = ed_stc.EDSTC   # Current Control page
         self.frame = parent           # MainWindow
@@ -117,7 +120,6 @@ class ED_Pages(FNB.FlatNotebook):
 
     def NewPage(self):
         """Create a new notebook page with a blank text control"""
-        # Create a new blank page and put it in the notebook
         self.control = ed_stc.EDSTC(self, self.pg_num, log = self.LOG)
         self.LOG("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
@@ -138,9 +140,10 @@ class ED_Pages(FNB.FlatNotebook):
             return
 
         if self.HasFileOpen(path2file):
-            mdlg = wx.MessageDialog(self, _("Open File") + u"?", 
+            mdlg = wx.MessageDialog(self,
                                     _("File is already open in an existing page."
                                       "\nDo you wish to open it again?"),
+                                    _("Open File") + u"?", 
                                     wx.YES_NO | wx.NO_DEFAULT | wx.ICON_INFORMATION)
             result = mdlg.ShowModal()
             mdlg.Destroy()
@@ -166,7 +169,6 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Add file to history list
         self.frame.filehistory.AddFileToHistory(path2file)
-
         self.LOG("[nb_evt] Opened Page: ID = " + str(self.GetSelection()))
 
         # Set style
@@ -174,6 +176,9 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Clear Undo Buffer of this control
         self.control.EmptyUndoBuffer()
+
+        if ed_glob.PROFILE['SAVE_POS']:
+            self.control.GotoPos(self.DocMgr.GetPos(self.control.GetFileName()))
 
         # Set tab image
         ftype = self.control.filename.split(".")
@@ -281,7 +286,6 @@ class ED_Pages(FNB.FlatNotebook):
                       self.control.filename + " - " + ed_glob.prog_name + " v" + ed_glob.version)
 
         matchstrn = re.compile('Untitled*')
-
         if matchstrn.match(self.control.filename):
             self.control.filename = ""
 
@@ -297,6 +301,9 @@ class ED_Pages(FNB.FlatNotebook):
     def OnPageClosing(self, evt):
         """Checks page status to flag warnings before closing"""
         self.LOG("[nb_evt] Closing Page: #" + str(self.GetSelection()))
+        pg = self.GetCurrentPage()
+        if len(pg.GetFileName()) > 1:
+            self.DocMgr.AddRecord([pg.GetFileName(), pg.GetCurrentPos()])
         evt.Skip()
 
     def OnPageClosed(self, evt):
@@ -391,6 +398,22 @@ class ED_Pages(FNB.FlatNotebook):
         """
         for control in self.GetTextControls():
             control.UpdateAllStyles()
+            control.SetWrapMode(ed_glob.PROFILE['WRAP']) 
+            control.SetViewWhiteSpace(ed_glob.PROFILE['SHOW_WS'])
+            control.SetUseAntiAliasing(ed_glob.PROFILE['AALIASING'])
+            control.SetUseTabs(ed_glob.PROFILE['USETABS'])
+            control.SetIndent(int(ed_glob.PROFILE['TABWIDTH']))
+            control.SetTabWidth(int(ed_glob.PROFILE['TABWIDTH']))
+            control.SetIndentationGuides(ed_glob.PROFILE['GUIDES'])
+            control.SetEOLFromString(ed_glob.PROFILE['EOL'])
+            control.SetViewEOL(ed_glob.PROFILE['SHOW_EOL'])
+            control.SetAutoComplete(ed_glob.PROFILE['AUTO_COMP'])
+            control.FoldingOnOff(ed_glob.PROFILE['CODE_FOLD'])
+            control.SyntaxOnOff(ed_glob.PROFILE['SYNTAX'])
+            control.ToggleAutoIndent(ed_glob.PROFILE['AUTO_INDENT'])
+            control.ToggleBracketHL(ed_glob.PROFILE['BRACKETHL'])
+            control.ToggleLineNumbers(ed_glob.PROFILE['SHOW_LN'])
+            control.KeyWordHelpOnOff(ed_glob.PROFILE['KWHELPER'])
 
 #---- End Function Definitions ----#
 

@@ -62,6 +62,7 @@ import util
 import profiler
 import ed_toolbar
 import ed_pages
+import ed_menu
 import ed_print
 import ed_cmdbar
 import syntax.syntax as syntax
@@ -144,21 +145,25 @@ class MainWindow(wx.Frame):
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
-        self.filemenu = wx.Menu()
-        self.editmenu = wx.Menu()
-        self.viewmenu = wx.Menu()
-        self.formatmenu = wx.Menu()
-        self.settingsmenu = wx.Menu()
-        self.toolsmenu = wx.Menu()
-        self.helpmenu = wx.Menu()
+        self.filemenu = ed_menu.ED_Menu()
+        self.editmenu = ed_menu.ED_Menu()
+        self.viewmenu = ed_menu.ED_Menu()
+        self.formatmenu = ed_menu.ED_Menu()
+        self.settingsmenu = ed_menu.ED_Menu()
+        self.toolsmenu = ed_menu.ED_Menu()
+        self.helpmenu = ed_menu.ED_Menu()
 
         # Submenus
-        self.fileopen = wx.Menu() #submenu of file
-
+        self.fileopen = ed_menu.ED_Menu() #submenu of file
+        mimg_loc = CONFIG['THEME_DIR'] + util.GetPathChar() + \
+                   PROFILE['ICONS'] + util.GetPathChar() + u"menu" + \
+                   util.GetPathChar()
         #---- Menu Items ----#
         # File Menu Items
-        self.filemenu.Append(ID_NEW, _("New") + u"\tCtrl+N", _("Start a New File"))
-        self.filemenu.Append(ID_OPEN, _("Open") + "\tCtrl+O", _("Open"))
+        self.filemenu.Append(ID_NEW, _("New") + u"\tCtrl+N", _("Start a New File"), 
+                             bmp_path=mimg_loc + "new.png")
+        self.filemenu.Append(ID_OPEN, _("Open") + "\tCtrl+O", _("Open"),
+                             bmp_path=mimg_loc + "open.png")
         ## Setup File History in the File Menu
         self.filehistory.UseMenu(self.fileopen)
         self.filemenu.AppendMenu(ID_FHIST, _("Open Recent"), 
@@ -166,27 +171,37 @@ class MainWindow(wx.Frame):
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_CLOSE, _("Close Page") + "\tCtrl+W", _("Close Current Page"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"))
-        self.filemenu.Append(ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", _("Save As"))
+        self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"),
+                             bmp_path=mimg_loc + "save.png")
+        self.filemenu.Append(ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", _("Save As"),
+                             bmp_path=mimg_loc + "saveas.png")
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_SAVE_PROFILE, _("Save Profile"), 
                              _("Save Current Settings to a New Profile"))
         self.filemenu.Append(ID_LOAD_PROFILE, _("Load Profile"), _("Load a Custom Profile"))
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_PRINT_SU, _("Page Setup") + "\tCtrl+Shift+P", _("Configure Printer"))
-        self.filemenu.Append(ID_PRINT_PRE, _("Print Preview"), _("Preview Printout"))
-        self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"))
+        self.filemenu.Append(ID_PRINT_PRE, _("Print Preview"), _("Preview Printout"),
+                             bmp_path=mimg_loc + "printpre.png")
+        self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"),
+                             bmp_path=mimg_loc + "print.png")
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"))
+        self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"),
+                             bmp_path=mimg_loc + "quit.png")
 
         # Edit Menu Items
-        self.editmenu.Append(ID_UNDO, _("Undo") + "\tCtrl+Z", _("Undo Last Action"))
-        self.editmenu.Append(ID_REDO, _("Redo") + "\tCtrl+Shift+Z", _("Redo Last Undo"))
+        self.editmenu.Append(ID_UNDO, _("Undo") + "\tCtrl+Z", _("Undo Last Action"),
+                             bmp_path=mimg_loc + "undo.png")
+        self.editmenu.Append(ID_REDO, _("Redo") + "\tCtrl+Shift+Z", _("Redo Last Undo"),
+                             bmp_path=mimg_loc + "redo.png")
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_CUT, _("Cut") + "\tCtrl+X", _("Cut Selected Text from File"))
-        self.editmenu.Append(ID_COPY, _("Copy") + "\tCtrl+C", _("Copy Selected Text to Clipboard"))
+        self.editmenu.Append(ID_CUT, _("Cut") + "\tCtrl+X", _("Cut Selected Text from File"),
+                             bmp_path=mimg_loc + "cut.png")
+        self.editmenu.Append(ID_COPY, _("Copy") + "\tCtrl+C", _("Copy Selected Text to Clipboard"),
+                             bmp_path=mimg_loc + "copy.png")
         self.editmenu.Append(ID_PASTE, _("Paste") + "\tCtrl+V", 
-                             _("Paste Text from Clipboard to File"))
+                             _("Paste Text from Clipboard to File"), 
+                             bmp_path=mimg_loc + "paste.png")
         self.editmenu.AppendSeparator()
         self.editmenu.Append(ID_SELECTALL, _("Select All") + "\tCtrl+A", 
                              _("Select All Text in Document"))
@@ -212,18 +227,23 @@ class MainWindow(wx.Frame):
         self.editmenu.AppendMenu(ID_BOOKMARK, _("Bookmarks"),  self.bookmenu,
                                 _("Add and remove bookmarks"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"))
+        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"),
+                             bmp_path=mimg_loc + "find.png")
         self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 
-                             _("Find and Replace Text"))
+                             _("Find and Replace Text"), bmp_path=mimg_loc + "findr.png")
         self.editmenu.Append(ID_QUICK_FIND, _("Quick Find") + "\tCtrl+F", 
                             _("Open the Quick Find Bar"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"))
+        self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"),
+                             bmp_path=mimg_loc + "pref.png")
 
         # View Menu Items
-        self.viewmenu.Append(ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", _("Zoom Out"))
-        self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"))
-        self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", _("Zoom Default"))
+        self.viewmenu.Append(ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", _("Zoom Out"),
+                             bmp_path=mimg_loc + "zoomo.png")
+        self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"),
+                             bmp_path=mimg_loc + "zoomi.png")
+        self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", 
+                            _("Zoom Default"), bmp_path=mimg_loc + "zoomd.png")
         self.viewmenu.AppendSeparator()
         self.viewmenu.Append(ID_INDENT_GUIDES, _("Indentation Guides"), 
                              _("Show Indentation Guides"), wx.ITEM_CHECK)
@@ -237,15 +257,23 @@ class MainWindow(wx.Frame):
         self.viewmenu.Append(ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
                             _("Goto Line Number"))
         self.viewmenu.Append(ID_NEXT_MARK, _("Next Bookmark") + u"\tCtrl+Right", 
-                            _("View Line of Next Bookmark"))
+                            _("View Line of Next Bookmark"), 
+                            bmp_path=mimg_loc + "bmark_next.png")
         self.viewmenu.Append(ID_PRE_MARK, _("Previous Bookmark") + u"\tCtrl+Left", 
-                            _("View Line of Previous Bookmark"))
+                            _("View Line of Previous Bookmark"),
+                            bmp_path=mimg_loc + "bmark_pre.png")
         self.viewmenu.AppendSeparator()
         self.viewmenu.Append(ID_VIEW_TOOL, _("Toolbar"), 
                              _("Show Toolbar"), wx.ITEM_CHECK)
 
         # Format Menu Items
-        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"))
+        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"),
+                               bmp_path=mimg_loc + "font.png")
+        self.formatmenu.AppendSeparator()
+        self.formatmenu.Append(ID_COMMENT, _("Comment Lines") + u"\tCtrl+1", 
+                               _("Comment the selected lines"))
+        self.formatmenu.Append(ID_UNCOMMENT, _("Uncomment Lines") + u"\tCtrl+2", 
+                               _("Uncomment the selected lines"))
         self.formatmenu.AppendSeparator()
         self.formatmenu.Append(ID_INDENT, _("Indent Lines"), 
                               _("Indent the selected lines"))
@@ -271,10 +299,13 @@ class MainWindow(wx.Frame):
         # Settings Menu Items
         self.settingsmenu.Append(ID_AUTOCOMP, _("Auto-Completion"),
                                 _("Use Auto Completion when available"), wx.ITEM_CHECK)
+        self.settingsmenu.Append(ID_AUTOINDENT, _("Auto-Indent"),
+                                 _("Toggle Auto-Indentation functionality"), 
+                                 wx.ITEM_CHECK)
         self.settingsmenu.Append(ID_BRACKETHL, _("Bracket Highlighting"), 
                                  _("Highlight Brackets/Braces"), wx.ITEM_CHECK)
         self.settingsmenu.Append(ID_FOLDING, _("Code Folding"),
-                                _("Enable Code Foldering"), wx.ITEM_CHECK)
+                                _("Toggle Code Foldering"), wx.ITEM_CHECK)
         self.settingsmenu.Append(ID_KWHELPER,_("Keyword Helper"), 
                                  _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"), 
                                 wx.ITEM_CHECK)
@@ -296,11 +327,14 @@ class MainWindow(wx.Frame):
                                  _("Generate Code"))
 
         # Help Menu Items
-        self.helpmenu.Append(ID_ABOUT, _("&About") + u"...", _("About") + u"...")
+        self.helpmenu.Append(ID_ABOUT, _("&About") + u"...", _("About") + u"...",
+                             bmp_path=mimg_loc + "about.png")
         self.helpmenu.Append(ID_HOMEPAGE, _("Project Homepage"), 
-                            _("Visit the project homepage %s") % home_page)
+                            _("Visit the project homepage %s") % home_page,
+                            bmp_path=mimg_loc + "web.png")
         self.helpmenu.Append(ID_CONTACT, _("Project Contact"),
-                            _("Email Project Staff Members"))
+                            _("Email Project Staff Members"),
+                            bmp_path=mimg_loc + "mail.png")
 
         # On mac, do this to make help menu appear in correct location
         if wx.Platform == '__WXMAC__':
@@ -480,18 +514,16 @@ class MainWindow(wx.Frame):
 
         # Check if file still exists
         if not os.path.exists(file_handle):
-            mdlg = wx.MessageDialog(self, "file: " + file_handle,
-                                          _("The file you selected could not "
-                                          "be found\n" 
-                                          "Perhaps its been moved or deleted"),
-                                     wx.OK | wx.ICON_WARNING)
+            mdlg = wx.MessageDialog(self, _("%s could not be found\nPerhaps "
+                                            "its been moved or deleted") % \
+                                    file_handle, _("File Not Found"),
+                                    wx.OK | wx.ICON_WARNING)
             mdlg.CenterOnParent()
             mdlg.ShowModal()
             mdlg.Destroy()
             # Remove offending file from history
             self.filehistory.RemoveFileFromHistory(fileNum)
         else:
-            # Open File
             self.DoOpen(evt, file_handle)
 
     def OnClosePage(self, evt):
@@ -579,12 +611,7 @@ class MainWindow(wx.Frame):
             pass
 
         # Update editor to reflect loaded profile
-        # TODO this should update all controls in the notebook not just the top level one
-        self.nb.control.SyntaxOnOff(PROFILE['SYNTAX'])
-        self.nb.control.SetWrapMode(PROFILE['WRAP'])
-        self.nb.control.SetIndentationGuides(PROFILE['GUIDES'])
-        self.nb.control.ToggleBracketHL(PROFILE['BRACKETHL'])
-        self.nb.control.KeyWordHelpOnOff(PROFILE['KWHELPER'])
+        self.nb.UpdateTextControls()
 
     def OnPrint(self, evt):
         """Handles printing related events"""
@@ -635,6 +662,8 @@ class MainWindow(wx.Frame):
         ### If we get to here there is no turning back so cleanup ###
         ### additional items and save the user settings
         
+        self.nb.DocMgr.WriteBook()
+
         # Save Window Size/Position for next launch
         #HACK workaround for possible bug in wxPython 2.8
         if wx.Platform == '__WXMAC__' and self.GetToolBar():
@@ -672,7 +701,6 @@ class MainWindow(wx.Frame):
         dlg.CenterOnParent()
         dlg.ShowModal()
         dlg.Destroy()
-
     #---- End Edit Menu Functions ----#
 
     #---- View Menu Functions ----#
@@ -696,7 +724,6 @@ class MainWindow(wx.Frame):
             self.SetToolBar(self.toolbar)
             PROFILE['TOOLBAR'] = True
             self.UpdateToolBar()
-
     #---- End View Menu Functions ----#
 
     #---- Format Menu Functions ----#
@@ -750,7 +777,7 @@ class MainWindow(wx.Frame):
         platform = list(wx.PlatformInfo[1:])
         platform[0] += (" " + wx.VERSION_STRING)
         wx_info = ", ".join(platform)
-        info.SetCopyright("Copyright(C) %d Cody Precord" % year[0])
+        info.SetCopyright("Copyright(C) 2005-%d Cody Precord" % year[0])
         info.SetName(prog_name.title())
         info.SetDescription(desc % (py_version, wx_info))
         info.SetVersion(version)
@@ -795,11 +822,13 @@ class MainWindow(wx.Frame):
                          ID_EOL_WIN, ID_JOIN_LINES, ID_CUT_LINE, ID_COPY_LINE,
                          ID_INDENT, ID_UNINDENT, ID_TRANSPOSE, ID_NEXT_MARK,
                          ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM,
-                         ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN])
+                         ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN, ID_COMMENT,
+                         ID_UNCOMMENT, ID_AUTOINDENT])
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
             # the events from the toolbar do not propagate to the control.
-            if e_obj.GetClassName() == "wxToolBar" or e_id == ID_REDO:
+            if e_obj.GetClassName() == "wxToolBar" or e_id == ID_REDO or \
+               wx.Platform == '__WXMSW__':
                 self.nb.control.ControlDispatch(evt)
                 self.UpdateToolBar()
             else:
@@ -879,6 +908,7 @@ class MainWindow(wx.Frame):
         elif menu == self.settingsmenu:
             self.LOG("[menu_evt] Updating Settings Menu")
             menu.Check(ID_AUTOCOMP, self.nb.control.GetAutoComplete())
+            menu.Check(ID_AUTOINDENT, self.nb.control.GetAutoIndent())
             menu.Check(ID_KWHELPER, self.nb.control.kwhelp)
             menu.Check(ID_SYNTAX, self.nb.control.highlight)
             menu.Check(ID_FOLDING, self.nb.control.folding)

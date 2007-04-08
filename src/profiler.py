@@ -21,7 +21,7 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: profiler.py                                                        #
-# LANGUAGE: Python	                                                   #
+# LANGUAGE: Python	                                                       #
 #                                                                          #
 # SUMMARY:                                                                 #
 # This collection of functions handle user profiles for the editor.        #
