@@ -8,6 +8,32 @@ Changes since last release:
 
 VERSION 0.0.xx
 DATE xx/xx/2007
+15th Snapshot Release
+
+NEWS:
+   Major bug fix for keybindings on Windows. Cut/Copy/Paste/Undo/Redo/Select
+All where aparently not working. This has probably been the case since version
+0.0.90 when I made changes to the event handling scheme. Many apologies for
+not noticing this sooner, I am usually working on a Mac and get to do very
+thourough cross checking on Windows all that often.
+
+NEW: [features/improvements]
++Block (un)commenting command for all supported languages
++Auto-Indent functionality
++Menu Icons
++Most changes in Preference dialog are now applied immediatly to all open pages
+
+BUG FIXES:
++Toolbar image scaling now works properly on Windows
++Fixed broken keybindings on Windows (cut,copy,paste,undo,redo,select all,
+ zoom in, zoom out)
++Added missing style in Java highlighter
++Addressed numerous issues in the TeX/LaTex highlighter
++Fixed incorrect pascal file detection and highlighter errors
+
+#---------------------------------------------------------------------------------#
+VERSION 0.0.96
+DATE 04/05/2007
 14th Snapshot Release
 
 NEWS:
@@ -53,6 +79,7 @@ NEW: [features/improvements]
 +Generated HTML files are now on average 20-50% smaller in size.
 +A first draft of a platform independent setup script.
 +More complete Japanese Translations
++Remember and set carat positions between sessions
 
 BUG FIXES:
 +Improper window sizing after removing toolbar from view
