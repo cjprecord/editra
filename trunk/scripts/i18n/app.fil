@@ -4,6 +4,7 @@
 ../../src/ed_glob.py
 ../../src/ed_i18n.py
 ../../src/ed_main.py
+../../src/ed_menu.py
 ../../src/ed_pages.py
 ../../src/ed_print.py
 ../../src/ed_search.py

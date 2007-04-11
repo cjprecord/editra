@@ -93,7 +93,7 @@ def GetLocaleDict(loc_list, opt=OPT_NO_OP):
 
 def GetLangId(lang_n):
     """Gets the ID of a language from the description string. If the 
-    language cannot befound the function simply returns the default language
+    language cannot be found the function simply returns the default language
     
     """
     lang_desc = GetLocaleDict(GetAvailLocales(), OPT_DESCRIPT)
