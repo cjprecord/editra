@@ -348,17 +348,7 @@ class CommandBar(wx.Panel):
                 if hasattr(self, "_goto_sizer"):
                     for kid in self._goto_sizer.GetChildren():
                         kid.Show(True)
-#            for key in ID_MAP:
-#                for id in ID_MAP[key]:
-#                    win = self.FindWindowById(id)
-#                    if win != None:
-#                        win.Hide()
 
-            # Then only show specifed control
-#            for id in ID_MAP[ctrl_id]:
-#                win = self.FindWindowById(id)
-#                if win != None:
-#                    win.Show()
             self.GetSizer().Layout()
             if ctrl == None:
                 return
@@ -383,8 +373,45 @@ class CommandBar(wx.Panel):
             sizer.Hide(c_sizer, True)
             sizer.Layout()
 
+class CommandExecuter(wx.SearchCtrl):
+    """Puts the editor into command mode to catch and execute
+    key commands.
+    
+    """
+    def __init__(self, parent, id, pos=wx.DefaultPosition, size=wx.DefaultSize):
+        """Initializes the CommandExecuter"""
+        wx.SearchCtrl.__init__(self, parent, id, "", pos, size, 
+                               wx.TE_PROCESS_ENTER)
+                               
+        # Hide the search button and text
+        self.ShowSearchButton(False)
+        self.SetDescriptiveText(wx.EmptyString)
+
+        # Event management
+        self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnEnter)
+
+    def ExecuteCommand(self, cmd_str):
+        """Interprets and executes a command"""
+        
+
+    def OnEnter(self, evt):
+        """Get the currently entered command string and
+        execute it.
+        
+        """
+        
+
+    def OnKeyUp(self, evt):
+        """Records the key sequence that has been entered and
+        then executes the command if a valid sequence is entered.
+        
+        """
+        
+# XXX Validator doesnt work on Windows due to the SearchCtrl on
+#     that platform not emitting EVT_CHAR.
 class LineCtrl(wx.SearchCtrl):
-    """A custom int control for providing a Go To line control
+    """A custom int control for providing a go To line control
     for the Command Bar. The get_doc parameter needs to be of
     type callable and needs to return the document object that
     the action is to take place in.

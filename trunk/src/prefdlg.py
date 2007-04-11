@@ -145,9 +145,14 @@ class PrefDlg(wx.Dialog):
         if len(self.act_ids) > 0:     
             self.UpdateProfile()
             self.LOG("[pref_info] All changes have been applied")
-        self.GetParent().nb.UpdateTextControls()
+        parent = self.GetParent()
+        parent.nb.UpdateTextControls()
+        toolbar = parent.GetToolBar()
+        if toolbar != None and (toolbar.GetToolTheme() != ed_glob.PROFILE['ICONS'] \
+           or toolbar.GetToolSize() != ed_glob.PROFILE['ICON_SZ']):
+            parent.GetToolBar().ReInit()
         evt.Skip()
-        
+
     def OnApply(self, evt):
         """Applys preference changes"""
         self.LOG("[pref_evt] Clicked Apply, Applying changes on selected page.")
@@ -159,6 +164,11 @@ class PrefDlg(wx.Dialog):
         if len(self.act_ids) > 0:
             self.UpdateProfile()
             self.GetParent().nb.UpdateTextControls()
+            toolbar = self.GetParent().GetToolBar()
+            if toolbar != None and \
+               (toolbar.GetToolTheme() != ed_glob.PROFILE['ICONS'] \
+               or toolbar.GetToolSize() != ed_glob.PROFILE['ICON_SZ']):
+                toolbar.ReInit()
             self.LOG("[pref_info] Changes Applied")
         evt.Skip()
 
@@ -199,7 +209,13 @@ class PrefDlg(wx.Dialog):
                 value = (int(value), int(value))
             prof_key = ed_glob.ID_2_PROF[self.act_ids[self.act_objs.index(obj)]]
             ed_glob.PROFILE[prof_key] = value
-
+            if prof_key == 'METAL':
+                if ed_glob.PROFILE['METAL']:
+                    self.SetExtraStyle(wx.DIALOG_EX_METAL)
+                    self.GetParent().SetExtraStyle(wx.FRAME_EX_METAL)
+                else:
+                    self.SetExtraStyle(wx.DEFAULT_DIALOG_STYLE)
+                    self.GetParent().SetExtraStyle(10)
         return 0
     #---- End Function Definitions ----#
 
@@ -447,7 +463,7 @@ class PrefPages(wx.Notebook):
         fh_sizer.Add(fh_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         set_sizer = wx.BoxSizer(wx.VERTICAL)
         set_sizer.Add(fh_sizer, 0, wx.ALIGN_LEFT)
-        pos_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_SPOS, _("Remember Document Positions"))
+        pos_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_SPOS, _("Remember File Position"))
         pos_cb.SetValue(ed_glob.PROFILE['SAVE_POS'])
         set_sizer.Add(pos_cb, 0, wx.ALIGN_LEFT)
 
