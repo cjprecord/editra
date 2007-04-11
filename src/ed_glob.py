@@ -39,7 +39,7 @@ __revision__ = "$Id: $"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.0.96'
+version = __version__ = u'0.0.97'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
@@ -88,6 +88,8 @@ ID_BOOKMARK      = NewId()
 ID_ADD_BM        = NewId()
 ID_DEL_BM        = NewId()
 ID_DEL_ALL_BM    = NewId()
+ID_LINE_AFTER    = NewId()
+ID_LINE_BEFORE   = NewId()
 ID_CUT_LINE      = NewId()
 ID_COPY_LINE     = NewId()
 ID_JOIN_LINES    = NewId()

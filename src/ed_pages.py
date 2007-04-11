@@ -398,22 +398,7 @@ class ED_Pages(FNB.FlatNotebook):
         """
         for control in self.GetTextControls():
             control.UpdateAllStyles()
-            control.SetWrapMode(ed_glob.PROFILE['WRAP']) 
-            control.SetViewWhiteSpace(ed_glob.PROFILE['SHOW_WS'])
-            control.SetUseAntiAliasing(ed_glob.PROFILE['AALIASING'])
-            control.SetUseTabs(ed_glob.PROFILE['USETABS'])
-            control.SetIndent(int(ed_glob.PROFILE['TABWIDTH']))
-            control.SetTabWidth(int(ed_glob.PROFILE['TABWIDTH']))
-            control.SetIndentationGuides(ed_glob.PROFILE['GUIDES'])
-            control.SetEOLFromString(ed_glob.PROFILE['EOL'])
-            control.SetViewEOL(ed_glob.PROFILE['SHOW_EOL'])
-            control.SetAutoComplete(ed_glob.PROFILE['AUTO_COMP'])
-            control.FoldingOnOff(ed_glob.PROFILE['CODE_FOLD'])
-            control.SyntaxOnOff(ed_glob.PROFILE['SYNTAX'])
-            control.ToggleAutoIndent(ed_glob.PROFILE['AUTO_INDENT'])
-            control.ToggleBracketHL(ed_glob.PROFILE['BRACKETHL'])
-            control.ToggleLineNumbers(ed_glob.PROFILE['SHOW_LN'])
-            control.KeyWordHelpOnOff(ed_glob.PROFILE['KWHELPER'])
+            control.Configure()
 
 #---- End Function Definitions ----#
 

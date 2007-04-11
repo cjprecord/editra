@@ -59,10 +59,11 @@ class DocPositionMgr:
         """Creates the position manager object"""
         self._book = book_path
         self._records = dict()
-        if self.LoadBook(book_path):
-            dev_tool.DEBUGP("[docpositionmgr] successfully loaded book")
-        else:
-            dev_tool.DEBUGP("[docpositionmgr] failed while loading book")
+        if ed_glob.PROFILE['SAVE_POS']:
+            if self.LoadBook(book_path):
+                dev_tool.DEBUGP("[docpositionmgr] successfully loaded book")
+            else:
+                dev_tool.DEBUGP("[docpositionmgr] failed to load book")
 
     def AddRecord(self, vals):
         """Adds a record to the dictionary from a list of the

@@ -207,10 +207,16 @@ class MainWindow(wx.Frame):
                              _("Select All Text in Document"))
         self.editmenu.AppendSeparator()
         self.linemenu = wx.Menu()
+        self.linemenu.Append(ID_LINE_AFTER, _("New Line After") + "\tCtrl+L",
+                             _("Add a new line after the current line"))
+        self.linemenu.Append(ID_LINE_BEFORE, _("New Line Before") + "\tCtrl+Shift+L",
+                             _("Add a new line before the current line"))
+        self.linemenu.AppendSeparator()
         self.linemenu.Append(ID_CUT_LINE, _("Cut Line") + "\tCtrl+D",
                             _("Cut Current Line"))
         self.linemenu.Append(ID_COPY_LINE, _("Copy Line") + "\tCtrl+Y",
                             _("Copy Current Line"))
+        self.linemenu.AppendSeparator()
         self.linemenu.Append(ID_JOIN_LINES, _("Join Lines") + "\tCtrl+J",
                             _("Join the Selected Lines"))
         self.linemenu.Append(ID_TRANSPOSE, _("Transpose Line") + "\tCtrl+T",
@@ -823,7 +829,8 @@ class MainWindow(wx.Frame):
                          ID_INDENT, ID_UNINDENT, ID_TRANSPOSE, ID_NEXT_MARK,
                          ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM,
                          ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN, ID_COMMENT,
-                         ID_UNCOMMENT, ID_AUTOINDENT])
+                         ID_UNCOMMENT, ID_AUTOINDENT, ID_LINE_AFTER,
+                         ID_LINE_BEFORE])
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
             # the events from the toolbar do not propagate to the control.

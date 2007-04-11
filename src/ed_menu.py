@@ -39,6 +39,7 @@ __revision__ = "$Revision:  $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
+import os
 import wx
 import ed_glob
 
@@ -56,12 +57,11 @@ class ED_Menu(wx.Menu):
     def Append(self, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, bmp_path=None):
         """Append a MenuItem"""
         item = wx.Menu.Append(self, id, text, help, kind)
-        if bmp_path != None:
+        if bmp_path != None and os.path.exists(bmp_path):
             try:
                 bmp = wx.Bitmap(bmp_path, wx.BITMAP_TYPE_PNG)
                 item.SetBitmap(bmp)
             finally:
                 pass
         return item
-
 

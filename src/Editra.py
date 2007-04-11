@@ -41,11 +41,49 @@ import os
 import sys
 import gettext
 import wx
+
+# Make sure we can run properly before importing the rest
+def CheckVersions():
+    """Checks if the proper system libraries are available on the
+    system.
+
+    """
+    REQUIRED_WX = "2.8" # or higher
+    REQUIRED_PY = "2.4" # or higher
+    REQUIRED_ENC = "Unicode"
+    wxVer = "%d.%d" % (wx.MAJOR_VERSION, wx.MINOR_VERSION)
+    pyVer = "%d.%d" % (sys.version_info[0], sys.version_info[1])
+    wxEnc = wx.PlatformInfo[2].title()
+    if wxEnc != REQUIRED_ENC:
+        print ("\n!! It is suggested to use a Unicode build of wxPython "
+               "when running Editra. \n!! You are using a %s build of wxPython "
+               "and this may cause some runtime problems. \n!! Editra will try to "
+               "launch now but if you experience problems you should install "
+               "\n!! a Unicode build of wxPython and try again. \n") % wxEnc
+    if wxVer < REQUIRED_WX or pyVer < REQUIRED_PY:
+        msg = ("\nTo run properly Editra requires the following libraries to be installed:\n"
+              "---------------------------------------\n"
+              "| REQUIRED\t\t|\tFOUND |\n"
+              "---------------------------------------\n"
+              "Python: %s or higher\t|\t%s\n"
+              "wxPython: %s or higher\t|\t%s\n\n"
+              "Would you like to try anyway? [y/n]: ") % \
+              (REQUIRED_PY, pyVer, REQUIRED_WX, wxVer)
+        ret = raw_input(msg)
+        if ret == 'n':
+            exit()
+        else:
+            pass
+# CheckVersions()
+
 import ed_glob
 import ed_i18n
 import util
 import dev_tool
 import ed_main
+
+#--------------------------------------------------------------------------#
+# Global Variables
 
 #--------------------------------------------------------------------------#
 class Editra(wx.App):

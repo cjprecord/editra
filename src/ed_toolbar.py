@@ -38,7 +38,7 @@ __revision__ = "$Id Exp $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-
+import os
 import wx
 import glob
 import ed_glob
@@ -48,9 +48,23 @@ import util
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 # Global Variables
-ICON_SET = {}
-TOOL_SET = {}
-
+#             ID         | TOOL_KEY | TOOL_LABLE | TOOL HELP STRING
+TOOLS = { ed_glob.ID_NEW :  ("new", _("New"), _("Start a New File")),
+          ed_glob.ID_OPEN : ("open", _("Open"), _("Open")),
+          ed_glob.ID_SAVE : ("save", _("Save"), _("Save Current File")),
+          ed_glob.ID_PRINT :("print", _("Print"), _("Print Current File")),
+          ed_glob.ID_UNDO : ("undo", _("Undo"), _("Undo Last Action")),
+          ed_glob.ID_REDO : ("redo", _("Redo"), _("Redo Last Undo")),
+          ed_glob.ID_COPY : ("copy", _("Copy"), _("Copy Selected Text to Clipboard")),
+          ed_glob.ID_CUT :  ("cut", _("Cut"), _("Cut Selected Text from File")),
+          ed_glob.ID_PASTE :("paste", _("Paste"), _("Paste Text from Clipboard to File")),
+          ed_glob.ID_FIND : ("find", _("Find"), _("Find Text")),
+          ed_glob.ID_FIND_REPLACE : ("findr", _("Find/Replace"), _("Find and Replace Text"))
+        }
+TOOL_SET = {} # Populated on Init
+TOOL_ID = [ ed_glob.ID_NEW, ed_glob.ID_OPEN, ed_glob.ID_SAVE, ed_glob.ID_PRINT,
+            ed_glob.ID_UNDO, ed_glob.ID_REDO, ed_glob.ID_COPY, ed_glob.ID_CUT,
+            ed_glob.ID_PASTE, ed_glob.ID_FIND, ed_glob.ID_FIND_REPLACE ]
 #--------------------------------------------------------------------------#
 
 class ED_ToolBar(wx.ToolBar):
@@ -68,14 +82,11 @@ class ED_ToolBar(wx.ToolBar):
         else:
             wx.ToolBar.__init__(self, parent, tb_id,
                                 style=wx.TB_FLAT | wx.TB_NODIVIDER | wx.NO_BORDER)
-        self.tool_loc = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                        ed_glob.PROFILE['ICONS'] + util.GetPathChar() + u"toolbar" + \
-                        util.GetPathChar()
-        self.tool_size = self.GetToolSize()
+        self.tool_loc = self.GetIconPath()
+        self.tool_size = self.CalcToolSize()
         self.SetToolBitmapSize(self.tool_size)
         self.CreateDefaultIcons(self.tool_size)
         self.PopulateTools()
-
         #-- Bind Events --#
 
         #-- End Bind Events --#
@@ -84,8 +95,16 @@ class ED_ToolBar(wx.ToolBar):
     #---- End Init ----#
 
     #---- Function Definitions----#
+    def GetIconPath(self):
+        """Gets the path of where the icons are located using
+        the global config/profile values
 
-    def GetToolSize(self):
+        """
+        return ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
+               ed_glob.PROFILE['ICONS'] + util.GetPathChar() + u"toolbar" + \
+               util.GetPathChar()
+
+    def CalcToolSize(self):
         """Gets the size of the icons to be used in the toolbar and
         returns that size as a wxSize object.
 
@@ -99,6 +118,24 @@ class ED_ToolBar(wx.ToolBar):
             if ed_glob.PROFILE['ICON_SZ'][0] < i_size[0]:
                 i_size = ed_glob.PROFILE['ICON_SZ']
             return i_size
+
+    def GetToolSize(self):
+        """Returns the size of the tools in the toolbar"""
+        return self.tool_size
+
+    def GetToolTheme(self):
+        """Returns the name of the current toolsets theme"""
+        atoms = self.tool_loc.split(util.GetPathChar())
+        return atoms[-3]
+
+    def SetIconPath(self):
+        """Sets the icon path attribute"""
+        path = self.GetIconPath()
+        if os.path.exists(path):
+            self.tool_loc = path
+            return True
+        else:
+            return False
 
     #TODO this is just a quick hack to make things work for now
     def CreateDefaultIcons(self, tool_size):
@@ -171,4 +208,35 @@ class ED_ToolBar(wx.ToolBar):
                            _("Find and Replace Text"))
         self.AddSeparator()
 
-	
+    # TODO Flickers too much
+    def ReInit(self):
+        """Re-Initializes the tools in the toolbar"""
+        # Remove Current Tools
+        total = self.GetToolsCount()
+        tools = list()
+        pos = -1
+        lastpos = 0
+        self.tool_loc = self.GetIconPath()
+        self.tool_size = self.CalcToolSize()
+        self.SetToolBitmapSize(self.tool_size)
+        self.CreateDefaultIcons(self.tool_size)
+        self.GetParent().Freeze()
+        for id in TOOL_ID:
+            pos = pos + 1
+            try:
+                if lastpos != self.GetToolPos(id):
+                    pos = pos + 1
+                lastpos = self.GetToolPos(id)
+                self.RemoveTool(id)
+            except:
+                pass
+            else:
+                if pos > total:
+                    pos = pos - 1
+                tools.append((id, pos))
+
+        for id, pos in tools:
+            item = TOOLS[id]
+            self.InsertSimpleTool(pos, id, TOOL_SET[item[0]], item[1], item[2])
+        self.Realize()
+        self.GetParent().Thaw()
