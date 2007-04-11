@@ -233,7 +233,7 @@ else:
 
     setup(
         name = NAME,
-        scripts = [os.path.join('bin', 'Editra')],
+        scripts = ['Editra'],
         version = VERSION,
         description = DESCRIPTION,
         author = AUTHOR,
