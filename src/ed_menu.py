@@ -54,12 +54,12 @@ class ED_Menu(wx.Menu):
         """Initialize a Menu Object"""
         wx.Menu.__init__(self, title, style)
 
-    def Append(self, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, bmp_path=None):
+    def Append(self, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, use_bmp=True):
         """Append a MenuItem"""
         item = wx.Menu.Append(self, id, text, help, kind)
-        if bmp_path != None and os.path.exists(bmp_path):
+        if use_bmp:
             try:
-                bmp = wx.Bitmap(bmp_path, wx.BITMAP_TYPE_PNG)
+                bmp = wx.ArtProvider.GetBitmap(str(id), wx.ART_MENU)
                 item.SetBitmap(bmp)
             finally:
                 pass

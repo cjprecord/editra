@@ -6,6 +6,19 @@ Change Log:
 
 Changes since last release:
 
+VERSION 0.x.xx
+DATE xx/xx/2007
+16th Snapshot Release
+
+NEWS:
+
+NEW: [features/improvements]
++More unified/transparent themeing support
+
+BUG FIXES:
+
+
+#---------------------------------------------------------------------------------#
 VERSION 0.0.97
 DATE 04/10/2007
 15th Snapshot Release

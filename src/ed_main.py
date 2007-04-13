@@ -81,7 +81,7 @@ class MainWindow(wx.Frame):
 
         self.SetTitle(title + u' - v' + version)
         self.LOG = log
-
+  
         # Try and set an app icon
         try:
             if wx.Platform == '__WXMSW__':
@@ -155,15 +155,11 @@ class MainWindow(wx.Frame):
 
         # Submenus
         self.fileopen = ed_menu.ED_Menu() #submenu of file
-        mimg_loc = CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                   PROFILE['ICONS'] + util.GetPathChar() + u"menu" + \
-                   util.GetPathChar()
+
         #---- Menu Items ----#
         # File Menu Items
-        self.filemenu.Append(ID_NEW, _("New") + u"\tCtrl+N", _("Start a New File"), 
-                             bmp_path=mimg_loc + "new.png")
-        self.filemenu.Append(ID_OPEN, _("Open") + "\tCtrl+O", _("Open"),
-                             bmp_path=mimg_loc + "open.png")
+        self.filemenu.Append(ID_NEW, _("New") + u"\tCtrl+N", _("Start a New File"))
+        self.filemenu.Append(ID_OPEN, _("Open") + "\tCtrl+O", _("Open"))
         ## Setup File History in the File Menu
         self.filehistory.UseMenu(self.fileopen)
         self.filemenu.AppendMenu(ID_FHIST, _("Open Recent"), 
@@ -171,37 +167,27 @@ class MainWindow(wx.Frame):
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_CLOSE, _("Close Page") + "\tCtrl+W", _("Close Current Page"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"),
-                             bmp_path=mimg_loc + "save.png")
-        self.filemenu.Append(ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", _("Save As"),
-                             bmp_path=mimg_loc + "saveas.png")
+        self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"))
+        self.filemenu.Append(ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", _("Save As"))
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_SAVE_PROFILE, _("Save Profile"), 
                              _("Save Current Settings to a New Profile"))
         self.filemenu.Append(ID_LOAD_PROFILE, _("Load Profile"), _("Load a Custom Profile"))
         self.filemenu.AppendSeparator()
         self.filemenu.Append(ID_PRINT_SU, _("Page Setup") + "\tCtrl+Shift+P", _("Configure Printer"))
-        self.filemenu.Append(ID_PRINT_PRE, _("Print Preview"), _("Preview Printout"),
-                             bmp_path=mimg_loc + "printpre.png")
-        self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"),
-                             bmp_path=mimg_loc + "print.png")
+        self.filemenu.Append(ID_PRINT_PRE, _("Print Preview"), _("Preview Printout"))
+        self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"))
         self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"),
-                             bmp_path=mimg_loc + "quit.png")
+        self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"))
 
         # Edit Menu Items
-        self.editmenu.Append(ID_UNDO, _("Undo") + "\tCtrl+Z", _("Undo Last Action"),
-                             bmp_path=mimg_loc + "undo.png")
-        self.editmenu.Append(ID_REDO, _("Redo") + "\tCtrl+Shift+Z", _("Redo Last Undo"),
-                             bmp_path=mimg_loc + "redo.png")
+        self.editmenu.Append(ID_UNDO, _("Undo") + "\tCtrl+Z", _("Undo Last Action"))
+        self.editmenu.Append(ID_REDO, _("Redo") + "\tCtrl+Shift+Z", _("Redo Last Undo"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_CUT, _("Cut") + "\tCtrl+X", _("Cut Selected Text from File"),
-                             bmp_path=mimg_loc + "cut.png")
-        self.editmenu.Append(ID_COPY, _("Copy") + "\tCtrl+C", _("Copy Selected Text to Clipboard"),
-                             bmp_path=mimg_loc + "copy.png")
+        self.editmenu.Append(ID_CUT, _("Cut") + "\tCtrl+X", _("Cut Selected Text from File"))
+        self.editmenu.Append(ID_COPY, _("Copy") + "\tCtrl+C", _("Copy Selected Text to Clipboard"))
         self.editmenu.Append(ID_PASTE, _("Paste") + "\tCtrl+V", 
-                             _("Paste Text from Clipboard to File"), 
-                             bmp_path=mimg_loc + "paste.png")
+                             _("Paste Text from Clipboard to File"))
         self.editmenu.AppendSeparator()
         self.editmenu.Append(ID_SELECTALL, _("Select All") + "\tCtrl+A", 
                              _("Select All Text in Document"))
@@ -233,23 +219,19 @@ class MainWindow(wx.Frame):
         self.editmenu.AppendMenu(ID_BOOKMARK, _("Bookmarks"),  self.bookmenu,
                                 _("Add and remove bookmarks"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"),
-                             bmp_path=mimg_loc + "find.png")
+        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"))
         self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 
-                             _("Find and Replace Text"), bmp_path=mimg_loc + "findr.png")
+                             _("Find and Replace Text"))
         self.editmenu.Append(ID_QUICK_FIND, _("Quick Find") + "\tCtrl+F", 
                             _("Open the Quick Find Bar"))
         self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"),
-                             bmp_path=mimg_loc + "pref.png")
+        self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"))
 
         # View Menu Items
-        self.viewmenu.Append(ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", _("Zoom Out"),
-                             bmp_path=mimg_loc + "zoomo.png")
-        self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"),
-                             bmp_path=mimg_loc + "zoomi.png")
+        self.viewmenu.Append(ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", _("Zoom Out"))
+        self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"))
         self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", 
-                            _("Zoom Default"), bmp_path=mimg_loc + "zoomd.png")
+                            _("Zoom Default"))
         self.viewmenu.AppendSeparator()
         self.viewmenu.Append(ID_INDENT_GUIDES, _("Indentation Guides"), 
                              _("Show Indentation Guides"), wx.ITEM_CHECK)
@@ -263,18 +245,15 @@ class MainWindow(wx.Frame):
         self.viewmenu.Append(ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
                             _("Goto Line Number"))
         self.viewmenu.Append(ID_NEXT_MARK, _("Next Bookmark") + u"\tCtrl+Right", 
-                            _("View Line of Next Bookmark"), 
-                            bmp_path=mimg_loc + "bmark_next.png")
+                            _("View Line of Next Bookmark"))
         self.viewmenu.Append(ID_PRE_MARK, _("Previous Bookmark") + u"\tCtrl+Left", 
-                            _("View Line of Previous Bookmark"),
-                            bmp_path=mimg_loc + "bmark_pre.png")
+                            _("View Line of Previous Bookmark"))
         self.viewmenu.AppendSeparator()
         self.viewmenu.Append(ID_VIEW_TOOL, _("Toolbar"), 
                              _("Show Toolbar"), wx.ITEM_CHECK)
 
         # Format Menu Items
-        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"),
-                               bmp_path=mimg_loc + "font.png")
+        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"))
         self.formatmenu.AppendSeparator()
         self.formatmenu.Append(ID_COMMENT, _("Comment Lines") + u"\tCtrl+1", 
                                _("Comment the selected lines"))
@@ -318,8 +297,7 @@ class MainWindow(wx.Frame):
         self.settingsmenu.Append(ID_SYNTAX, _("Syntax Highlighting"), 
                                  _("Color Highlight Code Syntax"), wx.ITEM_CHECK)
         self.languagemenu = syntax.GenLexerMenu()
-        self.settingsmenu.AppendMenu(ID_LEXER, _("Lexers"), 
-                                     self.languagemenu,
+        self.settingsmenu.AppendMenu(ID_LEXER, _("Lexers"), self.languagemenu,
                                      _("Manually Set a Lexer/Syntax"))
 
         # Tools Menu
@@ -333,14 +311,11 @@ class MainWindow(wx.Frame):
                                  _("Generate Code"))
 
         # Help Menu Items
-        self.helpmenu.Append(ID_ABOUT, _("&About") + u"...", _("About") + u"...",
-                             bmp_path=mimg_loc + "about.png")
+        self.helpmenu.Append(ID_ABOUT, _("&About") + u"...", _("About") + u"...")
         self.helpmenu.Append(ID_HOMEPAGE, _("Project Homepage"), 
-                            _("Visit the project homepage %s") % home_page,
-                            bmp_path=mimg_loc + "web.png")
+                            _("Visit the project homepage %s") % home_page)
         self.helpmenu.Append(ID_CONTACT, _("Project Contact"),
-                            _("Email Project Staff Members"),
-                            bmp_path=mimg_loc + "mail.png")
+                            _("Email Project Staff Members"))
 
         # On mac, do this to make help menu appear in correct location
         if wx.Platform == '__WXMAC__':
