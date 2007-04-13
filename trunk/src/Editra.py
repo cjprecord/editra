@@ -81,6 +81,7 @@ import ed_i18n
 import util
 import dev_tool
 import ed_main
+import ed_art
 
 #--------------------------------------------------------------------------#
 # Global Variables
@@ -92,7 +93,8 @@ class Editra(wx.App):
         """Initialize the Editor"""
         self._log = dev_tool.DEBUGP
         self._log("[main_info] Setting Locale/Language Settings")
-
+        wx.ArtProvider.PushProvider(ed_art.ED_Art())
+        
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
 
@@ -109,6 +111,13 @@ class Editra(wx.App):
           #  if self._frame.CanSetTransparent():
           #      self._frame.SetTransparent(int(.85 * ed_glob.PROFILE['ALPHA']))
         evt.Skip()
+
+    def ReloadArtProvider(self):
+        """Reloads the custom art provider onto the artprovider stack"""
+        try:
+            wx.ArtProvider.PopProvider()
+        finally:
+            wx.ArtProvider.PushProvider(ed_art.ED_Art())
 
     def GetLog(self):
         """Returns the logging function used by the app"""

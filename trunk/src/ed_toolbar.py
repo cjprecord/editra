@@ -48,44 +48,43 @@ import util
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 # Global Variables
-#             ID         | TOOL_KEY | TOOL_LABLE | TOOL HELP STRING
-TOOLS = { ed_glob.ID_NEW :  ("new", _("New"), _("Start a New File")),
-          ed_glob.ID_OPEN : ("open", _("Open"), _("Open")),
-          ed_glob.ID_SAVE : ("save", _("Save"), _("Save Current File")),
-          ed_glob.ID_PRINT :("print", _("Print"), _("Print Current File")),
-          ed_glob.ID_UNDO : ("undo", _("Undo"), _("Undo Last Action")),
-          ed_glob.ID_REDO : ("redo", _("Redo"), _("Redo Last Undo")),
-          ed_glob.ID_COPY : ("copy", _("Copy"), _("Copy Selected Text to Clipboard")),
-          ed_glob.ID_CUT :  ("cut", _("Cut"), _("Cut Selected Text from File")),
-          ed_glob.ID_PASTE :("paste", _("Paste"), _("Paste Text from Clipboard to File")),
-          ed_glob.ID_FIND : ("find", _("Find"), _("Find Text")),
-          ed_glob.ID_FIND_REPLACE : ("findr", _("Find/Replace"), _("Find and Replace Text"))
+#             ID         | TOOL_LABLE | TOOL HELP STRING
+TOOLS = { ed_glob.ID_NEW :  (_("New"), _("Start a New File")),
+          ed_glob.ID_OPEN : (_("Open"), _("Open")),
+          ed_glob.ID_SAVE : (_("Save"), _("Save Current File")),
+          ed_glob.ID_PRINT :(_("Print"), _("Print Current File")),
+          ed_glob.ID_UNDO : (_("Undo"), _("Undo Last Action")),
+          ed_glob.ID_REDO : (_("Redo"), _("Redo Last Undo")),
+          ed_glob.ID_COPY : (_("Copy"), _("Copy Selected Text to Clipboard")),
+          ed_glob.ID_CUT :  (_("Cut"), _("Cut Selected Text from File")),
+          ed_glob.ID_PASTE :(_("Paste"), _("Paste Text from Clipboard to File")),
+          ed_glob.ID_FIND : (_("Find"), _("Find Text")),
+          ed_glob.ID_FIND_REPLACE : (_("Find/Replace"), _("Find and Replace Text"))
         }
-TOOL_SET = {} # Populated on Init
+ID_TLBL  = 0
+ID_THELP = 1
+
 TOOL_ID = [ ed_glob.ID_NEW, ed_glob.ID_OPEN, ed_glob.ID_SAVE, ed_glob.ID_PRINT,
             ed_glob.ID_UNDO, ed_glob.ID_REDO, ed_glob.ID_COPY, ed_glob.ID_CUT,
             ed_glob.ID_PASTE, ed_glob.ID_FIND, ed_glob.ID_FIND_REPLACE ]
+
 #--------------------------------------------------------------------------#
 
 class ED_ToolBar(wx.ToolBar):
     """Toolbar wrapper class"""
     def __init__(self, parent, tb_id, icon_size=0, style=0):
         """Initializes the toolbar"""
-        self.platform = wx.Platform
-        if self.platform == '__WXMSW__':
-            wx.ToolBar.__init__(self, parent, tb_id, style=wx.TB_HORIZONTAL |
-                                wx.NO_BORDER | wx.TB_FLAT | wx.TB_TEXT)
-        elif self.platform == '__WXGTK__':
-            wx.ToolBar.__init__(self, parent, tb_id, style=wx.TB_HORIZONTAL | 
-                                wx.NO_BORDER  | wx.TB_FLAT | 
-                                wx.TB_DOCKABLE | wx.TB_TEXT)
-        else:
-            wx.ToolBar.__init__(self, parent, tb_id,
-                                style=wx.TB_FLAT | wx.TB_NODIVIDER | wx.NO_BORDER)
-        self.tool_loc = self.GetIconPath()
-        self.tool_size = self.CalcToolSize()
+        sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT
+        if wx.Platform == '__WXMSW__':
+            sstyle = sstyle | wx.TB_TEXT
+        elif wx.Platform == '__WXGTK__':
+            sstyle = sstyle | wx.TB_TEXT | wx.TB_DOCKABLE
+        wx.ToolBar.__init__(self, parent, tb_id, style=sstyle)
+
+        # Attributes
+        self._theme = ed_glob.PROFILE['ICONS']
+        self.tool_size = ed_glob.PROFILE['ICON_SZ']
         self.SetToolBitmapSize(self.tool_size)
-        self.CreateDefaultIcons(self.tool_size)
         self.PopulateTools()
         #-- Bind Events --#
 
@@ -95,29 +94,15 @@ class ED_ToolBar(wx.ToolBar):
     #---- End Init ----#
 
     #---- Function Definitions----#
-    def GetIconPath(self):
-        """Gets the path of where the icons are located using
-        the global config/profile values
-
+    def AddSimpleTool(self, id):
+        """Overides the default function to allow for easier tool
+        generation/placement.
+        
         """
-        return ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-               ed_glob.PROFILE['ICONS'] + util.GetPathChar() + u"toolbar" + \
-               util.GetPathChar()
-
-    def CalcToolSize(self):
-        """Gets the size of the icons to be used in the toolbar and
-        returns that size as a wxSize object.
-
-        """
-        icons = glob.glob(self.tool_loc + "*.png")
-        if len(icons) < 1:
-            return wx.Size(16, 16)
-        else:
-            icon =  wx.Bitmap(icons[0], wx.BITMAP_TYPE_PNG)
-            i_size = icon.GetSize()
-            if ed_glob.PROFILE['ICON_SZ'][0] < i_size[0]:
-                i_size = ed_glob.PROFILE['ICON_SZ']
-            return i_size
+        tool_bmp = wx.ArtProvider.GetBitmap(str(id), wx.ART_TOOLBAR)
+        lbl = TOOLS[id][ID_TLBL]
+        help = TOOLS[id][ID_THELP]
+        wx.ToolBar.AddSimpleTool(self, id, tool_bmp, _(lbl), _(help))
 
     def GetToolSize(self):
         """Returns the size of the tools in the toolbar"""
@@ -125,90 +110,38 @@ class ED_ToolBar(wx.ToolBar):
 
     def GetToolTheme(self):
         """Returns the name of the current toolsets theme"""
-        atoms = self.tool_loc.split(util.GetPathChar())
-        return atoms[-3]
+        return self._theme
 
-    def SetIconPath(self):
-        """Sets the icon path attribute"""
-        path = self.GetIconPath()
-        if os.path.exists(path):
-            self.tool_loc = path
-            return True
-        else:
-            return False
-
-    #TODO this is just a quick hack to make things work for now
-    def CreateDefaultIcons(self, tool_size):
-        """Creates the Icons to be used in the toolbar"""
-        if wx.Platform in ['__WXMAC__', '__WXMSW__'] or ed_glob.PROFILE['ICONS'].lower() != u"stock":
-            # TODO check this path to see if it is valid before trying to use it
-            stock_dir = self.tool_loc
-
-            TOOL_SET["new"]   = wx.Image(stock_dir + "new.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["open"]  = wx.Image(stock_dir + "open.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["save"]  = wx.Image(stock_dir + "save.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["print"] = wx.Image(stock_dir + "print.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["undo"]  = wx.Image(stock_dir + "undo.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["redo"]  = wx.Image(stock_dir + "redo.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["copy"]  = wx.Image(stock_dir + "copy.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["cut"]   = wx.Image(stock_dir + "cut.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["paste"] = wx.Image(stock_dir + "paste.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["find"]  = wx.Image(stock_dir + "find.png", wx.BITMAP_TYPE_PNG)
-            TOOL_SET["findr"] = wx.Image(stock_dir + "findr.png", wx.BITMAP_TYPE_PNG)
-            if TOOL_SET["new"].GetSize()[0] != ed_glob.PROFILE['ICON_SZ'][0] and \
-               wx.Platform != '__WXMAC__':
-                for tool in TOOL_SET:
-                    TOOL_SET[tool].Rescale(tool_size[0], tool_size[1])
-            for tool in TOOL_SET:
-                TOOL_SET[tool] = wx.BitmapFromImage(TOOL_SET[tool])
-        else:
-            TOOL_SET["new"]   = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["open"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["save"]  = wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["print"] = wx.ArtProvider.GetBitmap(wx.ART_PRINT, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["undo"]  = wx.ArtProvider.GetBitmap(wx.ART_UNDO, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["redo"]  = wx.ArtProvider.GetBitmap(wx.ART_REDO, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["copy"]  = wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["cut"]   = wx.ArtProvider.GetBitmap(wx.ART_CUT, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["paste"] = wx.ArtProvider.GetBitmap(wx.ART_PASTE, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["find"]  = wx.ArtProvider.GetBitmap(wx.ART_FIND, wx.ART_TOOLBAR, tool_size)
-            TOOL_SET["findr"] = wx.ArtProvider.GetBitmap(wx.ART_FIND_AND_REPLACE, wx.ART_TOOLBAR, tool_size)
-
-    def LoadIconSet(self):
-        """Loads the Icon set from the theme handler.
-        If no custom icon set is defined it simply loads
-        the system default icon set.
-
+    def InsertSimpleTool(self, pos, id):
+        """Overides the default function to allow for easier tool
+        generation/placement.
+        
         """
-        # Theme handler not implimented yet
-
+        tool_bmp = wx.ArtProvider.GetBitmap(str(id), wx.ART_TOOLBAR)
+        lbl = TOOLS[id][ID_TLBL]
+        help = TOOLS[id][ID_THELP]
+        wx.ToolBar.InsertSimpleTool(self, pos, id, tool_bmp, _(lbl), _(help))
 
     def PopulateTools(self):
         """Sets the tools in the toolbar"""
         # Place Icons in toolbar
-        self.AddSimpleTool(ed_glob.ID_NEW, TOOL_SET["new"], _("New"), _("Start a New File"))
-        self.AddSimpleTool(ed_glob.ID_OPEN, TOOL_SET["open"], _("Open"), _("Open"))
-        self.AddSimpleTool(ed_glob.ID_SAVE, TOOL_SET["save"], _("Save"), 
-                           _("Save Current File"))
-        self.AddSimpleTool(ed_glob.ID_PRINT, TOOL_SET["print"], _("Print"), 
-                           _("Print Current File"))
+        self.AddSimpleTool(ed_glob.ID_NEW)
+        self.AddSimpleTool(ed_glob.ID_OPEN)
+        self.AddSimpleTool(ed_glob.ID_SAVE)
+        self.AddSimpleTool(ed_glob.ID_PRINT)
         self.AddSeparator()
-        self.AddSimpleTool(ed_glob.ID_UNDO, TOOL_SET["undo"], _("Undo"), _("Undo Last Action"))
-        self.AddSimpleTool(ed_glob.ID_REDO, TOOL_SET["redo"], _("Redo"), _("Redo Last Undo"))
+        self.AddSimpleTool(ed_glob.ID_UNDO)
+        self.AddSimpleTool(ed_glob.ID_REDO)
         self.AddSeparator()
-        self.AddSimpleTool(ed_glob.ID_COPY, TOOL_SET["copy"], _("Copy"), 
-                          _("Copy Selected Text to Clipboard"))
-        self.AddSimpleTool(ed_glob.ID_CUT, TOOL_SET["cut"], _("Cut"), 
-                          _("Cut Selected Text from File"))
-        self.AddSimpleTool(ed_glob.ID_PASTE, TOOL_SET["paste"], _("Paste"), 
-                          _("Paste Text from Clipboard to File"))
+        self.AddSimpleTool(ed_glob.ID_COPY)
+        self.AddSimpleTool(ed_glob.ID_CUT)
+        self.AddSimpleTool(ed_glob.ID_PASTE)
         self.AddSeparator()
-        self.AddSimpleTool(ed_glob.ID_FIND, TOOL_SET["find"], _("Find"), _("Find Text"))
-        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE, TOOL_SET["findr"], _("Find/Replace"), 
-                           _("Find and Replace Text"))
+        self.AddSimpleTool(ed_glob.ID_FIND)
+        self.AddSimpleTool(ed_glob.ID_FIND_REPLACE)
         self.AddSeparator()
 
-    # TODO Flickers too much
+    # TODO Flickers too much, try and find a way to reduce it if possible
     def ReInit(self):
         """Re-Initializes the tools in the toolbar"""
         # Remove Current Tools
@@ -216,11 +149,12 @@ class ED_ToolBar(wx.ToolBar):
         tools = list()
         pos = -1
         lastpos = 0
-        self.tool_loc = self.GetIconPath()
-        self.tool_size = self.CalcToolSize()
+        wx.GetApp().ReloadArtProvider()
+        self.tool_size = ed_glob.PROFILE['ICON_SZ']
+        self._theme = ed_glob.PROFILE['ICONS']
         self.SetToolBitmapSize(self.tool_size)
-        self.CreateDefaultIcons(self.tool_size)
         self.GetParent().Freeze()
+        self.Freeze()
         for id in TOOL_ID:
             pos = pos + 1
             try:
@@ -236,7 +170,7 @@ class ED_ToolBar(wx.ToolBar):
                 tools.append((id, pos))
 
         for id, pos in tools:
-            item = TOOLS[id]
-            self.InsertSimpleTool(pos, id, TOOL_SET[item[0]], item[1], item[2])
+            self.InsertSimpleTool(pos, id)
         self.Realize()
         self.GetParent().Thaw()
+        self.Thaw()
