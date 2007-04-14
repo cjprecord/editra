@@ -157,7 +157,7 @@ class CommandBar(wx.Panel):
         # Install Controls
         self._h_sizer.Add((8,8))
         self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, GetTabOnBitmap(), \
-                                      size=(15,15), style=wx.BU_AUTODRAW | wx.BU_EXACTFIT)
+                                      size=(14,14), style=wx.BU_AUTODRAW | wx.BU_EXACTFIT)
         self.close_b.SetBitmapSelected(GetTabCloseBitmap())
         self._h_sizer.Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
         self._h_sizer.Add((12,12))
@@ -221,7 +221,10 @@ class CommandBar(wx.Panel):
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         v_sizer.Add((5,5))
-        search = ed_search.ED_SearchCtrl(self, ID_SEARCH_CTRL, menulen=5, size=(180, 20))
+        ssize = wx.Size(180, 20)
+        if wx.Platform == '__WXGTK__':
+            ssize.SetHeight(24)
+        search = ed_search.ED_SearchCtrl(self, ID_SEARCH_CTRL, menulen=5, size=ssize)
         search.SetHistory(self._search_cache)
         v_sizer.Add(search)
         v_sizer.Add((4,4))
@@ -373,6 +376,8 @@ class CommandBar(wx.Panel):
             sizer.Hide(c_sizer, True)
             sizer.Layout()
 
+# TODO will finish implementation once the key events are working in the
+#      search control for windows.
 class CommandExecuter(wx.SearchCtrl):
     """Puts the editor into command mode to catch and execute
     key commands.
