@@ -644,8 +644,8 @@ class MainWindow(wx.Frame):
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
             # the events from the toolbar do not propagate to the control.
-            if e_obj.GetClassName() == "wxToolBar" or e_id == ID_REDO or \
-               wx.Platform == '__WXMSW__':
+            if e_obj.GetClassName() == "wxToolBar" or e_id in [ID_REDO, ID_UNDO] \
+               or wx.Platform == '__WXMSW__':
                 self.nb.control.ControlDispatch(evt)
                 self.UpdateToolBar()
             else:

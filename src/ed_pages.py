@@ -46,12 +46,12 @@ __revision__ = "$Id: $"
 #--------------------------------------------------------------------------#
 # Dependancies
 
-import os			 # Python Modules
+import os
 import sys
 import re
-import wx			 # wxPython Modules
+import wx
 import ed_glob
-import ed_stc 		# Editra Styled Text Control
+import ed_stc
 import ed_search
 import util
 import doctools
@@ -72,7 +72,6 @@ class ED_Pages(FNB.FlatNotebook):
                                         FNB.FNB_X_ON_TAB | 
                                         FNB.FNB_SMART_TABS |
                                         FNB.FNB_BACKGROUND_GRADIENT
-                                        #FNB.FNB_HIDE_ON_SINGLE_TAB
                             )
 
         # Notebook attributes
@@ -83,7 +82,6 @@ class ED_Pages(FNB.FlatNotebook):
         self.pg_num = 0               # Track page numbers for ID creation
         self.control = ed_stc.EDSTC   # Current Control page
         self.frame = parent           # MainWindow
-        self.tab_close = -1           # Tab icon
 
         # Set Additional Style Parameters
         self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
@@ -106,7 +104,7 @@ class ED_Pages(FNB.FlatNotebook):
     def AddPage(self, control, title):
         """Adds a page to the notebook"""
         self.pg_num += 1
-        FNB.FlatNotebook.AddPage(self, control, title, imageId=self.tab_close)
+        FNB.FlatNotebook.AddPage(self, control, title)
 
     def GetCurrentCtrl(self):
         """Returns the control of the currently selected
