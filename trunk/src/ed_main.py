@@ -145,191 +145,28 @@ class MainWindow(wx.Frame):
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
-        self.filemenu = ed_menu.ED_Menu()
-        self.editmenu = ed_menu.ED_Menu()
-        self.viewmenu = ed_menu.ED_Menu()
-        self.formatmenu = ed_menu.ED_Menu()
-        self.settingsmenu = ed_menu.ED_Menu()
-        self.toolsmenu = ed_menu.ED_Menu()
-        self.helpmenu = ed_menu.ED_Menu()
+        menbar = ed_menu.ED_MenuBar()
+        self.filemenu = menbar.GetMenuByName("file")
+        self.editmenu = menbar.GetMenuByName("edit")
+        self.viewmenu = menbar.GetMenuByName("view")
+        self.formatmenu = menbar.GetMenuByName("format")
+        self.settingsmenu = menbar.GetMenuByName("settings")
+        self.toolsmenu = menbar.GetMenuByName("tools")
+        self.helpmenu = menbar.GetMenuByName("help")
+        self.menubar = menbar
+        self.lineformat = menbar.GetMenuByName("lineformat")
 
-        # Submenus
-        self.fileopen = ed_menu.ED_Menu() #submenu of file
-
-        #---- Menu Items ----#
-        # File Menu Items
-        self.filemenu.Append(ID_NEW, _("New") + u"\tCtrl+N", _("Start a New File"))
-        self.filemenu.Append(ID_OPEN, _("Open") + "\tCtrl+O", _("Open"))
-        ## Setup File History in the File Menu
-        self.filehistory.UseMenu(self.fileopen)
-        self.filemenu.AppendMenu(ID_FHIST, _("Open Recent"), 
-                                 self.fileopen, _("Recently Opened Files"))
-        self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_CLOSE, _("Close Page") + "\tCtrl+W", _("Close Current Page"))
-        self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_SAVE, _("Save") + "\tCtrl+S", _("Save Current File"))
-        self.filemenu.Append(ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", _("Save As"))
-        self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_SAVE_PROFILE, _("Save Profile"), 
-                             _("Save Current Settings to a New Profile"))
-        self.filemenu.Append(ID_LOAD_PROFILE, _("Load Profile"), _("Load a Custom Profile"))
-        self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_PRINT_SU, _("Page Setup") + "\tCtrl+Shift+P", _("Configure Printer"))
-        self.filemenu.Append(ID_PRINT_PRE, _("Print Preview"), _("Preview Printout"))
-        self.filemenu.Append(ID_PRINT, _("Print") + "\tCtrl+P", _("Print Current File"))
-        self.filemenu.AppendSeparator()
-        self.filemenu.Append(ID_EXIT, _("Exit") + "\tAlt+Q", _("Exit the Program"))
-
-        # Edit Menu Items
-        self.editmenu.Append(ID_UNDO, _("Undo") + "\tCtrl+Z", _("Undo Last Action"))
-        self.editmenu.Append(ID_REDO, _("Redo") + "\tCtrl+Shift+Z", _("Redo Last Undo"))
-        self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_CUT, _("Cut") + "\tCtrl+X", _("Cut Selected Text from File"))
-        self.editmenu.Append(ID_COPY, _("Copy") + "\tCtrl+C", _("Copy Selected Text to Clipboard"))
-        self.editmenu.Append(ID_PASTE, _("Paste") + "\tCtrl+V", 
-                             _("Paste Text from Clipboard to File"))
-        self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_SELECTALL, _("Select All") + "\tCtrl+A", 
-                             _("Select All Text in Document"))
-        self.editmenu.AppendSeparator()
-        self.linemenu = wx.Menu()
-        self.linemenu.Append(ID_LINE_AFTER, _("New Line After") + "\tCtrl+L",
-                             _("Add a new line after the current line"))
-        self.linemenu.Append(ID_LINE_BEFORE, _("New Line Before") + "\tCtrl+Shift+L",
-                             _("Add a new line before the current line"))
-        self.linemenu.AppendSeparator()
-        self.linemenu.Append(ID_CUT_LINE, _("Cut Line") + "\tCtrl+D",
-                            _("Cut Current Line"))
-        self.linemenu.Append(ID_COPY_LINE, _("Copy Line") + "\tCtrl+Y",
-                            _("Copy Current Line"))
-        self.linemenu.AppendSeparator()
-        self.linemenu.Append(ID_JOIN_LINES, _("Join Lines") + "\tCtrl+J",
-                            _("Join the Selected Lines"))
-        self.linemenu.Append(ID_TRANSPOSE, _("Transpose Line") + "\tCtrl+T",
-                            _("Transpose the current line with the previous one"))
-        self.editmenu.AppendMenu(ID_LINE_EDIT, _("Line Edit"), self.linemenu,
-                                _("Commands that affect an entire line"))
-        self.bookmenu = wx.Menu()
-        self.bookmenu.Append(ID_ADD_BM, _("Add Bookmark") + u"\tCtrl+B",
-                             _("Add a bookmark to the current line"))
-        self.bookmenu.Append(ID_DEL_BM, _("Remove Bookmark") + u"\tCtrl+Shift+B",
-                            _("Remove bookmark from current line"))
-        self.bookmenu.Append(ID_DEL_ALL_BM, _("Remove All Bookmarks"),
-                            _("Remove all bookmarks from the current document"))
-        self.editmenu.AppendMenu(ID_BOOKMARK, _("Bookmarks"),  self.bookmenu,
-                                _("Add and remove bookmarks"))
-        self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_FIND, _("Find") + "\tCtrl+Shift+F", _("Find Text"))
-        self.editmenu.Append(ID_FIND_REPLACE, _("Find/Replace") + "\tCtrl+R", 
-                             _("Find and Replace Text"))
-        self.editmenu.Append(ID_QUICK_FIND, _("Quick Find") + "\tCtrl+F", 
-                            _("Open the Quick Find Bar"))
-        self.editmenu.AppendSeparator()
-        self.editmenu.Append(ID_PREF, _("Preferences"), _("Edit Preferences / Settings"))
-
-        # View Menu Items
-        self.viewmenu.Append(ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", _("Zoom Out"))
-        self.viewmenu.Append(ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", _("Zoom In"))
-        self.viewmenu.Append(ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", 
-                            _("Zoom Default"))
-        self.viewmenu.AppendSeparator()
-        self.viewmenu.Append(ID_INDENT_GUIDES, _("Indentation Guides"), 
-                             _("Show Indentation Guides"), wx.ITEM_CHECK)
-        self.viewmenu.Append(ID_SHOW_EOL, _("Show EOL Markers"), _("Show EOL Markers"), 
-                             wx.ITEM_CHECK)
-        self.viewmenu.Append(ID_SHOW_LN, _("Show Line Numbers"), 
-                            _("Show Line Number Margin"), wx.ITEM_CHECK)
-        self.viewmenu.Append(ID_SHOW_WS, _("Show Whitespace"), 
-                             _("Show Whitespace Markers"), wx.ITEM_CHECK)
-        self.viewmenu.AppendSeparator()
-        self.viewmenu.Append(ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
-                            _("Goto Line Number"))
-        self.viewmenu.Append(ID_NEXT_MARK, _("Next Bookmark") + u"\tCtrl+Right", 
-                            _("View Line of Next Bookmark"))
-        self.viewmenu.Append(ID_PRE_MARK, _("Previous Bookmark") + u"\tCtrl+Left", 
-                            _("View Line of Previous Bookmark"))
-        self.viewmenu.AppendSeparator()
-        self.viewmenu.Append(ID_VIEW_TOOL, _("Toolbar"), 
-                             _("Show Toolbar"), wx.ITEM_CHECK)
-
-        # Format Menu Items
-        self.formatmenu.Append(ID_FONT, _("Font"), _("Change Font Settings"))
-        self.formatmenu.AppendSeparator()
-        self.formatmenu.Append(ID_COMMENT, _("Comment Lines") + u"\tCtrl+1", 
-                               _("Comment the selected lines"))
-        self.formatmenu.Append(ID_UNCOMMENT, _("Uncomment Lines") + u"\tCtrl+2", 
-                               _("Uncomment the selected lines"))
-        self.formatmenu.AppendSeparator()
-        self.formatmenu.Append(ID_INDENT, _("Indent Lines"), 
-                              _("Indent the selected lines"))
-        self.formatmenu.Append(ID_UNINDENT, _("Unindent Lines") + u"\tShift+Tab", 
-                              _("Unindent the selected lines"))
-        self.formatmenu.AppendSeparator()
-        self.formatmenu.Append(ID_WORD_WRAP, _("Word Wrap"), 
-                               _("Wrap Text Horizontally"), wx.ITEM_CHECK)
-        self.formatmenu.AppendSeparator()
-        self.lineformat = wx.Menu()
-        self.lineformat.Append(ID_EOL_MAC, _("Macintosh (\\r)"), 
-                              _("Format all EOL characters to %s Mode") % _("Macintosh (\\r)"),
-                              wx.ITEM_CHECK)
-        self.lineformat.Append(ID_EOL_UNIX, _("Unix (\\n)"), 
-                              _("Format all EOL characters to %s Mode") % _("Unix (\\n)"),
-                              wx.ITEM_CHECK)
-        self.lineformat.Append(ID_EOL_WIN, _("Windows (\\r\\n)"), 
-                              _("Format all EOL characters to %s Mode") % _("Windows (\\r\\n)"),
-                              wx.ITEM_CHECK)
-        self.formatmenu.AppendMenu(ID_EOL_MODE, _("EOL Mode"), self.lineformat,
-                                  _("End of line character formatting"))
-
-        # Settings Menu Items
-        self.settingsmenu.Append(ID_AUTOCOMP, _("Auto-Completion"),
-                                _("Use Auto Completion when available"), wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_AUTOINDENT, _("Auto-Indent"),
-                                 _("Toggle Auto-Indentation functionality"), 
-                                 wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_BRACKETHL, _("Bracket Highlighting"), 
-                                 _("Highlight Brackets/Braces"), wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_FOLDING, _("Code Folding"),
-                                _("Toggle Code Foldering"), wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_KWHELPER,_("Keyword Helper"), 
-                                 _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"), 
-                                wx.ITEM_CHECK)
-        self.settingsmenu.Append(ID_SYNTAX, _("Syntax Highlighting"), 
-                                 _("Color Highlight Code Syntax"), wx.ITEM_CHECK)
+        ## Setup additional menu items
+        self.filehistory.UseMenu(menbar.GetMenuByName("filehistory"))
         self.languagemenu = syntax.GenLexerMenu()
         self.settingsmenu.AppendMenu(ID_LEXER, _("Lexers"), self.languagemenu,
                                      _("Manually Set a Lexer/Syntax"))
-
-        # Tools Menu
-        self.toolsmenu.Append(ID_STYLE_EDIT, _("Style Editor"), 
-                             _("Edit the way syntax is highlighted"))
-        self.toolsmenu.AppendSeparator()
-        self.genmenu = wx.Menu()
-        self.genmenu.Append(ID_HTML_GEN, _("Generate %s") % u"HTML",
-                           _("Generate an HTML page from the current document"))
-        self.toolsmenu.AppendMenu(ID_GENERATOR, _("Generator"), self.genmenu,
-                                 _("Generate Code"))
-
-        # Help Menu Items
-        self.helpmenu.Append(ID_ABOUT, _("&About") + u"...", _("About") + u"...")
-        self.helpmenu.Append(ID_HOMEPAGE, _("Project Homepage"), 
-                            _("Visit the project homepage %s") % home_page)
-        self.helpmenu.Append(ID_CONTACT, _("Project Contact"),
-                            _("Email Project Staff Members"))
 
         # On mac, do this to make help menu appear in correct location
         if wx.Platform == '__WXMAC__':
             wx.GetApp().SetMacHelpMenuTitleName(_("Help"))
 
         #---- Menu Bar ----#
-        self.menubar = wx.MenuBar()
-        self.menubar.Append(self.filemenu, _("File"))
-        self.menubar.Append(self.editmenu, _("Edit"))
-        self.menubar.Append(self.viewmenu, _("View"))
-        self.menubar.Append(self.formatmenu, _("Format"))
-        self.menubar.Append(self.settingsmenu, _("Settings"))
-        self.menubar.Append(self.toolsmenu, _("Tools"))
-        self.menubar.Append(self.helpmenu, _("Help"))
         self.SetMenuBar(self.menubar)
 
         # Bind Extra key commands
@@ -341,6 +178,7 @@ class MainWindow(wx.Frame):
         self.BindLangMenu()
         if wx.Platform == '__WXGTK__':
             self.Bind(wx.EVT_MENU_HIGHLIGHT, self.OnMenuHighlight, id=ID_LEXER)
+            self.Bind(wx.EVT_MENU_HIGHLIGHT, self.OnMenuHighlight, id=ID_EOL_MODE)
 
         # File Menu Events
         self.Bind(wx.EVT_MENU, self.OnNew, id=ID_NEW)
@@ -464,7 +302,6 @@ class MainWindow(wx.Frame):
         """Loads file history from profile"""
         file_key = "FILE"
         i = size - 1 
-
         while i >= 0:
             key = file_key + str(i)
             try:
@@ -472,7 +309,6 @@ class MainWindow(wx.Frame):
             except KeyError: 
                 self.LOG("[main] [exception] Invalid Key on LoadFileHistory")
                 pass
-
             i -= 1
 
         return size - i
@@ -640,7 +476,7 @@ class MainWindow(wx.Frame):
             self.LOG("[main_evt] [exit] [exception] Trapped UnboundLocalError OnExit")
             pass
 
-        ### If we get to here there is no turning back so cleanup ###
+        ### If we get to here there is no turning back so cleanup
         ### additional items and save the user settings
         
         self.nb.DocMgr.WriteBook()
@@ -726,8 +562,7 @@ class MainWindow(wx.Frame):
     #---- Tools Menu Functions ----#
     def OnStyleEdit(self, evt):
         """Opens the style editor and handles the setting of
-        the return data. Probably wont be used everytime so dont
-        import it till its needed.
+        the return data.
 
         """
         import style_editor
@@ -929,12 +764,10 @@ class MainWindow(wx.Frame):
                 menu.Check(id, eol == id)
         else:
             pass
-
         return 0
 
     def UpdateToolBar(self, evt=0):
         """Update Tool Status"""
-        # Skip the work if toolbar is invisible
         if not hasattr(self, 'toolbar') or self.toolbar == None:
             return -1;
         self.toolbar.EnableTool(ID_UNDO, self.nb.control.CanUndo())
