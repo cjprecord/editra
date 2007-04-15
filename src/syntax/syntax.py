@@ -197,6 +197,14 @@ def GenFileFilters():
     filters[-1] = filters[-1][:-1] # IMPORTANT trim last '|' from item in list
     return filters
 
+def GetFileExtensions():
+    """Gets a sorted list of all file extensions the editor is configured
+    to handle.
+    """
+    ext = synglob.EXT_REG.keys()
+    ext.sort()
+    return ext
+
 def GetLexerList():
     """Gets a list of unique file lexer configurations available""" 
     f_types = dict()

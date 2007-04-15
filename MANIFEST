@@ -10,6 +10,8 @@ setup.py
 locale/ja_JP/LC_MESSAGES/Editra.mo
 locale/en_US/LC_MESSAGES/Editra.mo
 pixmaps/Editra.icns
+pixmaps/editra_doc.icns
+pixmaps/editra_doc.png
 pixmaps/editra.ico
 pixmaps/editra.png
 pixmaps/mime/c.png

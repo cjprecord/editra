@@ -11,12 +11,26 @@ DATE xx/xx/2007
 16th Snapshot Release
 
 NEWS:
+  There is now a platform independent installer for Editra. It will install
+Editra as a python package. To install Editra as a python package just issue
+the following command from the source package base directory.
+
+        python setup.py install
+
+   This is of course assuming that python is on your path. On Windows you
+may have to issue the command as follows. Where the XX is replaced with
+the version number of python you have installed (i.e 24, 25, ect...)
+
+        C:\\PythonXX\python.exe setup.py install
 
 NEW: [features/improvements]
 +More unified/transparent themeing support
++Source package build/install script
++Improved OS X integration of applet
 
 BUG FIXES:
-
++GTK keybinding for Undo
++GTK command bar display issues
 
 #---------------------------------------------------------------------------------#
 VERSION 0.0.97
