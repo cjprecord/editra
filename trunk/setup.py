@@ -61,7 +61,9 @@ CLASSIFIERS = [
             'OSI Approved :: GNU General Public License (GPL)',
             'Natural Language :: English',
             'Natural Language :: Japanese',
-            'Operating System :: OS Independent',
+            'Operating System :: MacOS :: MacOS X',
+            'Operating System :: Microsoft :: Windows',
+            'Operating System :: POSIX',
             'Programming Language :: Python',
             'Topic :: Software Development',
             'Topic :: Text Editors'
@@ -231,6 +233,10 @@ else:
     else:
         kwds = {"classifiers" : CLASSIFIERS}
 
+    # Force optimization
+    if 'install' in sys.argv and ('O1' not in sys.argv or '02' not in sys.argv):
+        sys.argv.append('-O2')
+
     setup(
         name = NAME,
         scripts = ['Editra'],
@@ -248,5 +254,5 @@ else:
         package_dir = { NAME : '.' },
         package_data = { NAME : DATA},
         classifiers= CLASSIFIERS,
-        requires = ['wx'],
+    #    requires = ['wx'],
         )
