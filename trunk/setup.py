@@ -38,6 +38,7 @@ import os
 import sys
 import glob
 import src.ed_glob as ed_glob
+import src.syntax.syntax as syntax # So we can get file extensions
 from distutils.command.build_ext import build_ext
 from distutils.command.install import install
 from distutils.command.install_lib import install_lib
@@ -79,7 +80,7 @@ SRC_SCRIPTS = [ ("src", glob.glob("src/*.py")),
 
 DATA_FILES = [ 
               ("pixmaps", ["pixmaps/editra.png", "pixmaps/editra.ico",
-                           "pixmaps/editra.icns"]),
+                           "pixmaps/editra.icns", "pixmaps/editra_doc.icns"]),
               ("pixmaps/mime", glob.glob("pixmaps/mime/*.png")),
               ("pixmaps/theme/Stock",["pixmaps/theme/Stock/AUTHORS",
                "pixmaps/theme/Stock/COPYING",
@@ -96,12 +97,14 @@ DATA_FILES = [
               ("styles", glob.glob("styles/*.ess")),
               ("test_data", glob.glob("test_data/*")),
               ("docs", glob.glob("docs/*.txt")),
-              "README.txt","CHANGELOG.txt","COPYING.txt"
+              "README.txt","CHANGELOG.txt","COPYING.txt", "pixmaps/editra_doc.icns"
             ]
 
 DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py",
          "pixmaps/editra.png", "pixmaps/editra.ico", 'Editra',
-         "pixmaps/editra.icns", "pixmaps/mime/*.png", "pixmaps/theme/Stock/[A-Z]*",
+         "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Stock/AUTHOR",
+         "pixmaps/theme/Stock/COPYING", "pixmaps/theme/Stock/DONATE",
+         "pixmaps/theme/README",
          "pixmaps/theme/Stock/toolbar/*.png", "pixmaps/theme/Stock/menu/*.png", 
          "profiles/default.pp", "profiles/.loader", "profiles/default.pp.sample",
          "locale/en_US/LC_MESSAGES/Editra.mo", "locale/ja_JP/LC_MESSAGES/Editra.mo", 
@@ -149,17 +152,6 @@ manifest_template = '''
 </assembly>
 '''
 
-PLIST = dict(CFBundleName = ed_glob.prog_name,
-             CFBundleShortVersionString = ed_glob.version,
-             CFBundleGetInfoString = ed_glob.prog_name + " " + ed_glob.version,
-             CFBundleExecutable = ed_glob.prog_name,
-             CFBundleIdentifier = "com.editor.%s" % ed_glob.prog_name.lower(),
-             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=["*"],
-                                           CFBundleTypeRole="Editor"),
-                                     ],
-             NSHumanReadableCopyright = u"Copyright %s %d" % (AUTHOR, YEAR)
-             )
-
 RT_MANIFEST = 24
 #---- End Global Settings ----#
 
@@ -200,6 +192,20 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
         print "\n!! You dont have py2app and/or setuptools installed!! Can't build the .app file !!\n"
         exit()
 
+    PLIST = dict(CFBundleName = ed_glob.prog_name,
+             CFBundleIconFile = 'Editra.icns',
+             CFBundleShortVersionString = ed_glob.version,
+             CFBundleGetInfoString = ed_glob.prog_name + " " + ed_glob.version,
+             CFBundleExecutable = ed_glob.prog_name,
+             CFBundleIdentifier = "org.editra.%s" % ed_glob.prog_name.title(),
+             CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=syntax.GetFileExtensions(),
+                                           CFBundleTypeIconFile='editra_doc',
+                                           CFBundleTypeRole="Editor"
+                                          ),
+                                     ],
+             NSHumanReadableCopyright = u"Copyright %s 2005-%d" % (AUTHOR, YEAR)
+             )
+ 
     py2app_options = dict(
                           iconfile = ICON['Mac'], 
                           argv_emulation = True,
@@ -219,7 +225,6 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
         license = LICENSE,
         url = URL,
         data_files = DATA_FILES,
-        #packages = ['syntax', 'extern'],
         setup_requires = ['py2app'],
         )
 
