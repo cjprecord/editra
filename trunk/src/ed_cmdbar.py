@@ -53,40 +53,7 @@ _ = wx.GetTranslation
 from wx import ImageFromStream, BitmapFromImage
 import cStringIO, zlib
 
-def GetTabCloseData():
-    return zlib.decompress(
-'x\xda\x01.\x02\xd1\xfd\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x10\
-\x00\x00\x00\x10\x08\x06\x00\x00\x00\x1f\xf3\xffa\x00\x00\x00\x04sBIT\x08\
-\x08\x08\x08|\x08d\x88\x00\x00\x01\xe5IDAT8\x8d\xa5\x93\xcdkSA\x14\xc5\x7f\
-\xaf_\xf9h\x89\xd1ML\xa3\xd1\xc4B\xbb\x10Z\x10\x91@1\x15)\xa8\xe0\xa6.\xa5\
-\x0b\xc1\xbf\xc0?@Q\x8a\x0b\x17\x057Y\x89T\xba*\x08\n\xae\x04q!\xc5\xd2\x95A\
-\x8b\xb5\xa0\x8dDB\xdab\xb1\xafm2\xf3\xde\x9b\x97\xb8\xb8)\xaf6\xc5M\x07.sg\
-\x98s\xee\x99sg,\xab\xa3\x93\xa3\x8c.\x80\x0f\x8f\x1e4\xed\x85y\x9c\xf5*n\
-\xa5\xfc_@O*M(\x91\xe4Xn\x94\xcb\xf7\x1fZ]\x00\xf6\xc2<\xf9\'\x8f\xe9\x1b\
-\x1a\x04\x1a\xe0\x1b\t\xcf\x03c@\xf9\x80\x03\x0e\xd0T\xa8o+\xbc/\xcc\x04\n\
-\x9c\xf5\xaa\x80\xd7~Ai9(\xe7\xa8}y]\xe6X\x8a\xc8\xd9\x0c\xe1X\x0c\x80\x0e \
-\x90]\xf9!\xa0\xcc\x88\xacm[\xc2\n\xc3\xf0U\xd0\x1el\xfc\x04\xc0R\x9b\x01\
-\x01\x00\xbe\x0b\xae\x0bC9\xe8\xcf\xc2\x85\xeb\x10OH\xe4n\xc8\xde\xa5k\xa0v\
-\xdbM\x14\x02#\xf3\xca\'8\x91\x84pD\x80 \xb9VP\\<\xbc\x0b\x80\x18\xb6\xb1\
-\x06\x9b[\xf0\xfb\x0f\xdc\xbc-@\x10\xf0l\x01*%p5\x9c9\x7f\x08\x811"o\xbb\x06\
-\x11\xb7\xad\x12\x8e\x06{\x07v\xb7\xc5\x17\xad\x0ex\xa0Z.\'Rp\xebN [+\xc9\
-\xef\xde\x83\xd3\xa7\xa0\xe1C\xad\x06\x8es\x80@+\xa8\x1b\xb8\x98\x0f\xc0\xcf\
-\xa6%\xf6H\xf2\x13\xe0\xf9bv\xdb\x15t\xab\x0b/g`b\x12\xde\xbd\x81\xf2*x\x06\
-\nS\x02~1\r\xdd\x9dPW\xff\x12\xf4f\x07du2\x0b[_\xe0\xf9S\x01\xfa\x06\x1a\x1a\
-\x96\xbfB\xb1\x08\xa1\x1e87(g\x8f\'\x81\xcfB\x10MgPKKDR\xfd\x90\xb8\x02n\xab\
-\x82r\xe5\xf1\xec\xbd\x91VeU\xa9\xd2\x0cE\x03\x05\xf1\xb1q>\xbe~K\xbd\\\xa2\
-\xb6\xfa\xbd\xbd\x03\xfbFov\x80h:C|l\x1c\xe6^a\x1d\xf5;\xff\x05\xa0S\xc9\x11\
-\xf0eA|\x00\x00\x00\x00IEND\xaeB`\x82?\x85\xea\x82' )
-
-def GetTabCloseBitmap():
-    return BitmapFromImage(GetTabCloseImage())
-
-def GetTabCloseImage():
-    stream = cStringIO.StringIO(GetTabCloseData())
-    return ImageFromStream(stream)
-
-#----------------------------------------------------------------------
-def GetTabOnData():
+def GetXData():
     return zlib.decompress(
 'x\xda\x011\x02\xce\xfd\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x0e\
 \x00\x00\x00\x0e\x08\x02\x00\x00\x00\x90*\xba\x86\x00\x00\x00\x03sBIT\x08\
@@ -112,11 +79,11 @@ def GetTabOnData():
 \xf1\x1dY\xff\xe6m\xff>\xf6]\xd2g\xca\xbaU4\xab\xd3\xff\x01\xe3\xf6\xf0\x91\
 \xbc\xe0^J\x00\x00\x00\x00IEND\xaeB`\x82\x7fU\x05\xed' )
 
-def GetTabOnBitmap():
-    return BitmapFromImage(GetTabOnImage())
+def GetXBitmap():
+    return BitmapFromImage(GetXImage())
 
-def GetTabOnImage():
-    stream = cStringIO.StringIO(GetTabOnData())
+def GetXImage():
+    stream = cStringIO.StringIO(GetXData())
     return ImageFromStream(stream)
 
 #-----------------------------------------------------------------------------#
@@ -152,13 +119,11 @@ class CommandBar(wx.Panel):
         self._psizer = parent.GetSizer()
         self._h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self._v_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._search_cache = list()  # Saves search history
 
         # Install Controls
         self._h_sizer.Add((8,8))
-        self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, GetTabOnBitmap(), \
+        self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, GetXBitmap(), \
                                       size=(14,14), style=wx.BU_AUTODRAW | wx.BU_EXACTFIT)
-        self.close_b.SetBitmapSelected(GetTabCloseBitmap())
         self._h_sizer.Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
         self._h_sizer.Add((12,12))
         self._v_sizer.Add((2,2))
@@ -225,7 +190,6 @@ class CommandBar(wx.Panel):
         if wx.Platform == '__WXGTK__':
             ssize.SetHeight(24)
         search = ed_search.ED_SearchCtrl(self, ID_SEARCH_CTRL, menulen=5, size=ssize)
-        search.SetHistory(self._search_cache)
         v_sizer.Add(search)
         v_sizer.Add((4,4))
         f_lbl = wx.StaticText(self, ID_FIND_LBL, _("Find") + u": ")
