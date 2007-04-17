@@ -145,7 +145,7 @@ class ED_Art(wx.ArtProvider):
                 # Dont worry about toolbar scaling on MAC it is done by the
                 # toolbar automagically.
                 pass
-            elif size < img_sz:
+            elif size[0] < img_sz[0]:
                 img.Rescale(size[0], size[1])
             else:
                 pass
