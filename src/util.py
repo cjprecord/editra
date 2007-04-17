@@ -51,6 +51,8 @@ import dev_tool
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
+# XXX has some issues with the clipboard on windows under certain
+#     conditions. They arent fatal but need fixing.
 # Found this while playing around with the PyPe source code finally
 # solved the problem of allowing drag n drop text at the same time as
 # drag and drop files.
@@ -244,7 +246,7 @@ def MakeConfigDir(name):
         os.mkdir(config_dir + GetPathChar() + name)
     except:
         pass
-							
+
 def CreateConfigDir():
     """ Creates the user config directory its default sub 
     directories and any of the default config files.
