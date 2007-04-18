@@ -47,8 +47,8 @@ contact_mail = u"staff@editra.org"
 
 #---- Imported Libs/Objects ----#
 import wx
-#---- Configuration Locations ----#
 
+#---- Configuration Locations ----#
 # Values set when main loads
 CONFIG = {
           'CACHE_DIR'   : "",   # Holds temp data about documents
@@ -113,6 +113,7 @@ ID_PREF_MODE     = wx.NewId()
 ID_PRINT_MODE    = wx.NewId()
 ID_TRANSPARENCY  = wx.NewId()
 ID_PREF_SPOS     = wx.NewId()
+ID_PREF_UPDATE_BAR = wx.NewId()
 
 # View Menu IDs
 ID_ZOOM_OUT      = wx.ID_ZOOM_OUT

@@ -63,12 +63,20 @@ import wx.lib.mixins.listctrl as listmix
 import sys
 import ed_glob
 import ed_i18n
+import ed_event
+import updater
 import util
 
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
+# Globals
+ID_CHECK_UPDATE = wx.NewId()
+ID_DOWNLOAD     = wx.NewId()
+ID_UPDATE_MSG   = wx.NewId()
+ID_UPDATE_PAGE  = wx.NewId()
+ID_CURR_BOX     = wx.NewId()
+ID_LATE_BOX     = wx.NewId()
 
-#----------------------------------------------------------------------------#
 # ID's For Validator
 ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL, 
             ed_glob.ID_KWHELPER, ed_glob.ID_SYNTAX, ed_glob.ID_INDENT_GUIDES,
@@ -235,8 +243,10 @@ class PrefPages(wx.Notebook):
         self.LOG = log
 
         # Events
-        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(wx.EVT_CHOICE, self.OnChoice, id=ed_glob.ID_PREF_SYNTHEME)
+        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdateText)
 
         # Initialize Preference Pages
         self.GeneralPage()
@@ -530,17 +540,61 @@ class PrefPages(wx.Notebook):
 
     def UpdatePage(self):
         """Update Status page"""
-        upd_panel = wx.Panel(self, wx.ID_ANY)
+        upd_panel = wx.Panel(self, ID_UPDATE_PAGE)
 
         info = self.SectionHead(upd_panel, _("Update Status") + u":")
-        ver_info = wx.StaticText(upd_panel, wx.ID_ANY, 
-                                 _("You are running version: %s") % ed_glob.version)
+        cur_box = wx.StaticBox(upd_panel, ID_CURR_BOX, _("Installed Version"))
+        cur_sz = wx.StaticBoxSizer(cur_box, wx.HORIZONTAL)
+        cur_sz.SetMinSize(wx.Size(150, 40))
+        cur_ver = wx.StaticText(upd_panel, wx.ID_ANY,  ed_glob.version)
+        cur_sz.Add(cur_ver, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        e_update = updater.UpdateProgress(upd_panel, ed_glob.ID_PREF_UPDATE_BAR,
+                                          size=wx.Size(320, 50))
+        upd_box = wx.StaticBox(upd_panel, ID_LATE_BOX, _("Latest Version"))
+        upd_bsz = wx.StaticBoxSizer(upd_box, wx.HORIZONTAL)
+        upd_bsz.SetMinSize(wx.Size(150, 40))
+        upd_sta = wx.StaticText(upd_panel, ID_UPDATE_MSG, _(e_update.GetStatus()))
+        upd_bsz.Add(upd_sta, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        upd_bsz.Layout()
 
-        border = wx.BoxSizer(wx.VERTICAL)
-        border.Add((15, 15))
-        border.Add(info, 0, wx.LEFT)
-        border.Add((15, 10))
-        border.Add(ver_info, 1, wx.LEFT, 20)
+        # Build Page Layout (from top to bottom)
+        border = wx.BoxSizer(wx.HORIZONTAL) # Main Outer H Sizer
+        v_stack = wx.BoxSizer(wx.VERTICAL)  # Main Inner V Sizer
+        v_stack.Add((15, 15))
+        v_stack.Add(info, 0, wx.ALIGN_CENTER) # page header
+        v_stack.Add((15, 15))
+
+        # Status Text
+        stat_sz = wx.BoxSizer(wx.HORIZONTAL)
+        stat_sz.Add(wx.Size(15,15))
+        stat_sz.Add(cur_sz, 1, wx.ALIGN_LEFT)
+        stat_sz.Add(wx.Size(50,50))
+        stat_sz.Add(upd_bsz, 1, wx.ALIGN_RIGHT)
+
+        # Progress Bar
+        p_barsz = wx.BoxSizer(wx.HORIZONTAL)
+        p_barsz.Add(wx.Size(15,15))
+        p_barsz.Add(e_update, 0, wx.ALIGN_CENTER_VERTICAL)
+
+        # Progress bar control buttons
+        btn_sz = wx.BoxSizer(wx.HORIZONTAL)
+        btn_sz.Add(wx.Size(15,15))
+        check_b = wx.Button(upd_panel, ID_CHECK_UPDATE, _("Check"))
+        btn_sz.Add(check_b, 0, wx.ALIGN_LEFT)
+        btn_sz.Add(wx.Size(30,30))
+        dl_b    = wx.Button(upd_panel, ID_DOWNLOAD, _("Download"))
+        dl_b.Disable()
+        btn_sz.Add(dl_b, 0, wx.ALIGN_RIGHT)
+        btn_sz.Add(wx.Size(15,15))
+
+        v_stack.Add(wx.Size(15,15))
+        v_stack.Add(stat_sz, 0, wx.ALIGN_CENTER)
+        v_stack.Add(wx.Size(20,20))
+        v_stack.Add(p_barsz, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        v_stack.Add(wx.Size(20,20))
+        v_stack.Add(btn_sz, 0, wx.ALIGN_CENTER_HORIZONTAL)
+
+        border.Add(v_stack, 0, wx.ALIGN_LEFT)
 
         upd_panel.SetSizer(border)
 
@@ -571,12 +625,54 @@ class PrefPages(wx.Notebook):
         return ret_obj
 
     #---- Event Handlers ----#
+    def OnButton(self, evt):
+        """Event Handler for Buttons"""
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id == ID_CHECK_UPDATE:
+            self.LOG("[prefdlg_evt] Check Update Clicked")
+            e_obj.Disable()
+            prog_bar = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
+            # Note this function returns right away but its result is
+            # handled on a separate thread. This window is then notified
+            # via a custom event being posted by the control.
+            prog_bar.CheckForUpdates()
+        elif e_id == ID_DOWNLOAD:
+            self.LOG("[prefdlg_evt] Download Updates Clicked")
+            e_obj.Disable()
+            chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
+            chk_bt.Disable()
+            prog_bar = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
+            prog_bar.DownloadUpdates()
+        else:
+            evt.Skip()
+
     def OnPageChanged(self, evt):
         """Actions to do after a page change"""
         curr = evt.GetSelection()
         txt = self.GetPageText(curr)
         self.LOG("[prefdlg_evt] Page Changed to " + txt)
         evt.Skip()
+
+    def OnUpdateText(self, evt):
+        """Handles text update events"""
+        e_id = evt.GetId()
+        self.LOG("[prefdlg_evt] Updating version status text")
+        txt = self.FindWindowById(ID_UPDATE_MSG)
+        upd = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
+        if None not in [txt, upd]:
+            if e_id == upd.ID_CHECKING:
+                txt.SetLabel(upd.GetStatus())
+                u_pg = wx.FindWindowById(ID_UPDATE_PAGE)
+                dl_bt = chk_bt = None
+                if u_pg != None:
+                    dl_bt = u_pg.FindWindowById(ID_DOWNLOAD)
+                    chk_bt = u_pg.FindWindowById(ID_CHECK_UPDATE)
+                    u_pg.Layout()
+                if dl_bt != None and upd.GetUpdatesAvailable():
+                    dl_bt.Enable()
+                if chk_bt != None:
+                    chk_bt.Enable()
 
     def OnSize(self, evt):
         """Resizes the list control to fit the panel"""
