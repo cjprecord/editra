@@ -100,6 +100,21 @@ class Editra(wx.App):
 
         return True
 
+    def MacOpenFile(self, filename):
+        """Macintosh Specific code for opening files that are associated
+        with the editor and double clicked on after the editor is already
+        running.
+        
+        """
+        window = self.GetTopWindow()
+        if window != None:
+            try:
+                window.DoOpen(wx.ID_ANY, filename)
+            finally:
+                pass
+        else:
+            pass
+
     def OnActivate(self, evt):
         """Activation Event Handler"""
         if evt.GetActive():
