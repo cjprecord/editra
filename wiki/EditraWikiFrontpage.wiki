@@ -4,8 +4,11 @@
 
 
 
-
 = Details =
 
 
 
+= Help Needed =
+I hope to make this editor accessible to as many people as possible and part of that is providing the editor in as many localized languages as possible. I am currently looking some people that are willing to do some additional translations for the editor. The editor is currently available in English and Japanese. 
+
+Translations are handled by the gettext system using .po files. If you are interested in providing a translation or even partial translation the main po file can be found in the svn repository under '/scripts/i18n/messages.pot'. All I can offer in return is credit on the projects homepage as well a link to your homepage (if you have one). If you are interested or require more information please feel free to contact me.
