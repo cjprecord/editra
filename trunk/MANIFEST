@@ -99,6 +99,7 @@ src/generator.py
 src/prefdlg.py
 src/profiler.py
 src/style_editor.py
+src/updater.py
 src/util.py
 src/autocomp/__init__.py
 src/autocomp/autocomp.py

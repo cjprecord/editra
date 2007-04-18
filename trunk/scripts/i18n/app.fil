@@ -1,6 +1,7 @@
 ../../src/dev_tool.py
 ../../src/doctools.py
 ../../src/ed_cmdbar.py
+../../src/ed_event.py
 ../../src/ed_glob.py
 ../../src/ed_i18n.py
 ../../src/ed_main.py
@@ -18,4 +19,5 @@
 ../../src/style_editor.py
 ../../src/syntax/synglob.py
 ../../src/syntax/syntax.py
+../../src/updater.py
 ../../src/util.py
