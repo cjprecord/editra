@@ -286,8 +286,8 @@ class ED_MenuBar(wx.MenuBar):
         helpmenu.Append(ed_glob.ID_ABOUT, _("&About") + u"...", _("About") + u"...")
         helpmenu.Append(ed_glob.ID_HOMEPAGE, _("Project Homepage"), 
                             _("Visit the project homepage %s") % ed_glob.home_page)
-        helpmenu.Append(ed_glob.ID_CONTACT, _("Project Contact"),
-                            _("Email Project Staff Members"))
+        helpmenu.Append(ed_glob.ID_CONTACT, _("Feedback"),
+                            _("Send me bug reports and suggestions"))
         self.Append(helpmenu, _("Help"))
         return helpmenu
 
