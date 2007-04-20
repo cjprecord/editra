@@ -505,7 +505,13 @@ class MainWindow(wx.Frame):
 
         # Finally close the application
         self.LOG("[main_info] Exiting MainLoop...")
-        wx.Exit()
+        if CONFIG.has_key('DL_IS_BUSY') and CONFIG['DL_IS_BUSY']:
+            self.LOG("[main_info] Download is in progress...")
+            self.LOG("[main_info] Frame will exit now but app will remain running")
+            CONFIG['FRAME_HAS_EXITED'] = True
+            self.Destroy()
+        else:
+            wx.Exit()
 
     #---- End File Menu Functions ----#
 
