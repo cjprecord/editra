@@ -44,6 +44,10 @@ import wx
 import ed_glob
 
 #--------------------------------------------------------------------------#
+# Globals
+_ = wx.GetTranslation
+
+#--------------------------------------------------------------------------#
 
 class ED_Menu(wx.Menu):
     """Overides the default wxMenu class to make it easier to
