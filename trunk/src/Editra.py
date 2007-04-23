@@ -92,13 +92,38 @@ class Editra(wx.App):
     def OnInit(self):
         """Initialize the Editor"""
         self._log = dev_tool.DEBUGP
-        self._log("[main_info] Setting Locale/Language Settings")
+        self._log("[app][info] Editra is Initializing")
+        self._lock = False
+        self._windows = dict()
+
+        self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.ED_Art())
         
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
 
         return True
+
+    def Exit(self):
+        """Exit the program"""
+        if not self._lock:
+            wx.App.Exit(self)
+
+    def GetLog(self):
+        """Returns the logging function used by the app"""
+        return self._log
+
+    def GetOpenWindows(self):
+        """Returns a list of open windows"""
+        return self._windows
+
+    def IsLocked(self):
+        """Returns whether the application is locked or not"""
+        return self._lock
+
+    def Lock(self):
+        """Locks the app from exiting"""
+        self._lock = True
 
     def MacOpenFile(self, filename):
         """Macintosh Specific code for opening files that are associated
@@ -107,7 +132,9 @@ class Editra(wx.App):
         
         """
         window = self.GetTopWindow()
-        if window != None:
+        # TODO add logic to reopen the main in the event it is
+        #      closed when this is called. TEST WHEN GET HOME may be ok
+        if window != None and window.__name__ == "MainWindow":
             try:
                 window.DoOpen(wx.ID_ANY, filename)
             finally:
@@ -118,14 +145,23 @@ class Editra(wx.App):
     def OnActivate(self, evt):
         """Activation Event Handler"""
         if evt.GetActive():
-            self._log("[main_app] [info] I'm Awake!!")
+            self._log("[app][info] I'm Awake!!")
          #   if self._frame.CanSetTransparent():
          #       self._frame.SetTransparent(ed_glob.PROFILE['ALPHA'])
         else:
-            self._log("[main_app] [info] Going to sleep")
+            self._log("[app][info] Going to sleep")
           #  if self._frame.CanSetTransparent():
           #      self._frame.SetTransparent(int(.85 * ed_glob.PROFILE['ALPHA']))
         evt.Skip()
+
+    def RegisterWindow(self, name, window, can_lock = False):
+        """Registers winows with the app. The name should be the
+        repr of window. The can_lock parameter is a boolean stating
+        whether the window can keep the main app running after the 
+        main frame has exited.
+        
+        """
+        self._windows[name] = (window, can_lock)
 
     def ReloadArtProvider(self):
         """Reloads the custom art provider onto the artprovider stack"""
@@ -134,9 +170,53 @@ class Editra(wx.App):
         finally:
             wx.ArtProvider.PushProvider(ed_art.ED_Art())
 
-    def GetLog(self):
-        """Returns the logging function used by the app"""
-        return self._log
+    def UnLock(self):
+        """Unlocks the application"""
+        self._lock = False
+
+    def UnRegisterWindow(self, name):
+        """Unregisters a named window with the app if the window
+        was the top window and if other windows that can lock are 
+        registered in the window stack it will promote the next one 
+        it finds to be the top window. If no windows that fit this
+        criteria are found it will close the application.
+        
+        """
+        if self._windows.has_key(name):
+            win = self._windows.pop(name)
+            cur_top = self.GetTopWindow()
+            if not len(self._windows):
+                self._log("[app][info] No more open windows shutting down")
+                self.Exit()
+            if name == repr(cur_top):
+                found = False
+                for key in self._windows:
+                    if self._windows[key][1]:
+                        self._log("[app][info] Promoting %s to top window" % key)
+                        self.SetTopWindow(self._windows[key][0])
+                        found = True
+                        break
+                if not found:
+                    self._log("[app][info] No more top windows exiting app")
+                    self.UnLock()
+                    self.Exit()
+            else:
+                self._log("[app][info] UnRegistered %s" % name)
+        else:
+            self._log("[app][warning] The window %s is not registered" % name)
+
+    def WindowCanLock(self, winname):
+        """Checks if a named window can lock the application or
+        not. The window must have been previously registered with
+        a call to RegisterWindow for this function to have any
+        real usefullness.
+        
+        """
+        if self._windows.has_key(winname):
+            return self._windows[winname][1]
+        else:
+            self._log("[app][warning] the window %s has not been registered" % winname)
+            return False
 
 def InitConfig():
     """Initializes the configuration data"""
@@ -195,6 +275,7 @@ def Main():
 
     _frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
                                     ed_glob.prog_name, EDITRA.GetLog())
+    EDITRA.RegisterWindow(repr(_frame), _frame, True)
     EDITRA.SetTopWindow(_frame)
 
     # 5. Start Applications Main Loop

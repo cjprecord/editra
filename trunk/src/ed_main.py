@@ -256,9 +256,11 @@ class MainWindow(wx.Frame):
             self.CenterOnParent()
         self.Show(True)
 
-    ### End Init ###
+    __name__ = u"MainWindow"
 
-    ### Begin Function Definitions ###
+    ### End Private Member Functions/Variables ###
+
+    ### Begin Public Function Definitions ###
     def DoOpen(self, evt, file_name=''):
         """ Do the work of opening a file and placing it
         in a new notebook page.
@@ -504,14 +506,9 @@ class MainWindow(wx.Frame):
         self._cmdbar.Destroy()
 
         # Finally close the application
-        self.LOG("[main_info] Exiting MainLoop...")
-        if CONFIG.has_key('DL_IS_BUSY') and CONFIG['DL_IS_BUSY']:
-            self.LOG("[main_info] Download is in progress...")
-            self.LOG("[main_info] Frame will exit now but app will remain running")
-            CONFIG['FRAME_HAS_EXITED'] = True
-            self.Destroy()
-        else:
-            wx.Exit()
+        self.LOG("[main_info] Closing Main Frame")
+        wx.GetApp().UnRegisterWindow(repr(self))
+        self.Destroy()
 
     #---- End File Menu Functions ----#
 
