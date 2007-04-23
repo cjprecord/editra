@@ -640,17 +640,14 @@ class PrefPages(wx.Notebook):
         elif e_id == ID_DOWNLOAD:
             self.LOG("[prefdlg_evt] Download Updates Clicked")
             e_obj.Disable()
-            dl_dlg = updater.DownloadDialog(None, wx.NewId(),
+            chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
+            chk_bt.Disable()
+            dl_dlg = updater.DownloadDialog(None, wx.ID_ANY,
                                             _("Downloading Update"), 
                                             size=wx.Size(350, 200))
             dp_sz = wx.GetDisplaySize()
             dl_dlg.SetPosition(wx.Point((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
             dl_dlg.Show()
-            return #TEST
-            chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
-            chk_bt.Disable()
-            prog_bar = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
-            prog_bar.DownloadUpdates()
         else:
             evt.Skip()
 
