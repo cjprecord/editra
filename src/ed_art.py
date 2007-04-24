@@ -46,7 +46,7 @@ import ed_glob
 import util
 
 #--------------------------------------------------------------------------#
-# Map object Id's to Art Resources
+# Map object Id's to Custom Art Resources
 ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_CONTACT : u'mail.png',
         ed_glob.ID_COPY   : u'copy.png',
@@ -73,30 +73,29 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_ZOOM_NORMAL : u'zoomd.png'
 }
 
-# If on GTK and the default theme value is set, let the default
-# wxArtProvider get the images when possible as it actually works
-# well on this platform.
-GTK = { 
-        ed_glob.ID_COPY    : wx.ART_COPY,
-        ed_glob.ID_CUT     : wx.ART_CUT,
-        ed_glob.ID_EXIT    : wx.ART_QUIT,
-        ed_glob.ID_FIND    : wx.ART_FIND,
-        ed_glob.ID_FIND_REPLACE : wx.ART_FIND_AND_REPLACE,
-        ed_glob.ID_NEW     : wx.ART_NEW,
-        ed_glob.ID_NEXT_MARK : wx.ART_GO_FORWARD,
-        ed_glob.ID_OPEN    : wx.ART_FILE_OPEN,
-        ed_glob.ID_PASTE   : wx.ART_PASTE,
-        ed_glob.ID_PRE_MARK : wx.ART_GO_BACK,
-        ed_glob.ID_PRINT   : wx.ART_PRINT,
-        ed_glob.ID_REDO    : wx.ART_REDO,
-        ed_glob.ID_SAVE    : wx.ART_FILE_SAVE,
-        ed_glob.ID_SAVEAS  : wx.ART_FILE_SAVE_AS,
-        ed_glob.ID_UNDO    : wx.ART_UNDO
+# Map for default system/wx provided graphic resources.
+DEFAULT = { 
+            ed_glob.ID_COPY    : wx.ART_COPY,
+            ed_glob.ID_CUT     : wx.ART_CUT,
+            ed_glob.ID_EXIT    : wx.ART_QUIT,
+            ed_glob.ID_FIND    : wx.ART_FIND,
+            ed_glob.ID_FIND_REPLACE : wx.ART_FIND_AND_REPLACE,
+            ed_glob.ID_NEW     : wx.ART_NEW,
+            ed_glob.ID_NEXT_MARK : wx.ART_GO_FORWARD,
+            ed_glob.ID_OPEN    : wx.ART_FILE_OPEN,
+            ed_glob.ID_PASTE   : wx.ART_PASTE,
+            ed_glob.ID_PRE_MARK : wx.ART_GO_BACK,
+            ed_glob.ID_PRINT   : wx.ART_PRINT,
+            ed_glob.ID_REDO    : wx.ART_REDO,
+            ed_glob.ID_SAVE    : wx.ART_FILE_SAVE,
+            ed_glob.ID_SAVEAS  : wx.ART_FILE_SAVE_AS,
+            ed_glob.ID_UNDO    : wx.ART_UNDO
 }
 
 # Client Id Map
-CLIENTS = { wx.ART_MENU    : u'menu',
-            wx.ART_TOOLBAR : u'toolbar'
+CLIENTS = { wx.ART_MENU    : u'menu',       # $theme/menu
+            wx.ART_TOOLBAR : u'toolbar',    # $theme/toolbar
+            wx.ART_OTHER   : u''            # $pixmaps/
           }
 
 #--------------------------------------------------------------------------#
@@ -122,9 +121,9 @@ class ED_Art(wx.ArtProvider):
         except ValueError:
             return wx.NullBitmap
 
-        if wx.Platform == '__WXGTK__' and \
-           ed_glob.PROFILE['ICONS'].lower() == u'stock' and GTK.has_key(int(id)):
-            return wx.ArtProvider.GetBitmap(GTK[int(id)], client, size)
+        # If using default theme let the system provide the art when possible
+        if ed_glob.PROFILE['ICONS'].lower() == u'default' and DEFAULT.has_key(int(id)):
+            return wx.ArtProvider.GetBitmap(DEFAULT[int(id)], client, size)
         if CLIENTS.has_key(client) and ART.has_key(int(id)):
             resource_path = self.GetArtPath(client)
             art_src = resource_path + ART[int(id)]
@@ -132,8 +131,8 @@ class ED_Art(wx.ArtProvider):
                 img = wx.Image(art_src, wx.BITMAP_TYPE_PNG)
             else:
                 return wx.NullBitmap
-            img_sz = img.GetSize()
 
+            img_sz = img.GetSize()
             if client == wx.ART_MENU:
                 size = wx.Size(16, 16) # Menu icons must be 16x16
             elif client == wx.ART_TOOLBAR:
@@ -142,11 +141,11 @@ class ED_Art(wx.ArtProvider):
             # Rescale image to specified size if need be but dont allow upscaling
             # as it reduces quality.
             if client == wx.ART_TOOLBAR and wx.Platform == '__WXMAC__':
-                # Dont worry about toolbar scaling on MAC it is done by the
+                # Dont worry about scaling on MAC it is done by the
                 # toolbar automagically.
                 pass
             elif size[0] < img_sz[0]:
-                img.Rescale(size[0], size[1])
+                img.Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH)
             else:
                 pass
             bmp = wx.BitmapFromImage(img)
@@ -168,9 +167,14 @@ class ED_Art(wx.ArtProvider):
         if not CLIENTS.has_key(client):
             return wx.EmptyString
 
-        path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-               ed_glob.PROFILE['ICONS'] + util.GetPathChar() + CLIENTS[client] + \
-               util.GetPathChar()
+        # ART_OTHER is used for dialogs and other base icon that are
+        # not meant to be themeable by the user.
+        if client == wx.ART_OTHER:
+            path = ed_glob.CONFIG['SYSPIX_DIR']
+        else:
+            path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
+                   ed_glob.PROFILE['ICONS'] + util.GetPathChar() + \
+                   CLIENTS[client] + util.GetPathChar()
 
         if os.path.exists(path):
             return path
