@@ -4,6 +4,7 @@
 CWD=$(pwd)
 EXPATH=$(dirname $0)
 SCRIPT=$(basename $0)
+IGNORE=".svn .cvs"
 
 BLUE="[34;01m"
 CYAN="[36;01m"
@@ -37,28 +38,28 @@ fi
 for item in $(ls -R); do
 	if [ "$(echo $item | grep \: )" != "" ]; then
 	       dest=$(echo $item | tr -d ":");
-       	       echo "${GREEN}Cleaning${OFF} $dest";
+       	   echo "${GREEN}Cleaning${OFF} $dest";
 	       cd "$dest";
 	       ls *~ 2>/dev/null;
 	       if [ $? -eq 0 ]; then
-                  for f in $(ls *~); do
-		       echo "${RED}Deleting${OFF} $f";
+              for f in $(ls *~); do
+		           echo "${RED}Deleting${OFF} $f";
 	               rm -f $f;
 	               let "DELETED = $DELETED + 1"
 	          done
 	       fi
 	       ls *.pyc 2>/dev/null
 	       if [ $? -eq 0 ]; then
-                  for f in $(ls *.pyc); do
-		       echo "${RED}Deleting${OFF} $f";
+              for f in $(ls *.pyc); do
+		           echo "${RED}Deleting${OFF} $f";
 	               rm -f $f;
 	               let "DELETED = $DELETED + 1"
 	          done
 	       fi
 	       ls *.pyo 2>/dev/null
 	       if [ $? -eq 0 ]; then
-                  for f in $(ls *.pyo); do
-		       echo "${RED}Deleting${OFF} $f";
+             for f in $(ls *.pyo); do
+		           echo "${RED}Deleting${OFF} $f";
 	               rm -f $f;
 	               let "DELETED = $DELETED + 1"
 	          done
