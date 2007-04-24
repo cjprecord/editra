@@ -84,6 +84,7 @@ class UpdateService:
             dist = DL_WIN
         else:
             dist = DL_SRC
+
         url = self.GetPageText(DL_REQUEST % dist)
         url_pat = re.compile('<\s*a id\="CURRENT"[^>]*>(.*?)<\s*/a\s*>')
         url = re.findall(url_pat, url)
@@ -230,7 +231,6 @@ class UpdateProgress(wx.Gauge, UpdateService):
         """Overides the UpdateService abort function"""
         self.LOG("[updateprog][info] Aborting action, stopping progress bar")
         UpdateService.Abort(self)
-        #self._checking = self._downloading = False
         if self._timer.IsRunning():
             self._timer.Stop()
 
@@ -427,6 +427,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
 
 #-----------------------------------------------------------------------------#
 
+#XXX Status bar is sometimes not wide enough to display all data.
 class DownloadDialog(wx.Frame):
     """Creates a standalone download window"""
     ID_PROGRESS_BAR = wx.NewId()
@@ -463,7 +464,7 @@ class DownloadDialog(wx.Frame):
 
         hdr = wx.BoxSizer(wx.HORIZONTAL)
         hdr.Add(wx.Size(5,5))
-        img = wx.Image(ed_glob.CONFIG['PIXMAPS_DIR'] + "editra_dl.png", wx.BITMAP_TYPE_PNG)
+        img = wx.Image(ed_glob.CONFIG['SYSPIX_DIR'] + "editra_dl.png", wx.BITMAP_TYPE_PNG)
         bmp = wx.BitmapFromImage(img)
         bmp = wx.StaticBitmap(self, wx.ID_ANY, bmp)
         hdr.Add(bmp, 0, wx.ALIGN_LEFT)
@@ -555,6 +556,12 @@ class DownloadDialog(wx.Frame):
                 self.LOG("[download-dlg][evt] Download finished")
                 self.SetStatusText(_("Downloaded: ") + str(prog[0]) + \
                                     u"/" + str(prog[1]), self.SB_DOWNLOADED)
+                if self._progress.GetDownloadResult():
+                    self.LOG("[download-dlg][info] Download Successful")
+                    self.SetStatusText(_("Finished"), self.SB_INFO)
+                else:
+                    self.LOG("[download-dlg][info] Download Failed")
+                    self.SetStatusText(_("Failed"), self.SB_INFO)
                 self._progress.Enable()
                 self._progress.SetValue(self._progress.GetProgress()[0])
                 self._timer.Stop()
