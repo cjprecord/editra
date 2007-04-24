@@ -223,7 +223,8 @@ def InitConfig():
     # 1. Set Resource location globals
     ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
-    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"))
+    ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
+    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"), True)
     ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
     ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale", True)
     ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
@@ -248,6 +249,8 @@ def Main():
             dev_tool.DEBUGP("[main_info] Updating Profile to current version")
             profiler.WriteProfile(profiler.GetProfileStr())
             profiler.LoadProfile()
+            if wx.Platform == '__WXGTK__':
+                ed_glob.PROFILE['ICONS'] = 'Default'
             PROFILE_UPDATED = True
     else:
         util.CreateConfigDir()
@@ -273,8 +276,17 @@ def Main():
         alert = wx.MessageBox(_("Your profile has been updated to the latest version"),
                               _("Profile Updated"))
 
+    # Splash a warning if version is not a final version
+    if int(ed_glob.version[0]) < 1:
+        splash = wx.SplashScreen(wx.Bitmap(ed_glob.CONFIG['SYSPIX_DIR'] + 'splashwarn.png', 
+                                           wx.BITMAP_TYPE_PNG), 
+                                 wx.SPLASH_CENTRE_ON_PARENT | wx.SPLASH_NO_TIMEOUT, 
+                                 0, None, wx.ID_ANY)
+        splash.Show()
+        wx.FutureCall(3000, splash.Destroy)
+
     _frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
-                                    ed_glob.prog_name, EDITRA.GetLog())
+                                    ed_glob.prog_name)
     EDITRA.RegisterWindow(repr(_frame), _frame, True)
     EDITRA.SetTopWindow(_frame)
 
