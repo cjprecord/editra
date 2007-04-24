@@ -25,7 +25,7 @@
 #                                                                          #
 # SUMMARY:                                                                 #
 # This file contains various helper functions and utilities that the       #
-# program uses. Basically a random library of misfit functions.	          #
+# program uses. Basically a random library of misfit functions.	           #
 #                                                                          #
 # METHODS:                                                                 #
 # - FileDropTarget: Is a class that handles drag and drop events for the   #
@@ -101,7 +101,7 @@ class DropTargetFT(wx.PyDropTarget):
                         win.SetSelection(p, p)
                         win.Paste()
             else:
-                self.window.SetStatusText("can't read this dropped data")
+                self.window.SetStatusText("Can't read this dropped data")
         self.initObjects()
 #---- End FileDropTarget ----#
 
@@ -269,9 +269,9 @@ def CreateConfigDir():
     if not os.path.exists(doc_cache):
         os.mkdir(doc_cache)
 
-    dev_tool.DEBUGP("[util_info] Config_Dir: " + config_file)
-    dev_tool.DEBUGP("[util_info] DEST: " + dest_file)
-    dev_tool.DEBUGP("[util_info] Loader: " + loader)
+#     dev_tool.DEBUGP("[util_info] Config_Dir: " + config_file)
+#     dev_tool.DEBUGP("[util_info] DEST: " + dest_file)
+#     dev_tool.DEBUGP("[util_info] Loader: " + loader)
     
     #---- Copy Default Config Files ----#
     if os.sys.platform == 'win32':
@@ -312,6 +312,7 @@ def ResolvConfigDir(config_dir, sys_only=False):
     for key in sys.path_importer_cache:
         if os.path.basename(key) == 'Editra':
             base = key
+            break
     if base != u'':
         return os.path.join(base, config_dir) + GetPathChar()
 
@@ -355,16 +356,15 @@ def ResolvConfigDir(config_dir, sys_only=False):
 
     if os.sys.platform == "darwin":
         # On OS X the config directories are in the applet under Resources
-        pro_path = ( os.path.normpath(pro_path) +
-                     path_char + u"Resources" + path_char +
+        pro_path = ( pro_path + path_char + u"Resources" + path_char +
                      config_dir + path_char )
         if not os.path.exists(pro_path):
             # Path failed try looking relative to the src directory setup
             pro_path = pro_path.split(u"Resources")
             pro_path = "".join(pro_path)
     else:
-        pro_path = ( os.path.normpath(pro_path) + 
-                     path_char + config_dir + path_char )
+        pro_path = pro_path + path_char + config_dir + path_char
+    pro_path = os.path.normpath(pro_path) + path_char
     return pro_path
 
 def GetResources(resource):
