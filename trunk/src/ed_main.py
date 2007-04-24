@@ -74,22 +74,22 @@ _ = wx.GetTranslation
 
 class MainWindow(wx.Frame):
     """Editras Main Window"""
-    def __init__(self, parent, id, wsize, title, log):
+    def __init__(self, parent, id, wsize, title):
         """Initialiaze the Frame and Event Handlers"""
-        wx.Frame.__init__(self, parent, wx.ID_ANY, title, size=wsize,
-                          style=wx.DEFAULT_FRAME_STYLE | wx.NO_FULL_REPAINT_ON_RESIZE)
+        wx.Frame.__init__(self, parent, id, title, size = wsize,
+                          style = wx.DEFAULT_FRAME_STYLE)
 
         self.SetTitle(title + u' - v' + version)
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
   
         # Try and set an app icon
         try:
             if wx.Platform == '__WXMSW__':
-                ed_icon = CONFIG['PIXMAPS_DIR'] + "editra.ico"
+                ed_icon = CONFIG['SYSPIX_DIR'] + "editra.ico"
                 self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
                 self.LOG("[main_evt] Set Icon for Windows")
             else:
-                ed_icon = CONFIG['PIXMAPS_DIR'] + "editra.png"
+                ed_icon = CONFIG['SYSPIX_DIR'] + "editra.png"
                 self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
                 self.LOG("[main_evt] Set Icon for " + os.sys.platform)
         finally:
@@ -110,7 +110,7 @@ class MainWindow(wx.Frame):
         self.toolbar = None
 
         #---- Notebook to hold editor windows ----#
-        self.nb = ed_pages.ED_Pages(self, -1, log)
+        self.nb = ed_pages.ED_Pages(self, -1, self.LOG)
         self.sizer.Add(self.nb, 6, wx.EXPAND)
         self.sizer.Layout()
         self.SendSizeEvent()
@@ -136,12 +136,12 @@ class MainWindow(wx.Frame):
         # Toolbar Event Handlers
         # TODO move to toolbar module
         self.Bind(wx.EVT_TOOL, self.DispatchToControl)
-        wx.EVT_TOOL(self, ID_NEW, self.OnNew)
-        wx.EVT_TOOL(self, ID_OPEN, self.OnOpen)
-        wx.EVT_TOOL(self, ID_SAVE, self.OnSave)
-        wx.EVT_TOOL(self, ID_PRINT, self.OnPrint)
-        wx.EVT_TOOL(self, ID_FIND, self.nb.FindService.OnShowFindDlg)
-        wx.EVT_TOOL(self, ID_FIND_REPLACE, self.nb.FindService.OnShowFindDlg)
+        self.Bind(wx.EVT_TOOL, self.OnNew, id = ID_NEW)
+        self.Bind(wx.EVT_TOOL, self.OnOpen, id = ID_OPEN)
+        self.Bind(wx.EVT_TOOL, self.OnSave, id = ID_SAVE)
+        self.Bind(wx.EVT_TOOL, self.OnPrint, id = ID_PRINT)
+        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id = ID_FIND)
+        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id = ID_FIND_REPLACE)
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
