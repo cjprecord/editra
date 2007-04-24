@@ -54,9 +54,12 @@ CONFIG = {
           'CACHE_DIR'   : "",   # Holds temp data about documents
           'PROFILE_DIR' : "",   # User Profile Direcotry
           'PIXMAPS_DIR' : "",   # Graphics Directory
+          'SYSPIX_DIR'  : "",   # Editras non user graphics
           'MIME_DIR'    : "",   # MIME type graphics
           'THEME_DIR'   : "",   # Theme Directory
-          'LANG_DIR'    : "",   # Locale Data Direcotry
+          'LANG_DIR'    : "",   # Locale Data Directory
+          'SYS_STYLES_DIR' : "", # Editra base style sheets
+          'TEST_DIR'    : "",   # Test data files dir
 }
 
 #---- Object ID's ----#
@@ -186,7 +189,7 @@ PROFILE = {
            'EOL'        : 'Unix (\\n)',
            'FHIST_LVL'  : 5,
            'GUIDES'     : True,
-           'ICONS'      : 'Stock',
+           'ICONS'      : 'Nuovo',
            'ICON_SZ'    : (24,24),
            'LANG'       : 'Default',
            'MODE'       : 'CODE',
