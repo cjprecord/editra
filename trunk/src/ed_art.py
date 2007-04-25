@@ -46,8 +46,9 @@ import ed_glob
 import util
 
 #--------------------------------------------------------------------------#
-# Map object Id's to Custom Art Resources
+# Map object Id's to custom user definable art resources
 ART = { ed_glob.ID_ABOUT  : u'about.png',
+        ed_glob.ID_ADD_BM : u'bmark_add.png',
         ed_glob.ID_CONTACT : u'mail.png',
         ed_glob.ID_COPY   : u'copy.png',
         ed_glob.ID_CUT    : u'cut.png',
@@ -56,6 +57,7 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_FIND_REPLACE : u'findr.png',
         ed_glob.ID_FONT   : u'font.png',
         ed_glob.ID_HOMEPAGE : u'web.png',
+        ed_glob.ID_HTML_GEN : u'html_gen.png',
         ed_glob.ID_NEW    : u'new.png',
         ed_glob.ID_NEXT_MARK : u'bmark_next.png',
         ed_glob.ID_OPEN   : u'open.png',
@@ -67,16 +69,22 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_REDO   : u'redo.png',
         ed_glob.ID_SAVE   : u'save.png',
         ed_glob.ID_SAVEAS : u'saveas.png',
+        ed_glob.ID_STYLE_EDIT : u'style_edit.png',
         ed_glob.ID_UNDO   : u'undo.png',
         ed_glob.ID_ZOOM_IN : u'zoomi.png',
         ed_glob.ID_ZOOM_OUT : u'zoomo.png',
         ed_glob.ID_ZOOM_NORMAL : u'zoomd.png'
 }
 
+# Map of non user definable art resources
+OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : u'editra_dl.png' }
+
 # Map for default system/wx provided graphic resources.
 DEFAULT = { 
+            ed_glob.ID_ADD_BM  : wx.ART_ADD_BOOKMARK,
             ed_glob.ID_COPY    : wx.ART_COPY,
             ed_glob.ID_CUT     : wx.ART_CUT,
+            ed_glob.ID_DEL_BM  : wx.ART_DEL_BOOKMARK,
             ed_glob.ID_EXIT    : wx.ART_QUIT,
             ed_glob.ID_FIND    : wx.ART_FIND,
             ed_glob.ID_FIND_REPLACE : wx.ART_FIND_AND_REPLACE,
@@ -124,9 +132,13 @@ class ED_Art(wx.ArtProvider):
         # If using default theme let the system provide the art when possible
         if ed_glob.PROFILE['ICONS'].lower() == u'default' and DEFAULT.has_key(int(id)):
             return wx.ArtProvider.GetBitmap(DEFAULT[int(id)], client, size)
-        if CLIENTS.has_key(client) and ART.has_key(int(id)):
+        if CLIENTS.has_key(client) and (ART.has_key(int(id)) or OTHER_ART.has_key(int(id))):
             resource_path = self.GetArtPath(client)
-            art_src = resource_path + ART[int(id)]
+            if client == wx.ART_OTHER:
+                art_src = resource_path + OTHER_ART[int(id)]
+            else:
+                art_src = resource_path + ART[int(id)]
+
             if os.path.exists(art_src):
                 img = wx.Image(art_src, wx.BITMAP_TYPE_PNG)
             else:
@@ -137,6 +149,8 @@ class ED_Art(wx.ArtProvider):
                 size = wx.Size(16, 16) # Menu icons must be 16x16
             elif client == wx.ART_TOOLBAR:
                 size = ed_glob.PROFILE['ICON_SZ']
+            else:
+                pass
 
             # Rescale image to specified size if need be but dont allow upscaling
             # as it reduces quality.
@@ -144,7 +158,7 @@ class ED_Art(wx.ArtProvider):
                 # Dont worry about scaling on MAC it is done by the
                 # toolbar automagically.
                 pass
-            elif size[0] < img_sz[0]:
+            elif client != wx.ART_OTHER and size[0] < img_sz[0]:
                 img.Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH)
             else:
                 pass
