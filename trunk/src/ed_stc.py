@@ -67,13 +67,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
     def __init__(self, parent, win_id,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
-                 style=0, log=wx.EmptyString, useDT=True):
+                 style=0, useDT=True):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
 
         """
         wx.stc.StyledTextCtrl.__init__(self, parent, win_id, pos, size, style)
-        ed_style.StyleMgr.__init__(self, self.GetStyleSheet(), log)
+        ed_style.StyleMgr.__init__(self, self.GetStyleSheet())
 
         self.SetModEventMask(wx.stc.STC_PERFORMED_UNDO | wx.stc.STC_PERFORMED_REDO | \
                              wx.stc.STC_MOD_DELETETEXT | wx.stc.STC_MOD_INSERTTEXT | \
@@ -88,7 +88,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetDropTarget(self.fdt)
 
         # Attributes
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
         self.frame = parent	                # Notebook
         self.filename = ''	                # This controls File
         self.dirname = ''                   # Files Directory
@@ -102,7 +102,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self._autoindent = PROFILE['AUTO_INDENT']
         self.brackethl = PROFILE["BRACKETHL"]
         self.folding = PROFILE['CODE_FOLD']
-        self.kwhelp = PROFILE["KWHELPER"]
         self.highlight = PROFILE["SYNTAX"]
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
@@ -186,7 +185,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.ToggleAutoIndent(PROFILE['AUTO_INDENT'])
         self.ToggleBracketHL(PROFILE['BRACKETHL'])
         self.ToggleLineNumbers(PROFILE['SHOW_LN'])
-        self.KeyWordHelpOnOff(PROFILE['KWHELPER'])
 
     def Comment(self, uncomment=False):
         """(Un)Comments a line or a selected block of text
@@ -313,15 +311,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """Handles keydown dependent events"""
         # Toggle Autocomp window by pressing button again
         k_code = evt.GetKeyCode()
-        if self.kwhelp and self.AutoCompActive() and evt.AltDown():
-            self.AutoCompCancel()
-            return
-        elif self.kwhelp and evt.AltDown() and len(self.keywords) > 1:
-            pos = self.GetCurrentPos()
-            pos2 = self.WordStartPosition(pos, True)
-            context = pos - pos2
-            self.AutoCompShow(context, self.keywords)
-        elif self._autoindent and k_code == wx.WXK_RETURN:
+        if self._autoindent and k_code == wx.WXK_RETURN:
             if self.GetSelectedText():
                 self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
                 return
@@ -405,6 +395,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             fail_safe = curr_pos - self.GetColumn(curr_pos)
             tip_pos = max(tip_pos, fail_safe)
             self.CallTipShow(tip_pos, tip)
+
+    def ShowKeywordHelp(self):
+        """Displays the keyword helper"""
+        if self.AutoCompActive():
+            self.AutoCompCancel()
+        elif len(self.keywords) > 1:
+            pos = self.GetCurrentPos()
+            pos2 = self.WordStartPosition(pos, True)
+            context = pos - pos2
+            self.AutoCompShow(context, self.keywords)
+        return
 
     def OnUpdateUI(self, evt):
         """Check for matching braces"""
@@ -562,7 +563,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         e_type = evt.GetEventType()
         e_map = { ID_COPY  : self.Copy,         ID_CUT  : self.Cut,
                   ID_PASTE : self.Paste,        ID_UNDO : self.Undo,
-                  ID_REDO  : self.Redo,         ID_KWHELPER: self.KeyWordHelpOnOff,
+                  ID_REDO  : self.Redo,         ID_KWHELPER: self.ShowKeywordHelp,
                   ID_CUT_LINE : self.LineCut,   ID_BRACKETHL : self.ToggleBracketHL,
                   ID_COPY_LINE : self.LineCopy, ID_SYNTAX : self.SyntaxOnOff,
                   ID_INDENT : self.Tab,         ID_UNINDENT : self.BackTab,
@@ -741,16 +742,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.LOG("[stc_evt] Hiding Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 0)
-
-    def KeyWordHelpOnOff(self, set=None):
-        """Turns KeyWord Help on and off"""
-        if (set == None and not self.kwhelp) or set:
-            self.LOG("[stc_evt] Keyword Helper On")
-            self.kwhelp = True
-        else:
-            self.LOG("[stc_evt] Keyword Helper Off")
-            self.kwhelp = False
-        return 0
 
     def Save(self):
         """Save Text To File"""
