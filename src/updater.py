@@ -20,16 +20,27 @@
 
 """
 #--------------------------------------------------------------------------#
-# FILE:							   
-# AUTHOR:
-# LANGUAGE: Python							   
-# SUMMARY:
-#
-#
-# METHODS:
-#
-#
-#
+# FILE: updater.py                                                         #
+# AUTHOR: Cody Precord                                                     #
+# LANGUAGE: Python                                                         #
+# SUMMARY:                                                                 #
+#   Provides controls/services that are used in checking and downloading   #
+# updates for the editor if they are available. The main control exported  #
+# by this module is the UpdateProgress bar it displays the progress of the #
+# network action and provides a higher level interface into the            #
+# UpdateService.                                                           #
+#                                                                          #
+# METHODS:                                                                 #
+# - UpdateService: Does the actual network lookups and downloads           #
+# - UpdateProgress: A Progress bar control which inherits its functionality#
+#                   from the UpdateService. It runs the network service on #
+#                   a separate thread from the gui to allow for fluid gui  #
+#                   response during the long delays that can occure while  #
+#                   waiting for the network to respond.                    #
+# - DownloadDialog: Uses the UpdateProgress bar and performs the downloads #
+#                   in a standalone dialog that can remain running after   #
+#                   the app has exited.                                    #
+#                                                                          #
 #--------------------------------------------------------------------------#
 """
 
@@ -464,8 +475,7 @@ class DownloadDialog(wx.Frame):
 
         hdr = wx.BoxSizer(wx.HORIZONTAL)
         hdr.Add(wx.Size(5,5))
-        img = wx.Image(ed_glob.CONFIG['SYSPIX_DIR'] + "editra_dl.png", wx.BITMAP_TYPE_PNG)
-        bmp = wx.BitmapFromImage(img)
+        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWNLOAD_DLG), wx.ART_OTHER)
         bmp = wx.StaticBitmap(self, wx.ID_ANY, bmp)
         hdr.Add(bmp, 0, wx.ALIGN_LEFT)
         hdr.Add(wx.Size(5,5))
