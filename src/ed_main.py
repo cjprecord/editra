@@ -110,8 +110,8 @@ class MainWindow(wx.Frame):
         self.toolbar = None
 
         #---- Notebook to hold editor windows ----#
-        self.nb = ed_pages.ED_Pages(self, -1, self.LOG)
-        self.sizer.Add(self.nb, 6, wx.EXPAND)
+        self.nb = ed_pages.ED_Pages(self, wx.ID_ANY)
+        self.sizer.Add(self.nb, 1, wx.EXPAND)
         self.sizer.Layout()
         self.SendSizeEvent()
         self.SetSizer(self.sizer)
@@ -517,7 +517,7 @@ class MainWindow(wx.Frame):
         """Open the Preference Panel"""
         # Import dialog if now since we need it
         import prefdlg
-        dlg = prefdlg.PrefDlg(self, self.LOG)
+        dlg = prefdlg.PrefDlg(self)
         dlg.CenterOnParent()
         dlg.ShowModal()
         dlg.Destroy()
@@ -729,7 +729,6 @@ class MainWindow(wx.Frame):
             self.LOG("[menu_evt] Updating Settings Menu")
             menu.Check(ID_AUTOCOMP, self.nb.control.GetAutoComplete())
             menu.Check(ID_AUTOINDENT, self.nb.control.GetAutoIndent())
-            menu.Check(ID_KWHELPER, self.nb.control.kwhelp)
             menu.Check(ID_SYNTAX, self.nb.control.highlight)
             menu.Check(ID_FOLDING, self.nb.control.folding)
             menu.Check(ID_BRACKETHL, self.nb.control.brackethl)

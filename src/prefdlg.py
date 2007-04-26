@@ -79,7 +79,7 @@ ID_LATE_BOX     = wx.NewId()
 
 # ID's For Validator
 ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL, 
-            ed_glob.ID_KWHELPER, ed_glob.ID_SYNTAX, ed_glob.ID_INDENT_GUIDES,
+            ed_glob.ID_SYNTAX, ed_glob.ID_INDENT_GUIDES,
             ed_glob.ID_WORD_WRAP, ed_glob.ID_PREF_TABS, ed_glob.ID_PREF_TABW,
             ed_glob.ID_SHOW_WS, ed_glob.ID_PREF_METAL, ed_glob.ID_PREF_FHIST,
             ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON,
@@ -92,7 +92,7 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
 
 class PrefDlg(wx.Dialog):
     """Preference Dialog Class"""
-    def __init__(self, parent, log):
+    def __init__(self, parent):
         """Initialize the Preference Dialog"""
         pre = wx.PreDialog()
 
@@ -104,14 +104,14 @@ class PrefDlg(wx.Dialog):
         self.PostCreate(pre)
 
         # Attributes
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
         self.act_ids = []
         self.act_objs = []
 
         self.LOG("[prefdlg_info] Preference Dialog Initializing...")
         # Create Notebook
         sizer = wx.BoxSizer(wx.VERTICAL)
-        self.ntb = PrefPages(self, wx.ID_ANY, log)
+        self.ntb = PrefPages(self, wx.ID_ANY)
         sizer.Add(self.ntb, 0, wx.EXPAND)
 
         # Create the buttons
@@ -234,13 +234,13 @@ PREF_HEIGHT = 350
 
 class PrefPages(wx.Notebook):
     """Notebook to hold pages for Preference Dialog"""
-    def __init__(self, parent, id_num, log):
+    def __init__(self, parent, id_num):
         """Initializes the notebook"""
         wx.Notebook.__init__(self, parent, id_num, size = (PREF_WIDTH, PREF_HEIGHT),
                              style = wx.NB_TOP
                             )
         # Attributes
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
 
         # Events
         self.Bind(wx.EVT_BUTTON, self.OnButton)
@@ -359,14 +359,12 @@ class PrefPages(wx.Notebook):
         ai_cb.SetValue(ed_glob.PROFILE['AUTO_INDENT'])
         br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, _("Bracket Highlighting"))
         br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
-        kh_cb = wx.CheckBox(code_panel, ed_glob.ID_KWHELPER, _("Keyword Helper"))
-        kh_cb.SetValue(ed_glob.PROFILE['KWHELPER'])
         ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"))
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
         fold_cb = wx.CheckBox(code_panel, ed_glob.ID_FOLDING, _("Code Folding"))
         fold_cb.SetValue(ed_glob.PROFILE['CODE_FOLD'])
         feat_sizer = wx.BoxSizer(wx.VERTICAL)
-        feat_sizer.AddMany([ai_cb, br_cb, fold_cb, ind_cb, kh_cb]) 
+        feat_sizer.AddMany([ai_cb, br_cb, fold_cb, ind_cb]) 
 
         # Syntax / Completion Settings
         syn_lbl = self.SectionHead(code_panel, _("Syntax && Completion"))
@@ -532,7 +530,7 @@ class PrefPages(wx.Notebook):
         border.Add(set_lbl, 0, wx.LEFT)
         border.Add((15, 10))
         border.Add(set_sizer, 0, wx.LEFT, 30)
-        border.Add((15, 15))
+        border.Add((20, 20))
         border.Add(app_lbl, 0, wx.LEFT)
         border.Add(app_sizer, 0, wx.LEFT, 30)
         misc_panel.SetSizer(border)
@@ -642,9 +640,9 @@ class PrefPages(wx.Notebook):
             e_obj.Disable()
             chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
             chk_bt.Disable()
-            dl_dlg = updater.DownloadDialog(None, wx.ID_ANY,
+            dl_dlg = updater.DownloadDialog(None, ed_glob.ID_DOWNLOAD_DLG,
                                             _("Downloading Update"), 
-                                            size=wx.Size(350, 200))
+                                            size = wx.Size(350, 200))
             dp_sz = wx.GetDisplaySize()
             dl_dlg.SetPosition(wx.Point((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
             dl_dlg.Show()
