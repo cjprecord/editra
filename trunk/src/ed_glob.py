@@ -151,11 +151,11 @@ ID_SYN_ON        = wx.NewId()
 ID_SYN_OFF       = wx.NewId()
 ID_FOLDING       = wx.NewId()
 ID_BRACKETHL     = wx.NewId()
-ID_KWHELPER      = wx.NewId()
 ID_LEXER         = wx.NewId()
 
 # Tool Menu IDs
 ID_STYLE_EDIT    = wx.ID_EDIT
+ID_KWHELPER      = wx.NewId()
 ID_GENERATOR     = wx.NewId()
 ID_HTML_GEN      = wx.NewId()
 
@@ -166,7 +166,8 @@ ID_CONTACT       = wx.NewId()
 
 # Misc IDs
 ID_COMMAND_LINE_OPEN = wx.NewId()
-ID_COMMAND_BAR   = wx.NewId()
+ID_COMMAND_BAR       = wx.NewId()
+ID_DOWNLOAD_DLG      = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0
@@ -185,7 +186,6 @@ PROFILE = {
            'BRACKETHL'  : True,
            'CODE_FOLD'  : True,
            'DEFAULT'    : False,
-           'KWHELPER'   : True,
            'EOL'        : 'Unix (\\n)',
            'FHIST_LVL'  : 5,
            'GUIDES'     : True,
