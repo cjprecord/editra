@@ -250,13 +250,13 @@ class StyleMgr:
     FONT_TAG_SIZE      = u"size"
     FONT_TAG_SIZE2     = u"size2"
 
-    def __init__(self, custom=wx.EmptyString, log=wx.EmptyString):
+    def __init__(self, custom=wx.EmptyString):
         """Initializes the Style Manager"""
 
         # Attributes
         self.fonts = self.GetFontDictionary()
         self.style_set = custom
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
 
         # Get the Style Set
         if custom != wx.EmptyString and self.LoadStyleSheet(custom):

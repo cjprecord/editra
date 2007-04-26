@@ -65,7 +65,7 @@ _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 class ED_Pages(FNB.FlatNotebook):
     """ Editra tabbed pages class """
-    def __init__(self, parent, id_num, log):
+    def __init__(self, parent, id_num):
         """Initialize a notebook with a blank text control in it"""
         FNB.FlatNotebook.__init__(self, parent, id_num, 
                                   style=FNB.FNB_FANCY_TABS | 
@@ -75,7 +75,7 @@ class ED_Pages(FNB.FlatNotebook):
                             )
 
         # Notebook attributes
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
         self.FindService = ed_search.TextFinder(self, self.GetCurrentCtrl)
         self.DocMgr = doctools.DocPositionMgr(ed_glob.CONFIG['CACHE_DIR'] + \
                                               util.GetPathChar() + u'positions')
@@ -118,7 +118,7 @@ class ED_Pages(FNB.FlatNotebook):
 
     def NewPage(self):
         """Create a new notebook page with a blank text control"""
-        self.control = ed_stc.EDSTC(self, self.pg_num, log = self.LOG)
+        self.control = ed_stc.EDSTC(self, self.pg_num)
         self.LOG("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
         self.SetPageImage(self.GetSelection(), IMG['TXT'])
@@ -149,7 +149,7 @@ class ED_Pages(FNB.FlatNotebook):
                 return
 
         # Create control to place text on
-        self.control = ed_stc.EDSTC(self, self.pg_num, log = self.LOG)
+        self.control = ed_stc.EDSTC(self, self.pg_num)
 
         # Pass directory and file name info to control object to save reference
         self.control.dirname = path
