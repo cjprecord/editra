@@ -261,9 +261,6 @@ class ED_MenuBar(wx.MenuBar):
                             _("Highlight Brackets/Braces"), wx.ITEM_CHECK)
         settingsmenu.Append(ed_glob.ID_FOLDING, _("Code Folding"),
                             _("Toggle Code Foldering"), wx.ITEM_CHECK)
-        settingsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper"), 
-                            _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"), 
-                            wx.ITEM_CHECK)
         settingsmenu.Append(ed_glob.ID_SYNTAX, _("Syntax Highlighting"), 
                             _("Color Highlight Code Syntax"), wx.ITEM_CHECK)
         # Lexer Menu Appended later by main frame
@@ -275,6 +272,8 @@ class ED_MenuBar(wx.MenuBar):
         toolsmenu = ED_Menu()
         toolsmenu.Append(ed_glob.ID_STYLE_EDIT, _("Style Editor"), 
                          _("Edit the way syntax is highlighted"))
+        toolsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper") + u'\tCtrl+K', 
+                         _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"))
         toolsmenu.AppendSeparator()
         genmenu = ED_Menu()
         genmenu.Append(ed_glob.ID_HTML_GEN, _("Generate %s") % u"HTML",
