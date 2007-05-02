@@ -85,6 +85,7 @@ css2_keywords = (2, "src stemv stemh slope ascent descent widths bbox baseline "
 
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_CSS_DEFAULT', 'default_style'),
+                 ('STC_CSS_ATTRIBUTE', 'funct_style'),
                  ('STC_CSS_CLASS', 'global_style'),
                  ('STC_CSS_COMMENT', 'comment_style'),
                  ('STC_CSS_DIRECTIVE', 'directive_style'),

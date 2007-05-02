@@ -64,7 +64,6 @@ ID_LANG_KSH    = wx.NewId()
 # Use LEX_CPP
 ID_LANG_C    = wx.NewId()
 ID_LANG_CPP  = wx.NewId()
-ID_LANG_H    = wx.NewId()
 ID_LANG_JAVA = wx.NewId()
 
 # Use LEX_CSS
@@ -128,6 +127,8 @@ ID_LANG_MAKE  = wx.NewId()
 
 #---- End Language Identifier Keys ----#
 
+# TODO rework this to be a plugin system so we can avoid all these
+#      definitions.
 # OBJECT NAME: EXT_REG (Extention Register)
 # BRIEF:
 # Map File Extentions to an ordered tuple used for syntax lookup
@@ -144,7 +145,7 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
             'adb'  : (ID_LANG_ADA,    'Ada',                  stc.STC_LEX_ADA,   'ada'),
             'ads'  : (ID_LANG_ADA,    'Ada',                  stc.STC_LEX_ADA,   'ada'),
             'asm'  : (ID_LANG_68K,    'MASM',                 stc.STC_LEX_ASM,   'masm'),
-            'aux'  : (ID_LANG_LATEX,  'LaTex',                stc.STC_LEX_LATEX, 'latex'),
+            'aux'  : (ID_LANG_LATEX,  'Tex/LaTex',            stc.STC_LEX_LATEX, 'latex'),
             'axl'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
             'bat'  : (ID_LANG_BATCH,  'DOS Batch Script',     stc.STC_LEX_BATCH, 'batch'),            
             'bas'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
@@ -156,7 +157,7 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
             'cl'   : (ID_LANG_LISP,   'Lisp',                 stc.STC_LEX_LISP,  'lisp'),
             'cls'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
             'cmd'  : (ID_LANG_BATCH,  'DOS Batch Script',     stc.STC_LEX_BATCH, 'batch'),
-            'configure' : (ID_LANG_MAKE, 'Makefile',          stc.STC_LEX_MAKEFILE, 'make'),
+            'configure' : (ID_LANG_BASH, 'Bash Shell Script', stc.STC_LEX_BASH,  'sh'),
             'cpp'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
             'csh'  : (ID_LANG_CSH,    'C-Shell Script',       stc.STC_LEX_BASH,  'sh'),
             'css'  : (ID_LANG_CSS,    'Cascading Style Sheet', stc.STC_LEX_CSS,  'css'),
@@ -168,13 +169,13 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
             'dtd'  : (ID_LANG_XML,    'XML',                  stc.STC_LEX_XML,   'xml'),
             'ess'  : (ID_LANG_ESS,    'Editra Style Sheet',   stc.STC_LEX_CSS,   'editra_ss'),
             'frm'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
-            'h'    : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
-            'hh'   : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
-            'h++'  : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
-            'hpp'  : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'h'    : (ID_LANG_C,      'C',                    stc.STC_LEX_CPP,   'cpp'),
+            'hh'   : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'h++'  : (ID_LANG_CPP,     'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'hpp'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
             'html' : (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,  'html'),
             'htm'  : (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,  'html'),
-            'hxx'  : (ID_LANG_H,      'Header',               stc.STC_LEX_CPP,   'cpp'),
+            'hxx'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
             'inc'  : (ID_LANG_PASCAL, 'Pascal',               stc.STC_LEX_PASCAL, 'pascal'),
             'itcl' : (ID_LANG_TCL,    'TCL/TK',               stc.STC_LEX_TCL,   'tcl'),
             'java' : (ID_LANG_JAVA,   'Java',                 stc.STC_LEX_CPP,   'java'),
@@ -225,7 +226,7 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
 # Maps language ID's to File extensions
 EXT_DICT = {ID_LANG_ASM : 'asm', ID_LANG_BATCH : 'bat',
             ID_LANG_C : 'c', ID_LANG_CPP : 'cpp',
-            ID_LANG_CSS : 'css', ID_LANG_H : 'h',
+            ID_LANG_CSS : 'css',
             ID_LANG_HTML : 'html', ID_LANG_JAVA : 'java',
             ID_LANG_LISP : 'lisp', ID_LANG_MAKE : 'makefile',
             ID_LANG_NSIS : 'nsi', ID_LANG_PASCAL : 'pas',
@@ -252,7 +253,7 @@ FILE_LEXERS = { 'Ada'                      : stc.STC_LEX_ADA,
                  'JavaScript'               : stc.STC_LEX_HTML,
                  'HTML'                     : stc.STC_LEX_HTML,
                  'PHP'                      : stc.STC_LEX_HTML,
-                 'LaTex'                    : stc.STC_LEX_LATEX,
+                 'Tex/LaTex'                : stc.STC_LEX_LATEX,
                  'Lisp'                     : stc.STC_LEX_LISP,
                  'Makefile'                 : stc.STC_LEX_MAKEFILE,
                  'Microsoft SQL'            : stc.STC_LEX_MSSQL,

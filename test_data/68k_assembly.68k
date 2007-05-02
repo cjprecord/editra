@@ -1,0 +1,46 @@
+|-------------------------------------------------------------------------------
+| program constants
+
+    .equ    AMS_jumptable,0xC8
+    .equ    ClrScr,0x19e
+    .equ    DrawStr,0x1a9
+    .equ    ngetchx,0x51
+
+|-------------------------------------------------------------------------------
+| text section
+
+    .text
+    .xdef asm_main
+
+asm_main:
+    movem.l %a4-%a5,-(%sp)      | save a4/a5 registers
+
+    movea.l AMS_jumptable,%a5   | load the AMS jumptable into a5
+
+    movea.l 4*ClrScr(%a5),%a4   | load the ClrScr function
+    jsr     (%a4)               | execute the ClrScr function
+
+    move.w  #1,-(%sp)           | set default color (black text on white bg)
+    pea     str(%pc)            | the string to print
+    move.w  #0,-(%sp)           | set (x,y) coordinate to (0,0)
+    move.w  #0,-(%sp)
+
+    movea.l 4*DrawStr(%a5),%a4  | load the DrawStr function
+    jsr     (%a4)               | execute the DrawStr function
+
+    lea     10(%sp),%sp         | reset the stack pointer
+
+    movea.l 4*ngetchx(%a5),%a4  | load the ngetchx function
+    jsr     (%a4)               | execute the ngetchx function
+
+    movem.l (%sp)+,%a4-%a5      | restore a4/a5 registers
+
+    rts                         | return from subroutine
+
+|-------------------------------------------------------------------------------
+| data section
+
+    .data
+
+str:
+    .string "Hello, World!"

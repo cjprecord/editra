@@ -17,7 +17,7 @@ sleep 2
 
 # Go to the script directory
 cd $EXPATH
-
+z
 # Go to project
 cd ..
 PROJDIR=$(pwd)

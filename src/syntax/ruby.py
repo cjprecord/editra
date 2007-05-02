@@ -44,7 +44,7 @@ __revision__ = "$Id: Exp $"
 ruby_kw = (0, "__FILE__ and def end in or self unless __LINE__ begin defined? "
               "ensure module redo super until BEGIN break do false next rescue "
               "then when END case else for nil retry true while alias class elsif "
-              "if not return undef yieldr")
+              "if not return undef yieldr puts")
 
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_RB_BACKTICKS', 'scalar_style'),

@@ -118,6 +118,7 @@ nsis_def = (3, "")
 syntax_items = [ ('STC_NSIS_DEFAULT', 'default_style'),
                  ('STC_NSIS_COMMENT', 'comment_style'),
                  ('STC_NSIS_FUNCTION', 'funct_style'),
+                 ('STC_NSIS_FUNCTIONDEF', 'keyword_style'),
                  ('STC_NSIS_IFDEFINEDEF', 'pre_style'),
                  ('STC_NSIS_LABEL', 'class_style'),
                  ('STC_NSIS_MACRODEF', 'pre_style'),

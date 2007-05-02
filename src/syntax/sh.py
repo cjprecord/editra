@@ -96,11 +96,10 @@ fld_compact = ("fold.compact", "0")
 def Keywords(type=0):
     """Returns List of Keyword Specifications"""
     KEYWORDS = []
-    keyw_str = []
+    keyw_str = [comm_keywords]
     if type == synglob.ID_LANG_CSH:
         keyw_str.append(csh_keywords)
     else:
-        keyw_str = [comm_keywords]
         if type != synglob.ID_LANG_BOURNE:
             keyw_str.append(ext_keywords)
         if type == synglob.ID_LANG_BASH:

@@ -1,33 +1,40 @@
-" Example for use of GNU gettext.
-  Copyright (C) 2003 Free Software Foundation, Inc.
-  This file is in the public domain.
+" Hello World in smalltalk "
+" Plus some other sillyness "
 
-  Source code of the GNU Smalltalk program.
-"
+" Heres helloworld doesnt get much easier that this "
+'Hello World!'
 
-"Unfortunately the PackageLoader method fileInPackage: is extra verbose:
- It outputs 'Loading package I18N'. This will be fixed in smalltalk-2.2.
+" Heres a version in a window "
+| window |
+window := Window new.
+window label: 'Hello World'.
+window open.
+ 
+ " Character Definition"
+ | mychar |
+ mychar := $A
+ 
+ " Symbol Definition "
+ | mySym |
+ mySym := #foo
+ 
+ " Symbol Array "
+ mySym := #(1 2 3 4)
+ 
+ " Class Def "
+Object subclass: #MessagePublisher
+    instanceVariableNames: ''
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Smalltalk Examples'
 
-PackageLoader fileInPackage: 'I18N' !
+| rectangles aPoint|
+rectangles := OrderedCollection 
+  with: (Rectangle left: 0 right: 10 top: 100 bottom: 200)
+  with: (Rectangle left: 10 right: 10 top: 110 bottom: 210).
+aPoint := Point x: 20 y: 20.
+collisions := rectangles select: [:aRect | aRect containsPoint: aPoint].
 
-In the meantime, we use this workaround."
-
-| saved sink |
-saved := Transcript message.
-sink := WriteStream with: String new.
-Transcript message: sink -> #nextPutAll:.
-PackageLoader fileInPackage: 'I18N'.
-Transcript message: saved.
-!
-
-Object subclass: #Main   Window turtleWindow: 'Turtle Graphics'.
-      Turtle
-          defaultNib: 2;
-          foreColor: ClrDarkgray;
-          home;
-          go: 100;
-          turn: 120;
-          go: 100;
-          turn: 120;
-          go: 100;
-          turn: 120
+result := a > b
+    ifTrue:[ 'greater' ]
+    ifFalse:[ 'less' ]
