@@ -112,7 +112,7 @@ def Keywords(type=0):
     KEYWORDS = []
     kw1_str = [c_keywords]
     kw2_str = [c_types]
-    if type in [ synglob.ID_LANG_CPP, synglob.ID_LANG_H]:
+    if type == synglob.ID_LANG_CPP:
         kw1_str.append(cpp_keywords)
         kw2_str.append(cpp_types)
     KEYWORDS.append((0, " ".join(kw1_str)))

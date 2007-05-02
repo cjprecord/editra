@@ -26,13 +26,19 @@ the version number of python you have installed (i.e 24, 25, ect...)
 
 NEW: [features/improvements]
 +More unified/transparent themeing support
-+Source package build/install script
++Source package build/install script (OS Independant Installer)
 +Improved OS X integration/behavior of applet
 +Update Checker/Downloader (manual install is still required)
++The Keyword helper is now bound to Ctrl+K
++Minor refinement of the logging subsystem
++Improved (MASM, NASM, VB, Smalltalk) highlighting support
 
 BUG FIXES:
 +GTK keybinding for Undo
 +GTK command bar display issues
++Added some missing c-shell keword definitions
++Added a missing style region definitions to the CSS, NSIS highlighters
++Fixed improper highlighting in Visual Basic Highlighter
 
 #---------------------------------------------------------------------------------#
 VERSION 0.0.97

@@ -41,7 +41,7 @@ __revision__ = "$Id: Exp $"
 #---- Keyword Specifications ----#
 
 # Visual Basic Keywords (Statements)
-vb_kw = (0, "AppActivate Base Beep Call Case ChDir ChDrive Const Declare DefBool"
+vb_kw = (0, "AppActivate Base Beep Begin Call Case ChDir ChDrive Const Declare DefBool"
             "DefByte DefCur DefDate DefDbl DefDec DefInt DefLng DefObj DefSng "
             "DefStr Deftype DefVar DeleteSetting Dim Do Else End Enum Erase "
             "Event Exit Explicit FileCopy For ForEach Function Get GoSub GoTo "
@@ -49,7 +49,7 @@ vb_kw = (0, "AppActivate Base Beep Call Case ChDir ChDrive Const Declare DefBool
             "On Option Private Property Public Put RaiseEvent Randomize ReDim "
             "Rem Reset Resume Return RmDir RSet SavePicture SaveSetting "
             "SendKeys SetAttr Static Sub Then Type Unlock Wend While Width With "
-            "Write")
+            "Write Height")
 # Visual Basic User Keywords 1 (Functions)
 vb_ukw1 = (1, "Abs Array Asc AscB AscW Atn Avg CBool CByte CCur CDate CDbl Cdec "
               "Choose Chr ChrB ChrW CInt CLng Command Cos Count CreateObject "
@@ -151,20 +151,26 @@ vb_ukw3 = (3, "AccessKeyPress AfterAddFile AfterChangeFileName AfterCloseFile "
               "WillDissociate WillExecute WillUpdateRows WriteProperties")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_V_DEFAULT', 'default_style'),
-                 ('STC_V_COMMENT', 'comment_style'),
-                 ('STC_V_COMMENTLINE', 'comment_style'),
-                 ('STC_V_COMMENTLINEBANG', 'comment_style'),
-                 ('STC_V_IDENTIFER', 'default_style'),
-                 ('STC_V_NUMBER', 'number_style'),
-                 ('STC_V_OPERATOR', 'operator_style'),
-                 ('STC_V_PREPROCESSOR', 'pre_style'),
-                 ('STC_V_STRING', 'string_style'),
-                 ('STC_V_STRINGEOL', 'stringeol_style'),
-                 ('STC_V_USER', 'default_style'), #STYLE ME
-                 ('STC_V_WORD', 'keyword_style'),
-                 ('STC_V_WORD2', 'keyword_style'),
-                 ('STC_V_WORD3', 'keyword3_style') ]
+syntax_items = [ ('STC_B_ASM', 'asm_style'),
+                 ('STC_B_BINNUMBER', 'default_style'), # TODO
+                 ('STC_B_COMMENT', 'comment_style'),
+                 ('STC_B_CONSTANT', 'const_style'),
+                 ('STC_B_DATE', 'default_style'), #TODO
+                 ('STC_B_DEFAULT', 'default_style'),
+                 ('STC_B_ERROR', 'error_style'),
+                 ('STC_B_HEXNUMBER', 'number_style'),
+                 ('STC_B_IDENTIFIER', 'default_style'),
+                 ('STC_B_KEYWORD', 'keyword_style'),
+                 ('STC_B_KEYWORD2', 'class_style'),   #TODO
+                 ('STC_B_KEYWORD3', 'funct_style'), #TODO
+                 ('STC_B_KEYWORD4', 'scalar_style'), #TODO
+                 ('STC_B_LABEL', 'directive_style'), #TODO
+                 ('STC_B_NUMBER', 'number_style'),
+                 ('STC_B_OPERATOR', 'operator_style'),
+                 ('STC_B_PREPROCESSOR', 'pre_style'),
+                 ('STC_B_STRING', 'string_style'),
+                 ('STC_B_STRINGEOL', 'stringeol_style')
+               ]
 
 #---- Extra Properties ----#
 fold = ("fold", "1")
@@ -174,7 +180,10 @@ fold = ("fold", "1")
 #---- Required Module Functions ----#
 def Keywords(type=0):
     """Returns Keyword Specifications List"""
-    KEYWORDS = [vb_kw, vb_ukw1, vb_ukw2, vb_ukw3]
+    KEYWORDS = list()
+    TMP = [vb_kw, vb_ukw1, vb_ukw2, vb_ukw3]
+    for kw in TMP:
+        KEYWORDS.append((kw[0], kw[1].lower()))
     return KEYWORDS
 
 def SyntaxSpec(type=0):

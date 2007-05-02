@@ -134,6 +134,7 @@ pre_style {
 
 pre2_style { 
                 fore: #AB39F2 bold; 
+		back: #FFFFFF;
 }
 
 regex_style { 

@@ -245,7 +245,7 @@ syntax_items = [ ('STC_LISP_DEFAULT', 'default_style'),
                  ('STC_LISP_KEYWORD_KW', 'keyword2_style'),
                  ('STC_LISP_NUMBER', 'number_style'),
                  ('STC_LISP_OPERATOR', 'operator_style'),
-                 ('STC_LISP_SPECIAL', 'class_style'),
+                 ('STC_LISP_SPECIAL', 'operator_style'),
                  ('STC_LISP_STRING', 'string_style'),
                  ('STC_LISP_STRINGEOL', 'stringeol_style'),
                  ('STC_LISP_SYMBOL', 'scalar_style') ]

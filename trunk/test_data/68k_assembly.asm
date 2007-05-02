@@ -1,3 +1,4 @@
+; Some comments about this file
 .D0 00000000
 MS 2100 00000002
 MM 2000;DI

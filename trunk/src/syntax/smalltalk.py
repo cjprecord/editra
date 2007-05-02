@@ -36,28 +36,32 @@ __revision__ = "$Id: Exp $"
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Definitions ----#
+# Special Selectors
 st_keywords = (0, "ifTrue: ifFalse: whileTrue: whileFalse: ifNil: ifNotNil: "
-                   "whileTrue whileFalse repeat isNil notNil")
+                  "whileTrue repeat isNil put to at notNil super self "
+                  "true false new not isNil inspect out nil do add for "
+                  "methods methodsFor instanceVariableNames classVariableNames "
+                  "poolDictionaries subclass")
 #---- End Keyword Definitions ----#
 
 #---- Syntax Style Specs ----#
 syntax_items = [('STC_ST_ASSIGN', 'operator_style'),
-                 ('STC_ST_BINARY', 'operator_style'),
-                 ('STC_ST_BOOL', 'keyword_style'),
-                 ('STC_ST_CHARACTER', 'char_style'),
-                 ('STC_ST_COMMENT', 'comment_style'),
-                 ('STC_ST_DEFAULT', 'default_style'),
-                 ('STC_ST_GLOBAL', 'global_style'),
-                 ('STC_ST_KWSEND', 'keyword_style'),
-                 ('STC_ST_NIL', 'keyword_style'),
-                 ('STC_ST_NUMBER', 'number_style'),
-                 ('STC_ST_RETURN', 'keyword_style'),
-                 ('STC_ST_SELF', 'keyword_style'),
-                 ('STC_ST_SPECIAL', 'pre_style'),
-                 ('STC_ST_SPEC_SEL', 'keyword_style'),   # Words in keyword list
-                 ('STC_ST_STRING', 'string_style'),
-                 ('STC_ST_SUPER', 'keyword2_style'),
-                 ('STC_ST_SYMBOL', 'scalar_style')]
+                ('STC_ST_BINARY', 'operator_style'),
+                ('STC_ST_BOOL', 'keyword_style'),
+                ('STC_ST_CHARACTER', 'char_style'),
+                ('STC_ST_COMMENT', 'comment_style'),
+                ('STC_ST_DEFAULT', 'default_style'),
+                ('STC_ST_GLOBAL', 'global_style'),
+                ('STC_ST_KWSEND', 'keyword_style'),
+                ('STC_ST_NIL', 'keyword_style'),
+                ('STC_ST_NUMBER', 'number_style'),
+                ('STC_ST_RETURN', 'keyword_style'),
+                ('STC_ST_SELF', 'keyword_style'),
+                ('STC_ST_SPECIAL', 'pre_style'),
+                ('STC_ST_SPEC_SEL', 'keyword_style'),   # Words in keyword list
+                ('STC_ST_STRING', 'string_style'),
+                ('STC_ST_SUPER', 'class_style'),
+                ('STC_ST_SYMBOL', 'scalar_style')]
 
 #---- Extra Properties ----#
 

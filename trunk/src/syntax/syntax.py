@@ -81,8 +81,6 @@ PROPERTIES = 3  # Extra Properties
 LANGUAGE = 4    # Language ID
 COMMENT = 5     # Gets the comment characters pattern
 
-COMMENT_KEY = u"#"
-
 # Dynamically loaded modules are put here to keep them accessable to all text
 # controls that access this module, so that they dont need to be reloaded.
 LOADED_SYN = {}

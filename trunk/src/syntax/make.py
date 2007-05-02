@@ -45,12 +45,11 @@ syntax_items = [ ('STC_MAKE_DEFAULT', 'default_style'),
                  ('STC_MAKE_IDENTIFIER', "scalar_style"),
                  ('STC_MAKE_IDEOL', 'ideol_style'),
                  ('STC_MAKE_OPERATOR', 'operator_style'),
-                 ('STC_MAKE_PREPROCESSOR', "pre_style"),
+                 ('STC_MAKE_PREPROCESSOR', "pre2_style"),
                  ('STC_MAKE_TARGET', 'keyword_style') ]
 
 #--- Extra Properties ----#
 # None
-
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
