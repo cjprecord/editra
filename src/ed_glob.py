@@ -54,10 +54,12 @@ CONFIG = {
           'CACHE_DIR'   : "",   # Holds temp data about documents
           'PROFILE_DIR' : "",   # User Profile Direcotry
           'PIXMAPS_DIR' : "",   # Graphics Directory
+          'PLUGIN_DIR'  : "",   # User Plugin Dir
           'SYSPIX_DIR'  : "",   # Editras non user graphics
           'MIME_DIR'    : "",   # MIME type graphics
           'THEME_DIR'   : "",   # Theme Directory
           'LANG_DIR'    : "",   # Locale Data Directory
+          'SYS_PLUGIN_DIR' : "", # Editra base plugin dir
           'SYS_STYLES_DIR' : "", # Editra base style sheets
           'TEST_DIR'    : "",   # Test data files dir
 }
@@ -158,6 +160,7 @@ ID_STYLE_EDIT    = wx.ID_EDIT
 ID_KWHELPER      = wx.NewId()
 ID_GENERATOR     = wx.NewId()
 ID_HTML_GEN      = wx.NewId()
+ID_TEX_GEN      = wx.NewId()
 
 # Help Menu IDs
 ID_ABOUT         = wx.ID_ABOUT
