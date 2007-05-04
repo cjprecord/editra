@@ -81,7 +81,7 @@ class StyleEditor(wx.Dialog):
         self.LOG = log
         self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size=(-1,200),
                                     style = wx.TE_MULTILINE|wx.TE_RICH2|wx.SUNKEN_BORDER, 
-                                    log = self.LOG, useDT=False)
+                                    useDT=False)
         self.styles_new = self.preview.GetStyleSet()
         # Save original settings so that changes can be un-done if need be.
         self.styles_orig = self.DuplicateStyleDict(self.styles_new)
