@@ -210,6 +210,7 @@ class MainWindow(wx.Frame):
         # Tool Menu
         self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
         self.Bind(wx.EVT_MENU, self.OnGenHtml, id=ID_HTML_GEN)
+        self.Bind(wx.EVT_MENU, self.OnGenTeX, id=ID_TEX_GEN)
 
         # Help Menu Events
         self.Bind(wx.EVT_MENU, self.OnAbout, id=ID_ABOUT)
@@ -580,6 +581,13 @@ class MainWindow(wx.Frame):
         self.nb.NewPage()
         self.nb.control.SetText(unicode(html))
         self.nb.control.FindLexer('html')
+
+    def OnGenTeX(self, evt):
+        """Generates html and opens the generated code in a new page"""
+        tex = generator.LaTeX(self.nb.GetCurrentCtrl())
+        self.nb.NewPage()
+        self.nb.control.SetText(unicode(tex))
+        self.nb.control.FindLexer('tex')
 
     #---- Help Menu Functions ----#
     def OnAbout(self, evt):
