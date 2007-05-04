@@ -890,11 +890,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         valid_settings = list()
         for syn in syn_lst:
             if len(syn) != 2:
+                self.LOG("[ed_stc][warn] Error setting syntax spec")
                 continue
             else:
                 if not isinstance(syn[0], basestring) or not hasattr(wx.stc, syn[0]):
+                    self.LOG("[ed_stc][warn] Unknown syntax region: %s" % str(syn[0]))
                     continue
                 elif not isinstance(syn[1], basestring):
+                    self.LOG("[ed_stc][warn] Improperly formated style tag: %s" % str(syn[1]))
                     continue
                 else:
                     self.StyleSetSpec(getattr(wx.stc, syn[0]), self.GetStyleByName(syn[1]))
