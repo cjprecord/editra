@@ -277,9 +277,9 @@ class ED_MenuBar(wx.MenuBar):
         toolsmenu.AppendSeparator()
         genmenu = ED_Menu()
         genmenu.Append(ed_glob.ID_HTML_GEN, _("Generate %s") % u"HTML",
-                       _("Generate an HTML page from the current document"))
+                       _("Generate an %s page from the current document") % u"HTML")
         genmenu.Append(ed_glob.ID_TEX_GEN, _("Generate %s") % u"LaTeX",
-                       _("Generate an LaTeX page from the current document"))
+                       _("Generate an %s page from the current document") % u"LaTeX")
         toolsmenu.AppendMenu(ed_glob.ID_GENERATOR, _("Generator"), genmenu,
                              _("Generate Code"))
         self.Append(toolsmenu, _("Tools"))
