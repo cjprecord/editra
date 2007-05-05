@@ -39,9 +39,7 @@ import sys
 import glob
 import src.ed_glob as ed_glob
 import src.syntax.syntax as syntax # So we can get file extensions
-from distutils.command.build_ext import build_ext
-from distutils.command.install import install
-from distutils.command.install_lib import install_lib
+
 #---- System Platform ----#
 __platform__ = os.sys.platform
 
@@ -80,14 +78,17 @@ SRC_SCRIPTS = [ ("src", glob.glob("src/*.py")),
 
 DATA_FILES = [ 
               ("pixmaps", ["pixmaps/editra.png", "pixmaps/editra.ico",
-                           "pixmaps/editra.icns", "pixmaps/editra_doc.icns"]),
+                           "pixmaps/editra.icns", "pixmaps/editra_doc.icns",
+                           "pixmaps/splashwarn.png", "pixmaps/editra_dl.png",
+                           "pixmaps/editra_doc.png"]),
               ("pixmaps/mime", glob.glob("pixmaps/mime/*.png")),
-              ("pixmaps/theme/Stock",["pixmaps/theme/Stock/AUTHORS",
-               "pixmaps/theme/Stock/COPYING",
-               "pixmaps/theme/Stock/DONATE",
-               "pixmaps/theme/Stock/README"]),
-              ("pixmaps/theme/Stock/toolbar", glob.glob("pixmaps/theme/Stock/toolbar/*.png")),
-              ("pixmaps/theme/Stock/menu", glob.glob("pixmaps/theme/Stock/menu/*.png")),
+              ("pixmaps/theme/Nuovo",["pixmaps/theme/Nuovo/AUTHORS",
+               "pixmaps/theme/Nuovo/COPYING",
+               "pixmaps/theme/Nuovo/DONATE",
+               "pixmaps/theme/Nuovo/README"]),
+              ("pixmaps/theme/Nuovo/toolbar", glob.glob("pixmaps/theme/Nuovo/toolbar/*.png")),
+              ("pixmaps/theme/Nuovo/menu", glob.glob("pixmaps/theme/Nuovo/menu/*.png")),
+              ("plugins", glob.glob("plugins/*.egg")),
               ("templates", glob.glob("templates/*")),
               ("profiles", ["profiles/default.pp",
                             "profiles/.loader", 
@@ -101,14 +102,15 @@ DATA_FILES = [
             ]
 
 DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py",
-         "pixmaps/editra.png", "pixmaps/editra.ico", 'Editra',
-         "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Stock/AUTHOR",
-         "pixmaps/theme/Stock/COPYING", "pixmaps/theme/Stock/DONATE",
-         "pixmaps/theme/README",
-         "pixmaps/theme/Stock/toolbar/*.png", "pixmaps/theme/Stock/menu/*.png", 
+         "pixmaps/*.png", "pixmaps/editra.ico", 'Editra',
+         "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Nuovo/AUTHOR",
+         "pixmaps/theme/Nuovo/COPYING", "pixmaps/theme/Nuovo/DONATE",
+         "pixmaps/theme/Nuovo/README", "pixmaps/theme/Nuovo/toolbar/*.png",
+         "pixmaps/theme/Nuovo/menu/*.png", "pixmaps/theme/Default/README",
          "profiles/default.pp", "profiles/.loader", "profiles/default.pp.sample",
          "locale/en_US/LC_MESSAGES/Editra.mo", "locale/ja_JP/LC_MESSAGES/Editra.mo", 
-         "styles/*.ess", "test_data/*", "README.txt","CHANGELOG.txt","COPYING.txt"
+         "styles/*.ess", "test_data/*", "README.txt","CHANGELOG.txt","COPYING.txt",
+         "plugins/*.egg"
 ]
 
 DESCRIPTION = "Code Editor"
@@ -186,11 +188,12 @@ if __platform__ == "win32" and 'py2exe' in sys.argv:
 
 #---- Setup MacOSX APP ----#
 elif __platform__ == "darwin" and 'py2app' in sys.argv:
-    try:
-        from setuptools import setup
-    except:
-        print "\n!! You dont have py2app and/or setuptools installed!! Can't build the .app file !!\n"
-        exit()
+    # Check for setuptools and ask to download if it is not available
+    import src.extern.ez_setup as ez_setup
+    ez_setup.use_setuptools()
+
+    from setuptools import setup
+    exit()
 
     PLIST = dict(CFBundleName = ed_glob.prog_name,
              CFBundleIconFile = 'Editra.icns',
