@@ -37,15 +37,16 @@ __revision__ = "$Revision:  $"
 #--------------------------------------------------------------------------#
 # Dependancies
 try:
-    from src.Editra import Main
+    import src as esrc
 except ImportError:
     try:
-        from Editra.src.Editra import Main
-    except:
+        import Editra.src as esrc
+    except ImportError:
         print "Can not find the package directory for Editra!!!"
-	exit()
+        exit()
 
 #--------------------------------------------------------------------------#
+
 if __name__ == '__main__':
-    Main()
+    esrc.Editra.Main()
 
