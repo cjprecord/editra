@@ -123,9 +123,9 @@ class ED_Pages(FNB.FlatNotebook):
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
         self.SetPageImage(self.GetSelection(), IMG['TXT'])
 
-    def OpenPageType(type=0):
+    def OpenPageType(self, page):
         """A Generic Page open Function to allow pages to contain
-        more than just text controls.
+        any type of widget.
 
         """
         
@@ -315,7 +315,12 @@ class ED_Pages(FNB.FlatNotebook):
         self.GoCurrentPage()
         pg_num = self.GetSelection()
         result = wx.ID_OK
-        if self.control.GetModify():
+        try:
+            act = self.control.GetModify()
+        except AttributeError:
+            act = False
+
+        if act:
             result = self.frame.ModifySave()
             if result != wx.ID_CANCEL:
                 self.DeletePage(pg_num)
