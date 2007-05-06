@@ -82,6 +82,7 @@ import util
 import dev_tool
 import ed_main
 import ed_art
+import plugin
 
 #--------------------------------------------------------------------------#
 # Global Variables
@@ -94,6 +95,7 @@ class Editra(wx.App):
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Editra is Initializing")
         self._lock = False
+        self._pluginmgr = plugin.PluginManager()
         self._windows = dict()
 
         self._log("[app][info] Registering Editra's ArtProvider")
@@ -106,6 +108,7 @@ class Editra(wx.App):
 
     def Exit(self):
         """Exit the program"""
+        self._pluginmgr.WritePluginConfig()
         if not self._lock:
             wx.App.Exit(self)
 
@@ -220,26 +223,7 @@ class Editra(wx.App):
 
 def InitConfig():
     """Initializes the configuration data"""
-    # 1. Set Resource location globals
     ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
-    ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
-    ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
-    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"), True)
-    ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
-    ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale", True)
-    ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
-    ed_glob.CONFIG['SYS_STYLES_DIR'] = util.ResolvConfigDir("styles", True)
-    ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test_data", True)
-    if not util.HasConfigDir("cache"):
-        util.MakeConfigDir("cache")
-    ed_glob.CONFIG['CACHE_DIR'] = util.ResolvConfigDir("cache")
-
-def Main():
-    """Configures and Runs an instance of Editra"""
-    # 1. Set Resource location globals
-    InitConfig()
-
-    # 2. Load Profile Settings
     import profiler
     PROFILE_UPDATED = False
     if util.HasConfigDir():
@@ -254,16 +238,33 @@ def Main():
             PROFILE_UPDATED = True
     else:
         util.CreateConfigDir()
-        InitConfig()
+    ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
+    ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
+    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"), True)
+    ed_glob.CONFIG['PLUGIN_DIR'] = util.ResolvConfigDir("plugins")
+    ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
+    ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale", True)
+    ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
+    ed_glob.CONFIG['SYS_PLUGIN_DIR'] = util.ResolvConfigDir("plugins", True)
+    ed_glob.CONFIG['SYS_STYLES_DIR'] = util.ResolvConfigDir("styles", True)
+    ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test_data", True)
+    if not util.HasConfigDir("cache"):
+        util.MakeConfigDir("cache")
+    ed_glob.CONFIG['CACHE_DIR'] = util.ResolvConfigDir("cache")
+    return PROFILE_UPDATED
 
-    # 3. Create Application
+def Main():
+    """Configures and Runs an instance of Editra"""
+    PROFILE_UPDATED = InitConfig()
+
+    # 1. Create Application
     dev_tool.DEBUGP("[main_info] Initializing Application...")
     if ed_glob.PROFILE['MODE'] == u"GUI_DEBUG":
         EDITRA = Editra(True)
     else:
         EDITRA = Editra(False)
 
-    # 4. Initialize the Language Settings
+    # 2. Initialize the Language Settings
     langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
     the_locale = wx.Locale(langid)
     the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
@@ -290,7 +291,7 @@ def Main():
     EDITRA.RegisterWindow(repr(_frame), _frame, True)
     EDITRA.SetTopWindow(_frame)
 
-    # 5. Start Applications Main Loop
+    # 3. Start Applications Main Loop
     dev_tool.DEBUGP("[main_info] Starting MainLoop...")
     EDITRA.MainLoop()
 
