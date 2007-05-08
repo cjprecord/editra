@@ -97,7 +97,7 @@ class Editra(wx.App):
         self._lock = False
         self._pluginmgr = plugin.PluginManager()
         self._windows = dict()
-
+        print "WEE", plugin.PluginMeta._plugins, plugin.PluginMeta._registry
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.ED_Art())
         
@@ -116,9 +116,23 @@ class Editra(wx.App):
         """Returns the logging function used by the app"""
         return self._log
 
+    def GetMainWindow(self):
+        """Returns reference to the instance of the MainWindow
+        that is running if available, and None if not.
+        
+        """
+        for window in self._windows:
+            if self._windows[window][0].__name__ == "MainWindow":
+                return self._windows[window][0]
+        return None
+
     def GetOpenWindows(self):
         """Returns a list of open windows"""
         return self._windows
+
+    def GetPluginManager(self):
+        """Returns the plugin manager used by this application"""
+        return self._pluginmgr
 
     def IsLocked(self):
         """Returns whether the application is locked or not"""
@@ -221,6 +235,8 @@ class Editra(wx.App):
             self._log("[app][warning] the window %s has not been registered" % winname)
             return False
 
+#--------------------------------------------------------------------------#
+
 def InitConfig():
     """Initializes the configuration data"""
     ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
@@ -238,6 +254,7 @@ def InitConfig():
             PROFILE_UPDATED = True
     else:
         util.CreateConfigDir()
+    ed_glob.CONFIG['CONFIG_DIR'] = util.ResolvConfigDir("")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
     ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
     ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"), True)
@@ -252,6 +269,8 @@ def InitConfig():
         util.MakeConfigDir("cache")
     ed_glob.CONFIG['CACHE_DIR'] = util.ResolvConfigDir("cache")
     return PROFILE_UPDATED
+
+#--------------------------------------------------------------------------#
 
 def Main():
     """Configures and Runs an instance of Editra"""
@@ -290,6 +309,8 @@ def Main():
                                     ed_glob.prog_name)
     EDITRA.RegisterWindow(repr(_frame), _frame, True)
     EDITRA.SetTopWindow(_frame)
+    myhello = util.Hello(EDITRA._pluginmgr)
+    myhello.hello_world("testing in the main")
 
     # 3. Start Applications Main Loop
     dev_tool.DEBUGP("[main_info] Starting MainLoop...")
