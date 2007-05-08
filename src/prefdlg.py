@@ -67,6 +67,10 @@ import ed_event
 import updater
 import util
 
+# On mac use the native control as it looks much nicer
+# if wx.Platform == "__WXMAC__":
+#     wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", 0)
+
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 # Globals
@@ -253,6 +257,7 @@ class PrefPages(wx.Notebook):
         self.MiscPage()
         self.CodePage()
         self.TextPage()
+        self.PluginPage()
         self.UpdatePage()
         self.ProfilePage()
 
@@ -342,11 +347,13 @@ class PrefPages(wx.Notebook):
     def ProfilePage(self):
         """Creates the profile editor page"""
         prof_panel = wx.Panel(self, wx.ID_ANY)
+        border = wx.BoxSizer(wx.VERTICAL)
         # Bind size evt to this panel
-        prof_panel.Bind(wx.EVT_SIZE, self.OnSize)
+        #prof_panel.Bind(wx.EVT_SIZE, self.OnSize)
         # Add Profile Viewer to Panel
-        self.list = ProfileListCtrl(prof_panel)
-
+        list = ProfileListCtrl(prof_panel)
+        border.Add(list, 1, wx.EXPAND)
+        prof_panel.SetSizer(border)
         self.AddPage(prof_panel, _("Profile Viewer"))
 
     def CodePage(self):
@@ -455,6 +462,54 @@ class PrefPages(wx.Notebook):
         border.Add(misc_sizer, 0, wx.BOTTOM | wx.LEFT, 30)
         text_panel.SetSizer(border)
         self.AddPage(text_panel, _("Text"))
+
+    def PluginPage(self):
+        """Plugin Configuration Page"""
+        plug_panel = wx.Panel(self, wx.ID_ANY)
+
+        # Items
+        plug_lbl = self.SectionHead(plug_panel, _("Plugin Settings"))
+        plug_lst = PluginListCtrl(plug_panel)
+        
+        p_mgr = wx.GetApp().GetPluginManager()
+        plug_lst.InsertColumn(0, _("Plugin"))
+        plug_lst.InsertColumn(1, _("Description"))
+        plug_lst.InsertColumn(2, _("Author"))
+        plug_lst.InsertColumn(3, _("Version"))
+        for item in p_mgr._config:
+            mod = sys.modules.get(item)
+            try:
+                doc = str(mod.__doc__)
+            except:
+                doc = _("No Description Available")
+            try:
+                auth = str(mod.__author__)
+            except:
+                auth = _("Unknown")
+            try:
+                ver = str(mod.__version__)
+            except:
+                ver = _("Unknown")
+
+            index = plug_lst.InsertStringItem(sys.maxint, item)
+            plug_lst.SetStringItem(index, 0, item)
+            plug_lst.CheckItem(index, p_mgr._config[item])
+            plug_lst.SetStringItem(index, 1, doc)
+            plug_lst.SetStringItem(index, 2, auth) #str(item.__module__.__author__))
+            plug_lst.SetStringItem(index, 3, ver) #str(item.__module__.__version__))
+
+        plug_lst.SetColumnWidth(0, wx.LIST_AUTOSIZE)
+        plug_lst.SetColumnWidth(1, wx.LIST_AUTOSIZE)
+        plug_lst.SetColumnWidth(2, wx.LIST_AUTOSIZE)
+        plug_lst.SetColumnWidth(3, wx.LIST_AUTOSIZE)
+
+        # Layout
+        border = wx.BoxSizer(wx.VERTICAL)
+        border.Add(wx.Size(15,15))
+        border.Add(plug_lbl, 0, wx.ALIGN_LEFT)
+        border.Add(plug_lst, 1, wx.EXPAND)
+        plug_panel.SetSizer(border)
+        self.AddPage(plug_panel, _("Plugins"))
 
     def MiscPage(self):
         """Misc preference page"""
@@ -687,8 +742,7 @@ class PrefPages(wx.Notebook):
 #----------------------------------------------------------------------------#
 
 class ProfileListCtrl(wx.ListCtrl, 
-                  listmix.ListCtrlAutoWidthMixin,
-                  listmix.TextEditMixin):
+                      listmix.ListCtrlAutoWidthMixin):
     """Class to manage the profile editor"""
     def __init__(self, parent):
         """Initializes the Profile List Control"""
@@ -696,10 +750,8 @@ class ProfileListCtrl(wx.ListCtrl,
                              wx.DefaultPosition, wx.DefaultSize, 
                              style = wx.LC_REPORT | wx.LC_SORT_ASCENDING |
                                      wx.LC_VRULES)
-
         listmix.ListCtrlAutoWidthMixin.__init__(self)
         self.PopulateProfileView()
-        listmix.TextEditMixin.__init__(self)
 
     def PopulateProfileView(self):
         """Populates the profile view with the profile info"""
@@ -722,6 +774,32 @@ class ProfileListCtrl(wx.ListCtrl,
 
 
     #---- End Function Definitions ----#
+class PluginListCtrl(wx.ListCtrl, 
+                  listmix.ListCtrlAutoWidthMixin,
+                  listmix.CheckListCtrlMixin):
+    """Class to manage the profile editor"""
+    def __init__(self, parent):
+        """Initializes the Profile List Control"""
+        wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
+                             wx.DefaultPosition, wx.DefaultSize, 
+                             style = wx.LC_REPORT | wx.LC_SORT_ASCENDING |
+                                     wx.LC_VRULES)
+
+        listmix.ListCtrlAutoWidthMixin.__init__(self)
+        listmix.CheckListCtrlMixin.__init__(self)
+
+    def OnCheckItem(self, index, flag):
+        """Handles the enableling/disabling of plugins
+        when they are clicked on in the dialog.
+        
+        """
+        p_mgr = wx.GetApp().GetPluginManager()
+        plugin = self.GetItemText(index)
+        if flag:
+            p_mgr.EnablePlugin(plugin)
+        else:
+            p_mgr.DisablePlugin(plugin)
+        listmix.CheckListCtrlMixin.OnCheckItem(self, index, flag)
 
 #----------------------------------------------------------------------------#
 class ExChoice(wx.Choice):
@@ -745,4 +823,3 @@ class ExChoice(wx.Choice):
         return val
 
 #----------------------------------------------------------------------------#
-
