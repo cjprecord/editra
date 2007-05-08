@@ -1,7 +1,7 @@
 ############################################################################
-#    Copyright (C) 2005 Editra Development Team   		 	   #
-#    codyprecord@gmail.com   						   #
-#									   #
+#    Copyright (C) 2005-2007 Cody Precord                                  #
+#    cprecord@editra.org                                                   #
+#                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
 #    it under the terms of the GNU General Public License as published by  #
 #    the Free Software Foundation; either version 2 of the License, or     #
@@ -20,17 +20,17 @@
 
 """
 #--------------------------------------------------------------------------#
-# FILE: ed_theme.py					   
+# FILE: ed_theme.py                                                        #
+# AUTHOR: Cody Precord                                                     #
+# LANGUAGE: Python                                                         #
+# SUMMARY:                                                                 #
+#   This module defines and manages the theme of the editor. By default    #
+# This doesnt do very much as it lets the system handle themeing so that   #
+# the app will look and appear as natural as possible on the host system.  #
+# The theme module is only here for those that wish to customize the       #
+# appearance of the editor to there own liking.                            #
+#                                                                          #
 #
-# AUTHOR: Cody Precord
-#
-# LANGUAGE: Python							   
-#
-# SUMMARY:
-#   This module controls and manages the customization of the appearance
-#  of the editor. Themes are defined using XML and loaded and proccessed
-#  from the XML files during runtime by the methods provided by this
-#  module.
 #
 # METHODS:
 #
@@ -41,8 +41,17 @@ __revision__ = "$Id: Exp $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-
+import wx
+import ed_glob
 
 #--------------------------------------------------------------------------#
 
-
+class ED_Theme(wx.FileConfig):
+    """Creates a Theme Object which is to be used as an
+    information provider to the the art provider. It is derived
+    from FileConfig so that themes will be defined using ini like
+    text files in the base directory of each theme.
+    
+    """
+    def __init__():
+        """Initializes the object"""
