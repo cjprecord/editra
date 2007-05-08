@@ -546,7 +546,25 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # the file extension is not always accurate such as in the case of
         # many shell scripts that often dont use file extensions
         self.ConfigureLexer(ext)
+
+        # If syntax auto detection fails from file extension try to
+        # see if there is an interpreter line that can be parsed.
+        if self.GetLexer() in [0, wx.stc.STC_LEX_NULL]:
+            interp = self.GetLine(0)
+            if interp != wx.EmptyString:
+                interp = interp.split(u"/")[-1]
+                interp = interp.strip().split()
+                if interp[-1][0] != "-":
+                    interp = interp[-1]
+                else:
+                    interp = interp[0]
+                ex_map = { "python" : "py", "wish" : "tcl", "ruby" : "rb",
+                           "bash" : "sh", "csh" : "csh", "perl" : "pl",
+                           "ksh" : "ksh", "php" : "php" }
+                self.ConfigureLexer(ex_map.get(interp, interp))
+
         self.Colourise(0, -1)
+
         # Configure Autocompletion
         # NOTE: must be done after syntax configuration
         if self._use_autocomp:
