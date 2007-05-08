@@ -25,13 +25,15 @@ the version number of python you have installed (i.e 24, 25, ect...)
         C:\\PythonXX\python.exe setup.py install
 
 NEW: [features/improvements]
-+More unified/transparent themeing support
++More unified themeing support
 +Source package build/install script (OS Independant Installer)
 +Improved OS X integration/behavior of applet
 +Update Checker/Downloader (manual install is still required)
 +The Keyword helper is now bound to Ctrl+K
 +Minor refinement of the logging subsystem
 +Improved (MASM, NASM, VB, Smalltalk) highlighting support
++Code to LaTeX document generator
++Extended file type autodetection (checks the shebang(#!) line if there is one)
 
 BUG FIXES:
 +GTK keybinding for Undo
