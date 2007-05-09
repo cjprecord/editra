@@ -476,7 +476,7 @@ class PrefPages(wx.Notebook):
         plug_lst.InsertColumn(1, _("Description"))
         plug_lst.InsertColumn(2, _("Author"))
         plug_lst.InsertColumn(3, _("Version"))
-        for item in p_mgr._config:
+        for item in p_mgr.GetConfig():
             mod = sys.modules.get(item)
             try:
                 doc = str(mod.__doc__)

@@ -24,7 +24,23 @@
 # AUTHOR: Cody Precord
 # LANGUAGE: Python
 # SUMMARY:
+#    This module provides the core functionality of the plugin system for
+# Editra. Its design is influenced by the system used in the web based
+# project management software Trac (trac.edgewall.org). To create a plugin
+# plugin class must derive from Plugin and in the class definintion it
+# must state which Interface it Impliments. Interfaces are defined
+# throughout various locations in the core Editra code. The interface
+# defines the contract that the plugin needs to conform to. 
 #
+# Plugins consist of python egg files that can be created with the use of
+# the setuptools package.
+#
+#   There are some issues I dont like with how this is currently working
+# that I hope to find a work around for in later revisions. Namely I
+# dont like the fact that the plugins are loaded and kept in memory
+# even when they are not activated. Although the footprint of the non
+# activated plugin class members being held in memory is not likely to
+# be very large it seems like
 #
 # METHODS:
 #
@@ -66,20 +82,24 @@ class Interface(object):
     pass
 
 class ExtensionPoint(property):
-    """foo"""
+    """Declares what interface a plugin is extending"""
     def __init__(self, interface):
-        property.__init__(self, self.extensions)
+        property.__init__(self, self.Extensions)
         self.interface = interface
-
-    def extensions(self, component):
-        extensions = PluginMeta._registry.get(self.interface, [])
-        return filter(None, [wx.GetApp()._pluginmgr[cls] for cls in extensions])
 
     def __repr__(self):
         return '<ExtensionPoint %s>' % self.interface.__name__
 
+    def Extensions(self, component):
+        extensions = PluginMeta._registry.get(self.interface, [])
+        return filter(None, [wx.GetApp()._pluginmgr[cls] for cls in extensions])
+
 class PluginMeta(type):
-    """hmm"""
+    """Acts as the registration point for plugin entrypoint objects.
+    It makes sure that only a single instance of any particular entry
+    point is active at one time per plugin manager.
+
+    """
     _plugins = list()
     _registry = dict()
     def __new__(cls, name, bases, d):
@@ -93,7 +113,7 @@ class PluginMeta(type):
             for init in [b.__init__._original for b in new_obj.mro()
                          if issubclass(b, Plugin) and '__init__' in b.__dict__]:
                 break
-#         def maybe_init(self, pluginmgr, init=init, cls=new_obj):    # HMM
+#         def maybe_init(self, pluginmgr, init=init, cls=new_obj):
 #             pluginmgr._plugins[cls] = self
 #             if init:
 #                 init(self, pluginmgr)
@@ -119,7 +139,6 @@ class Plugin(object):
         
         """
         if issubclass(cls, PluginManager):
-            print "YOYO from plugin new mgr"
             self = super(Plugin, cls).__new__(cls)
             self._pluginmgr = self
             return self
@@ -127,10 +146,8 @@ class Plugin(object):
         pluginmgr = args[0]
         self = pluginmgr._plugins.get(cls)
         if self is None:
-            print "HELLO failed to get plugin"
             self = super(Plugin, cls).__new__(cls)
             self.pluginmgr = pluginmgr
-    #        pluginmgr.
         return self
 
 def Implements(*interfaces):
@@ -138,7 +155,6 @@ def Implements(*interfaces):
     implment/extend.
 
     """
-    print "hello from Implements"
     _implements.extend(interfaces)
 
 #--------------------------------------------------------------------------#
@@ -164,6 +180,8 @@ class PluginManager(object):
         self._plugins = dict()      # Set of available plugins
         self._enabled = dict()      # Set of enabled plugins
         self.InitPlugins(self._env)
+        self.RefreshConfig()
+        # Enable/Disable plugins based on config data
         for pi in self._plugins:
             if self._config.get(self._plugins[pi].__module__):
                 self._enabled[pi] = True
@@ -184,7 +202,7 @@ class PluginManager(object):
         
         """
         if cls not in self._enabled:
-            self._enabled[cls] = False # TEMPORARY FIX
+            self._enabled[cls] = False # If its a new plugin disable by default
         if not self._enabled[cls]:
             return None
         plugin = self._plugins.get(cls)
@@ -224,6 +242,13 @@ class PluginManager(object):
 
         """
         
+    def GetConfig(self):
+        """Returns a dictionary of plugins and there configuration
+        state.
+
+        """
+        self.RefreshConfig()
+        return self._config
 
     def InitPlugins(self, env):
         """Initializes the plugins that are contained in the given
@@ -244,14 +269,14 @@ class PluginManager(object):
                     entry_point = egg.get_entry_info(ENTRYPOINT, name)
                     cls = entry_point.load() # Loaded entry points call Impliments
                     self._plugins[cls] = cls(self)
-       #             self._info[name] = (egg.version)
-  #                  print type(self._plugins[cls])
+#                     self._info[name] = (egg.version)
+#                     print type(self._plugins[cls])
 #                     print entry_point
 #                     if not hasattr(cls, 'capabilities'):
 #                         cls.capabilities = []
-     #               instance = cls()
-     #               for c in cls.capabilities:
-     #                   plugins.setdefault(c, []).append(instance)
+#                     instance = cls()
+#                     for c in cls.capabilities:
+#                         plugins.setdefault(c, []).append(instance)
                 except ImportError, e:
                     self.LOG("[pluginmgr][err] Failed to load plugin %s from %s" % \
                              (name, egg.location))
@@ -292,6 +317,21 @@ class PluginManager(object):
                 continue
         reader.close()
         return config
+
+    def RefreshConfig(self):
+        """Refreshes the config data comparing the loadable
+        plugins against the config data and removing any entries
+        that dont exist in both from the configuration data.
+
+        """
+        plugins = list()
+        for pi in self._plugins:
+            plugins.append(pi.__module__)
+        config = dict()
+        for item in self._config:
+            if item in plugins:
+                config[item] = self._config[item]
+        self._config = config
 
     def UnloadPluginByName(self, name):
         """Unloads a named plugin"""

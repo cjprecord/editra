@@ -67,6 +67,7 @@ import ed_print
 import ed_cmdbar
 import syntax.syntax as syntax
 import generator
+import plugin
 
 # Function Aliases
 _ = wx.GetTranslation
@@ -255,6 +256,13 @@ class MainWindow(wx.Frame):
             self.SetPosition(PROFILE['WPOS'])
         else:
             self.CenterOnParent()
+
+        # Call add on plugins
+        try:
+            addons = MainWindowAddOn(wx.GetApp().GetPluginManager())
+            addons.Init(self)
+        finally:
+            pass
         self.Show(True)
 
     __name__ = u"MainWindow"
@@ -267,17 +275,15 @@ class MainWindow(wx.Frame):
         in a new notebook page.
 
         """
-        dlg = wx.FileDialog(self, _("Choose a File"), '', "", 
-                            self.MenuFileTypes(), wx.OPEN | wx.MULTIPLE)
-
         result = wx.ID_CANCEL
-
         try:
             e_id = evt.GetId()
         except AttributeError:
             e_id = evt
 
         if e_id == ID_OPEN:
+            dlg = wx.FileDialog(self, _("Choose a File"), '', "", 
+                                self.MenuFileTypes(), wx.OPEN | wx.MULTIPLE)
             if dlg.ShowModal() == wx.ID_OK:
                 paths = dlg.GetPaths()
                 dlg.Destroy()
@@ -581,6 +587,7 @@ class MainWindow(wx.Frame):
         self.nb.NewPage()
         self.nb.control.SetText(unicode(html))
         self.nb.control.FindLexer('html')
+        del html
 
     def OnGenTeX(self, evt):
         """Generates html and opens the generated code in a new page"""
@@ -588,6 +595,7 @@ class MainWindow(wx.Frame):
         self.nb.NewPage()
         self.nb.control.SetText(unicode(tex))
         self.nb.control.FindLexer('tex')
+        del tex
 
     #---- Help Menu Functions ----#
     def OnAbout(self, evt):
@@ -719,7 +727,7 @@ class MainWindow(wx.Frame):
                 if item_id == lang_id or \
                    (menu_item.GetLabel() == 'Plain Text' and lang_id == 0):
                     menu.Check(item_id, True)
-            # HACK real ugly needed for MSW
+            # HACK needed for MSW
             if menu2 != None:
                 self.LOG("[menu_evt] Updating EOL Mode Menu")
                 eol = self.nb.control.GetEOLModeId()
@@ -809,4 +817,23 @@ class MainWindow(wx.Frame):
         return result
     #---- End Misc Functions ----#
 
-    ### End Function Definitions ###
+#-----------------------------------------------------------------------------#
+# Plugin interface's to the MainWindow
+class MainWindowI(plugin.Interface):
+    """Provides simple one method interface into adding extra
+    functionality to the main window. The method in this interface
+    called at the end of the window's internationalization.
+           
+    """
+    def PlugIt(self, window):
+        """Do whatever is needed to integrate is plugin
+        into the editor.
+        
+        """
+        pass
+
+class MainWindowAddOn(plugin.Plugin):
+    observers = plugin.ExtensionPoint(MainWindowI)
+    def Init(self, window):
+        for ob in self.observers:
+            ob.PlugIt(window)

@@ -26,7 +26,8 @@
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # SUMMARY:                                                                 #
-#   This file holds the main method for running the editor.                #
+#   This module defines the Editra Application object and the Main method  #
+# for running Editra.                                                      #
 #                                                                          #
 # METHODS:                                                                 #
 #                                                                          #
@@ -97,7 +98,6 @@ class Editra(wx.App):
         self._lock = False
         self._pluginmgr = plugin.PluginManager()
         self._windows = dict()
-        print "WEE", plugin.PluginMeta._plugins, plugin.PluginMeta._registry
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.ED_Art())
         
@@ -309,8 +309,6 @@ def Main():
                                     ed_glob.prog_name)
     EDITRA.RegisterWindow(repr(_frame), _frame, True)
     EDITRA.SetTopWindow(_frame)
-    myhello = util.Hello(EDITRA._pluginmgr)
-    myhello.hello_world("testing in the main")
 
     # 3. Start Applications Main Loop
     dev_tool.DEBUGP("[main_info] Starting MainLoop...")
