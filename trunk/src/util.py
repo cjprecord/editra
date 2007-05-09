@@ -268,10 +268,6 @@ def CreateConfigDir():
         os.mkdir(profile_dir)
     if not os.path.exists(doc_cache):
         os.mkdir(doc_cache)
-
-#     dev_tool.DEBUGP("[util_info] Config_Dir: " + config_file)
-#     dev_tool.DEBUGP("[util_info] DEST: " + dest_file)
-#     dev_tool.DEBUGP("[util_info] Loader: " + loader)
     
     #---- Copy Default Config Files ----#
     if os.sys.platform == 'win32':
