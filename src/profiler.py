@@ -45,7 +45,7 @@
 # ----------------------------------------                                 #
 #  MODE	                CODE, DEBUG                                        #
 #  THEME                DEFAULT                                            #
-#  ICONS                STOCK                                              #
+#  ICONS                Default, Nuovo, ect...                             #
 #  LANG	                ENGLISH, JAPANESE                                  #
 #  WRAP                 On, Off, True, False	                           #
 #  SYNTAX               On, Off, True, False                               #
