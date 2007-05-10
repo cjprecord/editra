@@ -43,29 +43,100 @@ __revision__ = "$Revision:  $"
 import wx
 import wx.stc
 import ed_glob
+import ed_menu
 from ed_style import StyleItem
+import plugin
 
 #--------------------------------------------------------------------------#
 # Globals
+_ = wx.GetTranslation
+
 FONT_FALLBACKS = "Trebuchet, Tahoma, sans-serif"
 
 #--------------------------------------------------------------------------#
+# Plugin Interface
+class GeneratorI(plugin.Interface):
+    """Plugins that are to be used for generating code/document need
+    to impliment this interface.
 
-class Html:
+    """
+    def Generate(self, txt_ctrl):
+        """Generates the code. The txt_ctrl parameter is a reference
+        to an ED_STC object (see ed_stc.py). The return value of this
+        function needs to be a 2 item tuple with the first item being
+        an associated file extention to use for setting highlighting
+        if available and the second item is the string of the new document.
+
+        """
+        pass
+
+    def GetId(self):
+        """Must return the Id used for the generator objects
+        menu id. This is used to identify which Generator to
+        call on a menu event.
+
+        """
+        pass
+
+    def GetMenuEntry(self, menu):
+        """Returns the MenuItem entry for this generator"""
+        pass
+
+class Generator(plugin.Plugin):
+    """Plugin Interface Extension Point for Generator
+    type plugin objects. Generator objects are used
+    to generate a document/code from one type to another.
+
+    """
+    observers = plugin.ExtensionPoint(GeneratorI)
+
+    def InstallMenu(self, menu):
+        """Appends the menu of available Generators onto
+        the given menu.
+
+        """
+        menu_items = list()
+        for ob in self.observers:
+            mi = ob.GetMenuEntry(menu)
+            if mi:
+                menu_items.append((mi.GetLabel(), mi))
+        menu_items.sort()
+        genmenu = ed_menu.ED_Menu()
+        for item in menu_items:
+            genmenu.AppendItem(item[1])
+        menu.AppendMenu(ed_glob.ID_GENERATOR, _("Generator"), genmenu,
+                             _("Generate Code and Documents"))
+
+    def GenerateText(self, e_id, txt_ctrl):
+        """Generates the new document text based on the given
+        generator id and contents of the given ED_STC text control.
+        
+        """
+        gentext = None
+        for ob in self.observers:
+            if ob.GetId() == e_id:
+                gentext = ob.Generate(txt_ctrl)
+        return gentext
+
+#--------------------------------------------------------------------------#
+
+class Html(plugin.Plugin):
     """Transforms the text from a given Editra stc to a fully
     styled html page. Inline CSS is generated and inserted into
     the head of the Html to style the text regions by default 
     unless requested to generate a separate sheet.
 
     """
-    def __init__(self, stc_ctrl, inline_css=True):
+    plugin.Implements(GeneratorI)
+    def __init__(self, mgr):
         """Creates the Html object from an Editra stc text control"""
 
         # Attributes
-        self.stc = stc_ctrl
-        self.head = self.GenerateHead()
+        self._id = ed_glob.ID_HTML_GEN
+        self.stc = None #stc_ctrl
+        self.head = wx.EmptyString #self.GenerateHead()
         self.css = dict()
-        self.body = self.GenerateBody()
+        self.body = wx.EmptyString #self.GenerateBody()
 
     def __str__(self):
         """Returns the string of html"""
@@ -83,6 +154,13 @@ class Html:
     def Unicode(self):
         """Returns the html as unicode"""
         return unicode(self.__str__())
+
+    def Generate(self, stc_ctrl):
+        """Generates and returns the document"""
+        self.stc = stc_ctrl
+        self.head = self.GenerateHead()
+        self.body = self.GenerateBody()
+        return ("html", self.__str__())
 
     def GenerateHead(self):
         """Generates the html head block"""
@@ -146,6 +224,15 @@ class Html:
         else:
             self.OptimizeCss()
         return "<body class=\"default\">\n<pre>\n%s\n</pre>\n</body>" % html
+
+    def GetId(self):
+        """Returns the menu identifier for the HTML generator"""
+        return self._id
+
+    def GetMenuEntry(self, menu):
+        """Returns the Menu control for the HTML generator"""
+        return wx.MenuItem(menu, self._id, _("Generate %s") % u"HTML",
+                           _("Generate an %s page from the current document") % u"HTML")
 
     def OptimizeCss(self):
         """Optimizes the CSS Set"""
@@ -293,22 +380,25 @@ class CssItem:
         """Sets the Font Point Size"""
         self._size = size_str
 
-class LaTeX:
+#-----------------------------------------------------------------------------#
+
+class LaTeX(plugin.Plugin):
     """Creates a LaTeX document object from the contents of the
     supplied document reference.
     
     """
-    def __init__(self, stc_doc):
+    plugin.Implements(GeneratorI)
+    def __init__(self, plgmgr):
         """Initializes the LaTeX object"""
-        self._stc = stc_doc
-        default_si = self._stc.GetItemByName('default_style')
-        self._dback = default_si.GetBack().split(',')[0]
-        self._dfore = default_si.GetFore().split(',')[0]
-        self._dface = default_si.GetFace().split(',')[0]
-        self._dsize = default_si.GetSize().split(',')[0]
+        self._stc = None
+        self._id = ed_glob.ID_TEX_GEN
+        self._dback = wx.EmptyString
+        self._dfore = wx.EmptyString
+        self._dface = wx.EmptyString
+        self._dsize = wx.EmptyString
         self._cmds = dict()
-        self._body = self.GenDoc()
-        self._preamble = self.GenPreamble()
+        self._body = wx.EmptyString
+        self._preamble = wx.EmptyString
 
     def __str__(self):
         """Returns the string representation of the object"""
@@ -383,6 +473,18 @@ class LaTeX:
             tex = self.TransformText(self._stc.GetText())
         return "\\begin{document}\n%s\n\\end{document}" % tex
 
+    def Generate(self, stc_doc):
+        """Generates the LaTeX document"""
+        self._stc = stc_doc
+        default_si = self._stc.GetItemByName('default_style')
+        self._dback = default_si.GetBack().split(',')[0]
+        self._dfore = default_si.GetFore().split(',')[0]
+        self._dface = default_si.GetFace().split(',')[0]
+        self._dsize = default_si.GetSize().split(',')[0]
+        self._body = self.GenDoc()
+        self._preamble = self.GenPreamble()
+        return ("tex", self.__str__())
+
     def GenPreamble(self):
         """Generates the Preamble of the document"""
         pre = ("%% \iffalse meta-comment\n"
@@ -406,6 +508,15 @@ class LaTeX:
             pre += ("\n" + self._cmds[cmd])
         pre += "\n%% End Styling Command Definitions\n\n"
         return pre
+
+    def GetId(self):
+        """Returns the menu identifier for the LaTeX generator"""
+        return self._id
+
+    def GetMenuEntry(self, menu):
+        """Returns the Menu control for the LaTeX generator"""
+        return wx.MenuItem(menu, self._id, _("Generate %s") % u"LaTeX",
+                           _("Generate an %s page from the current document") % u"LaTeX")
 
     def HexToRGB(self, hex_str):
         """Returns a comma separated rgb string representation
@@ -481,4 +592,36 @@ class LaTeX:
             return ch_map[txt]
         else:
             return txt
+
+#-----------------------------------------------------------------------------#
+
+# TODO stub
+class RtfGenerator:
+    """Generates a fully styled RTF document from the given text 
+    controls contents.
+    
+    """
+    def __init__(self, stc_doc):
+        """Creates the RTF object"""
+        self._stc = stc_doc
+
+    def __str__(self):
+        """Returns the RTF object as a string"""
+        return 
+
+    def HexToRGB(self, hex_str):
+        """Returns a list of red/green/blue values from a
+        hex string.
+        
+        """
+        hex = hex_str
+        if hex[0] == u"#":
+            hex = hex[1:]
+        ldiff = 6 - len(hex)
+        hex += ldiff * u"0"
+        # Convert hex values to integer
+        red = int(hex[0:2], 16)
+        green =int(hex[2:4], 16)
+        blue = int(hex[4:], 16)
+        return [red, green, blue]
 

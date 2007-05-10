@@ -201,6 +201,9 @@ class PluginManager(object):
         already been activated.
         
         """
+        nspace = cls.__module__ + "." + cls.__name__
+        if nspace in ed_glob.DEFAULT_PLUGINS:
+            self._enabled[cls] = True
         if cls not in self._enabled:
             self._enabled[cls] = False # If its a new plugin disable by default
         if not self._enabled[cls]:
@@ -269,17 +272,18 @@ class PluginManager(object):
                     entry_point = egg.get_entry_info(ENTRYPOINT, name)
                     cls = entry_point.load() # Loaded entry points call Impliments
                     self._plugins[cls] = cls(self)
-#                     self._info[name] = (egg.version)
-#                     print type(self._plugins[cls])
-#                     print entry_point
-#                     if not hasattr(cls, 'capabilities'):
-#                         cls.capabilities = []
-#                     instance = cls()
-#                     for c in cls.capabilities:
-#                         plugins.setdefault(c, []).append(instance)
-                except ImportError, e:
+                finally: #except ImportError, e:
                     self.LOG("[pluginmgr][err] Failed to load plugin %s from %s" % \
                              (name, egg.location))
+
+        # Activate all default plugins
+        for d_pi in ed_glob.DEFAULT_PLUGINS:
+            obj = d_pi.split(".")
+            mod = ".".join(obj[:-1])
+            entry = __import__(mod, globals(), globals(), ['__name__'])
+            entry = getattr(entry, obj[-1])
+            entry(self)
+
         return True
 
     def LoadPluginByName(self, name):
