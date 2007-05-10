@@ -210,8 +210,7 @@ class MainWindow(wx.Frame):
 
         # Tool Menu
         self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
-        self.Bind(wx.EVT_MENU, self.OnGenHtml, id=ID_HTML_GEN)
-        self.Bind(wx.EVT_MENU, self.OnGenTeX, id=ID_TEX_GEN)
+        self.Bind(wx.EVT_MENU, self.OnGenerate)
 
         # Help Menu Events
         self.Bind(wx.EVT_MENU, self.OnAbout, id=ID_ABOUT)
@@ -259,8 +258,11 @@ class MainWindow(wx.Frame):
 
         # Call add on plugins
         try:
-            addons = MainWindowAddOn(wx.GetApp().GetPluginManager())
+            plgmgr = wx.GetApp().GetPluginManager()
+            addons = MainWindowAddOn(plgmgr)
             addons.Init(self)
+            self._generator = generator.Generator(plgmgr)
+            self._generator.InstallMenu(self.toolsmenu)
         finally:
             pass
         self.Show(True)
@@ -581,21 +583,16 @@ class MainWindow(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
-    def OnGenHtml(self, evt):
-        """Generates html and opens the generated code in a new page"""
-        html = generator.Html(self.nb.GetCurrentCtrl())
-        self.nb.NewPage()
-        self.nb.control.SetText(unicode(html))
-        self.nb.control.FindLexer('html')
-        del html
-
-    def OnGenTeX(self, evt):
-        """Generates html and opens the generated code in a new page"""
-        tex = generator.LaTeX(self.nb.GetCurrentCtrl())
-        self.nb.NewPage()
-        self.nb.control.SetText(unicode(tex))
-        self.nb.control.FindLexer('tex')
-        del tex
+    def OnGenerate(self, evt):
+        """Generates a given document type"""
+        e_id = evt.GetId()
+        doc = self._generator.GenerateText(e_id, self.nb.GetCurrentCtrl())
+        if doc:
+            self.nb.NewPage()
+            self.nb.control.SetText(unicode(doc[1]))
+            self.nb.control.FindLexer(doc[0])
+        else:
+            evt.Skip()
 
     #---- Help Menu Functions ----#
     def OnAbout(self, evt):
@@ -833,7 +830,9 @@ class MainWindowI(plugin.Interface):
         pass
 
 class MainWindowAddOn(plugin.Plugin):
+    """Plugin that Extends the MainWindowInterface"""
     observers = plugin.ExtensionPoint(MainWindowI)
     def Init(self, window):
+        """Call all observers once to initialize"""
         for ob in self.observers:
             ob.PlugIt(window)

@@ -244,3 +244,6 @@ ID_2_PROF = {
              ID_PREF_MODE         : 'MODE',
              ID_PRINT_MODE        : 'PRINT_MODE'
 }
+
+# Default Plugins
+DEFAULT_PLUGINS = ["generator.Html", "generator.LaTeX"]
