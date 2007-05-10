@@ -431,11 +431,11 @@ def StrToTuple(tu_str):
     reformats it back to a tuple value.
 
     """
-    if tu_str[0] != "(":
+    if tu_str[0] != u"(":
         return ""
 
-    tu_str = tu_str.strip('(,)')
-    tu_str = tu_str.replace(',', '')
+    tu_str = tu_str.strip(u'(,)')
+    tu_str = tu_str.replace(u',', u'')
     tu_str = tu_str.split()
     neg = False
     
