@@ -62,12 +62,98 @@ class ED_Menu(wx.Menu):
         """Append a MenuItem"""
         item = wx.Menu.Append(self, id, text, help, kind)
         if use_bmp:
-            try:
-                bmp = wx.ArtProvider.GetBitmap(str(id), wx.ART_MENU)
-                item.SetBitmap(bmp)
-            finally:
-                pass
+            self.SetItemBitmap(item)
         return item
+
+    def AppendItem(self, item, use_bmp=True):
+        """Appends a MenuItem to the menu and adds an associated
+        bitmap if one is available, unless use_bmp is set to false.
+
+        """
+        if use_bmp:
+            self.SetItemBitmap(item)
+        wx.Menu.AppendItem(self, item)
+
+    def Insert(self, pos, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, use_bmp=True):
+        """Insert an item at position and attach a bitmap
+        if one is available.
+
+        """
+        item = wx.Menu.Insert(self, pos, id, text, help, kind)
+        if use_bmp:
+            self.SetItemBitmap(item)
+        return item
+
+    def InsertAfter(self, item_id, id, label=u'', help=u'', 
+                    kind=wx.ITEM_NORMAL, use_bmp=True):
+        """Inserts the given item after the specified item id in
+        the menu. If the id cannot be found then the item will appended
+        to the end of the menu.
+
+        """
+        for pos in range(self.GetMenuItemCount()):
+            mitem = self.FindItemByPosition(pos)
+            if mitem.GetId() == item_id:
+                break
+        if pos:
+            mitem = self.Insert(pos+1, id, label, help, kind, use_bmp)
+        else:
+            mitem = self.Append(id, label, help, kind, use_bmp)
+        return mitem
+
+    def InsertBefore(self, item_id, id, label=u'', help=u'', 
+                    kind=wx.ITEM_NORMAL, use_bmp=True):
+        """Inserts the given item before the specified item id in
+        the menu. If the id cannot be found then the item will appended
+        to the end of the menu.
+
+        """
+        for pos in range(self.GetMenuItemCount()):
+            mitem = self.FindItemByPosition(pos)
+            if mitem.GetId() == item_id:
+                break
+        if pos:
+            mitem = self.Insert(pos, id, label, help, kind, use_bmp)
+        else:
+            mitem = self.Append(id, label, help, kind, use_bmp)
+        return mitem
+
+    def InsertAlpha(self, id, label=u'', help=u'', 
+                    kind=wx.ITEM_NORMAL, after=0, use_bmp=True):
+        """Attempts to insert the new menuitem into the menu
+        alphabetically. The optional parameter 'after' is used
+        specify an item id to start the alphabetical lookup after.
+        Otherwise the lookup begins from the first item in the menu.
+
+        """
+        if after:
+            start = False
+        else:
+            start = True
+        for pos in range(self.GetMenuItemCount()):
+            mitem = self.FindItemByPosition(pos)
+            mlabel = mitem.GetLabel()
+            if after and mitem.GetId() == after:
+                start = True
+            if after and not start:
+                continue
+            if label < mlabel:
+                break
+#         if after:
+#             pos += 1
+        mitem = self.Insert(pos, id, label, help, kind, use_bmp)
+        return mitem
+
+    def SetItemBitmap(self, item):
+        """Sets the MenuItems bitmap by getting the id from the
+        artprovider if one exists.
+
+        """
+        try:
+            bmp = wx.ArtProvider.GetBitmap(str(item.GetId()), wx.ART_MENU)
+            item.SetBitmap(bmp)
+        finally:
+            pass
 
 class ED_MenuBar(wx.MenuBar):
     """Custom menubar to allow for easier access and updating
@@ -275,16 +361,9 @@ class ED_MenuBar(wx.MenuBar):
         toolsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper") + u'\tCtrl+K', 
                          _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"))
         toolsmenu.AppendSeparator()
-        genmenu = ED_Menu()
-        genmenu.Append(ed_glob.ID_HTML_GEN, _("Generate %s") % u"HTML",
-                       _("Generate an %s page from the current document") % u"HTML")
-        genmenu.Append(ed_glob.ID_TEX_GEN, _("Generate %s") % u"LaTeX",
-                       _("Generate an %s page from the current document") % u"LaTeX")
-        toolsmenu.AppendMenu(ed_glob.ID_GENERATOR, _("Generator"), genmenu,
-                             _("Generate Code"))
         self.Append(toolsmenu, _("Tools"))
         return toolsmenu
- 
+
     def GenHelpMenu(self):
         """Makes and attaches the help menu"""
         helpmenu = ED_Menu()
