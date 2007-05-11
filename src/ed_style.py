@@ -57,7 +57,7 @@ STY_EX_ATTRIBUTES  = u"eol bold italic underline"
 #--------------------------------------------------------------------------#
 
 # TODO The extra Attributes should be saved as a separate attribute in the
-#      StyleItem, in order to facilitate easier setting and modification of
+#      StyleItem, in order to facilitate easier setting and modification
 #      This currenlty causes problems when customizing values in the StyleEditor
 #      Changing this is fairly easy in this class but it will require changes
 #      to the StyleMgr and Editor as well.
@@ -263,8 +263,6 @@ class StyleMgr:
             self.LOG("[styles] [init] Loaded custom style sheet " + custom)
         else:
             self.LOG("[styles] [init_error] Failed to import styles from " + custom)
-            self.style_set = wx.EmptyString
-            self.styles = self.DefaultStyleDictionary()
 
     def DefaultStyleDictionary(self):
         """This is the default style values that are used for styling
@@ -313,7 +311,10 @@ class StyleMgr:
         return def_dict
 
     def BlankStyleDictionary(self):
-        """Returns a dictionary of unset style items"""
+        """Returns a dictionary of unset style items based on the
+        tags defined in the current dictionary.
+
+        """
         sty_dict = self.DefaultStyleDictionary()
         for key in sty_dict:
             sty_dict[key] = StyleItem(face=u"%(mono)s", size="%(size)d")
@@ -454,12 +455,12 @@ class StyleMgr:
             if reader == -1:
                 self.LOG("[styles] [exception] Failed to open style sheet: " + style_sheet)
                 return False
-
             ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
             reader.close()
             return ret_val
         else:
             self.LOG("[styles] The style sheet %s does not exists" % style_sheet)
+            self.SetStyles(self.DefaultStyleDictionary())
             return False
 
     def MergeFonts(self, style_dict, font_dict):
@@ -614,7 +615,7 @@ class StyleMgr:
                            values[0][1:].isalnum():
                             v1ok = True
                     elif len(values) and attrib[0] in "face size": 
-                        # TODO these regular expressions are wrong
+                        # TODO these regular expressions need work
                         match1 = re.compile("\%\([a-zA-Z0-9]*\)")
                         match2 = re.compile("[a-zA-Z0-9]*")
                         if match1.match(values[0]) or match2.match(values[0]):

@@ -133,10 +133,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetMarginWidth(FOLD_MARGIN, 0)
 
         # Set Default Styles used by all documents
-        if self.highlight:
-            self.UpdateBaseStyles()
-        else:
-            self.StyleDefault()
+        self.UpdateBaseStyles()
 
         # Configure Autocompletion
         # NOTE: must be done after syntax configuration
@@ -179,9 +176,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetIndentationGuides(PROFILE['GUIDES'])
         self.SetEOLFromString(PROFILE['EOL'])
         self.SetViewEOL(PROFILE['SHOW_EOL'])
+        self.SyntaxOnOff(PROFILE['SYNTAX'])  # <- need to do before autocomp
         self.SetAutoComplete(PROFILE['AUTO_COMP'])
         self.FoldingOnOff(PROFILE['CODE_FOLD'])
-        self.SyntaxOnOff(PROFILE['SYNTAX'])
         self.ToggleAutoIndent(PROFILE['AUTO_INDENT'])
         self.ToggleBracketHL(PROFILE['BRACKETHL'])
         self.ToggleLineNumbers(PROFILE['SHOW_LN'])
@@ -287,14 +284,18 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """Returns the full path name of the current file"""
         return "".join([self.dirname, self.path_char, self.filename])
 
-    def GetStyleSheet(self):
+    def GetStyleSheet(self, sheet_name=None):
         """Finds the current style sheet and returns its path. The
         Lookup is done by first looking in the users config directory
         and if it is not found there it looks for one on the system
         level and if that fails it returns None.
 
         """
-        if PROFILE['SYNTHEME'].split(u'.')[-1] != u"ess":
+        if sheet_name:
+            style = sheet_name
+            if sheet_name.split(u'.')[-1] != u"ess":
+                style += u".ess"
+        elif PROFILE['SYNTHEME'].split(u'.')[-1] != u"ess":
             style = (PROFILE['SYNTHEME'] + u".ess").lower()
         else:
             style = PROFILE['SYNTHEME'].lower()
@@ -340,7 +341,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if not self._use_autocomp:
             evt.Skip()
             return True
-
         key_code = evt.GetKeyCode()
         if key_code in self._autocomp_svc.GetAutoCompKeys():
             if self.AutoCompActive():
@@ -542,9 +542,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.ClearDocumentStyle()
 
         # Configure Lexer from File Extension
-        # TODO add more comprehensive file type checking, the use of just
-        # the file extension is not always accurate such as in the case of
-        # many shell scripts that often dont use file extensions
         self.ConfigureLexer(ext)
 
         # If syntax auto detection fails from file extension try to
@@ -562,7 +559,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                            "bash" : "sh", "csh" : "csh", "perl" : "pl",
                            "ksh" : "ksh", "php" : "php" }
                 self.ConfigureLexer(ex_map.get(interp, interp))
-
         self.Colourise(0, -1)
 
         # Configure Autocompletion
@@ -731,7 +727,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.LOG("[stc_evt] Syntax Highlighting Turned Off")
             self.highlight = False
             self.SetLexer(wx.stc.STC_LEX_NULL)
-            self.StyleDefault()
+            self.ClearDocumentStyle()
+            self.UpdateBaseStyles()
         return 0
 
     def ToggleAutoIndent(self, set=None):
@@ -960,10 +957,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def UpdateBaseStyles(self):
         """Updates the base styles of editor to the current settings"""
-       # self.keywords = [ ' ' ]
         self.StyleDefault()
         self.SetMargins(0, 0)
         # Global default styles for all languages
+        self.StyleSetSpec(0, self.GetStyleByName('default_style'))
         self.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, self.GetStyleByName('default_style'))
         self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, self.GetStyleByName('line_num'))
         self.StyleSetSpec(wx.stc.STC_STYLE_CONTROLCHAR, self.GetStyleByName('ctrl_char'))
@@ -974,13 +971,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.CallTipSetForeground(calltip.GetFore())
         self.SetCaretForeground(self.GetDefaultForeColour())
         self.DefineMarkers()
+        self.Colourise(0, -1)
 
     def UpdateAllStyles(self, spec_style=None):
         """Refreshes all the styles and attributes of the control"""
-        if spec_style == None:
-            self.LoadStyleSheet(self.GetStyleSheet())
-        else:
-            self.LoadStyleSheet(os.path.join(CONFIG['STYLES_DIR'], spec_style + u".ess"))
+        self.LoadStyleSheet(self.GetStyleSheet(spec_style))
         self.UpdateBaseStyles()
         self.SetSyntax(self.syntax_set)
         self.DefineMarkers()
