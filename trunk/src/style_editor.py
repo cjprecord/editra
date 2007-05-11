@@ -80,8 +80,7 @@ class StyleEditor(wx.Dialog):
         # Attributes
         self.LOG = log
         self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size=(-1,200),
-                                    style = wx.TE_MULTILINE|wx.TE_RICH2|wx.SUNKEN_BORDER, 
-                                    useDT=False)
+                                    style = wx.SUNKEN_BORDER, useDT=False)
         self.styles_new = self.preview.GetStyleSet()
         # Save original settings so that changes can be un-done if need be.
         self.styles_orig = self.DuplicateStyleDict(self.styles_new)
@@ -414,8 +413,9 @@ class StyleEditor(wx.Dialog):
                 self.styles_new = self.preview.BlankStyleDictionary()
                 self.styles_orig = self.DuplicateStyleDict(self.styles_new)
                 self.preview.SetStyles(self.styles_new, nomerge=True)
+                self.preview.DefineMarkers()
             else:
-                self.preview.UpdateAllStyles(ss_choice.GetStringSelection())
+                self.preview.UpdateAllStyles(ss_choice.GetStringSelection().lower())
         elif e_id in [ID_BOLD, ID_EOL, ID_ULINE, ID_ITALIC]:
             self.UpdateStyleSet(e_id)
         else:
