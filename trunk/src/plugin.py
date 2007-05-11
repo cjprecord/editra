@@ -271,18 +271,23 @@ class PluginManager(object):
                 try:
                     entry_point = egg.get_entry_info(ENTRYPOINT, name)
                     cls = entry_point.load() # Loaded entry points call Impliments
-                    self._plugins[cls] = cls(self)
-                finally: #except ImportError, e:
+                except ImportError, e:
                     self.LOG("[pluginmgr][err] Failed to load plugin %s from %s" % \
                              (name, egg.location))
+                else:
+                    try:
+                        self._plugins[cls] = cls(self)
+                    finally:
+                        pass
 
         # Activate all default plugins
         for d_pi in ed_glob.DEFAULT_PLUGINS:
             obj = d_pi.split(".")
             mod = ".".join(obj[:-1])
             entry = __import__(mod, globals(), globals(), ['__name__'])
-            entry = getattr(entry, obj[-1])
-            entry(self)
+            if hasattr(entry, obj[-1]):
+                entry = getattr(entry, obj[-1])
+                entry(self)
 
         return True
 
