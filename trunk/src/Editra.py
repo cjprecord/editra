@@ -40,6 +40,7 @@ __revision__ = "$Id: $"
 # Dependancies
 import os
 import sys
+import getopt
 import gettext
 import wx
 
@@ -283,6 +284,13 @@ def Main():
     else:
         EDITRA = Editra(False)
 
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "", [])
+    except getopt.GetoptError:
+        dev_tool.DEBUGP("[main] Error with getting command line args")
+    else:
+        pass
+
     # 2. Initialize the Language Settings
     langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
     the_locale = wx.Locale(langid)
@@ -309,6 +317,14 @@ def Main():
                                     ed_glob.prog_name)
     EDITRA.RegisterWindow(repr(_frame), _frame, True)
     EDITRA.SetTopWindow(_frame)
+
+    for arg in args:
+        try:
+            _frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, arg)
+        except IndexError, msg:
+            #TODO why does this cause an exception each time
+            dev_tool.DEBUGP("[main] [exception] Trapped Commandline IndexError on Init")
+            pass
 
     # 3. Start Applications Main Loop
     dev_tool.DEBUGP("[main_info] Starting MainLoop...")
