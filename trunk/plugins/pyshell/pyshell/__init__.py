@@ -1,9 +1,29 @@
 # -*- coding: utf-8 -*-
+############################################################################
+#    Copyright (C) 2007 Cody Precord                                       #
+#    cprecord@editra.org                                                   #
+#                                                                          #
+#    Editra is free software; you can redistribute it and#or modify        #
+#    it under the terms of the GNU General Public License as published by  #
+#    the Free Software Foundation; either version 2 of the License, or     #
+#    (at your option) any later version.                                   #
+#                                                                          #
+#    Editra is distributed in the hope that it will be useful,             #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+#    GNU General Public License for more details.                          #
+#                                                                          #
+#    You should have received a copy of the GNU General Public License     #
+#    along with this program; if not, write to the                         #
+#    Free Software Foundation, Inc.,                                       #
+#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
+############################################################################
 """Adds a PyShell to the MainWindow's View Menu"""
 __author__ = "Cody Precord"
 __version__ = "0.01"
 
 import wx
+import wx.aui
 from wx.py import shell
 import ed_glob
 import ed_main
@@ -20,36 +40,28 @@ class PyShell(plugin.Plugin):
 	mw = parent
 	if mw != None:
 	    mb = mw.GetMenuBar()
-	    if not ed_glob.PROFILE.has_key('VIEW_PYSHELL'):
-	        ed_glob.PROFILE['VIEW_PYSHELL'] = False
-	    hm = mb.GetMenuByName("view")
-	    pysh = hm.InsertAlpha(ID_PYSHELL, _("PyShell"), _("Show A Python Shell"), 
+	    vm = mb.GetMenuByName("view")
+	    pysh = vm.InsertAlpha(ID_PYSHELL, _("PyShell"), _("Show A Python Shell"), 
 		      wx.ITEM_CHECK, after=ed_glob.ID_PRE_MARK)
-	    pysh.Check(ed_glob.PROFILE['VIEW_PYSHELL'])
-	    pyshell = shell.Shell(mw, ID_PYSHELL, size=wx.Size(-1, 250))
-	    mw.GetSizer().Add(pyshell, 0, wx.EXPAND)
-	    if ed_glob.PROFILE['VIEW_PYSHELL']:
-		pyshell.Show()
-		mw.Layout()
-	    else:
-		pyshell.Hide()
-		mw.Layout()
+	    pysh.Check(False)
 	    mw.Bind(wx.EVT_MENU, self.OnShowShell, id = ID_PYSHELL)
+	    pyshell = shell.Shell(mw, wx.ID_ANY)
+	    mw._mgr.AddPane(pyshell, wx.aui.AuiPaneInfo().Name("PyShell").\
+			    Caption("PyShell | Editra").Bottom().Layer(0).\
+			    CloseButton(True).MaximizeButton(False).\
+			    BestSize(wx.Size(500,250)))
+	    mw._mgr.GetPane("PyShell").Hide()
 
     def OnShowShell(self, evt):
 	"""Shows the python shell frame"""
 	mo = evt.GetEventObject()
-	mw = wx.GetApp().GetMainWindow()
+	mw = wx.GetApp().GetMainWindow().GetFrameManager()
 	if evt.GetId() == ID_PYSHELL:
-            pyshell = mw.FindWindowById(ID_PYSHELL)
             if mo.IsChecked(ID_PYSHELL):
-		ed_glob.PROFILE['VIEW_PYSHELL'] = True
-		pyshell.Show()
-		mw.Layout()
+	        mw.GetPane("PyShell").Show()
 	    else:
-		ed_glob.PROFILE['VIEW_PYSHELL'] = False
-		pyshell.Hide()
-		mw.Layout()
+	        mw.GetPane("PyShell").Hide()
+	    mw.Update()
 	else:
 	    evt.Skip()
 
