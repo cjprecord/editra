@@ -81,7 +81,7 @@ class ED_Pages(FNB.FlatNotebook):
                                               util.GetPathChar() + u'positions')
         self.pg_num = 0               # Track page numbers for ID creation
         self.control = ed_stc.EDSTC   # Current Control page
-        self.frame = parent           # MainWindow
+        self.frame = parent.GetParent() # MainWindow
 
         # Set Additional Style Parameters
         self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
@@ -232,7 +232,7 @@ class ED_Pages(FNB.FlatNotebook):
         for fname in files:
             self.LOG("[fdt_evt] File(s) Dropped: " + fname)
             if (not os.path.exists(fname)) or (not os.path.isfile(fname)):
-                self.GetParent().PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
+                self.frame.PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
             else:
                 valid_files.append(fname)
 
@@ -240,7 +240,7 @@ class ED_Pages(FNB.FlatNotebook):
             pathname = util.GetPathName(fname)
             the_file = util.GetFileName(fname)
             self.OpenPage(pathname, the_file)
-            self.GetParent().PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
+            self.frame.PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
         return
 
     def OnLeftUp(self, evt):

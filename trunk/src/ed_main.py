@@ -68,6 +68,7 @@ import ed_cmdbar
 import syntax.syntax as syntax
 import generator
 import plugin
+import wx.aui
 
 # Function Aliases
 _ = wx.GetTranslation
@@ -80,6 +81,10 @@ class MainWindow(wx.Frame):
         wx.Frame.__init__(self, parent, id, title, size = wsize,
                           style = wx.DEFAULT_FRAME_STYLE)
 
+        self._mgr = wx.aui.AuiManager(flags=wx.aui.AUI_MGR_DEFAULT | \
+                                      wx.aui.AUI_MGR_TRANSPARENT_DRAG | \
+                                      wx.aui.AUI_MGR_TRANSPARENT_HINT)
+        self._mgr.SetManagedWindow(self)
         self.SetTitle(title + u' - v' + version)
         self.LOG = wx.GetApp().GetLog()
   
@@ -111,17 +116,23 @@ class MainWindow(wx.Frame):
         self.toolbar = None
 
         #---- Notebook to hold editor windows ----#
-        self.nb = ed_pages.ED_Pages(self, wx.ID_ANY)
+        self.edit_pane = wx.Panel(self, wx.ID_ANY)
+        self.nb = ed_pages.ED_Pages(self.edit_pane, wx.ID_ANY)
+        self.edit_pane.nb = self.nb
         self.sizer.Add(self.nb, 1, wx.EXPAND)
         self.sizer.Layout()
-        self.SendSizeEvent()
-        self.SetSizer(self.sizer)
-
+        self.edit_pane.SendSizeEvent()
+        self.edit_pane.SetSizer(self.sizer)
+        self.Layout()
+        self._mgr.AddPane(self.edit_pane, wx.aui.AuiPaneInfo(). \
+                          Name("EditPane").Center().Layer(1).Dockable(False). \
+                          CloseButton(False).MaximizeButton(False). \
+                          CaptionVisible(False))
         #---- Setup Printer ----#
         self.printer = ed_print.ED_Printer(self, self.nb.GetCurrentCtrl)
 
         #---- Command Bar ----#
-        self._cmdbar = ed_cmdbar.CommandBar(self, ID_COMMAND_BAR)
+        self._cmdbar = ed_cmdbar.CommandBar(self.edit_pane, ID_COMMAND_BAR)
         self._cmdbar.Hide()
 
         #---- Status bar on bottom of window ----#
@@ -169,10 +180,6 @@ class MainWindow(wx.Frame):
 
         #---- Menu Bar ----#
         self.SetMenuBar(self.menubar)
-
-        # Bind Extra key commands
-  #      accel = wx.AcceleratorTable([(wx.ACCEL_NORMAL, ord('K'), ID_SHOW_KWHELPER)])
-  #      self.SetAcceleratorTable(accel)
 
         #---- Actions to take on menu events ----#
         self.Bind(wx.EVT_MENU_OPEN, self.UpdateMenu)
@@ -236,17 +243,6 @@ class MainWindow(wx.Frame):
         self.LoadFileHistory(int(PROFILE['FHIST_LVL']))
         self.UpdateToolBar()
 
-        #---- Check for commandline args ----#
-        for arg in sys.argv[1:]:
-            try:
-                if arg != "" and arg[0] != "-":
-                    self.DoOpen(ID_COMMAND_LINE_OPEN, arg)
-                else:
-                    break
-            except IndexError:
-                self.LOG("[main] [exception] Trapped Commandline IndexError on Init")
-                pass
-
         #---- Show the Frame ----#
         if PROFILE.has_key('ALPHA'):
             self.SetTransparent(PROFILE['ALPHA'])
@@ -265,6 +261,8 @@ class MainWindow(wx.Frame):
             self._generator.InstallMenu(self.toolsmenu)
         finally:
             pass
+
+        self._mgr.Update()
         self.Show(True)
 
     __name__ = u"MainWindow"
@@ -296,10 +294,9 @@ class MainWindow(wx.Frame):
                     dirname = util.GetPathName(path)
                     filename = util.GetFileName(path)
                     self.nb.OpenPage(dirname, filename)		   
-                    self.SetTitle(self.nb.control.filename + " - " + 
-                                  "file://" + self.nb.control.dirname +
-                                  "/" + self.nb.control.filename + 
-                                  " - " + prog_name + " v" + version)
+                    self.SetTitle(filename + " - " + "file://" + dirname + 
+                                  "/" + filename + " - " + prog_name + " v" + 
+                                  version)
                     self.nb.GoCurrentPage()
             else:
                 pass
@@ -308,6 +305,10 @@ class MainWindow(wx.Frame):
             filename = util.GetFileName(file_name)
             dirname = util.GetPathName(file_name)
             self.nb.OpenPage(dirname, filename)
+
+    def GetFrameManager(self):
+        """Returns the manager for this frame"""
+        return self._mgr
 
     def LoadFileHistory(self, size):
         """Loads file history from profile"""
@@ -360,9 +361,10 @@ class MainWindow(wx.Frame):
 
     def OnSave(self, evt):
         """Save"""
-        fname = self.nb.control.filename
+        ctrl = self.nb.GetCurrentCtrl()
+        fname = ctrl.filename
         if fname != '':
-            result = self.nb.control.Save()
+            result = ctrl.Save()
             if result == wx.ID_OK:
                 self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
             else:
@@ -375,20 +377,21 @@ class MainWindow(wx.Frame):
         else:
             ret_val = self.OnSaveAs(ID_SAVEAS)
             if ret_val == wx.ID_OK:
-                self.filehistory.AddFileToHistory(os.path.join(self.nb.control.dirname, 
-                                                              self.nb.control.filename))
+                self.filehistory.AddFileToHistory(os.path.join(ctrl.dirname, 
+                                                              ctrl.filename))
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt):
         """Save As"""
-        self.dirname = ''
+        self.dirname = u''
         dlg = wx.FileDialog(self, _("Choose a Save Location"), self.dirname, "", 
                             self.MenuFileTypes(), wx.SAVE|wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
         if result == wx.ID_OK: 
             path = dlg.GetPath()
-            result = self.nb.control.SaveAs(path)
-            fname = self.nb.control.filename
+            ctrl = self.nb.GetCurrentCtrl()
+            result = ctrl.SaveAs(path)
+            fname = ctrl.filename
             if result != wx.ID_OK:
                 dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
                                                 (fname, result), _("Save Error"),
@@ -398,8 +401,8 @@ class MainWindow(wx.Frame):
                 self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
             else:
                 self.PushStatusText(_("Saved File As: %s") % fname, SB_INFO)
-                self.SetTitle(fname + u" - file://" + self.nb.control.dirname + 
-                              self.nb.control.path_char + fname + " - " + 
+                self.SetTitle(fname + u" - file://" + ctrl.dirname + 
+                              ctrl.path_char + fname + " - " + 
                               prog_name + u" v" + version)
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.UpdatePageImage()
@@ -490,6 +493,7 @@ class MainWindow(wx.Frame):
         ### If we get to here there is no turning back so cleanup
         ### additional items and save the user settings
         
+        # Write out saved document information
         self.nb.DocMgr.WriteBook()
 
         # Save Window Size/Position for next launch
