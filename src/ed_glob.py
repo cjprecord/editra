@@ -160,7 +160,8 @@ ID_STYLE_EDIT    = wx.ID_EDIT
 ID_KWHELPER      = wx.NewId()
 ID_GENERATOR     = wx.NewId()
 ID_HTML_GEN      = wx.NewId()
-ID_TEX_GEN      = wx.NewId()
+ID_TEX_GEN       = wx.NewId()
+ID_RTF_GEN       = wx.NewId()
 
 # Help Menu IDs
 ID_ABOUT         = wx.ID_ABOUT
@@ -246,4 +247,4 @@ ID_2_PROF = {
 }
 
 # Default Plugins
-DEFAULT_PLUGINS = ["generator.Html", "generator.LaTeX"]
+DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX") #, "generator.Rtf")
