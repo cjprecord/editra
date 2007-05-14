@@ -161,12 +161,10 @@ class ED_Pages(FNB.FlatNotebook):
         # Open file and put text into the control
         if os.path.exists(path2file):
             self.control.LoadFile(path2file)
+            self.frame.filehistory.AddFileToHistory(path2file)
         else:
             # Set Tab title for blank new file
-            self.SetPageText(self.pg_num, self.control.filename)
-
-        # Add file to history list
-        self.frame.filehistory.AddFileToHistory(path2file)
+            self.SetPageText(self.GetSelection(), self.control.filename)
         self.LOG("[nb_evt] Opened Page: ID = " + str(self.GetSelection()))
 
         # Set style

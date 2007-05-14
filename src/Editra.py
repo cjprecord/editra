@@ -320,6 +320,8 @@ def Main():
 
     for arg in args:
         try:
+            if not os.path.isabs(arg):
+                arg = os.path.abspath(arg)
             _frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, arg)
         except IndexError, msg:
             #TODO why does this cause an exception each time
