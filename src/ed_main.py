@@ -569,8 +569,9 @@ class MainWindow(wx.Frame):
 
         if result == wx.ID_OK:
             font = data.GetChosenFont()
-            self.nb.control.SetGlobalFont(self.nb.control.FONT_TAG_MONO, font.GetFaceName())
-            self.nb.control.UpdateAllStyles()
+            ctrl = self.nb.GetCurrentCtrl()
+            ctrl.SetGlobalFont(self.nb.control.FONT_TAG_MONO, font.GetFaceName())
+            ctrl.UpdateAllStyles()
         dlg.Destroy()
 
     #---- End Format Menu Functions ----#
@@ -593,8 +594,9 @@ class MainWindow(wx.Frame):
         doc = self._generator.GenerateText(e_id, self.nb.GetCurrentCtrl())
         if doc:
             self.nb.NewPage()
-            self.nb.control.SetText(unicode(doc[1]))
-            self.nb.control.FindLexer(doc[0])
+            ctrl = self.nb.GetCurrentCtrl()
+            ctrl.SetText(unicode(doc[1]))
+            ctrl.FindLexer(doc[0])
         else:
             evt.Skip()
 
@@ -661,24 +663,25 @@ class MainWindow(wx.Frame):
                          ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN, ID_COMMENT,
                          ID_UNCOMMENT, ID_AUTOINDENT, ID_LINE_AFTER,
                          ID_LINE_BEFORE])
+        ctrl = self.nb.GetCurrentCtrl()
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
             # the events from the toolbar do not propagate to the control.
             if e_obj.GetClassName() == "wxToolBar" or e_id in [ID_REDO, ID_UNDO] \
                or wx.Platform == '__WXMSW__':
-                self.nb.control.ControlDispatch(evt)
+                ctrl.ControlDispatch(evt)
                 self.UpdateToolBar()
             else:
                 evt.Skip()
         elif e_id in menu_ids:
-            self.nb.control.ControlDispatch(evt)
+            ctrl.ControlDispatch(evt)
         else:
             evt.Skip()
         return
 
     def OnKeyUp(self, evt):
         """ Update Line/Column indicator based on position """
-        line, column = self.nb.control.GetPos(evt)
+        line, column = self.nb.GetCurrentCtrl().GetPos(evt)
         if line >= 0 and column >= 0:
             self.SetStatusText(_("Line: %d  Column: %d") % (line, column), SB_ROWCOL)
             self.UpdateToolBar()
@@ -708,6 +711,7 @@ class MainWindow(wx.Frame):
     #TODO this is fairly stupid, write a more general solution
     def UpdateMenu(self, evt):
         """ Update Status of a Given Menu """
+        ctrl = self.nb.GetCurrentCtrl()
         menu2 = None
         if evt.GetClassName() == "wxMenuEvent":
             menu = evt.GetMenu()
@@ -731,54 +735,41 @@ class MainWindow(wx.Frame):
             # HACK needed for MSW
             if menu2 != None:
                 self.LOG("[menu_evt] Updating EOL Mode Menu")
-                eol = self.nb.control.GetEOLModeId()
+                eol = self.ctrl.GetEOLModeId()
                 for id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
                     menu2.Check(id, eol == id)
         elif menu == self.editmenu:
             self.LOG("[main_evt] Updating Edit Menu")
-            menu.Enable(ID_UNDO, self.nb.control.CanUndo())
-            menu.Enable(ID_REDO, self.nb.control.CanRedo())
-            menu.Enable(ID_PASTE, self.nb.control.CanPaste())
-            sel1, sel2 = self.nb.control.GetSelection()
+            menu.Enable(ID_UNDO, ctrl.CanUndo())
+            menu.Enable(ID_REDO, ctrl.CanRedo())
+            menu.Enable(ID_PASTE, ctrl.CanPaste())
+            sel1, sel2 = ctrl.GetSelection()
             menu.Enable(ID_COPY, sel1 != sel2)
             menu.Enable(ID_CUT, sel1 != sel2)
         elif menu == self.settingsmenu:
             self.LOG("[menu_evt] Updating Settings Menu")
-            menu.Check(ID_AUTOCOMP, self.nb.control.GetAutoComplete())
-            menu.Check(ID_AUTOINDENT, self.nb.control.GetAutoIndent())
-            menu.Check(ID_SYNTAX, self.nb.control.highlight)
-            menu.Check(ID_FOLDING, self.nb.control.folding)
-            menu.Check(ID_BRACKETHL, self.nb.control.brackethl)
+            menu.Check(ID_AUTOCOMP, ctrl.GetAutoComplete())
+            menu.Check(ID_AUTOINDENT, ctrl.GetAutoIndent())
+            menu.Check(ID_SYNTAX, ctrl.highlight)
+            menu.Check(ID_FOLDING, ctrl.folding)
+            menu.Check(ID_BRACKETHL, ctrl.brackethl)
         elif menu == self.viewmenu:
-            zoom = self.nb.control.GetZoom()
+            zoom = ctrl.GetZoom()
             self.LOG("[menu_evt] Updating View Menu: zoom = " + str(zoom))
-            if zoom == 0:
-                self.viewmenu.Enable(ID_ZOOM_NORMAL, False)
-                self.viewmenu.Enable(ID_ZOOM_IN, True)
-                self.viewmenu.Enable(ID_ZOOM_OUT, True)
-            elif zoom > 18:
-                self.viewmenu.Enable(ID_ZOOM_NORMAL, True)
-                self.viewmenu.Enable(ID_ZOOM_IN, False)
-                self.viewmenu.Enable(ID_ZOOM_OUT, True)
-            elif zoom < -8:
-                self.viewmenu.Enable(ID_ZOOM_NORMAL, True)
-                self.viewmenu.Enable(ID_ZOOM_IN, True)
-                self.viewmenu.Enable(ID_ZOOM_OUT, False)
-            else:
-                self.viewmenu.Enable(ID_ZOOM_NORMAL, True)
-                self.viewmenu.Enable(ID_ZOOM_IN, True)
-                self.viewmenu.Enable(ID_ZOOM_OUT, True)
-            menu.Check(ID_SHOW_WS, bool(self.nb.control.GetViewWhiteSpace()))
-            menu.Check(ID_SHOW_EOL, bool(self.nb.control.GetViewEOL()))
-            menu.Check(ID_SHOW_LN, bool(self.nb.control.GetMarginWidth(1)))
-            menu.Check(ID_INDENT_GUIDES, bool(self.nb.control.GetIndentationGuides()))
+            self.viewmenu.Enable(ID_ZOOM_NORMAL, zoom)
+            self.viewmenu.Enable(ID_ZOOM_IN, zoom < 18)
+            self.viewmenu.Enable(ID_ZOOM_OUT, zoom > -8)
+            menu.Check(ID_SHOW_WS, bool(ctrl.GetViewWhiteSpace()))
+            menu.Check(ID_SHOW_EOL, bool(ctrl.GetViewEOL()))
+            menu.Check(ID_SHOW_LN, bool(ctrl.GetMarginWidth(1)))
+            menu.Check(ID_INDENT_GUIDES, bool(ctrl.GetIndentationGuides()))
             menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
         elif menu == self.formatmenu:
             self.LOG("[menu_evt] Updating Format Menu")
-            menu.Check(ID_WORD_WRAP, bool(self.nb.control.GetWrapMode()))
+            menu.Check(ID_WORD_WRAP, bool(ctrl.GetWrapMode()))
         elif menu == self.lineformat:
             self.LOG("[menu_evt] Updating EOL Mode Menu")
-            eol = self.nb.control.GetEOLModeId()
+            eol = ctrl.GetEOLModeId()
             for id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
                 menu.Check(id, eol == id)
         else:
@@ -789,9 +780,10 @@ class MainWindow(wx.Frame):
         """Update Tool Status"""
         if not hasattr(self, 'toolbar') or self.toolbar == None:
             return -1;
-        self.toolbar.EnableTool(ID_UNDO, self.nb.control.CanUndo())
-        self.toolbar.EnableTool(ID_REDO, self.nb.control.CanRedo())
-        self.toolbar.EnableTool(ID_PASTE, self.nb.control.CanPaste())
+        ctrl = self.nb.GetCurrentCtrl()
+        self.toolbar.EnableTool(ID_UNDO, ctrl.CanUndo())
+        self.toolbar.EnableTool(ID_REDO, ctrl.CanRedo())
+        self.toolbar.EnableTool(ID_PASTE, ctrl.CanPaste())
 
     def ModifySave(self):
         """Called when document has been modified prompting
@@ -799,10 +791,10 @@ class MainWindow(wx.Frame):
         the document before closing.
 
         """
-        if self.nb.control.filename == "":
+        if self.nb.GetCurrentCtrl().filename == u"":
             name = self.nb.GetPageText(self.nb.GetSelection())
         else:
-            name = self.nb.control.filename
+            name = self.nb.GetCurrentCtrl().filename
 
         dlg = wx.MessageDialog(self, 
                                 _("The file: \"%s\" has been modified since the last "
