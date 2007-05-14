@@ -99,7 +99,7 @@ sgml_block = (7, "")
 #---- Syntax Style Specs ----#
 syntax_items = [ ('STC_H_DEFAULT', 'default_style'),
                  ('STC_H_ASP', 'array_style'),
-                 ('STC_H_ASPPAT', 'array_style'),
+                 ('STC_H_ASPAT', 'array_style'),
                  ('STC_H_ATTRIBUTE', 'keyword2_style'),
                  ('STC_H_ATTRIBUTEUNKNOWN', 'error_style'),
                  ('STC_H_CDATA', 'default_style'), # Style ME
