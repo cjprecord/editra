@@ -3,7 +3,7 @@
 just run setup.py bdist_egg and copy the egg to the plugin directory
 
 """
-
+import sys
 try:
     from setuptools import setup
 except ImportError:
@@ -12,6 +12,7 @@ except ImportError:
 
 __author__ = "Cody Precord <cprecord@editra.org>"
 if setup != None:
+    sys.argv.append("--dist-dir=../.")
     setup(
         name='PyShell',
         version='0.1',
