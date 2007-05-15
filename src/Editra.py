@@ -101,7 +101,7 @@ class Editra(wx.App):
         self._windows = dict()
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.ED_Art())
-        
+
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
 
@@ -288,6 +288,8 @@ def Main():
         opts, args = getopt.getopt(sys.argv[1:], "", [])
     except getopt.GetoptError:
         dev_tool.DEBUGP("[main] Error with getting command line args")
+        opts = list()
+        args = list()
     else:
         pass
 

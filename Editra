@@ -36,6 +36,8 @@ __revision__ = "$Revision:  $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
+import sys
+import os
 try:
     import src as esrc
 except ImportError:
@@ -46,7 +48,24 @@ except ImportError:
         exit()
 
 #--------------------------------------------------------------------------#
-
+# XXX plugins need to have the import paths of the libraries they use taken
+#     care of in someway to allow for them to work regardless of where the
+#     application is executed from.
+#
+#     i.e  from Editra/Editra (this script), or from Editra/src/Editra.py
+#
+#     For them to work from this script they need to import relative to this
+#     script. (import src.plugin) as apposed to (import plugin), but visa versa
+#     is required for the other main script. This may ultimatly lead to a
+#     reorganization of the package layout, but for now the solution used
+#     below seems to be the best solution to allow for simple imports
+#     (import plugin.py) and still work regardless of installation type. It
+#     is however limited in that it will definatly not work on Windows.
+#
 if __name__ == '__main__':
-    esrc.Editra.Main()
+    src_dir = esrc.util.ResolvConfigDir("src")
+    os.chdir(src_dir)
+    res = os.system("/usr/bin/env python Editra.py")
+    exit(res)
+#     esrc.Editra.Main()
 

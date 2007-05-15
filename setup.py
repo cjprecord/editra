@@ -77,6 +77,7 @@ SRC_SCRIPTS = [ ("src", glob.glob("src/*.py")),
 ]
 
 DATA_FILES = [ 
+              ("include/python2.5", glob.glob("include/python2.5/%s/*" % __platform__)),
               ("pixmaps", ["pixmaps/editra.png", "pixmaps/editra.ico",
                            "pixmaps/editra.icns", "pixmaps/editra_doc.icns",
                            "pixmaps/splashwarn.png", "pixmaps/editra_dl.png",
@@ -166,7 +167,7 @@ if __platform__ == "win32" and 'py2exe' in sys.argv:
         print "\n!! You dont have py2exe installed. Cant build a standalone .exe !!\n"
         exit()
 
-    # Hack for py2exe
+    # put package on path for py2exe
     sys.path.append(os.path.abspath('src/'))
 
     setup(
@@ -191,9 +192,7 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
     # Check for setuptools and ask to download if it is not available
     import src.extern.ez_setup as ez_setup
     ez_setup.use_setuptools()
-
     from setuptools import setup
-    exit()
 
     PLIST = dict(CFBundleName = ed_glob.prog_name,
              CFBundleIconFile = 'Editra.icns',
@@ -219,7 +218,7 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
     setup(
         app = APP,
         version = VERSION, 
-        options = dict( py2app = py2app_options, ),
+        options = dict( py2app = py2app_options),
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
@@ -262,5 +261,4 @@ else:
         package_dir = { NAME : '.' },
         package_data = { NAME : DATA},
         classifiers= CLASSIFIERS,
-    #    requires = ['wx'],
         )
