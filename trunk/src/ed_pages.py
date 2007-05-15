@@ -160,8 +160,14 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Open file and put text into the control
         if os.path.exists(path2file):
-            self.control.LoadFile(path2file)
-            self.frame.filehistory.AddFileToHistory(path2file)
+            #self.control.LoadFile(path2file)
+            try:
+                f = open(path2file, "rb")
+                self.control.SetText(util.EncodeRawText(f.read()))
+                f.close()
+                self.frame.filehistory.AddFileToHistory(path2file)
+            except:
+                wx.MessageBox(_("There was an error while opening the file"))
         else:
             # Set Tab title for blank new file
             self.SetPageText(self.GetSelection(), self.control.filename)

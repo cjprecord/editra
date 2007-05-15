@@ -117,6 +117,18 @@ def SetClipboardText(txt):
     return 0
 
 # File Helper Functions
+def EncodeRawText(text):
+    """Encodes the given raw text (text read in binary form) and trys
+    to encode it into UTF-8. If this fails it will return the plain
+    ascii version.
+
+    """
+    try:
+        txt = unicode(text, 'utf-8', 'replace')
+    except:
+        txt = text
+    return txt
+
 def GetFileReader(file_name):
     """Returns a file stream reader object for reading the
     supplied file name. It returns a utf-8 reader if the host
