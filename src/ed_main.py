@@ -243,7 +243,7 @@ class MainWindow(wx.Frame):
         self.LoadFileHistory(int(PROFILE['FHIST_LVL']))
         self.UpdateToolBar()
 
-        #---- Show the Frame ----#
+        #---- Set Position and Size ----#
         if PROFILE.has_key('ALPHA'):
             self.SetTransparent(PROFILE['ALPHA'])
         if PROFILE['SET_WPOS'] and PROFILE.has_key('WPOS') and \
@@ -492,18 +492,18 @@ class MainWindow(wx.Frame):
 
         ### If we get to here there is no turning back so cleanup
         ### additional items and save the user settings
-        
+
         # Write out saved document information
         self.nb.DocMgr.WriteBook()
 
         # Save Window Size/Position for next launch
-        #HACK workaround for possible bug in wxPython 2.8
+        # XXX workaround for possible bug in wxPython 2.8
         if wx.Platform == '__WXMAC__' and self.GetToolBar():
             self.toolbar.Destroy()
         PROFILE['WSIZE'] = self.GetSize()
         PROFILE['WPOS'] = self.GetPosition()
         self.LOG("[main_evt] [exit] Closing editor at pos=" + 
-                        str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
+                 str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
         
         # Update profile
         profiler.UpdateProfileLoader()
@@ -514,7 +514,7 @@ class MainWindow(wx.Frame):
         try:
             del self.filehistory
         except AttributeError:
-            self.LOG("[main_evt] [exit] [exception] Trapped AttributeError OnExt")
+            self.LOG("[main_evt] [exit] [exception] Trapped AttributeError OnExit")
             pass
         self._cmdbar.Destroy()
 
