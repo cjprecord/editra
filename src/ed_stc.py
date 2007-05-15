@@ -551,10 +551,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if interp != wx.EmptyString:
                 interp = interp.split(u"/")[-1]
                 interp = interp.strip().split()
-                if interp[-1][0] != "-":
+                if len(interp) and interp[-1][0] != "-":
                     interp = interp[-1]
-                else:
+                elif len(interp):
                     interp = interp[0]
+                else:
+                    interp = u''
                 ex_map = { "python" : "py", "wish" : "tcl", "ruby" : "rb",
                            "bash" : "sh", "csh" : "csh", "perl" : "pl",
                            "ksh" : "ksh", "php" : "php" }
