@@ -18,7 +18,7 @@
 #    Free Software Foundation, Inc.,                                       #
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
-"""Adds a PyShell to the MainWindow's View Menu"""
+"""Adds a PyShell to the View Menu"""
 __author__ = "Cody Precord"
 __version__ = "0.01"
 
@@ -31,7 +31,6 @@ import ed_menu
 import plugin
 
 ID_PYSHELL = wx.NewId()
-
 class PyShell(plugin.Plugin):
     """Adds a PyShell to the MainWindow's View Menu"""
     plugin.Implements(ed_main.MainWindowI)
@@ -43,14 +42,18 @@ class PyShell(plugin.Plugin):
 	    vm = mb.GetMenuByName("view")
 	    pysh = vm.InsertAlpha(ID_PYSHELL, _("PyShell"), _("Show A Python Shell"), 
 		      wx.ITEM_CHECK, after=ed_glob.ID_PRE_MARK)
-	    pysh.Check(False)
+	    pysh.Check(ed_glob.PROFILE.get('PYSHELL', False))
 	    mw.Bind(wx.EVT_MENU, self.OnShowShell, id = ID_PYSHELL)
 	    pyshell = shell.Shell(mw, wx.ID_ANY)
 	    mw._mgr.AddPane(pyshell, wx.aui.AuiPaneInfo().Name("PyShell").\
-			    Caption("PyShell | Editra").Bottom().Layer(0).\
+			    Caption("Editra | PyShell").Bottom().Layer(0).\
 			    CloseButton(True).MaximizeButton(False).\
 			    BestSize(wx.Size(500,250)))
-	    mw._mgr.GetPane("PyShell").Hide()
+	    if ed_glob.PROFILE.get('PYSHELL', False):
+                mw._mgr.GetPane("PyShell").Show()
+	    else:
+		ed_glob.PROFILE['PYSHELL'] = False
+	        mw._mgr.GetPane("PyShell").Hide()
 
     def OnShowShell(self, evt):
 	"""Shows the python shell frame"""
@@ -58,8 +61,10 @@ class PyShell(plugin.Plugin):
 	mw = wx.GetApp().GetMainWindow().GetFrameManager()
 	if evt.GetId() == ID_PYSHELL:
             if mo.IsChecked(ID_PYSHELL):
+                ed_glob.PROFILE['PYSHELL'] = True
 	        mw.GetPane("PyShell").Show()
 	    else:
+                ed_glob.PROFILE['PYSHELL'] = False
 	        mw.GetPane("PyShell").Hide()
 	    mw.Update()
 	else:
