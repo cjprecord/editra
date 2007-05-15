@@ -92,9 +92,12 @@ import wx
 import ed_glob
 import util
 try:
-   from extern import pkg_resources
+   import pkg_resources
 except ImportError, msg:
-   pkg_resources = None
+    try:
+        from extern import pkg_resources
+    except ImportError, msg:
+        pkg_resources = None
 
 #--------------------------------------------------------------------------#
 # Globals
