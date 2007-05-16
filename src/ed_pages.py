@@ -62,13 +62,19 @@ import wx.lib.flatnotebook as FNB
 IMG = {}
 
 _ = wx.GetTranslation
+
+# Compatibility for wxPython versions before 2.8.4
+if hasattr(FNB, 'FNB_FF2'):
+    TAB_STYLE = FNB.FNB_FF2
+else:
+    TAB_STYLE = FNB.FNB_FANCY_TABS
 #--------------------------------------------------------------------------#
 class ED_Pages(FNB.FlatNotebook):
     """ Editra tabbed pages class """
     def __init__(self, parent, id_num):
         """Initialize a notebook with a blank text control in it"""
         FNB.FlatNotebook.__init__(self, parent, id_num, 
-                                  style=FNB.FNB_FANCY_TABS | 
+                                  style=TAB_STYLE |
                                         FNB.FNB_X_ON_TAB | 
                                         FNB.FNB_SMART_TABS |
                                         FNB.FNB_BACKGROUND_GRADIENT
@@ -123,12 +129,13 @@ class ED_Pages(FNB.FlatNotebook):
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
         self.SetPageImage(self.GetSelection(), IMG['TXT'])
 
-    def OpenPageType(self, page):
+    def OpenPageType(self, page, title):
         """A Generic Page open Function to allow pages to contain
         any type of widget.
 
         """
-        
+        self.AddPage(page, title)
+
     def OpenPage(self, path, filename):
         """Open a File Inside of a New Page"""
         # build path and check type
