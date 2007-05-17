@@ -502,7 +502,7 @@ class DownloadDialog(wx.Frame):
 
         # Adjust progress bar and status widths
         sz = self.GetSize()
-        self._progress.SetSize(wx.Size(int(sz[0]*.80), 40))
+        self._progress.SetSize(wx.Size(int(sz[0]*.80), 20))
         self.SetStatusWidths([-1, 100])
         self.SetStatusText(_("Downloading..."), self.SB_INFO)
 
