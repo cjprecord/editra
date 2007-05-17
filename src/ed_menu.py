@@ -60,9 +60,8 @@ class ED_Menu(wx.Menu):
 
     def Append(self, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, use_bmp=True):
         """Append a MenuItem"""
-        item = wx.Menu.Append(self, id, text, help, kind)
-        if use_bmp:
-            self.SetItemBitmap(item)
+        item = wx.MenuItem(self, id, text, help, kind)
+        self.AppendItem(item)
         return item
 
     def AppendItem(self, item, use_bmp=True):
