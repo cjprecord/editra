@@ -293,8 +293,9 @@ class PrefPages(wx.Notebook):
         """Creates the general preferences page"""
         gen_panel = wx.Panel(self, wx.ID_ANY)
 
-        info_txt = [ "Most changes made in this dialog currently require the program",
-                     "to be restarted before taking effect."]
+        info_txt = [ "Changes made in this dialog are saved in your current",
+                     "profile. Some Items such as Language require the program",
+                     "to be restarted before taking affect."]
 
         info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt))
         
@@ -463,6 +464,8 @@ class PrefPages(wx.Notebook):
         text_panel.SetSizer(border)
         self.AddPage(text_panel, _("Text"))
 
+    # XXX there are some display issues to work on with the list control
+    #     but everything is working for now.
     def PluginPage(self):
         """Plugin Configuration Page"""
         plug_panel = wx.Panel(self, wx.ID_ANY)
@@ -602,7 +605,7 @@ class PrefPages(wx.Notebook):
         cur_ver = wx.StaticText(upd_panel, wx.ID_ANY,  ed_glob.version)
         cur_sz.Add(cur_ver, 0, wx.ALIGN_CENTER_HORIZONTAL)
         e_update = updater.UpdateProgress(upd_panel, ed_glob.ID_PREF_UPDATE_BAR,
-                                          size=wx.Size(320, 50))
+                                          size=wx.Size(320, 20))
         upd_box = wx.StaticBox(upd_panel, ID_LATE_BOX, _("Latest Version"))
         upd_bsz = wx.StaticBoxSizer(upd_box, wx.HORIZONTAL)
         upd_bsz.SetMinSize(wx.Size(150, 40))
