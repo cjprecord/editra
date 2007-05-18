@@ -44,6 +44,7 @@ import os
 import wx
 import ed_glob
 import util
+from edimage import catalog
 
 #--------------------------------------------------------------------------#
 # Map object Id's to custom user definable art resources
@@ -80,7 +81,9 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
 }
 
 # Map of non user definable art resources
-OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : u'editra_dl.png' }
+OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
+              ed_glob.ID_APP_ICON : catalog['editra'],
+              ed_glob.ID_APP_SPLASH : catalog['splashwarn']}
 
 # Map for default system/wx provided graphic resources.
 DEFAULT = { 
@@ -138,7 +141,10 @@ class ED_Art(wx.ArtProvider):
         if CLIENTS.has_key(client) and (ART.has_key(int(id)) or OTHER_ART.has_key(int(id))):
             resource_path = self.GetArtPath(client)
             if client == wx.ART_OTHER:
-                art_src = resource_path + OTHER_ART[int(id)]
+                if OTHER_ART.has_key(int(id)):
+                    return OTHER_ART[int(id)].getBitmap()
+                else:
+                    return wx.NullBitmap
             else:
                 art_src = resource_path + ART[int(id)]
 

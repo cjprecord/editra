@@ -88,16 +88,10 @@ class MainWindow(wx.Frame):
         self.SetTitle(title + u' - v' + version)
         self.LOG = wx.GetApp().GetLog()
   
-        # Try and set an app icon
+        # Try and set an app icon 
+        #NEED TESTING ON WINDOWS
         try:
-            if wx.Platform == '__WXMSW__':
-                ed_icon = CONFIG['SYSPIX_DIR'] + "editra.ico"
-                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
-                self.LOG("[main_evt] Set Icon for Windows")
-            else:
-                ed_icon = CONFIG['SYSPIX_DIR'] + "editra.png"
-                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
-                self.LOG("[main_evt] Set Icon for " + os.sys.platform)
+            self.SetIcon(wx.ArtProvider.GetIcon(str(ID_APP_ICON)))
         finally:
             pass
 
@@ -595,7 +589,7 @@ class MainWindow(wx.Frame):
         if doc:
             self.nb.NewPage()
             ctrl = self.nb.GetCurrentCtrl()
-            ctrl.SetText(unicode(doc[1]))
+            ctrl.SetText(util.EncodeRawText(doc[1])) 
             ctrl.FindLexer(doc[0])
         else:
             evt.Skip()
@@ -735,7 +729,7 @@ class MainWindow(wx.Frame):
             # HACK needed for MSW
             if menu2 != None:
                 self.LOG("[menu_evt] Updating EOL Mode Menu")
-                eol = self.ctrl.GetEOLModeId()
+                eol = ctrl.GetEOLModeId()
                 for id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
                     menu2.Check(id, eol == id)
         elif menu == self.editmenu:
