@@ -39,7 +39,7 @@ __revision__ = "$Id: $"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.0.97'
+version = __version__ = u'0.1.0'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
@@ -172,7 +172,6 @@ ID_CONTACT       = wx.NewId()
 ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMMAND_BAR       = wx.NewId()
 ID_DOWNLOAD_DLG      = wx.NewId()
-ID_APP_ICON          = wx.NewId()
 ID_APP_SPLASH        = wx.NewId()
 
 # Statusbar IDs
