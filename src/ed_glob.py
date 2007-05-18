@@ -172,6 +172,8 @@ ID_CONTACT       = wx.NewId()
 ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMMAND_BAR       = wx.NewId()
 ID_DOWNLOAD_DLG      = wx.NewId()
+ID_APP_ICON          = wx.NewId()
+ID_APP_SPLASH        = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0

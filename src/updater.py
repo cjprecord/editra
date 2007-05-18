@@ -52,9 +52,9 @@ __revision__ = "$Revision:  $"
 # Dependancies
 import os
 import re
-import wx.lib.delayedresult as delayedresult
 import urllib
 import wx
+import wx.lib.delayedresult as delayedresult
 import ed_glob
 import ed_event
 from profiler import CalcVersionValue
@@ -454,6 +454,12 @@ class DownloadDialog(wx.Frame):
         
         """
         wx.Frame.__init__(self, parent, id, title, pos, size, style)
+        try:
+            self.SetIcon(wx.ArtProvider.GetIcon(str(ed_glob.ID_APP_ICON), 
+                                                wx.ART_OTHER))
+        finally:
+            pass
+        self.SetMinSize(wx.Size(350, -1))   #TEST ME ON MSW
 
         #---- Attributes/Objects ----#
         self.LOG = wx.GetApp().GetLog()
