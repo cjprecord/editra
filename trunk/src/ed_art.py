@@ -26,7 +26,7 @@
 # SUMMARY:                                                                 #
 #    Provides and ArtProvider class for loading the custom images into the #
 #   editor.                                                                #
-#
+#                                                                          #
 # METHODS:
 #
 #
@@ -82,7 +82,6 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
 
 # Map of non user definable art resources
 OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
-              ed_glob.ID_APP_ICON : catalog['editra'],
               ed_glob.ID_APP_SPLASH : catalog['splashwarn']}
 
 # Map for default system/wx provided graphic resources.
