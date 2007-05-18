@@ -308,8 +308,8 @@ def Main():
 
     # Splash a warning if version is not a final version
     if int(ed_glob.version[0]) < 1:
-        splash = wx.SplashScreen(wx.Bitmap(ed_glob.CONFIG['SYSPIX_DIR'] + 'splashwarn.png', 
-                                           wx.BITMAP_TYPE_PNG), 
+        splash = wx.SplashScreen(wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
+                                                          wx.ART_OTHER), 
                                  wx.SPLASH_CENTRE_ON_PARENT | wx.SPLASH_NO_TIMEOUT, 
                                  0, None, wx.ID_ANY)
         splash.Show()
