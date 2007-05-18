@@ -76,17 +76,16 @@ SRC_SCRIPTS = [ ("src", glob.glob("src/*.py")),
                 ("scripts/i18n", glob.glob("scripts/i18n/*.po")),
 ]
 
-DATA_FILES = [ 
-              ("include/python2.5", glob.glob("include/python2.5/%s/*" % __platform__)),
+DATA_FILES = [("include/python2.5", glob.glob("include/python2.5/%s/*" % __platform__)),
               ("pixmaps", ["pixmaps/editra.png", "pixmaps/editra.ico",
                            "pixmaps/editra.icns", "pixmaps/editra_doc.icns",
-                           "pixmaps/splashwarn.png", "pixmaps/editra_dl.png",
                            "pixmaps/editra_doc.png"]),
               ("pixmaps/mime", glob.glob("pixmaps/mime/*.png")),
+              ("pixmaps/theme/Default", ["pixmaps/theme/Default/README"]),
               ("pixmaps/theme/Nuovo",["pixmaps/theme/Nuovo/AUTHORS",
-               "pixmaps/theme/Nuovo/COPYING",
-               "pixmaps/theme/Nuovo/DONATE",
-               "pixmaps/theme/Nuovo/README"]),
+                                      "pixmaps/theme/Nuovo/COPYING",
+                                      "pixmaps/theme/Nuovo/DONATE",
+                                      "pixmaps/theme/Nuovo/README"]),
               ("pixmaps/theme/Nuovo/toolbar", glob.glob("pixmaps/theme/Nuovo/toolbar/*.png")),
               ("pixmaps/theme/Nuovo/menu", glob.glob("pixmaps/theme/Nuovo/menu/*.png")),
               ("plugins", glob.glob("plugins/*.egg")),
@@ -100,18 +99,18 @@ DATA_FILES = [
               ("test_data", glob.glob("test_data/*")),
               ("docs", glob.glob("docs/*.txt")),
               "README.txt","CHANGELOG.txt","COPYING.txt", "pixmaps/editra_doc.icns"
-            ]
+             ]
 
 DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py",
          "pixmaps/*.png", "pixmaps/editra.ico", 'Editra',
-         "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Nuovo/AUTHOR",
-         "pixmaps/theme/Nuovo/COPYING", "pixmaps/theme/Nuovo/DONATE",
-         "pixmaps/theme/Nuovo/README", "pixmaps/theme/Nuovo/toolbar/*.png",
-         "pixmaps/theme/Nuovo/menu/*.png", "pixmaps/theme/Default/README",
-         "profiles/default.pp", "profiles/.loader", "profiles/default.pp.sample",
-         "locale/en_US/LC_MESSAGES/Editra.mo", "locale/ja_JP/LC_MESSAGES/Editra.mo", 
-         "styles/*.ess", "test_data/*", "README.txt","CHANGELOG.txt","COPYING.txt",
-         "plugins/*.egg"
+         "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Default/README",
+         "pixmaps/theme/Nuovo/AUTHOR", "pixmaps/theme/Nuovo/COPYING", 
+         "pixmaps/theme/Nuovo/DONATE", "pixmaps/theme/Nuovo/README", 
+         "pixmaps/theme/Nuovo/toolbar/*.png", "pixmaps/theme/Nuovo/menu/*.png", 
+         "pixmaps/theme/Default/README", "profiles/default.pp", "profiles/.loader",
+         "profiles/default.pp.sample", "locale/en_US/LC_MESSAGES/Editra.mo",
+         "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "test_data/*", 
+         "README.txt","CHANGELOG.txt","COPYING.txt", "plugins/*.egg"
 ]
 
 DESCRIPTION = "Code Editor"
