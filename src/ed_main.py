@@ -89,9 +89,13 @@ class MainWindow(wx.Frame):
         self.LOG = wx.GetApp().GetLog()
   
         # Try and set an app icon 
-        #NEED TESTING ON WINDOWS
         try:
-            self.SetIcon(wx.ArtProvider.GetIcon(str(ID_APP_ICON)))
+            if wx.Platform == "__WXMSW__":
+                ed_icon = CONFIG['SYSPIX_DIR'] + u"editra.ico"
+                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
+            else:
+                ed_icon = CONFIG['SYSPIX_DIR'] + u"editra.png"
+                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
         finally:
             pass
 
