@@ -346,6 +346,8 @@ Section Uninstall
   RMDir "$INSTDIR\locale\ja_JP"
   RMDir "$INSTDIR\locale"
   RMDir "$INSTDIR\profiles"
+  RMDir "$INSTDIR\includes\python2.5"
+  RMDir "$INSTDIR\includes\"
   RMDir "$INSTDIR\pixmaps\mime"
   RMDir "$INSTDIR\pixmaps\theme\Default"
   RMDir "$INSTDIR\pixmaps\theme\Nuovo\menu"
