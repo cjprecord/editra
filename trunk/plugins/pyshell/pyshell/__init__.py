@@ -36,35 +36,35 @@ class PyShell(plugin.Plugin):
     plugin.Implements(ed_main.MainWindowI)
     def PlugIt(self, parent):
         """Adds the view menu entry and registers the event handler"""
-    mw = parent
-    if mw != None:
-        mb = mw.GetMenuBar()
-        vm = mb.GetMenuByName("view")
-        pysh = vm.InsertAlpha(ID_PYSHELL, _("PyShell"), _("Show A Python Shell"), 
-        wx.ITEM_CHECK, after=ed_glob.ID_PRE_MARK)
-        pysh.Check(ed_glob.PROFILE.get('PYSHELL', False))
-        mw.Bind(wx.EVT_MENU, self.OnShowShell, id = ID_PYSHELL)
-        pyshell = shell.Shell(mw, wx.ID_ANY)
-        mw._mgr.AddPane(pyshell, wx.aui.AuiPaneInfo().Name("PyShell").\
-                        Caption("Editra | PyShell").Bottom().Layer(0).\
-                        CloseButton(True).MaximizeButton(False).\
-                        BestSize(wx.Size(500,250)))
-        if ed_glob.PROFILE.get('PYSHELL', False):
-            mw._mgr.GetPane("PyShell").Show()
-        else:
-            ed_glob.PROFILE['PYSHELL'] = False
-            mw._mgr.GetPane("PyShell").Hide()
+        mw = parent
+        if mw != None:
+            mb = mw.GetMenuBar()
+            vm = mb.GetMenuByName("view")
+            pysh = vm.InsertAlpha(ID_PYSHELL, _("PyShell"), _("Show A Python Shell"), 
+            wx.ITEM_CHECK, after=ed_glob.ID_PRE_MARK)
+            pysh.Check(ed_glob.PROFILE.get('PYSHELL', False))
+            mw.Bind(wx.EVT_MENU, self.OnShowShell, id = ID_PYSHELL)
+            pyshell = shell.Shell(mw, wx.ID_ANY)
+            mw._mgr.AddPane(pyshell, wx.aui.AuiPaneInfo().Name("PyShell").\
+                            Caption("Editra | PyShell").Bottom().Layer(0).\
+                            CloseButton(True).MaximizeButton(False).\
+                            BestSize(wx.Size(500,250)))
+            if ed_glob.PROFILE.get('PYSHELL', False):
+                mw._mgr.GetPane("PyShell").Show()
+            else:
+                ed_glob.PROFILE['PYSHELL'] = False
+                mw._mgr.GetPane("PyShell").Hide()
 
     def OnShowShell(self, evt):
-    """Shows the python shell frame"""
-    mw = wx.GetApp().GetMainWindow().GetFrameManager()
-    if evt.GetId() == ID_PYSHELL:
-        if ed_glob.PROFILE['PYSHELL']:
-            ed_glob.PROFILE['PYSHELL'] = False
-            mw.GetPane("PyShell").Hide()
+        """Shows the python shell frame"""
+        mw = wx.GetApp().GetMainWindow().GetFrameManager()
+        if evt.GetId() == ID_PYSHELL:
+            if ed_glob.PROFILE['PYSHELL']:
+                ed_glob.PROFILE['PYSHELL'] = False
+                mw.GetPane("PyShell").Hide()
+            else:
+                ed_glob.PROFILE['PYSHELL'] = True
+                mw.GetPane("PyShell").Show()
+                mw.Update()
         else:
-            ed_glob.PROFILE['PYSHELL'] = True
-            mw.GetPane("PyShell").Show()
-            mw.Update()
-    else:
-        evt.Skip()
+            evt.Skip()
