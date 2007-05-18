@@ -429,7 +429,7 @@ class LaTeX(plugin.Plugin):
 
         # Get Document start point info
         last_id = self._stc.GetStyleAt(parse_pos)
-        tmp_tex = self.TransformText(chr(self._stc.GetCharAt(parse_pos)))
+        tmp_tex = self.TransformText(self._stc.GetTextRange(parse_pos, parse_pos+1))
         tag = self._stc.FindTagById(last_id)
         if tag != wx.EmptyString:
             self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
@@ -440,7 +440,7 @@ class LaTeX(plugin.Plugin):
             curr_id = self._stc.GetStyleAt(parse_pos)
             style_end = parse_pos
             if parse_pos > 1:
-                tmp_tex += self.TransformText(chr(self._stc.GetCharAt(parse_pos - 1)))
+                tmp_tex += self.TransformText(self._stc.GetTextRange((parse_pos - 1), parse_pos))
             if curr_id == 0 and self._stc.GetStyleAt(parse_pos + 1) == last_id:
                 curr_id = last_id
 
@@ -580,6 +580,9 @@ class LaTeX(plugin.Plugin):
         escaping all special characters and sequences.
         
         """
+#         if isinstance(txt, int):
+#             txt = chr(txt)
+
         ch_map = { "#" : "\\#", "$" : "\\$", "^" : "\\^",
                    "%" : "\\%", "&" : "\\&", "_" : "\\_",
                    "{" : "\\{", "}" : "\\}", "~" : "\\~",
