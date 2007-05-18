@@ -49,7 +49,7 @@ import ed_search
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
-# Encoded Art
+# Close Button Bitmap
 from wx import ImageFromStream, BitmapFromImage
 import cStringIO, zlib
 
@@ -123,7 +123,8 @@ class CommandBar(wx.Panel):
         # Install Controls
         self._h_sizer.Add((8,8))
         self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, GetXBitmap(), \
-                                      size=(14,14), style=wx.BU_AUTODRAW | wx.BU_EXACTFIT)
+                                      size=(14,14), style=wx.BU_AUTODRAW | \
+                                                          wx.BU_EXACTFIT)
         self._h_sizer.Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
         self._h_sizer.Add((12,12))
         self._v_sizer.Add((2,2))
@@ -194,13 +195,13 @@ class CommandBar(wx.Panel):
         v_sizer.Add((4,4))
         f_lbl = wx.StaticText(self, ID_FIND_LBL, _("Find") + u": ")
         mc_sizer = wx.BoxSizer(wx.VERTICAL)
-        mc_sizer.Add((5,5))
+        mc_sizer.Add((6,6))
         match_case = wx.CheckBox(self, ID_MATCH_CASE, _("Match Case"))
         match_case.SetValue(search.IsMatchCase())
         mc_sizer.Add(match_case)
         mc_sizer.Add((4,4))
         ww_sizer = wx.BoxSizer(wx.VERTICAL)
-        ww_sizer.Add((5,5))
+        ww_sizer.Add((6,6))
         ww_cb = wx.CheckBox(self, ID_SEARCH_WORD, _("Whole Word"))
         ww_cb.SetValue(search.IsWholeWord())
         ww_sizer.Add(ww_cb)
