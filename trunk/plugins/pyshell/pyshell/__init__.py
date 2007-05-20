@@ -37,7 +37,9 @@ class PyShell(plugin.Plugin):
     def PlugIt(self, parent):
         """Adds the view menu entry and registers the event handler"""
         mw = parent
+        self._log = wx.GetApp().GetLog()
         if mw != None:
+            self._log("[pyshell] Installing PyShell Plugin")
             mb = mw.GetMenuBar()
             vm = mb.GetMenuByName("view")
             pysh = vm.InsertAlpha(ID_PYSHELL, _("PyShell"), _("Show A Python Shell"), 
@@ -60,11 +62,13 @@ class PyShell(plugin.Plugin):
         mw = wx.GetApp().GetMainWindow().GetFrameManager()
         if evt.GetId() == ID_PYSHELL:
             if ed_glob.PROFILE['PYSHELL']:
+                self._log("[pyshell] Hide PyShell")
                 ed_glob.PROFILE['PYSHELL'] = False
                 mw.GetPane("PyShell").Hide()
             else:
+                self._log("[pyshell] Show PyShell")
                 ed_glob.PROFILE['PYSHELL'] = True
                 mw.GetPane("PyShell").Show()
-                mw.Update()
+            mw.Update()
         else:
             evt.Skip()
