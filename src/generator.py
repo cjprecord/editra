@@ -232,7 +232,7 @@ class Html(plugin.Plugin):
     def GetMenuEntry(self, menu):
         """Returns the Menu control for the HTML generator"""
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"HTML",
-                           _("Generate an %s page from the current document") % u"HTML")
+                           _("Generate a %s version of the current document") % u"HTML")
 
     def OptimizeCss(self):
         """Optimizes the CSS Set"""
@@ -515,7 +515,7 @@ class LaTeX(plugin.Plugin):
     def GetMenuEntry(self, menu):
         """Returns the Menu control for the LaTeX generator"""
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"LaTeX",
-                           _("Generate an %s page from the current document") % u"LaTeX")
+                           _("Generate an %s version of the current document") % u"LaTeX")
 
     def HexToRGB(self, hex_str):
         """Returns a comma separated rgb string representation
