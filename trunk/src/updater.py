@@ -343,7 +343,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         if mode == self.ID_CHECKING:
             # Simulate updates
             if progress[0] < range:
-                self.UpdaterHook(progress[0]+1, 1, 85)
+                self.UpdaterHook(progress[0]+1, 1, 90)
                 progress = self.GetProgress()
             if not self._checking and progress[0] >= range:
                 self.Stop()
@@ -455,11 +455,14 @@ class DownloadDialog(wx.Frame):
         """
         wx.Frame.__init__(self, parent, id, title, pos, size, style)
         try:
-            self.SetIcon(wx.ArtProvider.GetIcon(str(ed_glob.ID_APP_ICON), 
-                                                wx.ART_OTHER))
+            if wx.Platform == "__WXMSW__":
+                ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.ico"
+                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
+            else:
+                ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.png"
+                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
         finally:
             pass
-        self.SetMinSize(wx.Size(350, -1))   #TEST ME ON MSW
 
         #---- Attributes/Objects ----#
         self.LOG = wx.GetApp().GetLog()
@@ -508,7 +511,13 @@ class DownloadDialog(wx.Frame):
 
         # Adjust progress bar and status widths
         sz = self.GetSize()
-        self._progress.SetSize(wx.Size(int(sz[0]*.80), 20))
+        if wx.Platform == '__WXMSW__':
+            wd = sz.GetWidth()
+            if wd < 375:
+                wd = 375
+            self.SetSize(wx.Size(wd, sz.GetHeight()))
+            self.SendSizeEvent()
+        self._progress.SetSize(wx.Size(int(sz[0]*.80), 18))
         self.SetStatusWidths([-1, 100])
         self.SetStatusText(_("Downloading..."), self.SB_INFO)
 
