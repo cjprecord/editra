@@ -161,9 +161,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             line = line - 1
             if line < 0:
                 line = 0
-        pos = self.GetLineEndPosition(line)
+        if line or not before:
+            pos = self.GetLineEndPosition(line)
+            curr = 1
+        else:
+            pos = 0
+            curr = 0
         self.InsertText(pos, self.GetEOLChar())
-        self.GotoPos(pos + 1)
+        self.GotoPos(pos + curr)
 
     def Configure(self):
         """Configures the editors settings by using profile values"""
