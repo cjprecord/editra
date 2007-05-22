@@ -279,7 +279,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         for data in self.syntax_set:
             if id == getattr(wx.stc, data[0]):
                 return data[1]
-        return wx.EmptyString
+        return 'default_style'
 
     def GetAutoComplete(self):
         """Is Autocomplete being used by this instance"""

@@ -180,7 +180,7 @@ class Html(plugin.Plugin):
         parse_pos = 0
         style_start = 0
         style_end = 0
-        last_pos = self.stc.GetLineEndPosition(self.stc.GetLineCount())
+        last_pos = self.stc.GetLineEndPosition(self.stc.GetLineCount()) + 1
 
         # Get Document start point info
         last_id = self.stc.GetStyleAt(parse_pos)
@@ -199,7 +199,7 @@ class Html(plugin.Plugin):
             if curr_id == 0 and self.stc.GetStyleAt(parse_pos + 1) == last_id:
                 curr_id = last_id
 
-            if curr_id != last_id:
+            if curr_id != last_id or parse_pos == last_pos:
                 tmp = self.stc.GetTextRange(style_start, style_end)
                 tmp = self.TransformText(tmp)
                 if tmp.isspace() or tag in ["default_style", "operator_style"]:
