@@ -3,7 +3,7 @@
 !define PRODUCT_VERSION "0.1.0"
 !define PRODUCT_PUBLISHER "Cody Precord"
 !define PRODUCT_WEB_SITE "http://editra.org"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\editra.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Editra.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
@@ -26,8 +26,9 @@ SetCompressor lzma
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\editra.exe"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\CHANGELOG.txt"
+!define MUI_FINISHPAGE_RUN
+!define MUI_FINISHPAGE_RUN_TEXT "Run Editra"
+!define MUI_FINISHPAGE_RUN_FUNCTION "LaunchEditra"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -205,6 +206,10 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
+; Functions
+Function LaunchEditra
+  Exec '"$INSTDIR\Editra.exe" "$INSTDIR\CHANGELOG.TXT" '
+FunctionEnd
 
 Function un.onUninstSuccess
   HideWindow
@@ -346,8 +351,8 @@ Section Uninstall
   RMDir "$INSTDIR\locale\ja_JP"
   RMDir "$INSTDIR\locale"
   RMDir "$INSTDIR\profiles"
-  RMDir "$INSTDIR\includes\python2.5"
-  RMDir "$INSTDIR\includes\"
+  RMDir "$INSTDIR\include\python2.5"
+  RMDir "$INSTDIR\include\"
   RMDir "$INSTDIR\pixmaps\mime"
   RMDir "$INSTDIR\pixmaps\theme\Default"
   RMDir "$INSTDIR\pixmaps\theme\Nuovo\menu"
