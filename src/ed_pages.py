@@ -169,12 +169,12 @@ class ED_Pages(FNB.FlatNotebook):
         if os.path.exists(path2file):
             #self.control.LoadFile(path2file)
             try:
-                f = open(path2file, "rb")
-                self.control.SetText(util.EncodeRawText(f.read()))
-                f.close()
+                reader = util.GetFileReader(path2file) #open(path2file, "rb")
+                self.control.SetText(util.EncodeRawText(reader.read()))
+                reader.close()
                 self.frame.filehistory.AddFileToHistory(path2file)
             except:
-                wx.MessageBox(_("There was an error while opening the file"))
+                wx.MessageBox(_("There was an error opening %s") % path2file)
         else:
             # Set Tab title for blank new file
             self.SetPageText(self.GetSelection(), self.control.filename)
@@ -182,6 +182,9 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Set style
         self.control.FindLexer()
+
+        # Check EOL characters
+        self.control.CheckEOL()
 
         # Clear Undo Buffer of this control
         self.control.EmptyUndoBuffer()
