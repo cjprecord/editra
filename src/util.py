@@ -256,7 +256,7 @@ def MakeConfigDir(name):
     config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.prog_name
     try:
         os.mkdir(config_dir + GetPathChar() + name)
-    except:
+    finally:
         pass
 
 def CreateConfigDir():
@@ -264,23 +264,23 @@ def CreateConfigDir():
     directories and any of the default config files.
 
     """
-
     #---- Resolve Paths ----#
     config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.prog_name
     profile_dir = config_dir + GetPathChar() + u"profiles"
     config_file = ed_glob.CONFIG['PROFILE_DIR'] + u"default.pp"
     loader = ed_glob.CONFIG['PROFILE_DIR'] + u".loader"
     dest_file = profile_dir + GetPathChar() + u"default.pp"
-    doc_cache = config_dir + GetPathChar() + u"cache"
+    ext_cfg = ["cache", "styles", "plugins"]
 
     #---- Create Directories ----#
     if not os.path.exists(config_dir):
         os.mkdir(config_dir)
     if not os.path.exists(profile_dir):
         os.mkdir(profile_dir)
-    if not os.path.exists(doc_cache):
-        os.mkdir(doc_cache)
-    
+    for cfg in ext_cfg:
+        if not HasConfigDir(cfg):
+            MakeConfigDir(cfg)
+
     #---- Copy Default Config Files ----#
     if os.sys.platform == 'win32':
         os.system(u"copy " + u"\"" + config_file + u"\" \"" + dest_file + u"\"")
@@ -291,7 +291,6 @@ def CreateConfigDir():
         os.system(u"cp " + loader + " " + profile_dir + 
                   GetPathChar() + u".loader")
 
-    dev_tool.DEBUGP("[util_info] Copied config data to " + dest_file)
     ed_glob.PROFILE["MYPROFILE"] = dest_file
     from profiler import UpdateProfileLoader
     UpdateProfileLoader()
@@ -305,7 +304,6 @@ def ResolvConfigDir(config_dir, sys_only=False):
     string.
 
     """
-
     if not sys_only:
         # Try to look for a user dir
         user_config = ( wx.GetHomeDir() + GetPathChar() + "." +
@@ -431,10 +429,9 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     high = 100
 
     # We take the percent way of the color from color -. white
-    i = percent
-    r = color.Red() + ((i*rd*100)/high)/100
-    g = color.Green() + ((i*gd*100)/high)/100
-    b = color.Blue() + ((i*bd*100)/high)/100
+    r = color.Red() + ((percent*rd*100)/high)/100
+    g = color.Green() + ((percent*gd*100)/high)/100
+    b = color.Blue() + ((percent*bd*100)/high)/100
     return wx.Colour(r, g, b, alpha)
 
 # String Manupulation/Conversion Utilities

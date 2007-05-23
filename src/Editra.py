@@ -252,6 +252,11 @@ def InitConfig():
             profiler.LoadProfile()
             if wx.Platform == '__WXGTK__':
                 ed_glob.PROFILE['ICONS'] = 'Default'
+            # When upgrading from an older version make sure all
+            # config directories are available.
+            for cfg in ["cache", "styles", "plugins", "profiles"]:
+                if not util.HasConfigDir(cfg):
+                    util.MakeConfigDir(cfg)
             PROFILE_UPDATED = True
     else:
         util.CreateConfigDir()
