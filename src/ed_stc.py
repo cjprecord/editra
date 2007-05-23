@@ -657,6 +657,46 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             evt.Skip()
 
+    # XXX Whats the best way to warn, dialog, show eol char...,
+    #     will have to do some experimenting for now will just
+    #     make EOL visible.
+    def CheckEOL(self):
+        """Checks the EOL mode of the opened document. If the mode
+        that the document was saved in is different than the editors
+        current mode the editor will switch modes to preserve the eol
+        type of the file, if the eol chars are mixed then the editor
+        will toggle on eol visibility.
+
+        """
+        mixed = diff = False
+        eol_map = {"\n" : wx.stc.STC_EOL_LF, 
+                   "\r\n" : wx.stc.STC_EOL_CRLF,
+                   "\r" : wx.stc.STC_EOL_CR}
+        eol = chr(self.GetCharAt(self.GetLineEndPosition(0)))
+        if eol == "\r":
+            tmp = chr(self.GetCharAt(self.GetLineEndPosition(0)+1))
+            if tmp == "\n":
+                eol += tmp
+        if eol != self.GetEOLChar():
+            diff = True
+        for line in range(self.GetLineCount()-1):
+            end = self.GetLineEndPosition(line)
+            tmp = chr(self.GetCharAt(end))
+            if tmp == "\r":
+                tmp2 = chr(self.GetCharAt(self.GetLineEndPosition(0)+1))
+                if tmp2 == "\n":
+                    tmp += tmp2
+            if tmp != eol:
+                mixed = True
+                break
+        if mixed or diff:
+            if mixed:
+                self.SetViewEOL(True)
+            else:
+                self.SetEOLMode(eol_map.get(eol, wx.stc.STC_EOL_LF))
+        else:
+            pass
+
     def ConvertLineMode(self, mode_id):
         """Converts all line endings in a document to a specified
         format.
