@@ -12,12 +12,12 @@ DATE xx/xx/2007
 
 NEWS:
   This is the first release in the alpha release series. The alpha releases will
-probably continue until version 0.5.0 or so when when the beta phase begins and 
+probably continue until version 0.5.0 or so when the beta phase begins and 
 most development energy will be shifted to stabilization of the editor and the 
 api as well as improving performance to prepare for a 1.0 release. What can be 
 expected during this alpha release series is the improvement of current features, 
 a few new minor features and more thorough testing prior to a release which will 
-lead to a more stable and usable program.
+lead to a more powerful, more stable and more usable program.
 
   The big addition to this version is the support for extensions to the editor
 through plugins written in python. The plugins must be written and packaged
@@ -48,21 +48,25 @@ to help improve it.
 NEW: [features/improvements]
 +Extensibility through plugins written in python
 +PyShell Plugin
-+More unified themeing support
 +Source package build/install script (OS Independent Installer)
++Some minor improvements to the Windows Installer
 +Improved OS X integration/behavior of applet
++More complete themeing support
 +Improved UTF-8 and other non-ascii file handling
 +Update Checker/Downloader (manual install is still required)
-+The Keyword helper is now bound to Ctrl+K (Cmd+K on Mac)
++Keyword helper now bound to Ctrl+K (Cmd+K on Mac)
 +Minor refinement of the logging subsystem
 +Improved (HTML, MASM, NASM, VB, Smalltalk) highlighting support
 +LaTeX document generator
++Checks EOL characters and warns if mixed, otherwise preserves the EOL char
+used by the document.
 +Extended file type autodetection (checks the shebang(#!) line if there is one)
 +Some minor UI enhancements, and a few new menu icons
 
 BUG FIXES:
 +GTK keybinding for Undo
 +GTK command bar display issues
++No more lost text when generating HTML
 +Added some missing c-shell keyword definitions
 +Added a missing style region definitions to the CSS, NSIS, HTML highlighters
 +Fixed improper highlighting in Visual Basic Highlighter
@@ -72,6 +76,7 @@ BUG FIXES:
 +Opening a file from the command line with a relative path now works properly
 +Tab images are set properly for files opened via command line
 +MSW all menu icons now show properly
++All config directories are properly created on an upgrade/install
 
 #---------------------------------------------------------------------------------#
 VERSION 0.0.97
