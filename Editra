@@ -63,9 +63,12 @@ except ImportError:
 #     is however limited in that it will definatly not work on Windows.
 #
 if __name__ == '__main__':
-    src_dir = esrc.util.ResolvConfigDir("src")
-    os.chdir(src_dir)
-    res = os.system("/usr/bin/env python Editra.py")
-    exit(res)
-#     esrc.Editra.Main()
-
+    src_dir = os.path.dirname(esrc.__file__)
+    try:
+        os.chdir(src_dir)
+    except OSError:
+        print ("There was a problem finding the main script,"
+              " try running Editra.py in the src dir")
+    else:
+        res = os.system("/usr/bin/env python Editra.py")
+        exit(res)
