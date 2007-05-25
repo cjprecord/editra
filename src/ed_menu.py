@@ -69,7 +69,7 @@ class ED_Menu(wx.Menu):
         bitmap if one is available, unless use_bmp is set to false.
 
         """
-        if use_bmp:
+        if use_bmp and item.GetKind() == wx.ITEM_NORMAL:
             self.SetItemBitmap(item)
         wx.Menu.AppendItem(self, item)
 
@@ -79,7 +79,7 @@ class ED_Menu(wx.Menu):
 
         """
         item = wx.Menu.Insert(self, pos, id, text, help, kind)
-        if use_bmp:
+        if use_bmp and kind == wx.ITEM_NORMAL:
             self.SetItemBitmap(item)
         return item
 
