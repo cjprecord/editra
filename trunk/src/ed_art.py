@@ -44,6 +44,7 @@ import os
 import wx
 import ed_glob
 import util
+import syntax.synglob as synglob
 from edimage import catalog
 
 #--------------------------------------------------------------------------#
@@ -80,6 +81,27 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_ZOOM_NORMAL : u'zoomd.png'
 }
 
+# File Type Art
+MIME_ART = { synglob.ID_LANG_BASH : u'shell.png',
+             synglob.ID_LANG_BOURNE : u'shell.png',
+             synglob.ID_LANG_C : u'c.png',
+             synglob.ID_LANG_CPP : u'cpp.png',
+             synglob.ID_LANG_CSH : u'shell.png',
+             synglob.ID_LANG_CSS : u'css.png',
+             synglob.ID_LANG_HTML : u'html.png',
+             synglob.ID_LANG_JAVA : u'java.png',
+             synglob.ID_LANG_KSH : u'shell.png',
+             synglob.ID_LANG_LATEX : u'tex.png',
+             synglob.ID_LANG_MAKE : u'makefile.png',
+             synglob.ID_LANG_PERL : u'perl.png',
+             synglob.ID_LANG_PHP : u'php.png',
+             synglob.ID_LANG_PYTHON : u'python.png',
+             synglob.ID_LANG_RUBY : u'ruby.png',
+             synglob.ID_LANG_TCL : u'tcl.png',
+             synglob.ID_LANG_TEX : u'tex.png',
+             synglob.ID_LANG_TXT : u'text.png'
+ }
+ 
 # Map of non user definable art resources
 OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
               ed_glob.ID_APP_SPLASH : catalog['splashwarn']}
@@ -122,7 +144,7 @@ class ED_Art(wx.ArtProvider):
         """Initializes the art provider"""
         wx.ArtProvider.__init__(self)
 
-    # XXX Why when making a call to the ArtProvider and supplying a size why
+    # XXX Why when making a call to the ArtProvider and supplying a size
     #     does it degrade the image quality so much. If no size is supplied
     #     and the image is scaled it looks fine, but if a size is supplied and
     #     the image is not scaled it will still look poor.
@@ -137,7 +159,10 @@ class ED_Art(wx.ArtProvider):
         # If using default theme let the system provide the art when possible
         if ed_glob.PROFILE['ICONS'].lower() == u'default' and DEFAULT.has_key(int(id)):
             return wx.ArtProvider.GetBitmap(DEFAULT[int(id)], client, size)
-        if CLIENTS.has_key(client) and (ART.has_key(int(id)) or OTHER_ART.has_key(int(id))):
+        if CLIENTS.has_key(client) and \
+           (ART.has_key(int(id)) or \
+            OTHER_ART.has_key(int(id)) or \
+            MIME_ART.has_key(int(id))):
             resource_path = self.GetArtPath(client)
             if client == wx.ART_OTHER:
                 if OTHER_ART.has_key(int(id)):
@@ -145,7 +170,11 @@ class ED_Art(wx.ArtProvider):
                 else:
                     return wx.NullBitmap
             else:
-                art_src = resource_path + ART[int(id)]
+                if ART.has_key(int(id)):
+                    art_src = resource_path + ART[int(id)]
+                else:
+                    mime_path = self.GetArtPath(client, mime=True)
+                    art_src = mime_path + MIME_ART[int(id)]
 
             if os.path.exists(art_src):
                 img = wx.Image(art_src, wx.BITMAP_TYPE_PNG)
@@ -178,7 +207,7 @@ class ED_Art(wx.ArtProvider):
         else:
             return wx.NullBitmap
 
-    def GetArtPath(self, client):
+    def GetArtPath(self, client, mime=False):
         """Gets the path of the resource directory to get
         the bitmaps from.
 
@@ -194,13 +223,15 @@ class ED_Art(wx.ArtProvider):
         if client == wx.ART_OTHER:
             path = ed_glob.CONFIG['SYSPIX_DIR']
         else:
-            path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                   ed_glob.PROFILE['ICONS'] + util.GetPathChar() + \
-                   CLIENTS[client] + util.GetPathChar()
+            if mime:
+                path = ed_glob.CONFIG['SYSPIX_DIR'] + util.GetPathChar() + \
+                       u'mime' + util.GetPathChar()
+            else:
+                path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
+                       ed_glob.PROFILE['ICONS'] + util.GetPathChar() + \
+                       CLIENTS[client] + util.GetPathChar()
 
         if os.path.exists(path):
             return path
         else:
             return wx.EmptyString
-
-

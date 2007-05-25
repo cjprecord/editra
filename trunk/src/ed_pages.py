@@ -45,13 +45,13 @@ __revision__ = "$Id: $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-
 import os
 import sys
 import re
 import wx
 import ed_glob
 import ed_stc
+import syntax.synglob as synglob
 import ed_search
 import util
 import doctools
@@ -88,9 +88,16 @@ class ED_Pages(FNB.FlatNotebook):
         self.pg_num = 0               # Track page numbers for ID creation
         self.control = ed_stc.EDSTC   # Current Control page
         self.frame = parent.GetParent() # MainWindow
+        self._index = dict()          # image list index
 
         # Set Additional Style Parameters
         self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
+
+        # Setup the ImageList and the default image
+        il = wx.ImageList(16,16)
+        txtbmp = wx.ArtProvider.GetBitmap(str(synglob.ID_LANG_TXT), wx.ART_MENU)
+        self._index[synglob.ID_LANG_TXT] = il.Add(txtbmp)
+        self.SetImageList(il)
 
         # Notebook Events
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
@@ -98,8 +105,6 @@ class ED_Pages(FNB.FlatNotebook):
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSED, self.OnPageClosed)
         self._pages.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
-
-        self.CreateImageList()
 
         # Add a blank page
         self.NewPage()
@@ -127,7 +132,7 @@ class ED_Pages(FNB.FlatNotebook):
         self.control = ed_stc.EDSTC(self, self.pg_num)
         self.LOG("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
         self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
-        self.SetPageImage(self.GetSelection(), IMG['TXT'])
+        self.SetPageImage(self.GetSelection(), str(self.control.lang_id))
 
     def OpenPageType(self, page, title):
         """A Generic Page open Function to allow pages to contain
@@ -169,7 +174,7 @@ class ED_Pages(FNB.FlatNotebook):
         if os.path.exists(path2file):
             #self.control.LoadFile(path2file)
             try:
-                reader = util.GetFileReader(path2file) #open(path2file, "rb")
+                reader = util.GetFileReader(path2file)
                 self.control.SetText(util.EncodeRawText(reader.read()))
                 reader.close()
                 self.frame.filehistory.AddFileToHistory(path2file)
@@ -196,11 +201,7 @@ class ED_Pages(FNB.FlatNotebook):
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
         pg_num = self.GetSelection()
-        if ftype in IMG:
-            self.LOG("[nb_info] Set Page Image to: " + ftype)
-            self.SetPageImage(pg_num, IMG[ftype])
-        else:
-            self.SetPageImage(pg_num, IMG['TXT'])
+        self.SetPageImage(pg_num, str(self.control.lang_id))
 
         # Refocus on selected page
         self.GoCurrentPage()
@@ -347,55 +348,21 @@ class ED_Pages(FNB.FlatNotebook):
 
         return result
 
-    def CreateImageList(self):
-        """Creates the image list for the tabs buttons."""
-        #HACK should use themimetypemanager to handle filetypes/images ect
-        #     just cant seem to get it to work properly on the mac right now.
-        # Get Images
-        img_dir = ed_glob.CONFIG['MIME_DIR']
-        IMG["C"] = wx.Bitmap(img_dir + "c.png", wx.BITMAP_TYPE_PNG)
-        IMG["CPP"] = wx.Bitmap(img_dir + "cpp.png", wx.BITMAP_TYPE_PNG)
-        IMG["CSS"] = wx.Bitmap(img_dir + "css.png", wx.BITMAP_TYPE_PNG)
-        IMG["H"] = wx.Bitmap(img_dir + "header.png", wx.BITMAP_TYPE_PNG)
-        IMG["HTML"] = wx.Bitmap(img_dir + "html.png", wx.BITMAP_TYPE_PNG)
-        IMG["JAVA"] = wx.Bitmap(img_dir + "java.png", wx.BITMAP_TYPE_PNG)
-        IMG["MAKEFILE"] = wx.Bitmap(img_dir + "makefile.png", wx.BITMAP_TYPE_PNG)
-        IMG["PL"] = wx.Bitmap(img_dir + "perl.png", wx.BITMAP_TYPE_PNG)
-        IMG["PHP"] = wx.Bitmap(img_dir + "php.png", wx.BITMAP_TYPE_PNG)
-        IMG["PY"] = wx.Bitmap(img_dir + "python.png", wx.BITMAP_TYPE_PNG)
-        IMG["RB"] = wx.Bitmap(img_dir + "ruby.png", wx.BITMAP_TYPE_PNG)
-        IMG["SH"] = wx.Bitmap(img_dir + "shell.png", wx.BITMAP_TYPE_PNG)
-        IMG["TCL"] = wx.Bitmap(img_dir + "tcl.png", wx.BITMAP_TYPE_PNG)
-        IMG["TEX"] = wx.Bitmap(img_dir + "tex.png", wx.BITMAP_TYPE_PNG)
-        IMG["TXT"] = wx.Bitmap(img_dir + "text.png", wx.BITMAP_TYPE_PNG)
+    def SetPageImage(self, pg_num, lang_id):
+        """Sets the page image by querying the ArtProvider based
+        on the language id associated with the type of open document.
+        Any unknown filetypes are associated with the plaintext page
+        image.
 
-        # Create Image List
-        il = wx.ImageList(16, 16)
-
-        # Add Images to List and store index in IMG dictionary
-        IMG["C"] = il.Add(IMG["C"])
-        IMG["CPP"] = il.Add(IMG["CPP"])
-        IMG["CSS"] = il.Add(IMG["CSS"])
-        IMG["H"] = il.Add(IMG["H"])
-        IMG["HTML"] = il.Add(IMG["HTML"])
-        IMG["JAVA"] = il.Add(IMG["JAVA"])
-        IMG["MAKEFILE"] = il.Add(IMG["MAKEFILE"])
-        IMG["PL"] = il.Add(IMG["PL"])
-        IMG["PHP"] = il.Add(IMG["PHP"])
-        IMG["PY"] = il.Add(IMG["PY"])
-        IMG["RB"] = il.Add(IMG["RB"])
-        IMG["SH"] = il.Add(IMG["SH"])
-        IMG["TCL"] = il.Add(IMG["TCL"])
-        IMG["TEX"] = il.Add(IMG["TEX"])
-        IMG["TXT"] = il.Add(IMG["TXT"])
-
-        # Set duplicate indexs
-        IMG["CSH"] = IMG["SH"]
-        IMG["KSH"] = IMG["SH"]
-
-        self.SetImageList(il)
-        self.LOG("[nb_info] Created Image List: Size = " + str(self.GetImageList().GetImageCount()))
-        return 0
+        """
+        il = self.GetImageList()
+        if not self._index.has_key(lang_id):
+            bmp = wx.ArtProvider.GetBitmap(lang_id, wx.ART_MENU)
+            if bmp.IsNull():
+                self._index.setdefault(lang_id, self._index[synglob.ID_LANG_TXT])
+            else:
+                self._index[lang_id] = il.Add(wx.ArtProvider.GetBitmap(lang_id, wx.ART_MENU))
+        FNB.FlatNotebook.SetPageImage(self, pg_num, self._index[lang_id])
 
     def UpdatePageImage(self):
         """Updates the page tab image"""
@@ -403,10 +370,7 @@ class ED_Pages(FNB.FlatNotebook):
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
         self.LOG("[nb_info] Updating Page Image: Page " + str(pg_num))
-        if IMG.has_key(ftype):
-            self.SetPageImage(pg_num, IMG[ftype])
-        else:
-            self.SetPageImage(pg_num, IMG["TXT"])
+        self.SetPageImage(pg_num, str(self.control.lang_id))
 
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have
