@@ -6,8 +6,23 @@ Change Log:
 
 Changes since last release:
 
+#---------------------------------------------------------------------------------#
+VERSION 0.1.xx
+DATE 0x/xx/2007
+Alpha Snapshot Release
+
+NEWS:
+
+NEW: [features/improvements]
++Some minor performance improvements
++Support for Lua, Fortran77, Fortran95
+
+BUG FIXES:
++Tab images now get set properly regarless of how file is opened
+
+#---------------------------------------------------------------------------------#
 VERSION 0.1.0
-DATE xx/xx/2007
+DATE 05/24/2007
 1st Alpha Release
 
 NEWS:
