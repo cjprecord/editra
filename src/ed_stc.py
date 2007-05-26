@@ -106,7 +106,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
         self._comment = list()
-        self.lang_id = 0
+        self.lang_id = 0        # Language ID from syntax module
         self.Configure()
 
         # Set Up Margins 
@@ -866,6 +866,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         try:
            self.lang_id = syn_data[syntax.LANGUAGE]
         except KeyError:
+           self.LOG("[stc][err] Failed to get Lang Id from Syntax package")
            self.lang_id = 0
 
         lexer = syn_data[syntax.LEXER]
@@ -874,6 +875,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetStyleBits(7)
         elif lexer == wx.stc.STC_LEX_NULL:
             self.SetIndentationGuides(False)
+            self.SetLexer(lexer)
+            self.ClearDocumentStyle()
             self.UpdateBaseStyles()
             return 1
         else:
@@ -882,6 +885,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         try:
             keywords = syn_data[syntax.KEYWORDS]
         except KeyError:
+            self.LOG("[stc][err] No Keywords Data Found")
             keywords = []
        
         try:
