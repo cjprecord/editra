@@ -70,5 +70,8 @@ if __name__ == '__main__':
         print ("There was a problem finding the main script,"
               " try running Editra.py in the src dir")
     else:
-        res = os.system("/usr/bin/env python Editra.py")
+        args = u''
+        if len(sys.argv) > 1:
+            args = " ".join(sys.argv[1:])
+        res = os.system("/usr/bin/env python Editra.py " + args)
         exit(res)
