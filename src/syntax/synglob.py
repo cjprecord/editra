@@ -81,6 +81,9 @@ ID_LANG_SGML = wx.NewId()
 # Use LEX_LISP
 ID_LANG_LISP = wx.NewId()
 
+# Use LEX_LUA
+ID_LANG_LUA = wx.NewId()
+
 # Use LEX_MSSQL (Microsoft SQL)
 ID_LANG_MSSQL = wx.NewId()
 
@@ -171,7 +174,7 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
             'frm'  : (ID_LANG_VB,     'Visual Basic',         stc.STC_LEX_VB,    'visualbasic'),
             'h'    : (ID_LANG_C,      'C',                    stc.STC_LEX_CPP,   'cpp'),
             'hh'   : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
-            'h++'  : (ID_LANG_CPP,     'CPP',                  stc.STC_LEX_CPP,   'cpp'),
+            'h++'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
             'hpp'  : (ID_LANG_CPP,    'CPP',                  stc.STC_LEX_CPP,   'cpp'),
             'html' : (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,  'html'),
             'htm'  : (ID_LANG_HTML,   'HTML',                 stc.STC_LEX_HTML,  'html'),
@@ -183,6 +186,7 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
             'ksh'  : (ID_LANG_KSH,    'Korn Shell Script',    stc.STC_LEX_BASH,  'sh'),
             'lisp' : (ID_LANG_LISP,   'Lisp',                 stc.STC_LEX_LISP,  'lisp'),
             'lsp'  : (ID_LANG_LISP,   'Lisp',                 stc.STC_LEX_LISP,  'lisp'),
+            'lua'  : (ID_LANG_LUA,    'Lua',                  stc.STC_LEX_LUA,   'lua'),
             'mak'  : (ID_LANG_MAKE,   'Makefile',             stc.STC_LEX_MAKEFILE, 'make'),
             'makefile' : (ID_LANG_MAKE, 'Makefile',           stc.STC_LEX_MAKEFILE, 'make'),
             'masm' : (ID_LANG_MASM,   'MASM',                 stc.STC_LEX_ASM,   'masm'),
@@ -229,7 +233,7 @@ EXT_REG = {'68k'  : (ID_LANG_68K,    '68K Assembly',         stc.STC_LEX_ASM,   
 # Used when manually setting lexer from a menu/dialog
 EXT_DICT = {ID_LANG_ASM : 'asm', ID_LANG_BATCH : 'bat',
             ID_LANG_C : 'c', ID_LANG_CPP : 'cpp',
-            ID_LANG_CSS : 'css',
+            ID_LANG_CSS : 'css', ID_LANG_LUA : 'lua',
             ID_LANG_HTML : 'html', ID_LANG_JAVA : 'java',
             ID_LANG_LISP : 'lisp', ID_LANG_MAKE : 'makefile',
             ID_LANG_NSIS : 'nsi', ID_LANG_PASCAL : 'pas',
@@ -257,6 +261,7 @@ FILE_LEXERS = { 'Ada'                      : stc.STC_LEX_ADA,
                 'HTML'                     : stc.STC_LEX_HTML,
                 'PHP'                      : stc.STC_LEX_HTML,
                 'Tex/LaTex'                : stc.STC_LEX_LATEX,
+                'Lua'                      : stc.STC_LEX_LUA,
                 'Lisp'                     : stc.STC_LEX_LISP,
                 'Makefile'                 : stc.STC_LEX_MAKEFILE,
                 'Microsoft SQL'            : stc.STC_LEX_MSSQL,
@@ -285,6 +290,7 @@ LEX_MODULES = {stc.STC_LEX_ADA     : ['ada'],
                 stc.STC_LEX_HTML     : ['javascript', 'html', 'php'],
                 stc.STC_LEX_TEX      : ['latex'],
                 stc.STC_LEX_LISP     : ['lisp'],
+                stc.STC_LEX_LUA      : ['lua'],
                 stc.STC_LEX_MAKEFILE : ['make'],
                 stc.STC_LEX_MSSQL    : ['mssql'],
                 stc.STC_LEX_NSIS     : ['nsis'],
