@@ -685,7 +685,8 @@ class MainWindow(wx.Frame):
                          ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM,
                          ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN, ID_COMMENT,
                          ID_UNCOMMENT, ID_AUTOINDENT, ID_LINE_AFTER,
-                         ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB])
+                         ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB,
+                         ID_TRIM_WS])
         ctrl = self.nb.GetCurrentCtrl()
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as

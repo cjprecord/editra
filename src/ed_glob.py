@@ -144,8 +144,10 @@ ID_EOL_WIN       = wx.NewId()
 ID_WORD_WRAP     = wx.NewId()
 ID_INDENT        = wx.ID_INDENT
 ID_UNINDENT      = wx.ID_UNINDENT
-ID_TAB_TO_SPACE  = wx.NewId()
+ID_WS_FORMAT     = wx.NewId()
 ID_SPACE_TO_TAB  = wx.NewId()
+ID_TAB_TO_SPACE  = wx.NewId()
+ID_TRIM_WS       = wx.NewId()
 ID_COMMENT       = wx.NewId()
 ID_UNCOMMENT     = wx.NewId()
 
