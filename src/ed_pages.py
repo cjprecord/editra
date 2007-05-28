@@ -47,6 +47,7 @@ __revision__ = "$Id: $"
 # Dependancies
 import os
 import sys
+import glob
 import re
 import wx
 import ed_glob
@@ -178,8 +179,13 @@ class ED_Pages(FNB.FlatNotebook):
                 self.control.SetText(util.EncodeRawText(reader.read()))
                 reader.close()
                 self.frame.filehistory.AddFileToHistory(path2file)
-            except:
-                wx.MessageBox(_("There was an error opening %s") % path2file)
+            except Exception, msg:
+                err = wx.MessageDialog(self, _("There was an error opening %s") \
+                                       % path2file, _("Error Opening File"),
+                                       style=wx.OK | wx.CENTER | wx.ICON_INFORMATION)
+                err.ShowModal()
+                err.Destroy()
+                self.DeletePage(self.GetSelection())
         else:
             # Set Tab title for blank new file
             self.SetPageText(self.GetSelection(), self.control.filename)
@@ -220,7 +226,7 @@ class ED_Pages(FNB.FlatNotebook):
         return current_page
 
     def GetTextControls(self):
-        """Gets all the currently oppend text controls"""
+        """Gets all the currently opened text controls"""
         children = self.GetChildren()
         controls = list()
         for child in children:
@@ -246,8 +252,29 @@ class ED_Pages(FNB.FlatNotebook):
         valid_files = list()
         for fname in files:
             self.LOG("[fdt_evt] File(s) Dropped: " + fname)
-            if (not os.path.exists(fname)) or (not os.path.isfile(fname)):
+            if not os.path.exists(fname):
                 self.frame.PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
+            elif os.path.isdir(fname):
+                dcnt = glob.glob(os.path.join(fname, '*'))
+                dcnt = util.FilterFiles(dcnt)
+                if not len(dcnt):
+                    dlg = wx.MessageDialog(self, _("There are no files that Editra"
+                                                   " can open in %s") % fname,
+                                           _("No Valid Files to Open"),
+                                           style=wx.OK|wx.CENTER|wx.ICON_INFORMATION)
+                else:
+                    dlg = wx.MessageDialog(self, _("Do you wish to open all %d"
+                                           " files in this directory?\n\nWarning opening"
+                                           " many files at once may cause the"
+                                           " editor to temporarly freeze.") % len(dcnt),
+                                           _("Open Directory?"),
+                                           style = wx.YES|wx.NO|wx.ICON_INFORMATION)
+                result = dlg.ShowModal()
+                dlg.Destroy()
+                if result == wx.ID_YES:
+                    valid_files.extend(dcnt)
+                else:
+                    pass
             else:
                 valid_files.append(fname)
 
@@ -305,9 +332,9 @@ class ED_Pages(FNB.FlatNotebook):
         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
 
         self.LOG("[nb_evt] Control Changing from Page: " + str(evt.GetOldSelection()) + 
-                " to Page: " + str(evt.GetSelection()) + "\n" +
-                "[nb_info] It has file named: " + self.control.filename + "\n" +
-                "[nb_info] In DIR: " + self.control.dirname)
+                 " to Page: " + str(evt.GetSelection()) + "\n" +
+                 "[nb_info] It has file named: " + self.control.filename + "\n" +
+                 "[nb_info] In DIR: " + self.control.dirname)
         self.frame.UpdateToolBar()
         evt.Skip()
 
@@ -322,9 +349,22 @@ class ED_Pages(FNB.FlatNotebook):
     def OnPageClosed(self, evt):
         """Handles Paged Closed Event"""
         self.LOG("[nb_evt] Closed Page: #" + str(self.GetSelection()))
+        # wxMAC Bug? 
+        # Make sure tab area is refreshed mostly for when all pages have been
+        # clased to make sure that the last tab is removed from the view after
+        # deletion.
+        self.Update()
+        self.Refresh()
         evt.Skip()
     #---- End Event Handlers ----#
 
+    def CloseAllPages(self):
+        """Closes all open pages"""
+        for page in range(self.GetPageCount()):
+            result = self.ClosePage()
+            if result == wx.ID_CANCEL:
+                break
+            
     def ClosePage(self):
         """Closes Currently Selected Page"""
         self.GoCurrentPage()

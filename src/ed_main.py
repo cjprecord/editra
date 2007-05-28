@@ -190,8 +190,10 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnNew, id=ID_NEW)
         self.Bind(wx.EVT_MENU, self.OnOpen, id=ID_OPEN)
         self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSE)
+        self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSEALL)
         self.Bind(wx.EVT_MENU, self.OnSave, id=ID_SAVE)
         self.Bind(wx.EVT_MENU, self.OnSaveAs, id=ID_SAVEAS)
+        self.Bind(wx.EVT_MENU, self.OnSave, id=ID_SAVEALL)
         self.Bind(wx.EVT_MENU, self.OnSaveProfile, id=ID_SAVE_PROFILE)
         self.Bind(wx.EVT_MENU, self.OnLoadProfile, id=ID_LOAD_PROFILE)
         self.Bind(wx.EVT_MENU, self.OnPrint)
@@ -355,39 +357,62 @@ class MainWindow(wx.Frame):
 
     def OnClosePage(self, evt):
         """Close a page"""
-        self.nb.ClosePage()
+        e_id = evt.GetId()
+        if e_id == ID_CLOSE:
+            self.nb.ClosePage()
+        elif e_id == ID_CLOSEALL:
+            # XXX maybe warn and ask if they really want to clase
+            #     all pages before doing it.
+            self.nb.CloseAllPages()
+        else:
+            evt.Skip()
 
     def OnSave(self, evt):
-        """Save"""
-        ctrl = self.nb.GetCurrentCtrl()
-        fname = ctrl.filename
-        if fname != '':
-            result = ctrl.Save()
-            if result == wx.ID_OK:
-                self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
-            else:
-                self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
-                dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
-                                                (fname, result), _("Save Error"),
-                                        wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
-                dlg.Destroy()
+        """Save Current or All Buffers"""
+        e_id = evt.GetId()
+        ctrls = list()
+        if e_id == ID_SAVE:
+            ctrls = [(self.nb.GetPageText(self.nb.GetSelection()), 
+                     self.nb.GetCurrentCtrl())]
+        elif e_id == ID_SAVEALL:
+            for page in range(self.nb.GetPageCount()):
+                if issubclass(self.nb.GetPage(page).__class__, wx.stc.StyledTextCtrl):
+                    ctrls.append((self.nb.GetPageText(page), self.nb.GetPage(page)))
         else:
-            ret_val = self.OnSaveAs(ID_SAVEAS)
-            if ret_val == wx.ID_OK:
-                self.filehistory.AddFileToHistory(os.path.join(ctrl.dirname, 
-                                                              ctrl.filename))
+            evt.Skip()
+            return
+        for ctrl in ctrls:
+            fname = ctrl[1].filename
+            if fname != '':
+                result = ctrl[1].Save()
+                if result == wx.ID_OK:
+                    self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
+                else:
+                    self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
+                    dlg = wx.MessageDialog(self, 
+                                           _("Failed to save file: %s\n\nError:\n%d") % \
+                                             (fname, result), _("Save Error"),
+                                            wx.OK | wx.ICON_ERROR)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+            else:
+                ret_val = self.OnSaveAs(ID_SAVEAS, ctrl[0], ctrl[1])
+                if ret_val == wx.ID_OK:
+                    self.filehistory.AddFileToHistory(os.path.join(ctrl[1].dirname, 
+                                                                  ctrl[1].filename))
         self.UpdateToolBar()
 
-    def OnSaveAs(self, evt):
+    def OnSaveAs(self, evt, title=u'', page=None):
         """Save As"""
-        self.dirname = u''
-        dlg = wx.FileDialog(self, _("Choose a Save Location"), self.dirname, "", 
+        dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', title, 
                             self.MenuFileTypes(), wx.SAVE|wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
         if result == wx.ID_OK: 
             path = dlg.GetPath()
-            ctrl = self.nb.GetCurrentCtrl()
+            if page:
+                ctrl = page
+            else:
+                ctrl = self.nb.GetCurrentCtrl()
             result = ctrl.SaveAs(path)
             fname = ctrl.filename
             if result != wx.ID_OK:
@@ -660,7 +685,7 @@ class MainWindow(wx.Frame):
                          ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM, ID_DEL_ALL_BM,
                          ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN, ID_COMMENT,
                          ID_UNCOMMENT, ID_AUTOINDENT, ID_LINE_AFTER,
-                         ID_LINE_BEFORE])
+                         ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB])
         ctrl = self.nb.GetCurrentCtrl()
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as

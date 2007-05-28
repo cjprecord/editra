@@ -654,6 +654,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.Comment(True)
         elif e_id == ID_LINE_BEFORE:
             self.AddLine(before=True)
+        elif e_id in [ID_SPACE_TO_TAB, ID_TAB_TO_SPACE]:
+            self.ConvertWhitespace(e_id)
         else:
             evt.Skip()
 
@@ -709,6 +711,25 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.ConvertEOLs(eol_map[mode_id])
         self.SetEOLMode(eol_map[mode_id])
 
+    def ConvertWhitespace(self, mode_id):
+        """Convert whitespace from using tabs to spaces or visa versa"""
+        tw = self.GetIndent()
+        sel = self.GetSelectedText()
+        if mode_id == ID_TAB_TO_SPACE:
+            if sel != wx.EmptyString:
+                self.ReplaceSelection(sel.replace("\t", u" "*tw))
+            else:
+                self.SetText(self.GetText().replace("\t", u" "*tw))
+                self.SetUseTabs(False)
+        elif mode_id == ID_SPACE_TO_TAB:
+            if sel != wx.EmptyString:
+                self.ReplaceSelection(sel.replace(u" "*tw, "\t"))
+            else:
+                self.SetText(self.GetText().replace(u" "*tw, "\t"))
+                self.SetUseTabs(True)
+        else:
+            pass
+        
     def GetEOLChar(self):
         """Gets the eol character used in document"""
         m_id = self.GetEOLModeId()
