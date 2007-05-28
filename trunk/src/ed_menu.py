@@ -164,6 +164,7 @@ class ED_MenuBar(wx.MenuBar):
         wx.MenuBar.__init__(self, style)
         self._filehistorymenu = ED_Menu()
         self._filemenu = self.GenFileMenu()
+        self._whitespaceformatmenu = ED_Menu()
         self._lineformatmenu = ED_Menu()
         self._editmenu = self.GenEditMenu()
         self._viewmenu = self.GenViewMenu()
@@ -322,11 +323,15 @@ class ED_MenuBar(wx.MenuBar):
         formatmenu.Append(ed_glob.ID_WORD_WRAP, _("Word Wrap"), 
                                _("Wrap Text Horizontally"), wx.ITEM_CHECK)
         formatmenu.AppendSeparator()
-        formatmenu.Append(ed_glob.ID_TAB_TO_SPACE, _("Tabs to Spaces"),
-                          _("Convert tabs to spaces in selected/all text"))
-        formatmenu.Append(ed_glob.ID_SPACE_TO_TAB, _("Spaces to Tabs"),
+        whitespace = self._whitespaceformatmenu
+        whitespace.Append(ed_glob.ID_SPACE_TO_TAB, _("Spaces to Tabs"),
                           _("Convert spaces to tabs in selected/all text"))
-        formatmenu.AppendSeparator()
+        whitespace.Append(ed_glob.ID_TAB_TO_SPACE, _("Tabs to Spaces"),
+                          _("Convert tabs to spaces in selected/all text"))
+        whitespace.Append(ed_glob.ID_TRIM_WS, _("Trim Trailing Whitespace"),
+                          _("Remove trailing whitespace"))
+        formatmenu.AppendMenu(ed_glob.ID_WS_FORMAT, _("Whitespace"), whitespace,
+                              _("Whitespace formating commands"))
         lineformat = self._lineformatmenu
         lineformat.Append(ed_glob.ID_EOL_MAC, _("Macintosh (\\r)"), 
                               _("Format all EOL characters to %s Mode") % _("Macintosh (\\r)"),
