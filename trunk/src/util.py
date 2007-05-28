@@ -44,8 +44,10 @@ __revision__ = "$Id: $"
 import os
 import sys
 import codecs
+import mimetypes
 import wx
 import ed_glob
+from syntax.syntax import GetFileExtensions
 import dev_tool
 
 _ = wx.GetTranslation
@@ -128,6 +130,48 @@ def EncodeRawText(text):
     except:
         txt = text
     return txt
+
+def FilterFiles(file_list):
+    """Filters a list of paths and returns a list of paths
+    that are valid, not directories, and not binary.
+
+    """
+    good = list()
+    for path in file_list:
+        if not os.path.exists(path) or os.path.isdir(path):
+            continue
+        else:
+            # Check for binary files
+            # XXX If there is a better way to deal with this I would
+            #     like to hear about it.
+            # 1. Keep all files types we know about and all that have a mime
+            #    type of text.
+            mime = mimetypes.guess_type(path)
+            if GetExtension(path) in GetFileExtensions() or \
+               (mime[0] and u'text' in mime[0]):
+                good.append(path)
+            # 2. Throw out common filetypes we cant open
+            elif GetExtension(path).lower() in ['gz', 'tar', 'bz2', 'zip',
+                                                'rar', 'ace', 'png', 'jpg', 
+                                                'gif', 'jpeg']:
+                continue
+            # 3. Try to judge if we can open the file or not by sampling
+            #    some of the data, if 10% of the data is bad, filter out the file.
+            else:
+                try:
+                    fhandle = file(path, "rb")
+                    tmp = fhandle.read(1000)
+                    fhandle.close()
+                except IOError:
+                    continue
+                bad = 0
+                for bit in range(len(tmp)):
+                    a = ord(tmp[bit])
+                    if (a < 8) or (a > 13 and a < 32) or (a > 255):
+                        bad = bad + 1
+                if not len(tmp) or (float(bad)/float(len(tmp))) < 0.1:
+                    good.append(path)
+    return good
 
 def GetFileReader(file_name):
     """Returns a file stream reader object for reading the

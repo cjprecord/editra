@@ -189,11 +189,14 @@ class ED_MenuBar(wx.MenuBar):
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_CLOSE, _("Close Page") + "\tCtrl+W", 
                         _("Close Current Page"))
+        filemenu.Append(ed_glob.ID_CLOSEALL, _("Close All Pages"),
+                        _("Close all open tabs"))
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_SAVE, _("Save") + "\tCtrl+S", 
                         _("Save Current File"))
         filemenu.Append(ed_glob.ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", 
                         _("Save As"))
+        filemenu.Append(ed_glob.ID_SAVEALL, _("Save All"), _("Save all open buffers")) 
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_SAVE_PROFILE, _("Save Profile"), 
                              _("Save Current Settings to a New Profile"))
@@ -318,6 +321,11 @@ class ED_MenuBar(wx.MenuBar):
         formatmenu.AppendSeparator()
         formatmenu.Append(ed_glob.ID_WORD_WRAP, _("Word Wrap"), 
                                _("Wrap Text Horizontally"), wx.ITEM_CHECK)
+        formatmenu.AppendSeparator()
+        formatmenu.Append(ed_glob.ID_TAB_TO_SPACE, _("Tabs to Spaces"),
+                          _("Convert tabs to spaces in selected/all text"))
+        formatmenu.Append(ed_glob.ID_SPACE_TO_TAB, _("Spaces to Tabs"),
+                          _("Convert spaces to tabs in selected/all text"))
         formatmenu.AppendSeparator()
         lineformat = self._lineformatmenu
         lineformat.Append(ed_glob.ID_EOL_MAC, _("Macintosh (\\r)"), 
