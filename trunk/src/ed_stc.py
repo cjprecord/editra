@@ -783,6 +783,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def TrimWhitespace(self):
         """Trims trailing whitespace from all lines in the document."""
         txt = u''
+        cpos = self.GetCurrentPos()
+        cline = self.GetCurrentLine()
         for line in range(self.GetLineCount()):
             tmp = self.GetLine(line)
             if len(tmp):
@@ -790,9 +792,18 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 if not eol.isspace():
                     eol = u''
             else:
-                eol = u''
+                eol = u''            
+            if line == cline:
+                npos = cpos - (abs(len(self.GetTextRange(0, \
+                                       self.GetLineEndPosition(cline-1))) - \
+                                   len(txt)) + 1)
+                next = cpos - 1
+                while self.GetTextRange(next, cpos).isspace() and next > 0:
+                    next = next - 1
+                cpos = npos - ((cpos - next) - 1)
             txt = txt + tmp.rstrip() + eol
         self.SetText(txt)
+        self.GotoPos(cpos)
         del txt
 
     def FoldingOnOff(self, set=None):

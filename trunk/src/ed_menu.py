@@ -197,7 +197,7 @@ class ED_MenuBar(wx.MenuBar):
                         _("Save Current File"))
         filemenu.Append(ed_glob.ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", 
                         _("Save As"))
-        filemenu.Append(ed_glob.ID_SAVEALL, _("Save All"), _("Save all open buffers")) 
+        filemenu.Append(ed_glob.ID_SAVEALL, _("Save All"), _("Save all open pages")) 
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_SAVE_PROFILE, _("Save Profile"), 
                              _("Save Current Settings to a New Profile"))
