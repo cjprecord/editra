@@ -90,7 +90,7 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_PREF_MODE, ed_glob.ID_SHOW_EOL, ed_glob.ID_PREF_SYNTHEME,
             ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
             ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN,
-            ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT]
+            ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT, ed_glob.ID_APP_SPLASH]
 
 #----------------------------------------------------------------------------#
 
@@ -293,9 +293,9 @@ class PrefPages(wx.Notebook):
         """Creates the general preferences page"""
         gen_panel = wx.Panel(self, wx.ID_ANY)
 
-        info_txt = [ "Changes made in this dialog are saved in your current",
-                     "profile. Some Items such as Language require the program",
-                     "to be restarted before taking affect."]
+        info_txt = ["Changes made in this dialog are saved in your current profile.",
+                    "Some Items such as Language require the program to be restarted ",
+                    "before taking affect."]
 
         info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt))
         
@@ -321,6 +321,13 @@ class PrefPages(wx.Notebook):
         mode_sizer.Add((5, 5))
         mode_sizer.Add(pmode_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
+        # Splash Screen
+        splash_sz = wx.BoxSizer(wx.HORIZONTAL)
+        splash_sz.Add(wx.Size(15,0))
+        splash_cb = wx.CheckBox(gen_panel, ed_glob.ID_APP_SPLASH, _("Show Splash Screen"))
+        splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
+        splash_sz.Add(splash_cb, 0, wx.ALIGN_LEFT)
+
         # Locale Settings
         lang_lbl = wx.StaticText(gen_panel, wx.ID_ANY, 
                                  _("Language") + u": ", pos=wx.Point(50, 130))
@@ -338,6 +345,7 @@ class PrefPages(wx.Notebook):
         sizer.Add((15, 15))
         sizer.Add(self.SectionHead(gen_panel, _("Startup Settings")))
         sizer.Add(mode_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
+        sizer.Add(splash_sz, 0, wx.BOTTOM | wx.LEFT, 20)
         sizer.Add((15, 45))
         sizer.Add(self.SectionHead(gen_panel, _("Locale Settings")))
         sizer.Add(lang_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
@@ -605,7 +613,7 @@ class PrefPages(wx.Notebook):
         cur_ver = wx.StaticText(upd_panel, wx.ID_ANY,  ed_glob.version)
         cur_sz.Add(cur_ver, 0, wx.ALIGN_CENTER_HORIZONTAL)
         e_update = updater.UpdateProgress(upd_panel, ed_glob.ID_PREF_UPDATE_BAR,
-                                          size=wx.Size(320, 20))
+                                          size=wx.Size(320, 18))
         upd_box = wx.StaticBox(upd_panel, ID_LATE_BOX, _("Latest Version"))
         upd_bsz = wx.StaticBoxSizer(upd_box, wx.HORIZONTAL)
         upd_bsz.SetMinSize(wx.Size(150, 40))

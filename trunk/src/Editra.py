@@ -150,8 +150,6 @@ class Editra(wx.App):
         
         """
         window = self.GetTopWindow()
-        # TODO add logic to reopen the main in the event it is
-        #      closed when this is called. TEST WHEN GET HOME may be ok
         if window != None and window.__name__ == "MainWindow":
             try:
                 window.DoOpen(wx.ID_ANY, filename)
@@ -312,7 +310,7 @@ def Main():
                               _("Profile Updated"))
 
     # Splash a warning if version is not a final version
-    if int(ed_glob.version[0]) < 1:
+    if ed_glob.PROFILE['APPSPLASH'] and int(ed_glob.version[0]) < 1:
         splash = wx.SplashScreen(wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
                                                           wx.ART_OTHER), 
                                  wx.SPLASH_CENTRE_ON_PARENT | wx.SPLASH_NO_TIMEOUT, 
