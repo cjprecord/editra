@@ -192,6 +192,7 @@ SB_ROWCOL        = 1
 PROFILE = {
            'ALPHA'      : 255,
            'AALIASING'  : True,
+           'APPSPLASH'  : True,
            'AUTO_COMP'  : True,
            'AUTO_INDENT': True,
            'BRACKETHL'  : True,
@@ -225,6 +226,7 @@ PROFILE = {
 # Dictionary to map object ids to Profile keys
 ID_2_PROF = {
              ID_PREF_AALIAS       : 'AALIASING',
+             ID_APP_SPLASH        : 'APPSPLASH',
              ID_AUTOCOMP          : 'AUTO_COMP',
              ID_AUTOINDENT        : 'AUTO_INDENT',
              ID_BRACKETHL         : 'BRACKETHL',
