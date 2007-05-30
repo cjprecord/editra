@@ -384,8 +384,8 @@ class MainWindow(wx.Frame):
         for ctrl in ctrls:
             fname = ctrl[1].filename
             if fname != '':
-                result = ctrl[1].Save()
-                if result == wx.ID_OK:
+                result = ctrl[1].SaveFile(os.path.join(ctrl[1].dirname, ctrl[1].filename))
+                if result:
                     self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
                 else:
                     self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
@@ -397,25 +397,25 @@ class MainWindow(wx.Frame):
                     dlg.Destroy()
             else:
                 ret_val = self.OnSaveAs(ID_SAVEAS, ctrl[0], ctrl[1])
-                if ret_val == wx.ID_OK:
+                if ret_val:
                     self.filehistory.AddFileToHistory(os.path.join(ctrl[1].dirname, 
                                                                   ctrl[1].filename))
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt, title=u'', page=None):
         """Save As"""
-        dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', title, 
+        dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', title.lstrip(u"*"), 
                             self.MenuFileTypes(), wx.SAVE|wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
-        if result == wx.ID_OK: 
+        if result == wx.ID_OK:
             path = dlg.GetPath()
             if page:
                 ctrl = page
             else:
                 ctrl = self.nb.GetCurrentCtrl()
-            result = ctrl.SaveAs(path)
+            result = ctrl.SaveFile(path)
             fname = ctrl.filename
-            if result != wx.ID_OK:
+            if not result:
                 dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
                                                 (fname, result), _("Save Error"),
                                         wx.OK | wx.ICON_ERROR)
