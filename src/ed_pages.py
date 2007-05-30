@@ -51,6 +51,7 @@ import glob
 import re
 import wx
 import ed_glob
+import ed_event
 import ed_stc
 import syntax.synglob as synglob
 import ed_search
@@ -105,7 +106,9 @@ class ED_Pages(FNB.FlatNotebook):
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSED, self.OnPageClosed)
+        self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdatePageText)
         self._pages.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
+        self.Bind(wx.EVT_IDLE, self.OnIdle)
 
         # Add a blank page
         self.NewPage()
@@ -179,6 +182,7 @@ class ED_Pages(FNB.FlatNotebook):
                 self.control.SetText(util.EncodeRawText(reader.read()))
                 reader.close()
                 self.frame.filehistory.AddFileToHistory(path2file)
+                self.control.modtime = util.GetFileModTime(path2file)
             except Exception, msg:
                 err = wx.MessageDialog(self, _("There was an error opening %s") \
                                        % path2file, _("Error Opening File"),
@@ -285,6 +289,46 @@ class ED_Pages(FNB.FlatNotebook):
             self.frame.PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
         return
 
+    def OnIdle(self, evt):
+        """Update tabs and check if files have been modified"""
+        if ed_glob.PROFILE['CHECKMOD'] and wx.GetApp().IsActive():
+            cfile = os.path.join(self.control.dirname, self.control.filename)
+            lmod = util.GetFileModTime(cfile)
+            if self.control.modtime and not lmod and not os.path.exists(cfile):
+                def PromptToReSave(cfile):
+                    mdlg = wx.MessageDialog(self.frame,
+                                            _("%s has been deleted since its "
+                                              "last save point.\n\nWould you "
+                                              "like to save it again?") % cfile,
+                                            _("Resave File?"), 
+                                            wx.YES_NO | wx.ICON_INFORMATION)
+                    mdlg.CenterOnParent()
+                    result = mdlg.ShowModal()
+                    mdlg.Destroy()
+                    if result == wx.ID_YES:
+                        self.control.SaveFile(cfile)
+                    else:
+                        self.control.modtime = 0
+                wx.CallAfter(PromptToReSave, cfile)
+
+            elif self.control.modtime < lmod:
+                def AskToReload(cfile):
+                    mdlg = wx.MessageDialog(self.frame, 
+                                            _("%s has been modified by another "
+                                              "application.\n\nWould you like to "
+                                              "Reload it?") % cfile, _("Reload File?"),
+                                              wx.YES_NO | wx.ICON_INFORMATION)
+                    mdlg.CenterOnParent()
+                    result = mdlg.ShowModal()
+                    mdlg.Destroy()
+                    if result == wx.ID_YES:
+                        self.control.ReloadFile()
+                    else:
+                        self.control.modtime = util.GetFileModTime(cfile)
+                wx.CallAfter(AskToReload, cfile)
+            else:
+                evt.Skip()
+                                          
     def OnLeftUp(self, evt):
         """Traps clicks sent to page close buttons and 
         redirects the action to the ClosePage function
@@ -412,6 +456,18 @@ class ED_Pages(FNB.FlatNotebook):
         self.LOG("[nb_info] Updating Page Image: Page " + str(pg_num))
         self.SetPageImage(pg_num, str(self.control.lang_id))
 
+    def OnUpdatePageText(self, evt):
+        """Update the title text of the current page"""
+        pg_num = self.GetSelection()
+        if isinstance(self.control, ed_stc.EDSTC):
+            title = self.control.filename
+            if title == wx.EmptyString:
+                title = self.GetPageText(pg_num)
+                title = title.lstrip(u"*")
+            if self.control.GetModify():
+                title = u"*" + title
+            wx.CallAfter(self.SetPageText, pg_num, title)
+            
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have
         been changed since initialization.

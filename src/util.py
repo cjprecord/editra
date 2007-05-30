@@ -173,6 +173,14 @@ def FilterFiles(file_list):
                     good.append(path)
     return good
 
+def GetFileModTime(file_name):
+    """Returns the time that the given file was last modified on"""
+    try:
+        mod_time = os.path.getmtime(file_name)
+    except:
+        mod_time = 0
+    return mod_time
+
 def GetFileReader(file_name):
     """Returns a file stream reader object for reading the
     supplied file name. It returns a utf-8 reader if the host

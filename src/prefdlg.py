@@ -90,7 +90,8 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_PREF_MODE, ed_glob.ID_SHOW_EOL, ed_glob.ID_PREF_SYNTHEME,
             ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
             ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN,
-            ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT, ed_glob.ID_APP_SPLASH]
+            ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT, ed_glob.ID_APP_SPLASH,
+            ed_glob.ID_PREF_CHKMOD]
 
 #----------------------------------------------------------------------------#
 
@@ -539,7 +540,11 @@ class PrefPages(wx.Notebook):
         set_sizer.Add(fh_sizer, 0, wx.ALIGN_LEFT)
         pos_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_SPOS, _("Remember File Position"))
         pos_cb.SetValue(ed_glob.PROFILE['SAVE_POS'])
+        chkmod_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_CHKMOD, 
+                                _("Check if on disk file has been modified by others"))
+        chkmod_cb.SetValue(ed_glob.PROFILE['CHECKMOD'])
         set_sizer.Add(pos_cb, 0, wx.ALIGN_LEFT)
+        set_sizer.Add(chkmod_cb, 0, wx.ALIGN_LEFT)
 
         # Various Appearance Settings
         app_lbl = self.SectionHead(misc_panel, _("Appearance"))

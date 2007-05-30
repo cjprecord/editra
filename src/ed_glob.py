@@ -107,6 +107,7 @@ ID_PREF          = wx.ID_PREFERENCES
 # Prefrence Dlg Ids
 ID_PREF_LANG     = wx.NewId()
 ID_PREF_AALIAS   = wx.NewId()
+ID_PREF_CHKMOD   = wx.NewId()
 ID_PREF_SYNTHEME = wx.NewId()
 ID_PREF_TABS     = wx.NewId()
 ID_PREF_TABW     = wx.NewId()
@@ -190,37 +191,38 @@ SB_ROWCOL        = 1
 # Always holds default settings incase profile loading fails or file
 # is incorrecly formatted/missing values
 PROFILE = {
-           'ALPHA'      : 255,
-           'AALIASING'  : True,
-           'APPSPLASH'  : True,
-           'AUTO_COMP'  : True,
-           'AUTO_INDENT': True,
-           'BRACKETHL'  : True,
-           'CODE_FOLD'  : True,
-           'DEFAULT'    : False,
-           'EOL'        : 'Unix (\\n)',
-           'FHIST_LVL'  : 5,
-           'GUIDES'     : True,
-           'ICONS'      : 'Nuovo',
-           'ICON_SZ'    : (24,24),
-           'LANG'       : 'Default',
-           'MODE'       : 'CODE',
-           'MYPROFILE'  : 'default.pp',
-           'PRINT_MODE' : 'BLACK/WHITE',
-           'SAVE_POS'   : True,
-           'SHOW_EOL'   : False,
-           'SHOW_LN'    : True,
-           'SYNTAX'     : True,
-           'SYNTHEME'   : 'Default',
-           'TABWIDTH'   : 8,
-           'THEME'      : 'DEFAULT', 
-           'TOOLBAR'    : True,
-           'USETABS'    : True,
-           'SHOW_WS'    : False,
-           'WRAP'       : True,
-           'SET_WSIZE'  : True,
-           'WSIZE'      : (700, 450),
-           'SET_WPOS'   : True
+           'ALPHA'      : 255,              # Transparency level
+           'AALIASING'  : True,             # Use Anti-Aliasing if availble
+           'APPSPLASH'  : True,             # Show splash at startup
+           'AUTO_COMP'  : True,             # Use Auto-comp if available
+           'AUTO_INDENT': True,             # Use Auto Indent
+           'BRACKETHL'  : True,             # Use bracket highlighting
+           'CHECKMOD'   : True,             # Auto check file for file modifications
+           'CODE_FOLD'  : True,             # Use code folding
+           'DEFAULT'    : False,            # TODO No longer used I believe
+           'EOL'        : 'Unix (\\n)',     # EOL mode
+           'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
+           'GUIDES'     : True,             # Use Indentation guides
+           'ICONS'      : 'Nuovo',          # Icon Theme
+           'ICON_SZ'    : (24,24),          # Toolbar Icon Size
+           'LANG'       : 'Default',        # UI language
+           'MODE'       : 'CODE',           # Overall editor mode
+           'MYPROFILE'  : 'default.pp',     # Path to profile file
+           'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
+           'SAVE_POS'   : True,             # Remember Carat positions
+           'SHOW_EOL'   : False,            # Show EOL markers
+           'SHOW_LN'    : True,             # Show Line Numbers
+           'SYNTAX'     : True,             # Use Syntax Highlighting
+           'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
+           'TABWIDTH'   : 8,                # Tab width
+           'THEME'      : 'DEFAULT',        # XXX For future use
+           'TOOLBAR'    : True,             # Show Toolbar
+           'USETABS'    : True,             # Use tabs instead of spaces
+           'SHOW_WS'    : False,            # Show whitespace markers
+           'WRAP'       : True,             # Use Wordwrap
+           'SET_WSIZE'  : True,             # Remember mainwindow size on exit
+           'WSIZE'      : (700, 450),       # Mainwindow size
+           'SET_WPOS'   : True              # Remember window position
 }
 
 # Dictionary to map object ids to Profile keys
@@ -230,6 +232,7 @@ ID_2_PROF = {
              ID_AUTOCOMP          : 'AUTO_COMP',
              ID_AUTOINDENT        : 'AUTO_INDENT',
              ID_BRACKETHL         : 'BRACKETHL',
+             ID_PREF_CHKMOD       : 'CHECKMOD',
              ID_FOLDING           : 'CODE_FOLD',
              ID_KWHELPER          : 'KWHELPER',
              ID_EOL_MODE          : 'EOL',

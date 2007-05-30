@@ -51,6 +51,7 @@ __revision__ = "$Id:  $"
 
 import os
 import wx, wx.stc
+import ed_event
 from ed_glob import *
 from syntax import syntax
 from autocomp import autocomp
@@ -92,6 +93,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.frame = parent	                # Notebook
         self.filename = ''	                # This controls File
         self.dirname = ''                   # Files Directory
+        self.modtime = 0
         self.path_char = util.GetPathChar()	# Path Character / 0r \
         self.zoom = 0
         self.old_pos = -1
@@ -146,6 +148,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # Events
         if self.brackethl:
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
+        self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnModified)
         self.Bind(wx.stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
@@ -314,8 +317,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return None
 
     def OnKeyDown(self, evt):
-        """Handles keydown dependent events"""
-        # Toggle Autocomp window by pressing button again
+        """Handles keydown events, currently only deals with
+        auto indentation.
+
+        """
         k_code = evt.GetKeyCode()
         if self._autoindent and k_code == wx.WXK_RETURN:
             if self.GetSelectedText():
@@ -411,6 +416,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             context = pos - pos2
             self.AutoCompShow(context, self.keywords)
         return
+
+    def OnModified(self, evt):
+        """Handles updates that need to take place after
+        the control has been modified.
+
+        """
+        mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, self.GetId())
+        wx.PostEvent(self.GetParent(), mevt)
 
     def OnUpdateUI(self, evt):
         """Check for matching braces"""
@@ -858,31 +871,48 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.LOG("[stc_evt] Hiding Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 0)
 
-    def Save(self):
-        """Save Text To File"""
-        if self.filename != '':
-            path = self.dirname + self.path_char + self.filename
-            try:
-                self.SaveFile(path)
-                self.SetSavePoint()
-                result = wx.ID_OK
-            except IOError,msg:
-                self.LOG("[stc] [exception] " + str(msg))
-                result = msg
-        return result
+    def ReloadFile(self):
+        """Reloads the current file, returns True on success and
+        False if there is a failure.
 
-    def SaveAs(self, path):
-        """Save Text to File using specified name"""
+        """
+        cfile = os.path.join(self.dirname, self.filename)
+        if os.path.exists(cfile):
+            try:
+                self.BeginUndoAction()
+                cpos = self.GetCurrentPos()
+                reader = util.GetFileReader(cfile)
+                self.SetText(util.EncodeRawText(reader.read()))
+                reader.close()
+                self.modtime = util.GetFileModTime(cfile)
+                self.EndUndoAction()
+                self.SetSavePoint()
+            except Exception:
+                self.LOG("[stc][err] Failed to Reload %s" % cfile)
+                return False
+            else:
+                self.GotoPos(cpos)
+                return True
+        else:
+            self.LOG("[stc][err] %s does not exists, cannot reload it." % cfile)
+            return False
+
+    def SaveFile(self, path):
+        """Save buffers contents to disk"""
+        result = False
         try:
-            self.SaveFile(path)
-        except IOError,msg:
-            self.LOG("[stc] [exception] Failed to perform SaveAs on File")
-            return msg
-        self.filename = util.GetFileName(path)
-        self.dirname = util.GetPathName(path)
-        self.SetSavePoint()
-        self.FindLexer()
-        return wx.ID_OK
+            result = wx.stc.StyledTextCtrl.SaveFile(self, path)
+        except IOError:
+            self.LOG("[stc][err]There was an error saving %s" % path)
+        if result:
+            self.SetSavePoint()
+            self.modtime = util.GetFileModTime(path)
+            self.OnModified(wx.ID_ANY)
+            if wx.EmptyString in [self.filename, self.dirname]:
+                self.filename = util.GetFileName(path)
+                self.dirname = util.GetPathName(path)
+                self.FindLexer()
+        return result
 
     def DoZoom(self, mode):
         """Zoom control in or out"""
