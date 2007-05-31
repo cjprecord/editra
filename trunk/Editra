@@ -56,12 +56,12 @@ except ImportError:
 #
 #     For them to work from this script they need to import relative to this
 #     script. (import src.plugin) as apposed to (import plugin), but visa versa
-#     is required for the other main script. This may ultimatly lead to a
-#     reorganization of the package layout, but for now the solution used
-#     below seems to be the best solution to allow for simple imports
-#     (import plugin.py) and still work regardless of installation type. It
-#     is however limited in that it will definatly not work on Windows.
+#     is required for the other main script. This is further complicated by the
+#     fact that the location of this script is never guaranteed. If there is 
+#     anyone that has a more clever way to deal with this I would like to listen.
 #
+# XXX Note for this to work the version of python on the path must be the one
+#     that has all of Editra's dependancies installed on.
 if __name__ == '__main__':
     src_dir = os.path.dirname(esrc.__file__)
     try:
@@ -73,5 +73,5 @@ if __name__ == '__main__':
         args = u''
         if len(sys.argv) > 1:
             args = " ".join(sys.argv[1:])
-        res = os.system("/usr/bin/env python Editra.py " + args)
+        res = os.system("python Editra.py " + args)
         exit(res)

@@ -128,11 +128,13 @@ src/syntax/batch.py
 src/syntax/cpp.py
 src/syntax/css.py
 src/syntax/editra_ss.py
+src/syntax/fortran.py
 src/syntax/html.py
 src/syntax/java.py
 src/syntax/javascript.py
 src/syntax/latex.py
 src/syntax/lisp.py
+src/syntax/lua.py
 src/syntax/make.py
 src/syntax/masm.py
 src/syntax/mssql.py
