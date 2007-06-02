@@ -163,8 +163,9 @@ ID_BRACKETHL     = wx.NewId()
 ID_LEXER         = wx.NewId()
 
 # Tool Menu IDs
-ID_STYLE_EDIT    = wx.ID_EDIT
 ID_KWHELPER      = wx.NewId()
+ID_PLUGMGR       = wx.NewId()
+ID_STYLE_EDIT    = wx.ID_EDIT
 ID_GENERATOR     = wx.NewId()
 ID_HTML_GEN      = wx.NewId()
 ID_TEX_GEN       = wx.NewId()
@@ -180,6 +181,9 @@ ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMMAND_BAR       = wx.NewId()
 ID_DOWNLOAD_DLG      = wx.NewId()
 ID_APP_SPLASH        = wx.NewId()
+ID_PLUGIN_CFG        = wx.NewId()
+ID_PLUGIN_DL         = wx.NewId()
+ID_PLUGIN_INST       = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0

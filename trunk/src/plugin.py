@@ -178,6 +178,68 @@ class Plugin(object):
             self.pluginmgr = pluginmgr
         return self
 
+class PluginData(object):
+    """A storage class for representing data about a plugin"""
+    def __init__(self, name=u'', descript=u'', author=u'', ver=u''):
+        """Create the plugin data object"""
+        object.__init__(self)
+        self._name = name
+        self._description = descript
+        self._author = author
+        self._version = ver
+
+    def GetName(self):
+        """Returns the name of the plugin"""
+        return self._name
+
+    def GetDescription(self):
+        """Returns the plugins description"""
+        return self._description
+
+    def GetAuthor(self):
+        """Returns the author of the plugin"""
+        return self._author
+
+    def GetVersion(self):
+        """Returns the version of the plugin"""
+        return self._version
+
+    def SetName(self, name):
+        """Returns the name of the plugin"""
+        if not isinstance(name, basestring):
+            try:
+                name = str(name)
+            except:
+                name = u''
+        self._name = name
+
+    def SetDescription(self, descript):
+        """Returns the plugins description"""
+        if not isinstance(descript, basestring):
+            try:
+                descript = str(descript)
+            except:
+                descript = u''
+        self._description = descript
+
+    def SetAuthor(self, author):
+        """Returns the author of the plugin"""
+        if not isinstance(author, basestring):
+            try:
+                author = str(author)
+            except:
+                author = u''
+        self._author = author
+
+    def SetVersion(self, ver):
+        """Returns the version of the plugin"""
+        if not isinstance(ver, basestring):
+            try:
+                ver = str(ver)
+            except:
+                ver = u''
+        self._version = ver
+
 def Implements(*interfaces):
     """Used by plugins to declare the interface that they
     implment/extend.
@@ -187,6 +249,9 @@ def Implements(*interfaces):
 
 #--------------------------------------------------------------------------#
 
+# TODO complete functions for allowing dynamic loading and unloading of
+#      of plugins. As well as allowing loaded but inactive plugins to be
+#      initiated without needing to restart the editor. 
 class PluginManager(object):
     """The PluginManger keeps track of the active plugins. It
     also provides an interface into loading and unloading plugins.
@@ -386,9 +451,3 @@ class PluginManager(object):
         writer.write("\n# EOF\n")
         writer.close()
         return
-
-#--------------------------------------------------------------------------#
-
-class PluginDlg(wx.Dialog):
-    """Creates a plugin config dialog"""
-    pass
