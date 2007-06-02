@@ -104,7 +104,10 @@ MIME_ART = { synglob.ID_LANG_BASH : u'shell.png',
  
 # Map of non user definable art resources
 OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
-              ed_glob.ID_APP_SPLASH : catalog['splashwarn']}
+              ed_glob.ID_APP_SPLASH : catalog['splashwarn'],
+              ed_glob.ID_PLUGIN_CFG : catalog['plugin_cfg'],
+              ed_glob.ID_PLUGIN_DL : catalog['plugin_dl'],
+              ed_glob.ID_PLUGIN_INST : catalog['plugin_install']}
 
 # Map for default system/wx provided graphic resources.
 DEFAULT = { 

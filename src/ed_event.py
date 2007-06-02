@@ -47,6 +47,7 @@ import ed_glob
 edEVT_UPDATE_TEXT = wx.NewEventType()
 EVT_UPDATE_TEXT = wx.PyEventBinder(edEVT_UPDATE_TEXT, 1)
 class UpdateTextEvent(wx.PyCommandEvent):
+    """Event to signal that text needs updating"""
     def __init__(self, evtType, id, value = None):
         wx.PyCommandEvent.__init__(self, evtType, id)
         self._evtType = evtType
@@ -63,4 +64,33 @@ class UpdateTextEvent(wx.PyCommandEvent):
 
     def GetValue(self):
         """Returns the value from the event."""
-        return self_value
+        return self._value
+
+#--------------------------------------------------------------------------#
+
+edEVT_NOTIFY = wx.NewEventType()
+EVT_NOTIFY = wx.PyEventBinder(edEVT_NOTIFY, 1)
+class NotificationEvent(wx.PyCommandEvent):
+    """General notification event"""
+    def __init__(self, evtType, id, value = None, obj = None):
+        wx.PyCommandEvent.__init__(self, evtType, id)
+        self._evtType = evtType
+        self._id = id
+        self._value = value
+        self._obj = obj
+
+    def GetEventObject(self):
+        """Returns the object associated with this event"""
+        return self._obj
+
+    def GetEvtType(self):
+        """Returns the event type"""
+        return self._evtType
+
+    def GetId(self):
+        """Returns the event id"""
+        return self._id
+
+    def GetValue(self):
+        """Returns the value from the event."""
+        return self._value

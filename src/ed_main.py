@@ -217,6 +217,7 @@ class MainWindow(wx.Frame):
 
         # Tool Menu
         self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
+        self.Bind(wx.EVT_MENU, self.OnPluginMgr, id=ID_PLUGMGR)
         self.Bind(wx.EVT_MENU, self.OnGenerate)
 
         # Help Menu Events
@@ -601,15 +602,26 @@ class MainWindow(wx.Frame):
 
     #---- Tools Menu Functions ----#
     def OnStyleEdit(self, evt):
-        """Opens the style editor and handles the setting of
-        the return data.
-
-        """
+        """Opens the style editor """
         import style_editor
         dlg = style_editor.StyleEditor(self, log=self.LOG)
         dlg.CenterOnParent()
         dlg.ShowModal()
         dlg.Destroy()
+
+    def OnPluginMgr(self, evt):
+        """Opens and shows Plugin Manager window"""
+        import plugdlg
+        for win in wx.GetApp()._windows:
+            if isinstance(wx.GetApp()._windows[win][0], plugdlg.PluginDialog):
+                wx.GetApp()._windows[win][0].Raise()
+                return
+            else:
+                pass
+        dlg = plugdlg.PluginDialog(None, wx.ID_ANY, _("Plugin Manager"),
+                                   size=wx.Size(500, 350))
+        dlg.CenterOnParent()
+        dlg.Show()
 
     def OnGenerate(self, evt):
         """Generates a given document type"""

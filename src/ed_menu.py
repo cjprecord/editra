@@ -368,10 +368,12 @@ class ED_MenuBar(wx.MenuBar):
     def GenToolsMenu(self):
         """Makes and attaches the tools menu"""
         toolsmenu = ED_Menu()
-        toolsmenu.Append(ed_glob.ID_STYLE_EDIT, _("Style Editor"), 
-                         _("Edit the way syntax is highlighted"))
         toolsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper") + u'\tCtrl+K', 
                          _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"))
+        toolsmenu.Append(ed_glob.ID_PLUGMGR, _("Plugin Manager"),
+                         _("Manage, Download, and Install plugins"))
+        toolsmenu.Append(ed_glob.ID_STYLE_EDIT, _("Style Editor"), 
+                         _("Edit the way syntax is highlighted"))
         toolsmenu.AppendSeparator()
         self.Append(toolsmenu, _("Tools"))
         return toolsmenu
