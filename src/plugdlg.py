@@ -41,6 +41,7 @@ __revision__ = "$Revision:  $"
 #--------------------------------------------------------------------------#
 # Dependancies
 import sys
+import os
 import urllib
 import wx
 import wx.lib.delayedresult as delayedresult
@@ -55,6 +56,7 @@ import util
 CONFIG_PG = 0
 DOWNLOAD_PG = 1
 INSTALL_PG = 2
+BASE_URL = "http://editra.org/"
 PLUGIN_REPO = "http://editra.org/plugins.php?list=True"
 
 _ = wx.GetTranslation
@@ -244,8 +246,10 @@ class DownloadPanel(wx.Panel):
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
-        self._p_list = dict()
-        self._dl_list = dict()
+        self._p_list = dict()           # list of available plugins/meta
+        self._dl_list = dict()          # List of download urls
+        self._eggcount = 0              # Number of plugins to download
+        self._eggbasket = dict()        # Basket of downloaded eggs
         self._list = PluginListCtrl(self)
         self._downlb = wx.Button(self, self.ID_DOWNLOAD, _("Download"))
 
@@ -272,6 +276,21 @@ class DownloadPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(ed_event.EVT_NOTIFY, self.OnNotify)
 
+    # XXX *args is really a string but for some reason when it passed
+    #     here from startWorker it gets broken into a list of chars
+    def _DownloadPlugin(self, *args):
+        """Downloads the plugin at the given url"""
+        url = "".join(args)
+        egg = None
+        try:
+            h_file = urllib.urlopen(url)
+            egg = h_file.read()
+            h_file.close()
+        finally:
+            return (url.split("/")[-1], True, egg)
+
+    # TODO possibly process this on a separate thread to keep the 
+    #      gui responsive.
     def _GetPluginListData(self, url=PLUGIN_REPO):
         """Gets the list of plugins and their related meta data
         as a string and returns it.
@@ -284,6 +303,32 @@ class DownloadPanel(wx.Panel):
             h_file.close()
         finally:
             return text
+
+    def _ResultCatcher(self, delayedResult):
+        """Catches the results from the download worker threads"""
+        frame = self.GetGrandParent()
+        self._eggcount = self._eggcount - 1
+        try:
+            result = delayedResult.get()
+            plug = result[0]
+            if result[1]:
+                self._eggbasket[plug] = result[2]
+                frame.SetStatusText(_("Downloaded") + ": " + plug, 0)
+        finally:
+            if not self._eggcount:
+                frame.SetStatusText(_("Complete"), 1)
+                frame.SetStatusText(_("Finshed downloading plugins"), 0)
+                inst_pg = self.GetParent().GetPage(INSTALL_PG)
+                for key in self._eggbasket:
+                    inst_pg.AddItemToInstall(key)
+                self.GetParent().SetSelection(INSTALL_PG)
+
+    def GetDownloadedData(self):
+        """Returns the dictionary of downloaded data or an
+        empty dictionary if no data has been downloaded.
+
+        """
+        return self._eggbasket
 
     def GetPluginList(self, url=PLUGIN_REPO):
         """Gets the list of available plugins from the web and returns
@@ -313,11 +358,29 @@ class DownloadPanel(wx.Panel):
                 p_list[tmpdat.GetName()] = tmpdat
         return p_list
 
+    def IsDownloading(self, evt):
+        """Returns whether the panel has active download
+        threads or not.
+
+        """
+        if self._eggcount:
+            return True
+        else:
+            return False
+
     def OnButton(self, evt):
         """Handles the Button Events"""
         e_id = evt.GetId()
         if e_id == self.ID_DOWNLOAD:
-            pass
+            urls = list()
+            for item in self._dl_list:
+                if self._dl_list[item]:
+                    urls.append(BASE_URL + self._p_list[item].GetUrl())
+            self._eggcount = len(urls)
+            for egg in range(len(urls)):
+                self.GetGrandParent().SetStatusText(_("Downloading") + "...", 1)
+                delayedresult.startWorker(self._ResultCatcher, self._DownloadPlugin,
+                                          wargs=(urls[egg]), jobID=egg)
         else:
             evt.Skip()
 
@@ -360,6 +423,10 @@ class DownloadPanel(wx.Panel):
 
 class InstallPanel(wx.Panel):
     """Creates a panel for installing plugins."""
+    ID_INSTALL = wx.NewId()
+    ID_USER = wx.NewId()
+    ID_SYS = wx.NewId()
+
     def __init__(self, parent, id, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=wx.NO_BORDER):
         """ """
@@ -367,10 +434,119 @@ class InstallPanel(wx.Panel):
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
+        lbl = wx.StaticText(self, wx.ID_ANY,
+                            _("Click on Install to install the plugins in the list"))
+        self._install = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SORT)
+        self._instb = wx.Button(self, self.ID_INSTALL, _("Install"))
+        self._usercb = wx.CheckBox(self, self.ID_USER, _("User Directory"))
+        self._usercb.SetValue(True)
+        self._usercb.SetToolTip(wx.ToolTip(_("Install the plugins only for the current user")))
+        self._syscb = wx.CheckBox(self, self.ID_SYS, _("System Directory"))
+        self._syscb.SetToolTip(wx.ToolTip(_("Install the plugins for all users,"
+                                            " **requires administrative privileges**")))
 
         # Layout Panel
-        sbmp = wx.StaticBitmap(self, wx.ID_ANY, wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWNLOAD_DLG), wx.ART_OTHER))
-        self._sizer.Add(sbmp, 0, wx.ALIGN_CENTER)
+        self._sizer.Add(lbl, 0, wx.ALIGN_CENTER)
+        self._sizer.Add(self._install, 1, wx.EXPAND)
+        self._sizer.Add(wx.Size(5,5))
+        bsizer = wx.BoxSizer(wx.HORIZONTAL)
+        bsizer.Add(wx.Size(5,5))
+        bsizer.Add(self._usercb, 0, wx.ALIGN_LEFT)
+        bsizer.Add(wx.Size(5,5))
+        bsizer.Add(self._syscb, 0, wx.ALIGN_LEFT)
+        bsizer.AddStretchSpacer()
+        bsizer.Add(self._instb, 0, wx.ALIGN_RIGHT)
+        bsizer.Add(wx.Size(5,5))
+        self._sizer.Add(bsizer, 0, wx.EXPAND)
+        self._sizer.Add(wx.Size(5,5))
+        self.SetSizer(self._sizer)
+        self.SendSizeEvent()
+
+        # Event Handlers
+        self.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckBox)
+
+    def _Install(self):
+        """Install the plugins in the list"""
+        items = self._install.GetItems()
+        user = self.FindWindowById(self.ID_USER)
+        sysp = self.FindWindowById(self.ID_SYS)
+        if sysp and sysp.GetValue():
+            inst_loc = ed_glob.CONFIG['SYS_PLUGIN_DIR']
+        else:
+            inst_loc = ed_glob.CONFIG['PLUGIN_DIR']
+        for item in items:
+            egg_name = item.split("/")[-1]
+            if os.path.isabs(item):
+                try:
+                    reader = file(item, "rb")
+                    egg = reader.read()
+                    reader.close()
+                except IOError:
+                    continue
+            else:
+                dl_pg = self.GetParent().GetPage(DOWNLOAD_PG)
+                egg = dl_pg.GetDownloadedData().get(item, None)
+                if not egg:
+                    continue
+
+            try:
+                writer = file(inst_loc + egg_name, "wb")
+                writer.write(egg)
+            except IOError:
+                continue
+            else:
+                # If successfully installed remove from list
+                ind = self._install.FindString(item)
+                if ind != wx.NOT_FOUND:
+                    self._install.Delete(ind)
+        self.GetGrandParent().SetStatusText(_("Finished Installing Plugins"), 0)
+
+    def AddItemToInstall(self, item):
+        """Adds an item to the install list, the item
+        should be a string of the path to the item or
+        the items name if it is an in memory file from the
+        download page.
+
+        """
+        if self._install.FindString(item) == wx.NOT_FOUND:
+            self._install.Append(item)
+        else:
+            pass
+
+    def OnButton(self, evt):
+        """Handles button events generated by the panel"""
+        e_id = evt.GetId()
+        if e_id == self.ID_INSTALL:
+            self._Install()
+        else:
+            evt.Skip()
+
+    def OnCheckBox(self, evt):
+        """Handles the checkbox events to make sure that
+        only one of the two check boxes is checked at a time
+
+        """
+        e_id = evt.GetId()
+        val = evt.GetEventObject().GetValue()
+        u_cb = self.FindWindowById(self.ID_USER)
+        s_cb = self.FindWindowById(self.ID_SYS)
+        if e_id == self.ID_USER:
+            if not s_cb.IsEnabled():
+                u_cb.SetValue(True)
+            elif val:
+                s_cb.SetValue(False)
+            else:
+                s_cb.SetValue(True)
+        elif e_id == self.ID_SYS:
+            if val:
+                u_cb.SetValue(False)
+            else:
+                u_cb.SetValue(True)
+        else:
+            pass
+        evt.Skip()
+
 #--------------------------------------------------------------------------#
 
 class PluginListCtrl(wx.ListCtrl, 
