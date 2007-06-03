@@ -263,24 +263,15 @@ class PluginManager(object):
         self.LOG = wx.GetApp().GetLog()
         self._config = self.LoadPluginConfig() # Enabled/Disabled Plugins
         self._pi_path = list(set([ed_glob.CONFIG['PLUGIN_DIR'], 
-                         ed_glob.CONFIG['SYS_PLUGIN_DIR']]))
+                             ed_glob.CONFIG['SYS_PLUGIN_DIR']]))
         sys.path.extend(self._pi_path)
-        if pkg_resources != None:
-            self._env = pkg_resources.Environment(self._pi_path)
-        else:
-            self.LOG("[pluginmgr][warn] setup tools is not installed")
-            self._env = dict()
+        self._env = self.CreateEnvironment(self._pi_path)
         self._plugins = dict()      # Set of available plugins
         self._enabled = dict()      # Set of enabled plugins
         self.InitPlugins(self._env)
         self.RefreshConfig()
         # Enable/Disable plugins based on config data
-        for pi in self._plugins:
-            if self._config.get(self._plugins[pi].__module__):
-                self._enabled[pi] = True
-            else:
-                self._config[self._plugins[pi].__module__] = False
-                self._enabled[pi] = False
+        self.UpdateConfig()
 
     def __contains__(self, cobj):
         """Returns True if a plugin is currently loaded and being
@@ -313,6 +304,19 @@ class PluginManager(object):
 
     def CallPluginOnce(self, plugin):
         """Makes a call to a given plugin"""
+        pass
+
+    def CreateEnvironment(self, path):
+        """Creates the environment based on the passed
+        in path list
+
+        """
+        if pkg_resources != None:
+            env = pkg_resources.Environment(path)
+        else:
+            self.LOG("[pluginmgr][warn] setup tools is not installed")
+            env = dict()
+        return env
 
     def DisablePlugin(self, plugin):
         """Disables a named plugin"""
@@ -345,6 +349,13 @@ class PluginManager(object):
         """
         self.RefreshConfig()
         return self._config
+
+    def GetEnvironment(self):
+        """Returns the evironment that the plugin manager was 
+        initiated in.
+
+        """
+        return self._env
 
     def InitPlugins(self, env):
         """Initializes the plugins that are contained in the given
@@ -435,9 +446,39 @@ class PluginManager(object):
                 config[item] = self._config[item]
         self._config = config
 
+    def RefreshEnvironment(self):
+        """Refreshes the current environment to include any
+        plugins that may have been added since init.
+
+        """
+        self._env = self.CreateEnvironment(self._pi_path)
+
+    def ReInit(self):
+        """Reinitializes the plugin environment and all plugins
+        in the environment as well as the configuration data.
+
+        """
+        self.RefreshEnvironment()
+        self.InitPlugins(self.GetEnvironment())
+        self.RefreshConfig()
+        self.UpdateConfig()
+
     def UnloadPluginByName(self, name):
         """Unloads a named plugin"""
         
+    def UpdateConfig(self):
+        """Updates the in memory config data to recognize
+        any plugins that may have been added or initialzed
+        by a call to InitPlugins.
+
+        """
+        for pi in self._plugins:
+            if self._config.get(self._plugins[pi].__module__):
+                self._enabled[pi] = True
+            else:
+                self._config[self._plugins[pi].__module__] = False
+                self._enabled[pi] = False
+
     def WritePluginConfig(self):
         """Writes out the plugin config"""
         writer = util.GetFileWriter(os.path.join(ed_glob.CONFIG['CONFIG_DIR'],
