@@ -20,7 +20,7 @@
 ############################################################################
 """Adds a PyShell to the View Menu"""
 __author__ = "Cody Precord"
-__version__ = "0.01"
+__version__ = "0.1"
 
 import wx
 import wx.aui

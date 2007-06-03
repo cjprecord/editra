@@ -156,6 +156,11 @@ class PluginPages(wx.Toolbook):
 
 class ConfigPanel(wx.Panel):
     """Creates a panel for configuring plugins."""
+    PLUGIN_COL   = 0
+    DESCRIPT_COL = 1
+    AUTHOR_COL   = 2
+    VERSION_COL  = 3
+
     def __init__(self, parent, id, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=wx.NO_BORDER):
         """Build config panel"""
@@ -164,10 +169,10 @@ class ConfigPanel(wx.Panel):
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         
         # Layout List Control
-        self._list.InsertColumn(0, _("Plugin"))
-        self._list.InsertColumn(1, _("Description"))
-        self._list.InsertColumn(2, _("Author"))
-        self._list.InsertColumn(3, _("Version"))
+        self._list.InsertColumn(self.PLUGIN_COL, _("Plugin"))
+        self._list.InsertColumn(self.DESCRIPT_COL, _("Description"))
+        self._list.InsertColumn(self.AUTHOR_COL, _("Author"))
+        self._list.InsertColumn(self.VERSION_COL, _("Version"))
         self.PopulateCtrl()
 
         # Layout Panel
@@ -180,6 +185,26 @@ class ConfigPanel(wx.Panel):
 
         # Event handlers
         self.Bind(ed_event.EVT_NOTIFY, self.OnNotify)
+
+    def GetItemIdentifier(self, name):
+        """Gets the named item and returns its identifier. The
+        identifier is the combination of the name and version 
+        strings.
+
+        """
+        identifer = None
+        if self.HasItem(name):
+            id = self._list.FindItem(0, name)
+            ver = self._list.GetItem(id, self.VERSION_COL)
+            identifer = name + ver.GetText()
+        return identifer
+
+    def HasItem(self, name):
+        """Checks if a given named plugin is the list of this panel"""
+        if self._list.FindItem(0, name) >= 0:
+            return True
+        else:
+            return False
 
     def OnNotify(self, evt):
         """Handles the notification events that are
@@ -206,6 +231,7 @@ class ConfigPanel(wx.Panel):
             self._list.DeleteAllItems()
 
         p_mgr = wx.GetApp().GetPluginManager()
+        p_mgr.ReInit()
         for item in p_mgr.GetConfig():
             mod = sys.modules.get(item)
             try:
@@ -290,7 +316,11 @@ class DownloadPanel(wx.Panel):
             return (url.split("/")[-1], True, egg)
 
     # TODO possibly process this on a separate thread to keep the 
-    #      gui responsive.
+    #      gui responsive when switching to this panel.
+    # The obtained meta data must be served as a file that is formated
+    # as follows. Each meta data item must be on a single line with
+    # each set of meta data for different plugins separated by three
+    # hash marks '###'.
     def _GetPluginListData(self, url=PLUGIN_REPO):
         """Gets the list of plugins and their related meta data
         as a string and returns it.
@@ -302,7 +332,7 @@ class DownloadPanel(wx.Panel):
             text = h_file.read()
             h_file.close()
         finally:
-            return text
+            return text.split("###")
 
     def _ResultCatcher(self, delayedResult):
         """Catches the results from the download worker threads"""
@@ -335,7 +365,7 @@ class DownloadPanel(wx.Panel):
         it as a dictionary of names mapped to metadata.
 
         """
-        plugins = self._GetPluginListData().split("###")
+        plugins = self._GetPluginListData()
         p_list = dict()
         for meta in plugins:
             data = meta.split("\n")
@@ -356,6 +386,17 @@ class DownloadPanel(wx.Panel):
                     funct(tmp[1].strip())
             if tmpdat.GetName() != u'':
                 p_list[tmpdat.GetName()] = tmpdat
+
+        # Remove items that have already been installed
+        config_pg = self.GetParent().GetPage(CONFIG_PG)
+        to_clean = list()
+        for pin in p_list:
+            pin_id = p_list[pin].GetName() + p_list[pin].GetVersion()
+            cfg_id = config_pg.GetItemIdentifier(pin.lower())
+            if cfg_id and cfg_id.lower() == pin_id.lower():
+                to_clean.append(pin)
+        for item in to_clean:
+            del p_list[item]
         return p_list
 
     def IsDownloading(self, evt):
@@ -435,15 +476,18 @@ class InstallPanel(wx.Panel):
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         lbl = wx.StaticText(self, wx.ID_ANY,
-                            _("Click on Install to install the plugins in the list"))
+                            _("Drag and Drop previously downloaded plugins to the list\n") +
+                            _("Then click on Install to install the plugins in the list"))
         self._install = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SORT)
         self._instb = wx.Button(self, self.ID_INSTALL, _("Install"))
         self._usercb = wx.CheckBox(self, self.ID_USER, _("User Directory"))
         self._usercb.SetValue(True)
         self._usercb.SetToolTip(wx.ToolTip(_("Install the plugins only for the current user")))
         self._syscb = wx.CheckBox(self, self.ID_SYS, _("System Directory"))
-        self._syscb.SetToolTip(wx.ToolTip(_("Install the plugins for all users,"
+        self._syscb.SetToolTip(wx.ToolTip(_("Install the plugins for all users\n"
                                             " **requires administrative privileges**")))
+        if not util.CanWrite(ed_glob.CONFIG['SYS_PLUGIN_DIR']):
+            self._syscb.Disable()
 
         # Layout Panel
         self._sizer.Add(lbl, 0, wx.ALIGN_CENTER)
@@ -493,6 +537,7 @@ class InstallPanel(wx.Panel):
             try:
                 writer = file(inst_loc + egg_name, "wb")
                 writer.write(egg)
+                writer.close()
             except IOError:
                 continue
             else:
@@ -500,7 +545,10 @@ class InstallPanel(wx.Panel):
                 ind = self._install.FindString(item)
                 if ind != wx.NOT_FOUND:
                     self._install.Delete(ind)
-        self.GetGrandParent().SetStatusText(_("Finished Installing Plugins"), 0)
+        if not len(self._install.GetItems()):
+            self.GetGrandParent().SetStatusText(_("Finished Installing Plugins"), 0)
+        else:
+            self.GetGrandParent().SetStatusText(_("Error"), 1)
 
     def AddItemToInstall(self, item):
         """Adds an item to the install list, the item

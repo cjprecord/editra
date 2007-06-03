@@ -43,6 +43,7 @@ __revision__ = "$Id: $"
 # Dependancies
 import os
 import sys
+import stat
 import codecs
 import mimetypes
 import wx
@@ -172,6 +173,17 @@ def FilterFiles(file_list):
                 if not len(tmp) or (float(bad)/float(len(tmp))) < 0.1:
                     good.append(path)
     return good
+
+def CanWrite(path):
+    """Returns whether the user has write permissions
+    to the given path.
+
+    """
+    writable = False
+    if os.path.exists(path):
+        mode = os.stat(path)[stat.ST_MODE]
+        writable = bool(stat.S_IMODE(mode) & stat.S_IWRITE)
+    return writable
 
 def GetFileModTime(file_name):
     """Returns the time that the given file was last modified on"""
