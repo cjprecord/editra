@@ -89,15 +89,7 @@ class MainWindow(wx.Frame):
         self.LOG = wx.GetApp().GetLog()
   
         # Try and set an app icon 
-        try:
-            if wx.Platform == "__WXMSW__":
-                ed_icon = CONFIG['SYSPIX_DIR'] + u"editra.ico"
-                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
-            else:
-                ed_icon = CONFIG['SYSPIX_DIR'] + u"editra.png"
-                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
-        finally:
-            pass
+        util.SetWindowIcon(self)
 
         # Check if user wants Metal Style under OS X
         if wx.Platform == '__WXMAC__' and PROFILE.has_key('METAL'):
