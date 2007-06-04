@@ -454,26 +454,19 @@ class DownloadDialog(wx.Frame):
         
         """
         wx.Frame.__init__(self, parent, id, title, pos, size, style)
-        try:
-            if wx.Platform == "__WXMSW__":
-                ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.ico"
-                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
-            else:
-                ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.png"
-                self.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
-        finally:
-            pass
+        util.SetWindowIcon(self)
 
         #---- Attributes/Objects ----#
         self.LOG = wx.GetApp().GetLog()
         self._parent = parent
-        self._progress = UpdateProgress(self, self.ID_PROGRESS_BAR)
+        self._panel = wx.Panel(self, wx.ID_ANY)
+        self._progress = UpdateProgress(self._panel, self.ID_PROGRESS_BAR)
         fname = self._progress.GetCurrFileName()
         floc = self._progress.GetDownloadLocation()
-        dl_file = wx.StaticText(self, wx.ID_ANY, _("Downloading: %s") % fname)
-        dl_loc = wx.StaticText(self, wx.ID_ANY, 
+        dl_file = wx.StaticText(self._panel, wx.ID_ANY, _("Downloading: %s") % fname)
+        dl_loc = wx.StaticText(self._panel, wx.ID_ANY, 
                                _("Downloading To: %s") % floc)
-        self._cancel_bt = wx.Button(self, wx.ID_CANCEL)
+        self._cancel_bt = wx.Button(self._panel, wx.ID_CANCEL)
         self._timer = wx.Timer(self, id=self.ID_TIMER)
         self._proghist = list()
 
@@ -485,7 +478,7 @@ class DownloadDialog(wx.Frame):
         hdr = wx.BoxSizer(wx.HORIZONTAL)
         hdr.Add(wx.Size(5,5))
         bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWNLOAD_DLG), wx.ART_OTHER)
-        bmp = wx.StaticBitmap(self, wx.ID_ANY, bmp)
+        bmp = wx.StaticBitmap(self._panel, wx.ID_ANY, bmp)
         hdr.Add(bmp, 0, wx.ALIGN_LEFT)
         hdr.Add(wx.Size(5,5))
         shdr = wx.BoxSizer(wx.VERTICAL)
@@ -505,8 +498,14 @@ class DownloadDialog(wx.Frame):
         self._sizer.Add(wx.Size(15,15))
         self._sizer.Add(self._cancel_bt, 0, wx.ALIGN_CENTER_HORIZONTAL)
         self._sizer.Add(wx.Size(15, 15))
-        self.SetSizer(self._sizer)
+        self._panel.SetSizer(self._sizer)
+        mwsz = wx.BoxSizer(wx.VERTICAL)
+        mwsz.Add(self._panel, 0, wx.EXPAND)
+        self.SetSizer(mwsz)
+        self._panel.SetAutoLayout(True)
         self.SetAutoLayout(True)
+        self._panel.SendSizeEvent()
+        self.SendSizeEvent()
         self.SetInitialSize()
 
         # Adjust progress bar and status widths
