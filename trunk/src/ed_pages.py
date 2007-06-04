@@ -147,9 +147,7 @@ class ED_Pages(FNB.FlatNotebook):
 
     def OpenPage(self, path, filename):
         """Open a File Inside of a New Page"""
-        # build path and check type
         path2file = os.path.join(path, filename)
-        # Check if file exists and is actually a file
         if os.path.exists(path2file) and (not os.path.isfile(path2file)):
             return
 
@@ -165,14 +163,26 @@ class ED_Pages(FNB.FlatNotebook):
                 return
 
         # Create control to place text on
-        self.control = ed_stc.EDSTC(self, self.pg_num)
+        new_pg = True
+        if self.GetPageCount():
+            if self.control.GetModify() or \
+               self.control.GetLength() or \
+               self.control.filename != u'':
+                self.control = ed_stc.EDSTC(self, self.pg_num)
+            else:
+                new_pg = False
+        else:
+            self.control = ed_stc.EDSTC(self, self.pg_num)
 
         # Pass directory and file name info to control object to save reference
         self.control.dirname = path
         self.control.filename = filename
 
         # Put control into page an place page in notebook
-        self.AddPage(self.control, self.control.filename)
+        if new_pg:
+            self.AddPage(self.control, self.control.filename)
+        else:
+            self.SetPageText(self.GetSelection(), self.control.filename)
 
         # Open file and put text into the control
         if os.path.exists(path2file):
