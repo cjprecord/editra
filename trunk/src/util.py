@@ -498,6 +498,21 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     b = color.Blue() + ((percent*bd*100)/high)/100
     return wx.Colour(r, g, b, alpha)
 
+def SetWindowIcon(window):
+    """Sets the given windows icon to be the programs
+    application icon.
+
+    """
+    try:
+        if wx.Platform == "__WXMSW__":
+            ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.ico"
+            window.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_ICO))
+        else:
+            ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.png"
+            window.SetIcon(wx.Icon(ed_icon, wx.BITMAP_TYPE_PNG))
+    finally:
+        pass
+
 # String Manupulation/Conversion Utilities
 def StrToTuple(tu_str):
     """Takes a tuple of ints that has been converted to a string format and
