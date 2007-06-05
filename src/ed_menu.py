@@ -131,15 +131,16 @@ class ED_Menu(wx.Menu):
             start = True
         for pos in range(self.GetMenuItemCount()):
             mitem = self.FindItemByPosition(pos)
+            if mitem.IsSeparator():
+                continue
             mlabel = mitem.GetLabel()
             if after and mitem.GetId() == after:
                 start = True
+                continue
             if after and not start:
                 continue
             if label < mlabel:
                 break
-#         if after:
-#             pos += 1
         mitem = self.Insert(pos, id, label, help, kind, use_bmp)
         return mitem
 
