@@ -301,7 +301,8 @@ class ED_Pages(FNB.FlatNotebook):
 
     def OnIdle(self, evt):
         """Update tabs and check if files have been modified"""
-        if ed_glob.PROFILE['CHECKMOD'] and wx.GetApp().IsActive():
+        if ed_glob.PROFILE['CHECKMOD'] and \
+           wx.GetApp().IsActive() and self.GetPageCount():
             cfile = os.path.join(self.control.dirname, self.control.filename)
             lmod = util.GetFileModTime(cfile)
             if self.control.modtime and not lmod and not os.path.exists(cfile):
