@@ -52,13 +52,17 @@ from edimage import catalog
 ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_ADD_BM : u'bmark_add.png',
         ed_glob.ID_BIN_FILE : u'bin_file.png',
+        ed_glob.ID_CDROM  : u'cdrom.png',
         ed_glob.ID_CONTACT : u'mail.png',
         ed_glob.ID_COPY   : u'copy.png',
+        ed_glob.ID_COMPUTER : u'computer.png',
         ed_glob.ID_CUT    : u'cut.png',
         ed_glob.ID_EXIT   : u'quit.png',
         ed_glob.ID_FILE   : u'file.png',
         ed_glob.ID_FIND   : u'find.png',
         ed_glob.ID_FIND_REPLACE : u'findr.png',
+        ed_glob.ID_FLOPPY : u'floppy.png',
+        ed_glob.ID_FOLDER : u'folder.png',
         ed_glob.ID_FONT   : u'font.png',
         ed_glob.ID_HARDDISK : u'harddisk.png',
         ed_glob.ID_HOMEPAGE : u'web.png',
@@ -80,6 +84,7 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_STYLE_EDIT : u'style_edit.png',
         ed_glob.ID_TEX_GEN : u'tex_gen.png',
         ed_glob.ID_UNDO   : u'undo.png',
+        ed_glob.ID_USB    : u'usb.png',
         ed_glob.ID_ZOOM_IN : u'zoomi.png',
         ed_glob.ID_ZOOM_OUT : u'zoomo.png',
         ed_glob.ID_ZOOM_NORMAL : u'zoomd.png'
@@ -117,6 +122,7 @@ OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
 DEFAULT = { 
             ed_glob.ID_ADD_BM  : wx.ART_ADD_BOOKMARK,
             ed_glob.ID_BIN_FILE : wx.ART_EXECUTABLE_FILE,
+            ed_glob.ID_CDROM   : wx.ART_CDROM,
             ed_glob.ID_COPY    : wx.ART_COPY,
             ed_glob.ID_CUT     : wx.ART_CUT,
             ed_glob.ID_DEL_BM  : wx.ART_DEL_BOOKMARK,
@@ -124,6 +130,8 @@ DEFAULT = {
             ed_glob.ID_FILE    : wx.ART_NORMAL_FILE,
             ed_glob.ID_FIND    : wx.ART_FIND,
             ed_glob.ID_FIND_REPLACE : wx.ART_FIND_AND_REPLACE,
+            ed_glob.ID_FLOPPY  : wx.ART_FLOPPY,
+            ed_glob.ID_FOLDER  : wx.ART_FOLDER,
             ed_glob.ID_HARDDISK : wx.ART_HARDDISK,
             ed_glob.ID_NEW     : wx.ART_NEW,
             ed_glob.ID_NEXT_MARK : wx.ART_GO_FORWARD,
@@ -134,7 +142,8 @@ DEFAULT = {
             ed_glob.ID_REDO    : wx.ART_REDO,
             ed_glob.ID_SAVE    : wx.ART_FILE_SAVE,
             ed_glob.ID_SAVEAS  : wx.ART_FILE_SAVE_AS,
-            ed_glob.ID_UNDO    : wx.ART_UNDO
+            ed_glob.ID_UNDO    : wx.ART_UNDO,
+            ed_glob.ID_USB     : wx.ART_REMOVABLE
 }
 
 # Client Id Map

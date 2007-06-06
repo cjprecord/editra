@@ -179,14 +179,19 @@ ID_CONTACT       = wx.NewId()
 # Misc IDs
 ID_APP_SPLASH        = wx.NewId()
 ID_BIN_FILE          = wx.NewId()
+ID_CDROM             = wx.NewId()
 ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMMAND_BAR       = wx.NewId()
+ID_COMPUTER          = wx.NewId()
 ID_DOWNLOAD_DLG      = wx.NewId()
 ID_FILE              = wx.ID_FILE
+ID_FLOPPY            = wx.NewId()
+ID_FOLDER            = wx.NewId()
 ID_HARDDISK          = wx.NewId()
 ID_PLUGIN_CFG        = wx.NewId()
 ID_PLUGIN_DL         = wx.NewId()
 ID_PLUGIN_INST       = wx.NewId()
+ID_USB               = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0
