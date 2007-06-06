@@ -610,7 +610,7 @@ class MainWindow(wx.Frame):
                 return
             else:
                 pass
-        dlg = plugdlg.PluginDialog(None, wx.ID_ANY, prog_name + " " + _("Plugin Manager"),
+        dlg = plugdlg.PluginDialog(self, wx.ID_ANY, prog_name + " " + _("Plugin Manager"),
                                    size=wx.Size(500, 350))
         dlg.CenterOnParent()
         dlg.Show()
