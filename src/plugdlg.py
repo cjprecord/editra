@@ -111,7 +111,7 @@ class PluginDialog(wx.Frame):
         evt.Skip()
 
     def Show(self, show=True):
-        """Shows the dialog and registers it with the mainloop"""
+        """Shows the dialog"""
         wx.GetApp().RegisterWindow(repr(self), self, True)
         wx.Frame.Show(self, show)
 
