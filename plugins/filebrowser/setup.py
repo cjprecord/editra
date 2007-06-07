@@ -14,7 +14,6 @@ except ImportError:
     setup = None
 
 __author__ = "Cody Precord"
-
 if setup != None:
     sys.argv.append("bdist_egg")
     sys.argv.append("--dist-dir=../.")
