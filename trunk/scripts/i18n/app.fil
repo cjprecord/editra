@@ -1,3 +1,5 @@
+../../plugins/pyshell/pyshell/__init__.py
+../../plugins/filebrowser/filebrowser/__init__.py
 ../../src/dev_tool.py
 ../../src/doctools.py
 ../../src/ed_cmdbar.py
@@ -14,6 +16,7 @@
 ../../src/ed_toolbar.py
 ../../src/Editra.py
 ../../src/generator.py
+../../src/plugdlg.py
 ../../src/prefdlg.py
 ../../src/profiler.py
 ../../src/style_editor.py
