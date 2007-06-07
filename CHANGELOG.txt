@@ -15,24 +15,30 @@ NEWS:
 
 NEW: [features/improvements]
 +Plugin Manager for configuring, downloading, and installing plugins
++A new File Browser plugin is available for download through the new
+plugin manager. It allows for quick file opening and bookmarking of
+frequently used paths.
 +Some minor performance improvements
 +Support for Lua, Fortran77, Fortran95
-+Drag'n Drop now accepts folders of files
++Drag and Drop now accepts folders of files
 +New Commands (Save All, Close All)
 +New Formatting options (Convert Tabs to Spaces, Convert Spaces to Tabs, 
                          Trim Trailing Whitespace)
 +Splash screen can be disabled
 +Checks if other programs have modified the on disk file since the last
 savepoint and prompts to see if it should be reloaded or resaved in the
-case of it being deleted.
+case of it having been deleted.
 +Mark tabs of modified files.
++If current page is empty and unmodified, opening a new file will open it
+in the current page instead of a new page.
 
 BUG FIXES:
 +Tab images now get set properly regardless of how file is opened
-+Launch script now properly handles commandline args.
 +Correct path handling in the Launch script
++Launch script now properly handles commandline args.
 +Manual setting of lexer works for all lexer menu items
-+On Mac the notebook now properly displays 0 tabs when all have been closed
++MAC the notebook now refreshes properly when all have been closed
++MSW  update downloader window displays properly
 
 #---------------------------------------------------------------------------------#
 VERSION 0.1.0
