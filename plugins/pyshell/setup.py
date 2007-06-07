@@ -25,13 +25,13 @@ if setup != None:
     sys.argv.append("--dist-dir=../.")
     setup(
         name='PyShell',
-        version='0.1',
+        version='0.2',
         description=__doc__,
         author=__author__,
-	author_email="cprecord@editra.org",
-	license="GPLv2",
-	url="editra.org",
-	platforms=["Linux", "OS X", "Windows"],
+        author_email="cprecord@editra.org",
+        license="GPLv2",
+        url="editra.org",
+        platforms=["Linux", "OS X", "Windows"],
         packages=['pyshell'],
         entry_points='''
         [Editra.plugins]
