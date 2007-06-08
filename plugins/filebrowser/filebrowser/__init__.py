@@ -74,7 +74,7 @@ class FileBrowserPanel(plugin.Plugin):
                 self._mi.Check(True)
             else:
                 mw._mgr.GetPane(PANE_NAME).Hide()
-                self._mi.Check(True)
+                self._mi.Check(False)
             mw._mgr.Update()
 
             # Event Handlers
@@ -124,6 +124,7 @@ class BrowserMenuBar(wx.Panel):
         self._saved = ed_menu.ED_Menu()
         self._rmpath = ed_menu.ED_Menu()
         self._ids = list()  # List of ids of menu items
+        self._rids = list() # List of remove menu item ids
         if wx.Platform == '__WXMAC__':
             key = u'Cmd'
         else:
@@ -161,12 +162,18 @@ class BrowserMenuBar(wx.Panel):
         """
         id = wx.NewId()
         self._ids.append(id)
+        id2 = wx.NewId()
+        self._rids.append(id2)
         self._saved.Append(id, label)
-        self._rmpath.Append(id, label)
+        self._rmpath.Append(id2, label)
 
-    def GetIds(self):
+    def GetOpenIds(self):
         """Returns the ordered list of menu item ids"""
         return self._ids
+
+    def GetRemoveIds(self):
+        """Returns the ordered list of remove menu item ids"""
+        return self._rids
 
     def GetItemText(self, id):
         """Retrieves the text label of the given item"""
@@ -184,15 +191,21 @@ class BrowserMenuBar(wx.Panel):
         """Returns the menu containg the saved items"""
         return self._saved
 
+    # wxBug? The SetValue calls are needed on OSX for the button to 
+    #        toggle properly. However On Windows making the calls to 
+    #        SetValue cause the button continually pop up the menu without 
+    #        dismissing it first.
     def OnButton(self, evt):
         """Pops the menu open when the button has been clicked on"""
         e_id = evt.GetId()
-        if e_id == self.ID_PATHS:
+        if e_id == self.ID_PATHS and self._menub.GetValue():
             men_rect = self._menub.GetRect()
             pos = wx.Point(0, men_rect.GetY() + men_rect.GetHeight())
-            self._menub.SetValue(True)
+            if wx.Platform == '__WXMAC__':
+                self._menub.SetValue(True)
             self._menub.PopupMenu(self._menu, pos)
-            self._menub.SetValue(False)
+            if wx.Platform == '__WXMAC__':
+                self._menub.SetValue(False)
         else:
             evt.Skip()
 
@@ -220,22 +233,20 @@ class BrowserMenuBar(wx.Panel):
         and removed lists using the id as a lookup.
 
         """
-        m_items = self.GetSavedMenu().GetMenuItems()
-        ids = list()
-        for item in m_items:
-            ids.append(item.GetId())
+        m_items = self.GetRemoveMenu().GetMenuItems()
+        o_ids = self.GetOpenIds()
+        r_ids = self.GetRemoveIds()
+        index = None
 
-        if id in ids:
-            s_item = self.GetSavedMenu().Remove(id)
+        if id in r_ids:
+            index = r_ids.index(id)
             r_item = self.GetRemoveMenu().Remove(id)
-
-        if id in self.GetIds():
-            self._ids.remove(id)
+            s_item = self.GetSavedMenu().Remove(o_ids[index])
+            self._rids.remove(id)
+            del self._ids[index]
 
 class BrowserPane(wx.Panel):
     """Creates a filebrowser pane"""
-    CONTEXT_OPEN = "OPEN"
-    CONTEXT_DEL = "DELETE"
     ID_BROWSE_MENU = wx.NewId()
     ID_SHOW_HIDDEN = wx.NewId()
 
@@ -246,7 +257,6 @@ class BrowserPane(wx.Panel):
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         ff = "".join(syntax.syntax.GenFileFilters())
-        self._context = None
         self._menbar = BrowserMenuBar(self, self.ID_BROWSE_MENU)
         self._browser = FileBrowser(self, ID_FILEBROWSE, 
                                     dir = wx.GetHomeDir(), 
@@ -273,8 +283,6 @@ class BrowserPane(wx.Panel):
         # Event Handlers
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_MENU, self.OnMenu)
-        self._menbar.GetRemoveMenu().Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
-        self._menbar.GetSavedMenu().Bind(wx.EVT_MENU_OPEN, self.OnMenuOpen)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 
     def __del__(self):
@@ -289,46 +297,34 @@ class BrowserPane(wx.Panel):
         else:
             evt.Skip()
 
-    # TODO Allow for custom labels to be used for paths
+    # TODO Add input method so that paths can be given custom
+    #      labels
     # TODO after a jump the window should be properly rescrolled
+    #      to have the jumped-to path at the top when possible
     def OnMenu(self, evt):
         """Handles the events associated with adding, opening,
         and removing paths in the menubars menus.
 
         """
         e_id = evt.GetId()
-        p_ids = self._menbar.GetIds()
+        o_ids = self._menbar.GetOpenIds()
+        d_ids = self._menbar.GetRemoveIds()
         if e_id == self._menbar.ID_MARK_PATH:
             items = self._browser.GetPaths()
             for item in items:
                 self._menbar.AddItem(item)
                 self._config.AddPathMark(item, item)
-        elif e_id in p_ids:
-            if self._context == self.CONTEXT_OPEN:
-                pmark = self._menbar.GetItemText(e_id)
-                path = self._config.GetPath(pmark)
-                res = self._browser.ExpandPath(path)
-                self._browser.SetFocus()
-            elif self._context == self.CONTEXT_DEL:
-                plabel = self._menbar.GetItemText(e_id)
-                self._menbar.RemoveItemById(e_id)
-                self._config.RemovePathMark(plabel)
-            else:
-                pass
-        else:
-            evt.Skip()
-
-    def OnMenuOpen(self, evt):
-        """Saves reference to the menu opened so that the action 
-        on open and closes can be determined since both menus maintain
-        the same id for each matching item.
-
-        """
-        e_id = evt.GetMenu()
-        if e_id == self._menbar.GetSavedMenu():
-            self._context = self.CONTEXT_OPEN
-        elif e_id == self._menbar.GetRemoveMenu():
-            self._context = self.CONTEXT_DEL
+                self._config.Save()
+        elif e_id in o_ids:
+            pmark = self._menbar.GetItemText(e_id)
+            path = self._config.GetPath(pmark)
+            res = self._browser.ExpandPath(path)
+            self._browser.SetFocus()
+        elif e_id in d_ids:
+            plabel = self._menbar.GetItemText(e_id)
+            self._menbar.RemoveItemById(e_id)
+            self._config.RemovePathMark(plabel)
+            self._config.Save()
         else:
             evt.Skip()
 
@@ -385,6 +381,8 @@ class FileBrowser(wx.GenericDirCtrl):
             self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_USB), wx.ART_MENU))  # Removable
             self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_FILE), wx.ART_MENU))  # Regular Files
             self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_BIN_FILE), wx.ART_MENU))  # Binary Files
+            self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_FILE), wx.ART_MENU))  # msw cmd Files
+            self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_FILE), wx.ART_MENU))  # msw py Files
             self._tree.SetImageList(self._imglst)
 
         # Event Handlers
@@ -409,12 +407,13 @@ class FileBrowser(wx.GenericDirCtrl):
                 path.append(self._tree.GetItemText(atom))
 
             if wx.Platform == '__WXMSW__':
-                pass
+                r_txt = u''
             else:
                 if path[0] != "/":
                     path.pop(0)
+                r_txt = os.path.sep
 
-            ret_val.append(os.path.sep + util.GetPathChar().join(path))
+            ret_val.append(r_txt + util.GetPathChar().join(path))
         return ret_val
 
     def GetScrollRange(self, orient=wx.VERTICAL):
