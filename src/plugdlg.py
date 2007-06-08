@@ -80,6 +80,8 @@ class PluginDialog(wx.Frame):
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
+        self.CreateStatusBar(2)
+        self.SetStatusWidths([-1, 155]) # TODO variable width
         self._nb = PluginPages(self, wx.ID_ANY)
         
         # Layout Dialog
@@ -87,8 +89,6 @@ class PluginDialog(wx.Frame):
         self._title = title
         self.SetSizer(self._sizer)
         self.SetAutoLayout(True)
-        self.CreateStatusBar(2)
-        self.SetStatusWidths([-1, 155]) # TODO variable width
 
         # Event Handlers
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -170,8 +170,11 @@ class PluginPages(wx.Toolbook):
         parent.SetTitle(parent._title + " | " + self.GetPageText(cur_pg))
         if cur_pg == CONFIG_PG:
             self._config.PopulateCtrl()
+            self.GetParent().SetStatusText(_("Changes will take affect once the "
+                                             "program has been resarted"), 0)
         elif cur_pg == DOWNLOAD_PG:
             self._download.PopulateList()
+            self.GetParent().SetStatusText("",0)
         elif cur_pg == INSTALL_PG:
             pass
         else:
@@ -272,11 +275,12 @@ class ConfigPanel(wx.Panel):
             ind = self._list.FindItem(0, item)
             self._list.CheckItem(ind, p_mgr.GetConfig()[item])
 
-        self._list.SetColumnWidth(0, wx.LIST_AUTOSIZE)
-        self._list.SetColumnWidth(1, wx.LIST_AUTOSIZE)
-        self._list.SetColumnWidth(2, wx.LIST_AUTOSIZE)
-        self._list.SetColumnWidth(3, wx.LIST_AUTOSIZE)
-        self._list.SendSizeEvent()
+        if self._list.GetItemCount():
+            self._list.SetColumnWidth(0, wx.LIST_AUTOSIZE)
+            self._list.SetColumnWidth(1, wx.LIST_AUTOSIZE)
+            self._list.SetColumnWidth(2, wx.LIST_AUTOSIZE)
+            self._list.SetColumnWidth(3, wx.LIST_AUTOSIZE)
+            self._list.SendSizeEvent()
         return self._list.GetItemCount()
 
 class DownloadPanel(wx.Panel):
@@ -497,9 +501,12 @@ class InstallPanel(wx.Panel):
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         lbl = wx.StaticText(self, wx.ID_ANY,
-                            _("Drag and Drop previously downloaded plugins to the list\n") +
-                            _("Then click on Install to install the plugins in the list"))
+                            _("Click on Install to install the plugins in the list"))
+        tt = wx.ToolTip(_("To add a new item drag and drop the plugin file "
+                          "into the list.\n\nTo remove an item select it and "
+                          "hit Delete or Backspace."))
         self._install = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SORT)
+        self._install.SetToolTip(tt)
         self._install.SetDropTarget(util.DropTargetFT(self))
         self._instb = wx.Button(self, self.ID_INSTALL, _("Install"))
         self._instb.Disable()
@@ -576,7 +583,7 @@ class InstallPanel(wx.Panel):
                                    style = wx.YES_NO | wx.CENTER | wx.ICON_INFORMATION)
             result = dlg.ShowModal()
             dlg.Destroy()
-            if result == wx.YES:
+            if result == wx.ID_YES:
                 self.GetParent().SetSelection(CONFIG_PG)
             else:
                 pass
