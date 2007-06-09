@@ -690,7 +690,7 @@ class MainWindow(wx.Frame):
                          ID_FOLDING, ID_AUTOCOMP, ID_SHOW_LN, ID_COMMENT,
                          ID_UNCOMMENT, ID_AUTOINDENT, ID_LINE_AFTER,
                          ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB,
-                         ID_TRIM_WS])
+                         ID_TRIM_WS, ID_SHOW_EDGE])
         ctrl = self.nb.GetCurrentCtrl()
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
@@ -788,6 +788,7 @@ class MainWindow(wx.Frame):
             self.viewmenu.Enable(ID_ZOOM_IN, zoom < 18)
             self.viewmenu.Enable(ID_ZOOM_OUT, zoom > -8)
             menu.Check(ID_SHOW_WS, bool(ctrl.GetViewWhiteSpace()))
+            menu.Check(ID_SHOW_EDGE, bool(ctrl.GetEdgeMode()))
             menu.Check(ID_SHOW_EOL, bool(ctrl.GetViewEOL()))
             menu.Check(ID_SHOW_LN, bool(ctrl.GetMarginWidth(1)))
             menu.Check(ID_INDENT_GUIDES, bool(ctrl.GetIndentationGuides()))

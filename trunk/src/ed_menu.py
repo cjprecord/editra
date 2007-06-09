@@ -287,6 +287,8 @@ class ED_MenuBar(wx.MenuBar):
         viewmenu.AppendSeparator()
         viewmenu.Append(ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"), 
                              _("Show Indentation Guides"), wx.ITEM_CHECK)
+        viewmenu.Append(ed_glob.ID_SHOW_EDGE, _("Show Edge Guide"),
+                        _("Show the edge column guide"), wx.ITEM_CHECK)
         viewmenu.Append(ed_glob.ID_SHOW_EOL, _("Show EOL Markers"),
                         _("Show EOL Markers"), wx.ITEM_CHECK)
         viewmenu.Append(ed_glob.ID_SHOW_LN, _("Show Line Numbers"), 
