@@ -69,7 +69,7 @@ import util
 
 # On mac use the native control as it looks much nicer
 # if wx.Platform == "__WXMAC__":
-#     wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", 0)
+#      wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", 0)
 
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
@@ -91,7 +91,7 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
             ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN,
             ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT, ed_glob.ID_APP_SPLASH,
-            ed_glob.ID_PREF_CHKMOD]
+            ed_glob.ID_PREF_CHKMOD, ed_glob.ID_PREF_EDGE, ed_glob.ID_SHOW_EDGE]
 
 #----------------------------------------------------------------------------#
 
@@ -379,8 +379,17 @@ class PrefPages(wx.Notebook):
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
         fold_cb = wx.CheckBox(code_panel, ed_glob.ID_FOLDING, _("Code Folding"))
         fold_cb.SetValue(ed_glob.PROFILE['CODE_FOLD'])
+        col_sz = wx.BoxSizer(wx.HORIZONTAL)
+        edge_cb = wx.CheckBox(code_panel, ed_glob.ID_SHOW_EDGE, _("Edge Guide"))
+        edge_cb.SetValue(ed_glob.PROFILE['SHOW_EDGE'])
+        col_sz.Add(edge_cb, 0, wx.ALIGN_LEFT)
+        col_sz.Add((15,15))
+        edge_ch = ExChoice(code_panel, ed_glob.ID_PREF_EDGE,
+                           choices=range(41, 121),
+                           default=str(ed_glob.PROFILE['EDGE']))
+        col_sz.Add(edge_ch, 0, wx.ALIGN_LEFT)
         feat_sizer = wx.BoxSizer(wx.VERTICAL)
-        feat_sizer.AddMany([ai_cb, br_cb, fold_cb, ind_cb]) 
+        feat_sizer.AddMany([ai_cb, br_cb, fold_cb, ind_cb, col_sz]) 
 
         # Syntax / Completion Settings
         syn_lbl = self.SectionHead(code_panel, _("Syntax && Completion"))
@@ -776,6 +785,9 @@ class ExChoice(wx.Choice):
     """
     def __init__(self, parent, id, pos=(-1, -1), size=(-1, -1), choices=[], default=None):
         """Constructs a Choice Control"""
+        if len(choices) and isinstance(choices[0], int):
+            for ind in range(len(choices)):
+                choices[ind] = str(choices[ind])
         wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices)
         if default != None:
             self.SetStringSelection(default)

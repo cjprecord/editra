@@ -108,6 +108,7 @@ ID_PREF          = wx.ID_PREFERENCES
 ID_PREF_LANG     = wx.NewId()
 ID_PREF_AALIAS   = wx.NewId()
 ID_PREF_CHKMOD   = wx.NewId()
+ID_PREF_EDGE     = wx.NewId()
 ID_PREF_SYNTHEME = wx.NewId()
 ID_PREF_TABS     = wx.NewId()
 ID_PREF_TABW     = wx.NewId()
@@ -127,6 +128,7 @@ ID_PREF_UPDATE_BAR = wx.NewId()
 ID_ZOOM_OUT      = wx.ID_ZOOM_OUT
 ID_ZOOM_IN       = wx.ID_ZOOM_IN
 ID_ZOOM_NORMAL   = wx.ID_ZOOM_100
+ID_SHOW_EDGE     = wx.NewId()
 ID_SHOW_EOL      = wx.NewId()
 ID_SHOW_LN       = wx.NewId()
 ID_SHOW_WS       = wx.NewId()
@@ -212,6 +214,7 @@ PROFILE = {
            'CHECKMOD'   : True,             # Auto check file for file modifications
            'CODE_FOLD'  : True,             # Use code folding
            'DEFAULT'    : False,            # TODO No longer used I believe
+           'EDGE'       : 80,               # Edge guide column
            'EOL'        : 'Unix (\\n)',     # EOL mode
            'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
            'GUIDES'     : True,             # Use Indentation guides
@@ -222,6 +225,7 @@ PROFILE = {
            'MYPROFILE'  : 'default.pp',     # Path to profile file
            'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
            'SAVE_POS'   : True,             # Remember Carat positions
+           'SHOW_EDGE'  : True,             # Show Edge Guide
            'SHOW_EOL'   : False,            # Show EOL markers
            'SHOW_LN'    : True,             # Show Line Numbers
            'SYNTAX'     : True,             # Use Syntax Highlighting
@@ -255,11 +259,13 @@ ID_2_PROF = {
              ID_PREF_SYNTHEME     : 'SYNTHEME',
              ID_PREF_TABS         : 'USETABS',
              ID_PREF_TABW         : 'TABWIDTH',
+             ID_SHOW_EDGE         : 'SHOW_EDGE',
              ID_SHOW_EOL          : 'SHOW_EOL',
              ID_SHOW_LN           : 'SHOW_LN',
              ID_SHOW_WS           : 'SHOW_WS',
              ID_TRANSPARENCY      : 'ALPHA',
              ID_WORD_WRAP         : 'WRAP',
+             ID_PREF_EDGE         : 'EDGE',
              ID_PREF_METAL        : 'METAL',
              ID_PREF_SPOS         : 'SAVE_POS',
              ID_PREF_WSIZE        : 'SET_WSIZE',
