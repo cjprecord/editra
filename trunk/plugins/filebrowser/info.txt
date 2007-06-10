@@ -1,0 +1,4 @@
+Name=filebrowser
+Author=Cody Precord
+Description=Provides a file browser side panel
+Version=0.1
