@@ -141,8 +141,29 @@ class ED_Menu(wx.Menu):
                 continue
             if label < mlabel:
                 break
-        mitem = self.Insert(pos, id, label, help, kind, use_bmp)
+        last_ind = self.GetMenuItemCount() - 1
+        l_item = self.FindItemByPosition(last_ind)
+        if pos == last_ind and (l_item.IsSeparator() or label > mlabel):
+            mitem = self.Append(id, label, help, kind, use_bmp)
+        else:
+            mitem = self.Insert(pos, id, label, help, kind, use_bmp)
         return mitem
+
+    def RemoveItemByName(self, name):
+        """Removes an item by the label. It will remove the first
+        item matching the given name in the menu, the matching is
+        case sensitive. The return value is the either the id of the
+        removed item or None if the item was not found.
+
+        """
+        id = None
+        for pos in range(self.GetMenuItemCount()):
+            item = self.FindItemByPosition(pos)
+            if name == item.GetLabel():
+                id = item.GetId()
+                self.Remove(id)
+                break
+        return id
 
     def SetItemBitmap(self, item):
         """Sets the MenuItems bitmap by getting the id from the
