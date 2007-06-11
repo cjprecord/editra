@@ -245,7 +245,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.column = self.GetColumn(pos)
         if (self.old_pos != pos):
             self.old_pos = pos
-            if self._use_autocomp:
+            if self._use_autocomp and key.GetEventType() != wx.wxEVT_LEFT_UP:
                 key_code = key.GetKeyCode()
                 if key_code == wx.WXK_RETURN:
                     self._autocomp_svc.UpdateNamespace(True)

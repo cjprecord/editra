@@ -722,6 +722,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if line >= 0 and column >= 0:
             self.SetStatusText(_("Line: %d  Column: %d") % (line, column), SB_ROWCOL)
             self.UpdateToolBar()
+        evt.Skip()
 
     def OnMenuHighlight(self, evt):
         """HACK for GTK, submenus dont seem to fire a EVT_MENU_OPEN
@@ -775,7 +776,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 eol = ctrl.GetEOLModeId()
                 for id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
                     menu2.Check(id, eol == id)
-        elif menu == self.editmenu:
+                menu = self.vieweditmenu
+        if menu == self.editmenu:
             self.LOG("[main_evt] Updating Edit Menu")
             menu.Enable(ID_UNDO, ctrl.CanUndo())
             menu.Enable(ID_REDO, ctrl.CanRedo())
