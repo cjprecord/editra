@@ -17,10 +17,13 @@ This page lists all of the programming languages supported by Editra and what co
 ||Css          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Batch        ||Yes           ||Yes             ||No            ||Yes             ||
 ||Ess          ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Fortran 77   ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Fortran 95   ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Html         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Java         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||JavaScript   ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Korn Shell   ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Lua          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||LaTeX        ||Yes           ||Yes             ||No            ||Yes             ||
 ||Lisp         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Masm         ||Yes           ||Yes             ||No            ||Yes             ||
@@ -40,5 +43,4 @@ This page lists all of the programming languages supported by Editra and what co
 ||VHDL         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Visual Basic ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Xml          ||Yes           ||Yes             ||Yes           ||Yes             ||
-
 
