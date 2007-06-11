@@ -1,7 +1,7 @@
 #summary General Information
 
 = Introduction =
-
+see SupportedLanguages for a list of what programming languages are supported by the editor.
 
 
 = Details =
