@@ -293,7 +293,12 @@ class BrowserPane(wx.Panel):
         """Toggles visibility of hidden files on and off"""
         e_id = evt.GetId()
         if e_id == self.ID_SHOW_HIDDEN:
+            style = self._browser.GetTreeStyle()
+            self._browser.SetTreeStyle(wx.TR_SINGLE)
+            self._browser.Refresh()
             self._browser.ShowHidden(self._showh_cb.GetValue())
+            self._browser.SetTreeStyle(style)
+            self._browser.Refresh()
         else:
             evt.Skip()
 
@@ -383,6 +388,9 @@ class FileBrowser(wx.GenericDirCtrl):
             self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_BIN_FILE), wx.ART_MENU))  # Binary Files
             self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_FILE), wx.ART_MENU))  # msw cmd Files
             self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_FILE), wx.ART_MENU))  # msw py Files
+            if wx.Platform == '__WXMSW__':
+                for x in range(6):
+                    self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_FILE), wx.ART_MENU))
             self._tree.SetImageList(self._imglst)
 
         # Event Handlers
@@ -420,6 +428,10 @@ class FileBrowser(wx.GenericDirCtrl):
         """Returns the scroll range of the tree control"""
         return self._tree.GetScrollRange(orient)
 
+    def GetTreeStyle(self):
+        """Returns the trees current style"""
+        return self._tree.GetWindowStyle()
+
     def OnOpen(self, evt):
         """Handles item activations events. (i.e double clicked or 
         enter is hit) and passes the clicked on file to be opened in 
@@ -442,6 +454,7 @@ class FileBrowser(wx.GenericDirCtrl):
 #         evt.Skip()
 
 #     def OnDragStart(self, evt):
+#         print evt.GetLabel()
 #         evt.Skip()
 
 #     def SelectPath(self, path):
@@ -460,6 +473,10 @@ class FileBrowser(wx.GenericDirCtrl):
 #                 i_txt = self._tree.GetItemText(item)
 #                 print i_txt
 #             item, cookie = self._tree.GetNextChild(item, cookie)
+
+    def SetTreeStyle(self, style):
+        """Sets the style of directory controls tree"""
+        self._tree.SetWindowStyle(style)
 
 class PathMarkConfig(object):
     """Manages the saving of pathmarks to make them usable from
