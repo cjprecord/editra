@@ -189,6 +189,7 @@ class ED_MenuBar(wx.MenuBar):
         self._whitespaceformatmenu = ED_Menu()
         self._lineformatmenu = ED_Menu()
         self._editmenu = self.GenEditMenu()
+        self._vieweditmenu = ED_Menu()
         self._viewmenu = self.GenViewMenu()
         self._formatmenu = self.GenFormatMenu()
         self._settingsmenu = self.GenSettingsMenu()
@@ -304,18 +305,19 @@ class ED_MenuBar(wx.MenuBar):
         viewmenu.Append(ed_glob.ID_ZOOM_IN, _("Zoom In") + "\tCtrl++", 
                         _("Zoom In"))
         viewmenu.Append(ed_glob.ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", 
-                            _("Zoom Default"))
+                        _("Zoom Default"))
         viewmenu.AppendSeparator()
-        viewmenu.Append(ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"), 
-                             _("Show Indentation Guides"), wx.ITEM_CHECK)
-        viewmenu.Append(ed_glob.ID_SHOW_EDGE, _("Show Edge Guide"),
-                        _("Show the edge column guide"), wx.ITEM_CHECK)
-        viewmenu.Append(ed_glob.ID_SHOW_EOL, _("Show EOL Markers"),
-                        _("Show EOL Markers"), wx.ITEM_CHECK)
-        viewmenu.Append(ed_glob.ID_SHOW_LN, _("Show Line Numbers"), 
-                            _("Show Line Number Margin"), wx.ITEM_CHECK)
-        viewmenu.Append(ed_glob.ID_SHOW_WS, _("Show Whitespace"), 
-                             _("Show Whitespace Markers"), wx.ITEM_CHECK)
+        self._vieweditmenu.Append(ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"), 
+                                  _("Show Indentation Guides"), wx.ITEM_CHECK)
+        self._vieweditmenu.Append(ed_glob.ID_SHOW_EDGE, _("Show Edge Guide"),
+                                  _("Show the edge column guide"), wx.ITEM_CHECK)
+        self._vieweditmenu.Append(ed_glob.ID_SHOW_EOL, _("Show EOL Markers"),
+                                  _("Show EOL Markers"), wx.ITEM_CHECK)
+        self._vieweditmenu.Append(ed_glob.ID_SHOW_LN, _("Show Line Numbers"), 
+                                  _("Show Line Number Margin"), wx.ITEM_CHECK)
+        self._vieweditmenu.Append(ed_glob.ID_SHOW_WS, _("Show Whitespace"), 
+                                  _("Show Whitespace Markers"), wx.ITEM_CHECK)
+        viewmenu.AppendSubMenu(self._vieweditmenu, _("Editor"), _("Toggle Editor View Options"))
         viewmenu.AppendSeparator()
         viewmenu.Append(ed_glob.ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
                             _("Goto Line Number"))

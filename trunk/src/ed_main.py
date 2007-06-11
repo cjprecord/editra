@@ -57,6 +57,7 @@ import os
 import sys
 import time
 import wx
+import wx.aui
 from ed_glob import *
 import util
 import profiler
@@ -68,13 +69,13 @@ import ed_cmdbar
 import syntax.syntax as syntax
 import generator
 import plugin
-import wx.aui
+import perspective as viewmgr
 
 # Function Aliases
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-class MainWindow(wx.Frame):
+class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     """Editras Main Window"""
     def __init__(self, parent, id, wsize, title):
         """Initialiaze the Frame and Event Handlers"""
@@ -85,6 +86,8 @@ class MainWindow(wx.Frame):
                                       wx.aui.AUI_MGR_TRANSPARENT_DRAG | \
                                       wx.aui.AUI_MGR_TRANSPARENT_HINT)
         self._mgr.SetManagedWindow(self)
+        viewmgr.PerspectiveManager.__init__(self, self._mgr, CONFIG['CACHE_DIR'])
+
         self.SetTitle(title + u' - v' + version)
         self.LOG = wx.GetApp().GetLog()
   
@@ -151,6 +154,10 @@ class MainWindow(wx.Frame):
         self.filemenu = menbar.GetMenuByName("file")
         self.editmenu = menbar.GetMenuByName("edit")
         self.viewmenu = menbar.GetMenuByName("view")
+        self.vieweditmenu = menbar.GetMenuByName("viewedit")
+        # TODO make this not hard coded
+        self.viewmenu.InsertMenu(5, ID_PERSPECTIVES, _("Perspectives"), 
+                                 self.GetPerspectiveControls())
         self.formatmenu = menbar.GetMenuByName("format")
         self.settingsmenu = menbar.GetMenuByName("settings")
         self.toolsmenu = menbar.GetMenuByName("tools")
@@ -255,6 +262,8 @@ class MainWindow(wx.Frame):
         finally:
             pass
 
+        # Set Perspective
+        self.SetPerspective(PROFILE['DEFAULT_VIEW'])
         self._mgr.Update()
         self.Show(True)
 
@@ -787,12 +796,13 @@ class MainWindow(wx.Frame):
             self.viewmenu.Enable(ID_ZOOM_NORMAL, zoom)
             self.viewmenu.Enable(ID_ZOOM_IN, zoom < 18)
             self.viewmenu.Enable(ID_ZOOM_OUT, zoom > -8)
+            menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
+        elif menu == self.vieweditmenu:
             menu.Check(ID_SHOW_WS, bool(ctrl.GetViewWhiteSpace()))
             menu.Check(ID_SHOW_EDGE, bool(ctrl.GetEdgeMode()))
             menu.Check(ID_SHOW_EOL, bool(ctrl.GetViewEOL()))
             menu.Check(ID_SHOW_LN, bool(ctrl.GetMarginWidth(1)))
             menu.Check(ID_INDENT_GUIDES, bool(ctrl.GetIndentationGuides()))
-            menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
         elif menu == self.formatmenu:
             self.LOG("[menu_evt] Updating Format Menu")
             menu.Check(ID_WORD_WRAP, bool(ctrl.GetWrapMode()))
