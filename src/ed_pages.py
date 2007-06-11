@@ -385,6 +385,7 @@ class ED_Pages(FNB.FlatNotebook):
             self.control.filename = ""
 
         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
+        self.control.Bind(wx.EVT_LEFT_UP, self.frame.OnKeyUp)
 
         self.LOG("[nb_evt] Control Changing from Page: " + str(evt.GetOldSelection()) + 
                  " to Page: " + str(evt.GetSelection()) + "\n" +
