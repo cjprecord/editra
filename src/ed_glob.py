@@ -132,6 +132,7 @@ ID_SHOW_EDGE     = wx.NewId()
 ID_SHOW_EOL      = wx.NewId()
 ID_SHOW_LN       = wx.NewId()
 ID_SHOW_WS       = wx.NewId()
+ID_PERSPECTIVES  = wx.NewId()
 ID_INDENT_GUIDES = wx.NewId()
 ID_VIEW_TOOL     = wx.NewId()
 ID_GOTO_LINE     = wx.NewId()
@@ -214,6 +215,7 @@ PROFILE = {
            'CHECKMOD'   : True,             # Auto check file for file modifications
            'CODE_FOLD'  : True,             # Use code folding
            'DEFAULT'    : False,            # TODO No longer used I believe
+           'DEFAULT_VIEW' : 'Default',      # Default Perspective
            'EDGE'       : 80,               # Edge guide column
            'EOL'        : 'Unix (\\n)',     # EOL mode
            'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
@@ -250,6 +252,7 @@ ID_2_PROF = {
              ID_BRACKETHL         : 'BRACKETHL',
              ID_PREF_CHKMOD       : 'CHECKMOD',
              ID_FOLDING           : 'CODE_FOLD',
+             ID_PERSPECTIVES      : 'DEFAULT_VIEW',
              ID_KWHELPER          : 'KWHELPER',
              ID_EOL_MODE          : 'EOL',
              ID_PREF_FHIST        : 'FHIST_LVL',

@@ -91,7 +91,8 @@ ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL,
             ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
             ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN,
             ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT, ed_glob.ID_APP_SPLASH,
-            ed_glob.ID_PREF_CHKMOD, ed_glob.ID_PREF_EDGE, ed_glob.ID_SHOW_EDGE]
+            ed_glob.ID_PREF_CHKMOD, ed_glob.ID_PREF_EDGE, ed_glob.ID_SHOW_EDGE,
+            ed_glob.ID_PERSPECTIVES]
 
 #----------------------------------------------------------------------------#
 
@@ -249,7 +250,7 @@ class PrefPages(wx.Notebook):
 
         # Events
         self.Bind(wx.EVT_BUTTON, self.OnButton)
-        self.Bind(wx.EVT_CHOICE, self.OnChoice, id=ed_glob.ID_PREF_SYNTHEME)
+        self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdateText)
 
@@ -272,6 +273,10 @@ class PrefPages(wx.Notebook):
             main_win = self.GetGrandParent()
             ed_glob.PROFILE['SYNTHEME'] = evt_obj.GetValue()
             main_win.nb.UpdateTextControls()
+        elif evt_id == ed_glob.ID_PERSPECTIVES:
+            main_win = self.GetGrandParent()
+            ed_glob.PROFILE['DEFAULT_VIEW'] = evt_obj.GetValue()
+            main_win.SetPerspective(ed_glob.PROFILE['DEFAULT_VIEW'])
         else:
             evt.Skip()
 
@@ -321,6 +326,17 @@ class PrefPages(wx.Notebook):
         mode_sizer.Add((5, 5))
         mode_sizer.Add(pmode_c, 0, wx.ALIGN_CENTER_VERTICAL)
 
+        ## Perspective Manager
+        perspect_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        perspect_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Default Perspective") + u": ")
+        perspect_ch = ExChoice(gen_panel, ed_glob.ID_PERSPECTIVES,
+                               choices=wx.GetApp().GetMainWindow().GetPerspectiveList(),
+                               default=ed_glob.PROFILE['DEFAULT_VIEW'])
+        perspect_sizer.Add((15, 0))
+        perspect_sizer.Add(perspect_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
+        perspect_sizer.Add((5, 5))
+        perspect_sizer.Add(perspect_ch, 0, wx.ALIGN_CENTER_VERTICAL)
+
         # Splash Screen
         splash_sz = wx.BoxSizer(wx.HORIZONTAL)
         splash_sz.Add(wx.Size(15,0))
@@ -345,8 +361,9 @@ class PrefPages(wx.Notebook):
         sizer.Add((15, 15))
         sizer.Add(self.SectionHead(gen_panel, _("Startup Settings")))
         sizer.Add(mode_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
+        sizer.Add(perspect_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
         sizer.Add(splash_sz, 0, wx.BOTTOM | wx.LEFT, 20)
-        sizer.Add((15, 45))
+        sizer.Add((15, 25))
         sizer.Add(self.SectionHead(gen_panel, _("Locale Settings")))
         sizer.Add(lang_sizer, 0, wx.BOTTOM | wx.LEFT, 20)
         gen_panel.SetSizer(sizer)
@@ -382,12 +399,15 @@ class PrefPages(wx.Notebook):
         col_sz = wx.BoxSizer(wx.HORIZONTAL)
         edge_cb = wx.CheckBox(code_panel, ed_glob.ID_SHOW_EDGE, _("Edge Guide"))
         edge_cb.SetValue(ed_glob.PROFILE['SHOW_EDGE'])
-        col_sz.Add(edge_cb, 0, wx.ALIGN_LEFT)
-        col_sz.Add((15,15))
+        col_sz.Add(edge_cb, 0, wx.ALIGN_CENTER_VERTICAL)
+        col_sz.Add((100, 0), 1, wx.EXPAND)
+        col_sz.Add(wx.StaticText(code_panel, wx.ID_ANY, 
+                   _("Edge Guide Column") + u": "), 0, wx.ALIGN_CENTER_VERTICAL)
+        col_sz.Add((5,5))
         edge_ch = ExChoice(code_panel, ed_glob.ID_PREF_EDGE,
-                           choices=range(41, 121),
+                           choices=range(40, 101),
                            default=str(ed_glob.PROFILE['EDGE']))
-        col_sz.Add(edge_ch, 0, wx.ALIGN_LEFT)
+        col_sz.Add(edge_ch, 0, wx.ALIGN_CENTER_VERTICAL)
         feat_sizer = wx.BoxSizer(wx.VERTICAL)
         feat_sizer.AddMany([ai_cb, br_cb, fold_cb, ind_cb, col_sz]) 
 
