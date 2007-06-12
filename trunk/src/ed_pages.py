@@ -165,8 +165,7 @@ class ED_Pages(FNB.FlatNotebook):
         # Create control to place text on
         new_pg = True
         if self.GetPageCount():
-            if self.control.GetModify() or \
-               self.control.GetLength() or \
+            if self.control.GetModify() or self.control.GetLength() or \
                self.control.filename != u'':
                 self.control = ed_stc.EDSTC(self, self.pg_num)
             else:
@@ -183,6 +182,10 @@ class ED_Pages(FNB.FlatNotebook):
             self.AddPage(self.control, self.control.filename)
         else:
             self.SetPageText(self.GetSelection(), self.control.filename)
+            self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
+                                                        self.control.dirname, 
+                                                        self.control.path_char, 
+                                                        self.control.filename))
 
         # Open file and put text into the control
         if os.path.exists(path2file):
@@ -376,9 +379,10 @@ class ED_Pages(FNB.FlatNotebook):
         if self.control.filename == "":
             self.control.filename = "Untitled - " + str(window.GetId())
 
-        self.frame.SetTitle(self.control.filename + " - " + "file://" + 
-                      self.control.dirname + self.control.path_char + 
-                      self.control.filename + " - " + ed_glob.prog_name + " v" + ed_glob.version)
+        self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
+                                                    self.control.dirname,
+                                                    self.control.path_char,
+                                                    self.control.filename))
 
         matchstrn = re.compile('Untitled*')
         if matchstrn.match(self.control.filename):
