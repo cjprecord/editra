@@ -88,7 +88,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._mgr.SetManagedWindow(self)
         viewmgr.PerspectiveManager.__init__(self, self._mgr, CONFIG['CACHE_DIR'])
 
-        self.SetTitle(title + u' - v' + version)
+        self.SetTitle()
         self.LOG = wx.GetApp().GetLog()
   
         # Try and set an app icon 
@@ -296,9 +296,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                     dirname = util.GetPathName(path)
                     filename = util.GetFileName(path)
                     self.nb.OpenPage(dirname, filename)		   
-                    self.SetTitle(filename + " - " + "file://" + dirname + 
-                                  "/" + filename + " - " + prog_name + " v" + 
-                                  version)
+                    self.SetTitle("%s - file://%s/%s" % (filename, dirname, filename))
                     self.nb.GoCurrentPage()
             else:
                 pass
@@ -426,9 +424,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
             else:
                 self.PushStatusText(_("Saved File As: %s") % fname, SB_INFO)
-                self.SetTitle(fname + u" - file://" + ctrl.dirname + 
-                              ctrl.path_char + fname + " - " + 
-                              prog_name + u" v" + version)
+                self.SetTitle(u"%s - file://%s%s%s" % (fname, ctrl.dirname, 
+                                                       ctrl.path_char, fname))
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.UpdatePageImage()
             return result
@@ -849,6 +846,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.OnSave(ID_SAVE)
 
         return result
+
+    def SetTitle(self, title=u''):
+        """Sets the windows title"""
+        name = "%s v%s" % (prog_name, version)
+        if len(title):
+           name = u' - ' + name
+        wx.Frame.SetTitle(self, title + name)
+
     #---- End Misc Functions ----#
 
 #-----------------------------------------------------------------------------#
