@@ -240,6 +240,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- End other event actions ----#
 
         #---- Final Setup Calls ----#
+        self._exiting = False
         self.LoadFileHistory(int(PROFILE['FHIST_LVL']))
         self.UpdateToolBar()
 
@@ -301,7 +302,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             else:
                 pass
         else:
-            self.LOG("[main_info] CMD Open File: " + file_name)
+            self.LOG("[main_info] CMD Open File: %s" % file_name)
             filename = util.GetFileName(file_name)
             dirname = util.GetPathName(file_name)
             self.nb.OpenPage(dirname, filename)
@@ -309,6 +310,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     def GetFrameManager(self):
         """Returns the manager for this frame"""
         return self._mgr
+
+    def IsExiting(self):
+        """Returns whether the windows is in the process of exiting
+        or not.
+
+        """
+        return self._exiting
 
     def LoadFileHistory(self, size):
         """Loads file history from profile"""
@@ -428,6 +436,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                                                        ctrl.path_char, fname))
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.UpdatePageImage()
+                self.nb.GetCurrentCtrl().FindLexer()
             return result
         else:
             pass
@@ -488,8 +497,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         # Cleanup Controls
         controls = self.nb.GetPageCount()
-        self.LOG("[main_evt] [exit] Number of controls: " + str(controls))
+        self.LOG("[main_evt] [exit] Number of controls: %d" % controls)
 
+        self._exiting = True
         while controls:
             if controls <= 0:
                 self.Close(True)
@@ -506,6 +516,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 pass
             else:
                 # Rebind the event
+                self._exiting = False
                 self.Bind(wx.EVT_CLOSE,self.OnExit)
                 return
         except UnboundLocalError:
@@ -524,8 +535,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.toolbar.Destroy()
         PROFILE['WSIZE'] = self.GetSize()
         PROFILE['WPOS'] = self.GetPosition()
-        self.LOG("[main_evt] [exit] Closing editor at pos=" + 
-                 str(PROFILE['WPOS']) + " size=" + str(PROFILE['WSIZE']))
+        self.LOG("[main_evt] [exit] Closing editor at pos=%s size=%s" % \
+                 (str(PROFILE['WPOS']), str(PROFILE['WSIZE'])))
         
         # Update profile
         profiler.UpdateProfileLoader()
@@ -602,7 +613,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     def OnStyleEdit(self, evt):
         """Opens the style editor """
         import style_editor
-        dlg = style_editor.StyleEditor(self, log=self.LOG)
+        dlg = style_editor.StyleEditor(self)
         dlg.CenterOnParent()
         dlg.ShowModal()
         dlg.Destroy()
@@ -628,7 +639,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if doc:
             self.nb.NewPage()
             ctrl = self.nb.GetCurrentCtrl()
-            ctrl.SetText(util.EncodeRawText(doc[1])) 
+            ctrl.SetText(doc[1]) 
             ctrl.FindLexer(doc[0])
         else:
             evt.Skip()
@@ -791,7 +802,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             menu.Check(ID_BRACKETHL, ctrl.brackethl)
         elif menu == self.viewmenu:
             zoom = ctrl.GetZoom()
-            self.LOG("[menu_evt] Updating View Menu: zoom = " + str(zoom))
+            self.LOG("[menu_evt] Updating View Menu: zoom = %d" % zoom)
             self.viewmenu.Enable(ID_ZOOM_NORMAL, zoom)
             self.viewmenu.Enable(ID_ZOOM_IN, zoom < 18)
             self.viewmenu.Enable(ID_ZOOM_OUT, zoom > -8)

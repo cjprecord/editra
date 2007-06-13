@@ -134,8 +134,8 @@ class ED_Pages(FNB.FlatNotebook):
     def NewPage(self):
         """Create a new notebook page with a blank text control"""
         self.control = ed_stc.EDSTC(self, self.pg_num)
-        self.LOG("[nb_evt] Page Creation ID: " + str(self.control.GetId()))
-        self.AddPage(self.control, u"Untitled - " + str(self.pg_num))
+        self.LOG("[nb_evt] Page Creation ID: %d" % self.control.GetId())
+        self.AddPage(self.control, u"Untitled - %d" % self.pg_num)
         self.SetPageImage(self.GetSelection(), str(self.control.lang_id))
 
     def OpenPageType(self, page, title):
@@ -186,27 +186,31 @@ class ED_Pages(FNB.FlatNotebook):
                                                         self.control.dirname, 
                                                         self.control.path_char, 
                                                         self.control.filename))
-
+        err = False
         # Open file and put text into the control
         if os.path.exists(path2file):
             #self.control.LoadFile(path2file)
             try:
                 reader = util.GetFileReader(path2file)
-                self.control.SetText(util.EncodeRawText(reader.read()))
+                self.control.SetText(reader.read())
                 reader.close()
                 self.frame.filehistory.AddFileToHistory(path2file)
                 self.control.modtime = util.GetFileModTime(path2file)
             except Exception, msg:
-                err = wx.MessageDialog(self, _("There was an error opening %s") \
+                reader.close()
+                err = wx.MessageDialog(self, _("Editra could not properly open %s\n"
+                                               "The page will be closed now to "
+                                               "prevent data loss!") \
                                        % path2file, _("Error Opening File"),
-                                       style=wx.OK | wx.CENTER | wx.ICON_INFORMATION)
+                                       style=wx.OK | wx.CENTER | wx.ICON_ERROR)
                 err.ShowModal()
                 err.Destroy()
-                self.DeletePage(self.GetSelection())
+                err = True
+                self.control.modtime = util.GetFileModTime(path2file)
         else:
             # Set Tab title for blank new file
             self.SetPageText(self.GetSelection(), self.control.filename)
-        self.LOG("[nb_evt] Opened Page: ID = " + str(self.GetSelection()))
+        self.LOG("[nb_evt] Opened Page: ID = %d" % self.GetSelection())
 
         # Set style
         self.control.FindLexer()
@@ -228,6 +232,11 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Refocus on selected page
         self.GoCurrentPage()
+        if err:
+            # If they call to close the page is not delayed the
+            # program will either have a Bus Error or Segfault
+            wx.CallLater(200, self.ClosePage)
+        
 
     def GoCurrentPage(self):
         """Move Focus to Currently Selected Page"""
@@ -235,12 +244,23 @@ class ED_Pages(FNB.FlatNotebook):
         if current_page < 0:
             return current_page
 
-        self.LOG("[nb_info] Current Page = " + str(current_page))
+        self.LOG("[nb_info] Current Page = %d" % current_page)
 
         control = self.GetPage(current_page)
         control.SetFocus()
         self.control = control
         return current_page
+
+    def GetPageText(self, pg_num):
+        """Gets the tab text from the given page number, stripping
+        the * mark if there is one.
+
+        """
+        txt = FNB.FlatNotebook.GetPageText(self, pg_num)
+        if txt[0] != u"*":
+            return txt
+        else:
+            return txt[1:]
 
     def GetTextControls(self):
         """Gets all the currently opened text controls"""
@@ -268,7 +288,7 @@ class ED_Pages(FNB.FlatNotebook):
         # Check file properties and make a "clean" list of file(s) to open
         valid_files = list()
         for fname in files:
-            self.LOG("[fdt_evt] File(s) Dropped: " + fname)
+            self.LOG("[fdt_evt] File(s) Dropped: %s" % fname)
             if not os.path.exists(fname):
                 self.frame.PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
             elif os.path.isdir(fname):
@@ -366,7 +386,7 @@ class ED_Pages(FNB.FlatNotebook):
 
     def OnPageChanging(self, evt):
         """Page changing event handler."""
-        self.LOG("[nb_evt] Page Changed to " + str(evt.GetSelection())) 
+        self.LOG("[nb_evt] Page Changed to %d" % evt.GetSelection())
         evt.Skip()
 
     def OnPageChanged(self, evt):
@@ -377,7 +397,7 @@ class ED_Pages(FNB.FlatNotebook):
         self.control = window
 
         if self.control.filename == "":
-            self.control.filename = "Untitled - " + str(window.GetId())
+            self.control.filename = "Untitled - %d" % window.GetId()
 
         self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
                                                     self.control.dirname,
@@ -391,16 +411,16 @@ class ED_Pages(FNB.FlatNotebook):
         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
         self.control.Bind(wx.EVT_LEFT_UP, self.frame.OnKeyUp)
 
-        self.LOG("[nb_evt] Control Changing from Page: " + str(evt.GetOldSelection()) + 
-                 " to Page: " + str(evt.GetSelection()) + "\n" +
-                 "[nb_info] It has file named: " + self.control.filename + "\n" +
-                 "[nb_info] In DIR: " + self.control.dirname)
+        self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
+                 "[nb_info] It has file named: %s\n"
+                 "[nb_info] In DIR: %s") % (evt.GetOldSelection(), evt.GetSelection(), 
+                                            self.control.filename, self.control.dirname))
         self.frame.UpdateToolBar()
         evt.Skip()
 
     def OnPageClosing(self, evt):
         """Checks page status to flag warnings before closing"""
-        self.LOG("[nb_evt] Closing Page: #" + str(self.GetSelection()))
+        self.LOG("[nb_evt] Closing Page: #%d" % self.GetSelection())
         pg = self.GetCurrentPage()
         if len(pg.GetFileName()) > 1:
             self.DocMgr.AddRecord([pg.GetFileName(), pg.GetCurrentPos()])
@@ -408,7 +428,7 @@ class ED_Pages(FNB.FlatNotebook):
 
     def OnPageClosed(self, evt):
         """Handles Paged Closed Event"""
-        self.LOG("[nb_evt] Closed Page: #" + str(self.GetSelection()))
+        self.LOG("[nb_evt] Closed Page: #%d" % self.GetSelection())
         # wxMAC Bug? 
         # Make sure tab area is refreshed mostly for when all pages have been
         # clased to make sure that the last tab is removed from the view after
@@ -446,6 +466,8 @@ class ED_Pages(FNB.FlatNotebook):
             self.DeletePage(pg_num)
             self.GoCurrentPage()
 
+        if not self.GetPageCount() and not wx.GetApp().GetMainWindow()._exiting:
+            self.NewPage()
         return result
 
     def SetPageImage(self, pg_num, lang_id):
@@ -469,7 +491,7 @@ class ED_Pages(FNB.FlatNotebook):
         pg_num = self.GetSelection()
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
-        self.LOG("[nb_info] Updating Page Image: Page " + str(pg_num))
+        self.LOG("[nb_info] Updating Page Image: Page %d" % pg_num)
         self.SetPageImage(pg_num, str(self.control.lang_id))
 
     def OnUpdatePageText(self, evt):
@@ -479,7 +501,6 @@ class ED_Pages(FNB.FlatNotebook):
             title = self.control.filename
             if title == wx.EmptyString:
                 title = self.GetPageText(pg_num)
-                title = title.lstrip(u"*")
             if self.control.GetModify():
                 title = u"*" + title
             wx.CallAfter(self.SetPageText, pg_num, title)

@@ -580,9 +580,6 @@ class LaTeX(plugin.Plugin):
         escaping all special characters and sequences.
         
         """
-#         if isinstance(txt, int):
-#             txt = chr(txt)
-
         ch_map = { "#" : "\\#", "$" : "\\$", "^" : "\\^",
                    "%" : "\\%", "&" : "\\&", "_" : "\\_",
                    "{" : "\\{", "}" : "\\}", "~" : "\\~",

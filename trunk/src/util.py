@@ -120,21 +120,9 @@ def SetClipboardText(txt):
     return 0
 
 # File Helper Functions
-def EncodeRawText(text):
-    """Encodes the given raw text (text read in binary form) and trys
-    to encode it into UTF-8. If this fails it will return the plain
-    ascii version.
-
-    """
-    try:
-        txt = unicode(text, 'utf-8', 'replace')
-    except:
-        txt = text
-    return txt
-
 def FilterFiles(file_list):
     """Filters a list of paths and returns a list of paths
-    that are valid, not directories, and not binary.
+    that are valid, not directories, and not seemingly not binary.
 
     """
     good = list()
@@ -154,7 +142,7 @@ def FilterFiles(file_list):
             # 2. Throw out common filetypes we cant open
             elif GetExtension(path).lower() in ['gz', 'tar', 'bz2', 'zip',
                                                 'rar', 'ace', 'png', 'jpg', 
-                                                'gif', 'jpeg']:
+                                                'gif', 'jpeg', 'exe']:
                 continue
             # 3. Try to judge if we can open the file or not by sampling
             #    some of the data, if 10% of the data is bad, filter out the file.
@@ -245,7 +233,7 @@ def GetPathName(path):
     path_char = GetPathChar()
     pieces = path.split(path_char)
     p_len = len(pieces)
-    if os.path.isabs(path) and len(pieces) <= 2:
+    if os.path.isabs(path) and p_len <= 2:
         root = []
         if os.sys.platform == 'win32':
             root.append(pieces[0])
@@ -309,8 +297,9 @@ def HasConfigDir(loc=""):
     if the config directory exists or False if it does not.
 
     """
-    if os.path.exists(wx.GetHomeDir() + GetPathChar() + u"." + 
-                      ed_glob.prog_name + GetPathChar() + loc):
+    pchar = GetPathChar()
+    if os.path.exists(u"%s%s.%s%s%s" % (wx.GetHomeDir(), pchar,
+                                        ed_glob.prog_name, pchar, loc)):
         return True
     else:
         return False
@@ -329,11 +318,13 @@ def CreateConfigDir():
 
     """
     #---- Resolve Paths ----#
-    config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.prog_name
-    profile_dir = config_dir + GetPathChar() + u"profiles"
-    config_file = ed_glob.CONFIG['PROFILE_DIR'] + u"default.pp"
-    loader = ed_glob.CONFIG['PROFILE_DIR'] + u".loader"
-    dest_file = profile_dir + GetPathChar() + u"default.pp"
+    pchar = GetPathChar()
+    prof_dir = ed_glob.CONFIG['PROFILE_DIR']
+    config_dir = u"%s%s.%s" % (wx.GetHomeDir(), pchar, ed_glob.prog_name)
+    profile_dir = u"%s%sprofiles" % (config_dir, pchar)
+    config_file = u"%sdefault.pp" % prof_dir
+    loader =  u"%s.loader" % prof_dir
+    dest_file = u"%s%sdefault.pp" % (profile_dir, pchar)
     ext_cfg = ["cache", "styles", "plugins"]
 
     #---- Create Directories ----#
@@ -353,7 +344,7 @@ def CreateConfigDir():
     else:
         os.system(u"cp " + config_file + " " + dest_file)
         os.system(u"cp " + loader + " " + profile_dir + 
-                  GetPathChar() + u".loader")
+                  pchar + u".loader")
 
     ed_glob.PROFILE["MYPROFILE"] = dest_file
     from profiler import UpdateProfileLoader
@@ -368,12 +359,13 @@ def ResolvConfigDir(config_dir, sys_only=False):
     string.
 
     """
+    path_char = GetPathChar()
     if not sys_only:
         # Try to look for a user dir
-        user_config = ( wx.GetHomeDir() + GetPathChar() + "." +
-                        ed_glob.prog_name + GetPathChar() + config_dir )
+        user_config = u"%s%s.%s%s%s" % (wx.GetHomeDir(), path_char,
+                                        ed_glob.prog_name, path_char, config_dir)
         if os.path.exists(user_config):
-            return user_config + GetPathChar()
+            return user_config + path_char
 
     # The following lines are used only when Editra is installed as a
     # Python Package. If it fails then editra has been installed and is
@@ -384,13 +376,12 @@ def ResolvConfigDir(config_dir, sys_only=False):
             base = key
             break
     if base != u'':
-        return os.path.join(base, config_dir) + GetPathChar()
+        return os.path.join(base, config_dir) + path_char
 
     # If we get here we need to do some platform dependant lookup
     # to find everything. This is probably much more of a mess than
     # need be.
     path = sys.argv[0] #os.path.dirname(os.path.abspath(sys.argv[0]))
-    path_char = GetPathChar()
 
     # If it is a link get the real path
     if os.path.islink(path):
@@ -426,8 +417,8 @@ def ResolvConfigDir(config_dir, sys_only=False):
 
     if os.sys.platform == "darwin":
         # On OS X the config directories are in the applet under Resources
-        pro_path = ( pro_path + path_char + u"Resources" + path_char +
-                     config_dir + path_char )
+        pro_path = u"%s%sResources%s%s%s" % (pro_path, path_char, path_char,
+                                             config_dir, path_char)
         if not os.path.exists(pro_path):
             # Path failed try looking relative to the src directory setup
             pro_path = pro_path.split(u"Resources")
@@ -440,16 +431,15 @@ def ResolvConfigDir(config_dir, sys_only=False):
 def GetResources(resource):
     """Returns a list of resource directories from a given toplevel config dir"""
     rec_dir = ResolvConfigDir(resource)
-    rec_lst = list()
-    if not os.path.exists(rec_dir):
-        return -1
-    else:
+    rec_lst = []
+    if os.path.exists(rec_dir):
         recs = os.listdir(rec_dir)
         for rec in recs:
             if os.path.isdir(rec_dir + rec) and rec[0] != u".":
                 rec_lst.append(rec.title())
-
         return rec_lst
+    else:
+        return -1
 
 def GetResourceFiles(resource, trim=True, get_all=False):
     """Gets a list of resource files from a directory and trims the

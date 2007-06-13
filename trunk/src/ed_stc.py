@@ -109,7 +109,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.syntax_set = list()
         self._comment = list()
         self.lang_id = 0        # Language ID from syntax module
-        self.Configure()
 
         # Set Up Margins 
         self.SetMarginType(MARK_MARGIN, wx.stc.STC_MARGIN_SYMBOL)
@@ -120,21 +119,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         ## Outer Left Margin Line Number Indication
         self.SetMarginType(NUM_MARGIN, wx.stc.STC_MARGIN_NUMBER)
         self.SetMarginMask(NUM_MARGIN, 0)
-        if PROFILE['SHOW_LN']:
-            self.SetMarginWidth(NUM_MARGIN, 30)
-        else:
-            self.SetMarginWidth(NUM_MARGIN, 0)
 
         ## Inner Left Margin Setup Folders
         self.SetMarginType(FOLD_MARGIN, wx.stc.STC_MARGIN_SYMBOL)
         self.SetMarginMask(FOLD_MARGIN, wx.stc.STC_MASK_FOLDERS)
         self.SetMarginSensitive(FOLD_MARGIN, True)
-        if self.folding:
-            self.SetMarginWidth(FOLD_MARGIN, 12)
-        else:
-            self.SetMarginWidth(FOLD_MARGIN, 0)
 
         # Set Default Styles used by all documents
+        self.Configure()
         self.UpdateBaseStyles()
 
         # Configure Autocompletion
@@ -662,7 +654,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.ConvertLineMode(e_id)
         elif e_id in syntax.SyntaxIds():
             f_ext = syntax.GetExtFromId(e_id)
-            self.LOG("[stc_evt] Manually Setting Lexer to " + str(f_ext))
+            self.LOG("[stc_evt] Manually Setting Lexer to %s" % str(f_ext))
             self.FindLexer(f_ext)
         elif e_id == ID_AUTOCOMP:
             self.SetAutoComplete(not self.GetAutoComplete())
@@ -893,7 +885,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.BeginUndoAction()
                 cpos = self.GetCurrentPos()
                 reader = util.GetFileReader(cfile)
-                self.SetText(util.EncodeRawText(reader.read()))
+                self.SetText(reader.read())
                 reader.close()
                 self.modtime = util.GetFileModTime(cfile)
                 self.EndUndoAction()
@@ -919,10 +911,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetSavePoint()
             self.modtime = util.GetFileModTime(path)
             self.OnModified(wx.ID_ANY)
-            if wx.EmptyString in [self.filename, self.dirname]:
-                self.filename = util.GetFileName(path)
-                self.dirname = util.GetPathName(path)
-                self.FindLexer()
+            self.filename = util.GetFileName(path)
+            self.dirname = util.GetPathName(path)
         return result
 
     def DoZoom(self, mode):

@@ -101,13 +101,13 @@ class StyleItem:
         """Converts StyleItem to a string"""
         style_str = wx.EmptyString
         if hasattr(self, u'fore'):
-            style_str = u"fore:" + self.fore + u","
+            style_str = u"fore:%s," % self.fore
         if hasattr(self, u'back'):
-            style_str += u"back:" + self.back + u","
+            style_str += u"back:%s," % self.back
         if hasattr(self, u'face'):
-            style_str += u"face:" + self.face + u","
+            style_str += u"face:%s," % self.face
         if hasattr(self, u'size'):
-            style_str += u"size:" + str(self.size) + u","
+            style_str += u"size:%s," % str(self.size)
         if len(style_str) and style_str[-1] == u',':
             style_str = style_str[0:-1]
         return style_str
@@ -171,28 +171,28 @@ class StyleItem:
         if ex == wx.EmptyString:
             self.back = back
         else:
-            self.back = back + u"," + ex
+            self.back = u"%s,%s" % (back, ex)
 
     def SetFace(self, face, ex=wx.EmptyString):
         """Sets the Face Value"""
         if ex == wx.EmptyString:
             self.face = face
         else:
-            self.face = face + u"," + ex
+            self.face = u"%s,%s" % (face, ex)
 
     def SetFore(self, fore, ex=wx.EmptyString):
         """Sets the Foreground Value"""
         if ex == wx.EmptyString:
             self.fore = fore
         else:
-            self.fore = fore + u"," + ex
+            self.fore = u"%s,%s" % (fore, ex)
 
     def SetSize(self, size, ex=wx.EmptyString):
         """Sets the Font Size Value"""
         if ex == wx.EmptyString:
             self.size = size
         else:
-            self.size = str(size) + u"," + ex
+            self.size = u"%s,%s" % (str(size), ex)
 
     def SetExAttr(self, ex_attr, set=True):
         """Adds an extra text attribute to a StyleItem. Currently
@@ -260,9 +260,9 @@ class StyleMgr:
 
         # Get the Style Set
         if custom != wx.EmptyString and self.LoadStyleSheet(custom):
-            self.LOG("[styles] [init] Loaded custom style sheet " + custom)
+            self.LOG("[styles] [init] Loaded custom style sheet %s" % custom)
         else:
-            self.LOG("[styles] [init_error] Failed to import styles from " + custom)
+            self.LOG("[styles] [init_error] Failed to import styles from %s" % custom)
 
     def DefaultStyleDictionary(self):
         """This is the default style values that are used for styling
@@ -453,7 +453,7 @@ class StyleMgr:
         if os.path.exists(style_sheet):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
-                self.LOG("[styles] [exception] Failed to open style sheet: " + style_sheet)
+                self.LOG("[styles] [exception] Failed to open style sheet: %s" % style_sheet)
                 return False
             ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
             reader.close()
@@ -567,12 +567,12 @@ class StyleMgr:
                 leaf[0] = leaf[0].strip() # Remove any remaining whitespace
                 if len(leaf) != 2:
                     self.LOG("[styles] [syntax_error] Missing a : or ; in the "
-                             "declaration of " + tag)
+                             "declaration of %s" % tag)
                     if strict:
                         raise SyntaxError
                 elif leaf[0] not in STY_ATTRIBUTES:
-                    self.LOG("[styles] [syntax_warning] Unknown style attribute: " + 
-                             leaf[0] + ", In declaration of " + tag)
+                    self.LOG(("[styles] [syntax_warning] Unknown style attribute: %s"
+                             ", In declaration of %s") + (leaf[0], tag))
                     if strict:
                         raise SyntaxWarning
                 else:

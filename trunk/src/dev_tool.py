@@ -47,8 +47,8 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
 
     # Build time string for tstamp
     now = time.localtime(time.time())
-    now = u"[" + str(now[3]).zfill(2) + u":" + \
-          str(now[4]).zfill(2) + u":" + str(now[5]).zfill(2) + u"]"
+    now = u"[%s:%s:%s]" % (str(now[3]).zfill(2), str(now[4]).zfill(2), 
+                           str(now[5]).zfill(2))
 
     # Format Statement
     statement = unicode(statement)
@@ -56,7 +56,7 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
     
     if mode == "std":
         for line in s_lst:
-            out = now + u" " + line
+            out = u"%s %s" % (now, line)
             print out.encode('utf-8', 'replace')
         return 0
     elif mode == "log":
@@ -68,9 +68,9 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
         file_handle = file(logfile, mode="ab")
         writer = codecs.lookup('utf-8')[3](file_handle)
         if log_lvl != "none":
-            writer.write(log_lvl + u": " + statement + "\n")
+            writer.write(u"%s: %s\n" % (log_lvl, statement))
         else:
-            writer.write(u"MSG: " +  statement + "\n")
+            writer.write(u"MSG: %s\n" % statement)
         file_handle.close()
         return 0	
     else:
