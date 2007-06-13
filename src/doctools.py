@@ -123,7 +123,7 @@ class DocPositionMgr:
     def WriteBook(self):
         """Writes the in memory dictionary to the on disk one"""
         writer = util.GetFileWriter(self.GetBook())
-	try:
+        try:
             for key in self._records:
                 writer.write(u"%s=%d\n" % (key, self._records[key]))
             writer.close()

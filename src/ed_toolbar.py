@@ -75,10 +75,8 @@ class ED_ToolBar(wx.ToolBar):
     def __init__(self, parent, tb_id, icon_size=0, style=0):
         """Initializes the toolbar"""
         sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT
-        if wx.Platform == '__WXMSW__':
-            sstyle = sstyle | wx.TB_TEXT
-        elif wx.Platform == '__WXGTK__':
-            sstyle = sstyle | wx.TB_TEXT | wx.TB_DOCKABLE
+        if wx.Platform == '__WXGTK__':
+            sstyle = sstyle | wx.TB_DOCKABLE
         wx.ToolBar.__init__(self, parent, tb_id, style=sstyle)
 
         # Attributes

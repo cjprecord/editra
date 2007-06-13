@@ -73,12 +73,12 @@ class StyleEditor(wx.Dialog):
     """
     def __init__(self, parent, id=wx.ID_ANY, title=_("Style Editor"),
                pos=wx.DefaultPosition, size=wx.DefaultSize, 
-               style=wx.DEFAULT_DIALOG_STYLE | wx.RAISED_BORDER, log=None):
+               style=wx.DEFAULT_DIALOG_STYLE | wx.RAISED_BORDER):
         """Initializes the Dialog"""
         wx.Dialog.__init__(self, parent, id, title, pos, size, style)
 
         # Attributes
-        self.LOG = log
+        self.LOG = wx.GetApp().GetLog()
         self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size=(-1,200),
                                     style = wx.SUNKEN_BORDER, useDT=False)
         self.styles_new = self.preview.GetStyleSet()

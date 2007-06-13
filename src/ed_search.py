@@ -420,7 +420,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
         """Processes Events for the Search Control"""
         e_type = evt.GetEventType()
         if e_type == wx.wxEVT_COMMAND_TEXT_ENTER:
-            dev_tool.DEBUGP("[search_evt] Search Text Entered %s" % str(self.GetValue()))
+            dev_tool.DEBUGP("[search_evt] Search Text Entered %s" % self.GetValue())
             self.InsertHistoryItem(self.GetValue())
             self.FindService.SetQueryString(self.GetValue())
             self.FindService.SetSearchFlags(self._flags)
@@ -463,7 +463,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
 
     def OnCancel(self, evt):
         """Cancels the Search Query"""
-        self.SetValue("")
+        self.SetValue(u"")
         self.ShowCancelButton(False)
 
     def OnHistMenu(self, evt):
@@ -476,4 +476,3 @@ class ED_SearchCtrl(wx.SearchCtrl):
             evt.Skip()
 
     #---- End Event Handlers ----#
-
