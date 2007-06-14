@@ -148,9 +148,12 @@ class ED_Pages(FNB.FlatNotebook):
     def OpenPage(self, path, filename):
         """Open a File Inside of a New Page"""
         path2file = os.path.join(path, filename)
+
+        # If file is non-existant or not a file give up
         if os.path.exists(path2file) and (not os.path.isfile(path2file)):
             return
 
+        # Check if file is open already and ask if it should be opened again
         if self.HasFileOpen(path2file):
             mdlg = wx.MessageDialog(self,
                                     _("File is already open in an existing page."
@@ -162,54 +165,59 @@ class ED_Pages(FNB.FlatNotebook):
             if result == wx.ID_NO:
                 return
 
-        # Create control to place text on
+        # Create new control to place text on if necessary
         new_pg = True
         if self.GetPageCount():
             if self.control.GetModify() or self.control.GetLength() or \
                self.control.filename != u'':
-                self.control = ed_stc.EDSTC(self, self.pg_num)
+                control = ed_stc.EDSTC(self, self.pg_num)
+                control.Hide()
             else:
                 new_pg = False
         else:
-            self.control = ed_stc.EDSTC(self, self.pg_num)
+            control = ed_stc.EDSTC(self, self.pg_num)
+            control.Hide()
 
-        # Pass directory and file name info to control object to save reference
-        self.control.dirname = path
-        self.control.filename = filename
+        # Open file and get contents
+        err = False
+        in_txt = u''
+        if os.path.exists(path2file):
+            try:
+                reader = util.GetFileReader(path2file)
+                in_txt = reader.read()
+                reader.close()
+            except Exception, msg:
+                # File could not be opened/read give up
+                reader.close()
+                err = wx.MessageDialog(self, _("Editra could not properly open %s\n") \
+                                       % path2file, _("Error Opening File"),
+                                       style=wx.OK | wx.CENTER | wx.ICON_ERROR)
+                err.ShowModal()
+                err.Destroy()
+
+                if new_pg:
+                    control.Destroy()
+                return
 
         # Put control into page an place page in notebook
         if new_pg:
+            control.Show()
+            self.control = control
+        self.control.SetText(in_txt)
+        # Pass directory and file name info to control object to save reference
+        self.control.dirname = path
+        self.control.filename = filename
+        self.frame.filehistory.AddFileToHistory(path2file)
+        self.control.modtime = util.GetFileModTime(path2file)
+        if new_pg:
             self.AddPage(self.control, self.control.filename)
+            self.SetPageText(self.GetSelection(), self.control.filename)
         else:
             self.SetPageText(self.GetSelection(), self.control.filename)
             self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
                                                         self.control.dirname, 
                                                         self.control.path_char, 
                                                         self.control.filename))
-        err = False
-        # Open file and put text into the control
-        if os.path.exists(path2file):
-            #self.control.LoadFile(path2file)
-            try:
-                reader = util.GetFileReader(path2file)
-                self.control.SetText(reader.read())
-                reader.close()
-                self.frame.filehistory.AddFileToHistory(path2file)
-                self.control.modtime = util.GetFileModTime(path2file)
-            except Exception, msg:
-                reader.close()
-                err = wx.MessageDialog(self, _("Editra could not properly open %s\n"
-                                               "The page will be closed now to "
-                                               "prevent data loss!") \
-                                       % path2file, _("Error Opening File"),
-                                       style=wx.OK | wx.CENTER | wx.ICON_ERROR)
-                err.ShowModal()
-                err.Destroy()
-                err = True
-                self.control.modtime = util.GetFileModTime(path2file)
-        else:
-            # Set Tab title for blank new file
-            self.SetPageText(self.GetSelection(), self.control.filename)
         self.LOG("[nb_evt] Opened Page: ID = %d" % self.GetSelection())
 
         # Set style
@@ -232,11 +240,6 @@ class ED_Pages(FNB.FlatNotebook):
 
         # Refocus on selected page
         self.GoCurrentPage()
-        if err:
-            # If they call to close the page is not delayed the
-            # program will either have a Bus Error or Segfault
-            wx.CallLater(200, self.ClosePage)
-        
 
     def GoCurrentPage(self):
         """Move Focus to Currently Selected Page"""
@@ -431,7 +434,7 @@ class ED_Pages(FNB.FlatNotebook):
         self.LOG("[nb_evt] Closed Page: #%d" % self.GetSelection())
         # wxMAC Bug? 
         # Make sure tab area is refreshed mostly for when all pages have been
-        # clased to make sure that the last tab is removed from the view after
+        # closed to make sure that the last tab is removed from the view after
         # deletion.
         self.Update()
         self.Refresh()
@@ -466,7 +469,8 @@ class ED_Pages(FNB.FlatNotebook):
             self.DeletePage(pg_num)
             self.GoCurrentPage()
 
-        if not self.GetPageCount() and not wx.GetApp().GetMainWindow()._exiting:
+        # TODO this causes some flashing
+        if not self.GetPageCount() and not wx.GetApp().GetMainWindow().IsExiting():
             self.NewPage()
         return result
 
