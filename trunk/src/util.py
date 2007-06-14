@@ -139,17 +139,18 @@ def FilterFiles(file_list):
             if GetExtension(path) in GetFileExtensions() or \
                (mime[0] and u'text' in mime[0]):
                 good.append(path)
-            # 2. Throw out common filetypes we cant open
+            # 2. Throw out common filetypes we cant open...HACK
             elif GetExtension(path).lower() in ['gz', 'tar', 'bz2', 'zip',
                                                 'rar', 'ace', 'png', 'jpg', 
-                                                'gif', 'jpeg', 'exe']:
+                                                'gif', 'jpeg', 'exe', 'pyc',
+                                                'pyo', 'psd']:
                 continue
             # 3. Try to judge if we can open the file or not by sampling
             #    some of the data, if 10% of the data is bad, filter out the file.
             else:
                 try:
                     fhandle = file(path, "rb")
-                    tmp = fhandle.read(1000)
+                    tmp = fhandle.read(1500)
                     fhandle.close()
                 except IOError:
                     continue
