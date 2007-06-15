@@ -92,14 +92,17 @@ class FileBrowserPanel(plugin.Plugin):
 
     def OnShowBrowser(self, evt):
         """Shows the filebrowser"""
-        mw = wx.GetApp().GetMainWindow().GetFrameManager()
         if evt.GetId() == ID_FILEBROWSE:
-            if ed_glob.PROFILE.get('SHOW_FB', False):
-                mw.GetPane(PANE_NAME).Hide()
+            mw = wx.GetApp().GetMainWindow().GetFrameManager()
+            pane = mw.GetPane(PANE_NAME).Hide()
+            if ed_glob.PROFILE.get('SHOW_FB', False) and pane.IsShown():
+                pane.Hide()
                 ed_glob.PROFILE['SHOW_FB'] = False
+                self._mi.Check(False)
             else:
-                mw.GetPane(PANE_NAME).Show()
+                pane.Show()
                 ed_glob.PROFILE['SHOW_FB'] = True
+                self._mi.Check(True)
             mw.Update()
         else:
             evt.Skip()

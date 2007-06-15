@@ -81,16 +81,19 @@ class PyShell(plugin.Plugin):
 
     def OnShowShell(self, evt):
         """Shows the python shell frame"""
-        mw = wx.GetApp().GetMainWindow().GetFrameManager()
         if evt.GetId() == ID_PYSHELL:
-            if ed_glob.PROFILE['PYSHELL']:
+            mw = wx.GetApp().GetMainWindow().GetFrameManager()
+            pane = mw.GetPane("PyShell")
+            if ed_glob.PROFILE['PYSHELL'] and pane.IsShown():
                 self._log("[pyshell] Hide PyShell")
                 ed_glob.PROFILE['PYSHELL'] = False
-                mw.GetPane("PyShell").Hide()
+                pane.Hide()
+                self._mi.Check(False)
             else:
                 self._log("[pyshell] Show PyShell")
                 ed_glob.PROFILE['PYSHELL'] = True
-                mw.GetPane("PyShell").Show()
+                pane.Show()
+                self._mi.Check(True)
             mw.Update()
         else:
             evt.Skip()
