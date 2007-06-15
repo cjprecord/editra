@@ -45,6 +45,7 @@ import wx.stc
 import ed_glob
 import ed_menu
 from ed_style import StyleItem
+import util
 import plugin
 
 #--------------------------------------------------------------------------#
@@ -116,6 +117,7 @@ class Generator(plugin.Plugin):
         for ob in self.observers:
             if ob.GetId() == e_id:
                 gentext = ob.Generate(txt_ctrl)
+
         return gentext
 
 #--------------------------------------------------------------------------#
@@ -594,8 +596,7 @@ class LaTeX(plugin.Plugin):
 
 #-----------------------------------------------------------------------------#
 
-# TODO this is a stub finish me later
-#      When finished add to default plugins list
+# TODO add support for bold/italic/underline and multiple fonts
 class Rtf(plugin.Plugin):
     """Generates a fully styled RTF document from the given text 
     controls contents.
@@ -609,81 +610,59 @@ class Rtf(plugin.Plugin):
         """
         self._stc = None
         self._id = ed_glob.ID_RTF_GEN
-        self._prolog = wx.EmptyString
-        self._body = wx.EmptyString
+        self._colortbl = RtfColorTbl()
 
     def __str__(self):
         """Returns the RTF object as a string"""
-        return 
+        return self._GenRtf()
 
     #---- Protected Member Functions ----#
-    def _GenProlog(self):
-        """Generate the prolog of this RTF document"""
-        prolog = "{\\rtf1\\ansi\\deff0{"
-        fnttbl = "\\fonttbl\n{\\f0 %s;}\n{\\f1 %s;}\n{\\f2 %s;}\n}"
-        colortbl = "{\\colortbl;%s}"
-        colordef = "\\red%d\\green%d\\blue%d;"
-
-    def _GenBody(self):
-        """Generate the body of this RTF document."""
-        # Templates
-        bold = "\\b%s\\b0"
-        italic = "\\i%s\\i0"
-        uline = "\\ul%s\\ulnone"
-
-        tex = wx.EmptyString
-        tmp_tex = wx.EmptyString
+    def _GenRtf(self):
+        """Populates the color table"""
+        if not self._stc:
+            return u''
+        stc = self._stc
+        def_fore = stc.GetDefaultForeColour(hex=True)
+        self._colortbl.AddColor(def_fore)
+        def_back = stc.GetDefaultBackColour(hex=True)
+        self._colortbl.AddColor(def_back)
+        last_pos = stc.GetLineEndPosition(stc.GetLineCount())
         parse_pos = 0
-        style_start = 0
-        style_end = 0
-        last_pos = self._stc.GetLineEndPosition(self._stc.GetLineCount())
-
-        # Define the default style
-
-        # Get Document start point info
-        last_id = self._stc.GetStyleAt(parse_pos)
-        tmp_tex = self.TransformText(chr(self._stc.GetCharAt(parse_pos)))
-        tag = self._stc.FindTagById(last_id)
-        if tag != wx.EmptyString:
-            self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
-
-        # Build LaTeX
-        while parse_pos < last_pos:
-            parse_pos += 1
-            curr_id = self._stc.GetStyleAt(parse_pos)
-            style_end = parse_pos
-            if parse_pos > 1:
-                tmp_tex += self.TransformText(chr(self._stc.GetCharAt(parse_pos - 1)))
-            if curr_id == 0 and self._stc.GetStyleAt(parse_pos + 1) == last_id:
-                curr_id = last_id
-
-            # If style region has changed close section
-            if curr_id != last_id or tmp_tex[-1] == "\n":
-                if tag == "operator_style" or \
-                   (tag == "default_style" and tmp_tex.isspace() and len(tmp_tex) <= 2):
-                    tex += tmp_tex
-                else:
-                    if "\\\\*\n" in tmp_tex:
-                        tmp_tex = tmp_tex.replace("\\\\*\n", "")
-                        tmp2 = "\\%s{%s}\\\\*\n"
-                    else:
-                        tmp2 = "\\%s{%s}"
-
-                    cmd = self.CreateCmdName(tag)
-                    if cmd in [None, wx.EmptyString]:
-                        cmd = "defaultstyle"
-                    tex += tmp2 % (cmd, tmp_tex)
-
-                last_id = curr_id
-                style_start = style_end
-                tag = self._stc.FindTagById(last_id)
-                if tag not in [None, wx.EmptyString]:
-                    self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
-                tmp_tex = u''
-#         if tex == wx.EmptyString:
-#             # Case for unstyled documents
-#             tex = self.TransformText(self._stc.GetText())
-        return "\\begin{document}\n%s\n\\end{document}" % tex
+        last_id = None
+        last_fore = None
+        last_back = None
+        start = end = 0
+        tmp_txt = list()
+        font_tmp = "\\f0"
+        fore_tmp = "\\cf%d"
+        back_tmp = "\\cb%d"
+        AddColor = self._colortbl.AddColor
+        GetColorIndex = self._colortbl.GetColorIndex
+        GetStyleAt = stc.GetStyleAt
+        while parse_pos <= last_pos+1:
+            id = GetStyleAt(parse_pos)
+            end = parse_pos
+            # If style has changed build the previous section
+            if id != last_id:
+                tag = stc.FindTagById(last_id)
+                s_item = stc.GetItemByName(tag)
+                AddColor(s_item.GetFore())
+                AddColor(s_item.GetBack())
+                tplate = font_tmp
+                fid = GetColorIndex(s_item.GetFore())
+                if fid != last_fore:
+                    last_fore = fid
+                    tplate = tplate + (fore_tmp % fid)
+                bid = GetColorIndex(s_item.GetBack())
+                if bid != last_back:
+                    last_back = bid
+                    tplate = tplate + (back_tmp % bid)
+                tmp_txt.append(tplate + " " + self.TransformText(stc.GetTextRange(start, end)))
+                start = end
+            last_id = id
+            parse_pos = parse_pos + 1
+        head = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 %s;}}" % stc.GetDefaultFont().GetFaceName()
+        return u"%s%s%s}" % (head, self._colortbl, "".join(tmp_txt))
 
     #---- End Protected Member Functions ----#
 
@@ -693,9 +672,7 @@ class Rtf(plugin.Plugin):
     
         """
         self._stc = stc_doc
-        self._GenProlog()
-        self._GenBody()
-        return self.__str__()
+        return ('rtf', self._GenRtf())
 
     def GetId(self):
         """Implements the GeneratorI's GetId function by returning
@@ -712,24 +689,55 @@ class Rtf(plugin.Plugin):
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"RTF", 
                            _("Generate a %s version of the current document") % u"RTF")
 
-    def HexToRGB(self, hex_str):
-        """Returns a list of red/green/blue values from a
-        hex string.
-        
-        """
-        hex = hex_str
-        if hex[0] == u"#":
-            hex = hex[1:]
-        ldiff = 6 - len(hex)
-        hex += ldiff * u"0"
-        # Convert hex values to integer
-        red = int(hex[0:2], 16)
-        green =int(hex[2:4], 16)
-        blue = int(hex[4:], 16)
-        return [red, green, blue]
-
     def TransformText(self, text):
         """Transforms the given text by converting it to RTF format"""
         chmap = { "\t" : "\\tab", "{" : "\\{", "}" : "\\}",
                   "\\" : "\\\\", "\n" : "\\par\n", "\r" : "\\par\n"}
-        return chmap.get(text, text)
+        text = text.replace('\r\n', '\n')
+        tmp = u''
+        for x in text:
+            tmp = tmp + chmap.get(x, x)
+        return tmp
+
+class RtfColorTbl(object):
+    """A storage class to help with generating the color table for
+    the Rtf Generator Class.
+
+    """
+    def __init__(self):
+        object.__init__(self)
+        
+        # Attributes
+        self._index = list() # manages the order of the tables keys
+        self._tbl = dict()   # map of style item color vals to rtf defs
+
+    def __str__(self):
+        """Returns the string representation of the table"""
+        rstr = u''
+        for item in self._index:
+            rstr = rstr + self._tbl[item]
+        return u"{\\colortbl%s}" % rstr
+
+    def AddColor(self, si_color):
+        """Takes a style item and adds it to the table if
+        has not already been defined in the table.
+
+        """
+        if si_color not in self._index:
+            rgb = util.HexToRGB(si_color.split(u',')[0])
+            color = "\\red%d\\green%d\\blue%d;" % tuple(rgb)
+            self._index.append(si_color)
+            self._tbl[si_color] = color
+        else:
+            pass
+
+    def GetColorIndex(self, si_color):
+        """Gets the index of a particular style items color
+        definition from the color table. Returns -1 if item is
+        not found.
+
+        """
+        if si_color in self._index:
+            return self._index.index(si_color)
+        else:
+            return -1

@@ -489,6 +489,22 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     b = color.Blue() + ((percent*bd*100)/high)/100
     return wx.Colour(r, g, b, alpha)
 
+def HexToRGB(hex_str):
+    """Returns a list of red/green/blue values from a
+    hex string.
+    
+    """
+    hex = hex_str
+    if hex[0] == u"#":
+        hex = hex[1:]
+    ldiff = 6 - len(hex)
+    hex += ldiff * u"0"
+    # Convert hex values to integer
+    red = int(hex[0:2], 16)
+    green =int(hex[2:4], 16)
+    blue = int(hex[4:], 16)
+    return [red, green, blue]
+
 def SetWindowIcon(window):
     """Sets the given windows icon to be the programs
     application icon.
