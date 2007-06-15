@@ -280,4 +280,4 @@ ID_2_PROF = {
 }
 
 # Default Plugins
-DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX") #, "generator.Rtf")
+DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX", "generator.Rtf")
