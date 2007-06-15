@@ -435,8 +435,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.SetTitle(u"%s - file://%s%s%s" % (fname, ctrl.dirname, 
                                                        ctrl.path_char, fname))
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
-                self.nb.UpdatePageImage()
                 self.nb.GetCurrentCtrl().FindLexer()
+                self.nb.UpdatePageImage()
             return result
         else:
             pass
