@@ -178,7 +178,7 @@ class Html(plugin.Plugin):
         to generate an 'exact' html reqresentation of the stc's window.
 
         """
-        html = wx.EmptyString
+        html = list()
         parse_pos = 0
         style_start = 0
         style_end = 0
@@ -192,40 +192,44 @@ class Html(plugin.Plugin):
             s_item.SetAttrFromStr(self.stc.GetStyleByName(tag))
             self.css[tag] = CssItem(tag.split('_')[0], s_item)
  
-       # Build Html
+        # Optimizations
+        stc = self.stc
+        GetStyleAt = stc.GetStyleAt
+
+        # Build Html
         while parse_pos < last_pos:
             parse_pos += 1
-            curr_id = self.stc.GetStyleAt(parse_pos)
+            curr_id = GetStyleAt(parse_pos)
             style_end = parse_pos
             # If style region has changed close section
-            if curr_id == 0 and self.stc.GetStyleAt(parse_pos + 1) == last_id:
+            if curr_id == 0 and GetStyleAt(parse_pos + 1) == last_id:
                 curr_id = last_id
 
             if curr_id != last_id or parse_pos == last_pos:
-                tmp = self.stc.GetTextRange(style_start, style_end)
+                tmp = stc.GetTextRange(style_start, style_end)
                 tmp = self.TransformText(tmp)
                 if tmp.isspace() or tag in ["default_style", "operator_style"]:
-                    html += tmp
+                    html.append(tmp)
                 else:
                     tmp2 = "<span class=\"%s\">%s</span>"
-                    html += tmp2 % (tag.split('_')[0], tmp)
+                    html.append(tmp2 % (tag.split('_')[0], tmp))
 
                 last_id = curr_id
                 style_start = style_end
-                tag = self.stc.FindTagById(last_id)
+                tag = stc.FindTagById(last_id)
                 if not self.css.has_key(tag):
                     s_item = StyleItem()
-                    s_item.SetAttrFromStr(self.stc.GetStyleByName(tag))
+                    s_item.SetAttrFromStr(stc.GetStyleByName(tag))
                     self.css[tag] = CssItem(tag.split('_')[0], s_item)
-        if html == wx.EmptyString:
+        if len(html) == 0:
             # Case for unstyled documents
             s_item = StyleItem()
-            s_item.SetAttrFromStr(self.stc.GetStyleByName('default_style'))
+            s_item.SetAttrFromStr(stc.GetStyleByName('default_style'))
             self.css['default_style'] = CssItem('default', s_item)
-            html = self.TransformText(self.stc.GetText())
+            html.append(self.TransformText(stc.GetText()))
         else:
             self.OptimizeCss()
-        return "<body class=\"default\">\n<pre>\n%s\n</pre>\n</body>" % html
+        return "<body class=\"default\">\n<pre>\n%s\n</pre>\n</body>" % "".join(html)
 
     def GetId(self):
         """Returns the menu identifier for the HTML generator"""
@@ -408,18 +412,18 @@ class LaTeX(plugin.Plugin):
     def CreateCmdName(self, name):
         """Creates and returns a proper cmd name"""
         name = name.replace('_', '')
-        tmp = u''
+        tmp = list()
         alpha = "ABCDEFGHIJ"
         for ch in name:
             if ch.isdigit():
-                tmp += alpha[int(ch)]
+                tmp.append(alpha[int(ch)])
             else:
-                tmp += ch
-        return tmp
-        
+                tmp.append(ch)
+        return "".join(tmp)
+
     def GenDoc(self):
         """Generates the document body of the LaTeX document"""
-        tex = wx.EmptyString
+        tex = list()
         tmp_tex = wx.EmptyString
         parse_pos = 0
         style_start = 0
@@ -436,21 +440,26 @@ class LaTeX(plugin.Plugin):
         if tag != wx.EmptyString:
             self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
 
+        # Optimizations
+        stc = self._stc
+        GetStyleAt = stc.GetStyleAt
+        GetTextRange = stc.GetTextRange
+
         # Build LaTeX
-        while parse_pos < last_pos:
+        while parse_pos < last_pos + 1:
             parse_pos += 1
-            curr_id = self._stc.GetStyleAt(parse_pos)
+            curr_id = GetStyleAt(parse_pos)
             style_end = parse_pos
             if parse_pos > 1:
-                tmp_tex += self.TransformText(self._stc.GetTextRange((parse_pos - 1), parse_pos))
-            if curr_id == 0 and self._stc.GetStyleAt(parse_pos + 1) == last_id:
+                tmp_tex += self.TransformText(GetTextRange((parse_pos - 1), parse_pos))
+            if curr_id == 0 and GetStyleAt(parse_pos + 1) == last_id:
                 curr_id = last_id
 
             # If style region has changed close section
             if curr_id != last_id or tmp_tex[-1] == "\n":
                 if tag == "operator_style" or \
                    (tag == "default_style" and tmp_tex.isspace() and len(tmp_tex) <= 2):
-                    tex += tmp_tex
+                    tex.append(tmp_tex)
                 else:
                     if "\\\\*\n" in tmp_tex:
                         tmp_tex = tmp_tex.replace("\\\\*\n", "")
@@ -461,18 +470,18 @@ class LaTeX(plugin.Plugin):
                     cmd = self.CreateCmdName(tag)
                     if cmd in [None, wx.EmptyString]:
                         cmd = "defaultstyle"
-                    tex += tmp2 % (cmd, tmp_tex)
+                    tex.append(tmp2 % (cmd, tmp_tex))
 
                 last_id = curr_id
                 style_start = style_end
-                tag = self._stc.FindTagById(last_id)
+                tag = stc.FindTagById(last_id)
                 if tag not in [None, wx.EmptyString]:
-                    self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
+                    self.RegisterStyleCmd(tag, stc.GetItemByName(tag))
                 tmp_tex = u''
         if tex == wx.EmptyString:
             # Case for unstyled documents
-            tex = self.TransformText(self._stc.GetText())
-        return "\\begin{document}\n%s\n\\end{document}" % tex
+            tex.append(self.TransformText(stc.GetText()))
+        return "\\begin{document}\n%s\n\\end{document}" % "".join(tex)
 
     def Generate(self, stc_doc):
         """Generates the LaTeX document"""
@@ -618,7 +627,10 @@ class Rtf(plugin.Plugin):
 
     #---- Protected Member Functions ----#
     def _GenRtf(self):
-        """Populates the color table"""
+        """Generates the RTF equivalent of the displayed text in the current
+        stc document window.
+
+        """
         if not self._stc:
             return u''
         stc = self._stc
