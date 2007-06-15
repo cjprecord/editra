@@ -7,19 +7,32 @@ Change Log:
 Changes since last release:
 
 #---------------------------------------------------------------------------------#
-VERSION 0.1.xx
+VERSION 0.1.27
 DATE 0x/xx/2007
 2nd Alpha Release
 
 NEWS:
+The main addition to the release is the plugin manager dialog it offers a complete
+plugin management solution for the editor. The Configuration, downloading, and 
+installation of plugins are all managed by this dialog. I also wrote a couple of
+new plugins that can be downloaded and installed through the manager, so try it
+out.
+
+Also introduced in this release is as a tool to help manage the workspace. 
+The Perspectives manager will allow you to save any number custom workspace 
+views than can be used from session to session. This new feature can be found 
+in the View Menu.
 
 NEW: [features/improvements]
 +Plugin Manager for configuring, downloading, and installing plugins
 +A new File Browser plugin is available for download through the new
 plugin manager. It allows for quick file opening and bookmarking of
 frequently used paths.
-+Some minor performance improvements
++Perspective management for managing custom workspace layouts and views
++Many minor performance enhancements
 +Support for Lua, Fortran77, Fortran95
++RTF generator/exporter
++Massive perfomance improvements to Html/Latex generators
 +Drag and Drop now accepts folders of files
 +New Commands (Save All, Close All)
 +New Formatting options (Convert Tabs to Spaces, Convert Spaces to Tabs, 
@@ -31,6 +44,7 @@ case of it having been deleted.
 +Mark tabs of modified files.
 +If current page is empty and unmodified, opening a new file will open it
 in the current page instead of a new page.
++Adjustable edge column guide
 
 BUG FIXES:
 +Tab images now get set properly regardless of how file is opened
@@ -39,6 +53,7 @@ BUG FIXES:
 +Manual setting of lexer works for all lexer menu items
 +MAC the notebook now refreshes properly when all have been closed
 +MSW  update downloader window displays properly
++Clicking in text area now properly updates line/column status
 
 #---------------------------------------------------------------------------------#
 VERSION 0.1.0
