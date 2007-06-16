@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-06-07 02:08-0500\n"
+"POT-Creation-Date: 2007-06-15 09:24-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,14 +16,14 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../../src/ed_main.py:339
+#: ../../src/ed_main.py:354
 #, python-format
 msgid ""
 "%s could not be found\n"
 "Perhaps its been moved or deleted"
 msgstr ""
 
-#: ../../src/ed_pages.py:311
+#: ../../src/ed_pages.py:337
 #, python-format
 msgid ""
 "%s has been deleted since its last save point.\n"
@@ -31,7 +31,7 @@ msgid ""
 "Would you like to save it again?"
 msgstr ""
 
-#: ../../src/ed_pages.py:328
+#: ../../src/ed_pages.py:354
 #, python-format
 msgid ""
 "%s has been modified by another application.\n"
@@ -39,31 +39,31 @@ msgid ""
 "Would you like to Reload it?"
 msgstr ""
 
-#: ../../src/ed_menu.py:385
+#: ../../src/ed_menu.py:410
 msgid "&About"
 msgstr ""
 
-#: ../../src/ed_menu.py:385
+#: ../../src/ed_menu.py:410
 msgid "About"
 msgstr ""
 
-#: ../../src/ed_menu.py:257
+#: ../../src/ed_menu.py:279
 msgid "Add Bookmark"
 msgstr ""
 
-#: ../../src/ed_menu.py:258
+#: ../../src/ed_menu.py:280
 msgid "Add a bookmark to the current line"
 msgstr ""
 
-#: ../../src/ed_menu.py:240
+#: ../../src/ed_menu.py:262
 msgid "Add a new line after the current line"
 msgstr ""
 
-#: ../../src/ed_menu.py:243
+#: ../../src/ed_menu.py:265
 msgid "Add a new line before the current line"
 msgstr ""
 
-#: ../../src/ed_menu.py:264
+#: ../../src/ed_menu.py:286
 msgid "Add and remove bookmarks"
 msgstr ""
 
@@ -71,15 +71,15 @@ msgstr ""
 msgid "All Done"
 msgstr ""
 
-#: ../../src/prefdlg.py:452
+#: ../../src/prefdlg.py:481
 msgid "AntiAliasing"
 msgstr ""
 
-#: ../../src/prefdlg.py:499
+#: ../../src/prefdlg.py:528
 msgid "Appearance"
 msgstr ""
 
-#: ../../src/prefdlg.py:125
+#: ../../src/prefdlg.py:126
 msgid "Apply"
 msgstr ""
 
@@ -87,15 +87,15 @@ msgstr ""
 msgid "Attributes"
 msgstr ""
 
-#: ../../src/plugdlg.py:683
+#: ../../src/plugdlg.py:690
 msgid "Author"
 msgstr ""
 
-#: ../../src/ed_menu.py:354 ../../src/prefdlg.py:394
+#: ../../src/ed_menu.py:379 ../../src/prefdlg.py:423
 msgid "Auto-Completion"
 msgstr ""
 
-#: ../../src/ed_menu.py:356 ../../src/prefdlg.py:374
+#: ../../src/ed_menu.py:381 ../../src/prefdlg.py:391
 msgid "Auto-Indent"
 msgstr ""
 
@@ -103,15 +103,15 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
-#: ../../src/ed_menu.py:263
+#: ../../src/ed_menu.py:285
 msgid "Bookmarks"
 msgstr ""
 
-#: ../../src/ed_menu.py:359 ../../src/prefdlg.py:376
+#: ../../src/ed_menu.py:384 ../../src/prefdlg.py:393
 msgid "Bracket Highlighting"
 msgstr ""
 
-#: ../../src/prefdlg.py:124 ../../src/style_editor.py:136
+#: ../../src/prefdlg.py:125 ../../src/style_editor.py:136
 msgid "Cancel"
 msgstr ""
 
@@ -119,47 +119,55 @@ msgstr ""
 msgid "Canceled"
 msgstr ""
 
-#: ../../src/ed_menu.py:312
+#: ../../src/ed_menu.py:337
 msgid "Change Font Settings"
 msgstr ""
 
-#: ../../src/prefdlg.py:600
+#: ../../src/plugdlg.py:173
+msgid "Changes will take affect once the program has been resarted"
+msgstr ""
+
+#: ../../src/prefdlg.py:629
 msgid "Check"
 msgstr ""
 
-#: ../../src/prefdlg.py:493
+#: ../../src/prefdlg.py:522
 msgid "Check if on disk file has been modified by others"
 msgstr ""
 
-#: ../../src/ed_main.py:278
+#: ../../src/ed_main.py:288
 msgid "Choose a File"
 msgstr ""
 
-#: ../../src/ed_main.py:400
+#: ../../src/ed_main.py:415
 msgid "Choose a Save Location"
 msgstr ""
 
-#: ../../src/ed_menu.py:194
+#: ../../src/plugdlg.py:504
+msgid "Click on Install to install the plugins in the list"
+msgstr ""
+
+#: ../../src/ed_menu.py:216
 msgid "Close All Pages"
 msgstr ""
 
-#: ../../src/ed_menu.py:193
+#: ../../src/ed_menu.py:215
 msgid "Close Current Page"
 msgstr ""
 
-#: ../../src/ed_menu.py:192
+#: ../../src/ed_menu.py:214
 msgid "Close Page"
 msgstr ""
 
-#: ../../src/ed_menu.py:195
+#: ../../src/ed_menu.py:217
 msgid "Close all open tabs"
 msgstr ""
 
-#: ../../src/prefdlg.py:417
+#: ../../src/prefdlg.py:446
 msgid "Code"
 msgstr ""
 
-#: ../../src/ed_menu.py:361 ../../src/prefdlg.py:380
+#: ../../src/ed_menu.py:386 ../../src/prefdlg.py:397
 msgid "Code Folding"
 msgstr ""
 
@@ -167,27 +175,27 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: ../../src/ed_menu.py:364
+#: ../../src/ed_menu.py:389
 msgid "Color Highlight Code Syntax"
 msgstr ""
 
-#: ../../src/prefdlg.py:390
+#: ../../src/prefdlg.py:419
 msgid "Color Scheme"
 msgstr ""
 
-#: ../../src/ed_menu.py:255
+#: ../../src/ed_menu.py:277
 msgid "Commands that affect an entire line"
 msgstr ""
 
-#: ../../src/ed_menu.py:314
+#: ../../src/ed_menu.py:339
 msgid "Comment Lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:315
+#: ../../src/ed_menu.py:340
 msgid "Comment the selected lines"
 msgstr ""
 
-#: ../../src/plugdlg.py:362
+#: ../../src/plugdlg.py:366
 msgid "Complete"
 msgstr ""
 
@@ -195,51 +203,55 @@ msgstr ""
 msgid "Configure"
 msgstr ""
 
-#: ../../src/ed_menu.py:209
+#: ../../src/ed_menu.py:231
 msgid "Configure Printer"
 msgstr ""
 
-#: ../../src/ed_menu.py:329
+#: ../../src/ed_menu.py:354
 msgid "Convert spaces to tabs in selected/all text"
 msgstr ""
 
-#: ../../src/ed_menu.py:331
+#: ../../src/ed_menu.py:356
 msgid "Convert tabs to spaces in selected/all text"
 msgstr ""
 
-#: ../../src/ed_menu.py:230 ../../src/ed_toolbar.py:58
+#: ../../src/ed_menu.py:252 ../../src/ed_toolbar.py:58
 msgid "Copy"
 msgstr ""
 
-#: ../../src/ed_menu.py:248
+#: ../../src/ed_menu.py:270
 msgid "Copy Current Line"
 msgstr ""
 
-#: ../../src/ed_menu.py:247
+#: ../../src/ed_menu.py:269
 msgid "Copy Line"
 msgstr ""
 
-#: ../../src/ed_menu.py:231 ../../src/ed_toolbar.py:58
+#: ../../src/ed_menu.py:253 ../../src/ed_toolbar.py:58
 msgid "Copy Selected Text to Clipboard"
 msgstr ""
 
-#: ../../src/ed_menu.py:228 ../../src/ed_toolbar.py:59
+#: ../../src/ed_menu.py:250 ../../src/ed_toolbar.py:59
 msgid "Cut"
 msgstr ""
 
-#: ../../src/ed_menu.py:246
+#: ../../src/ed_menu.py:268
 msgid "Cut Current Line"
 msgstr ""
 
-#: ../../src/ed_menu.py:245
+#: ../../src/ed_menu.py:267
 msgid "Cut Line"
 msgstr ""
 
-#: ../../src/ed_menu.py:229 ../../src/ed_toolbar.py:59
+#: ../../src/ed_menu.py:251 ../../src/ed_toolbar.py:59
 msgid "Cut Selected Text from File"
 msgstr ""
 
-#: ../../src/plugdlg.py:682
+#: ../../src/prefdlg.py:331
+msgid "Default Perspective"
+msgstr ""
+
+#: ../../src/plugdlg.py:689
 msgid "Description"
 msgstr ""
 
@@ -247,7 +259,7 @@ msgstr ""
 msgid "Do you wish to exit"
 msgstr ""
 
-#: ../../src/ed_pages.py:280
+#: ../../src/ed_pages.py:306
 #, python-format
 msgid ""
 "Do you wish to open all %d files in this directory?\n"
@@ -255,11 +267,11 @@ msgid ""
 "Warning opening many files at once may cause the editor to temporarly freeze."
 msgstr ""
 
-#: ../../src/plugdlg.py:146 ../../src/plugdlg.py:298 ../../src/prefdlg.py:603
+#: ../../src/plugdlg.py:146 ../../src/plugdlg.py:302 ../../src/prefdlg.py:632
 msgid "Download"
 msgstr ""
 
-#: ../../src/plugdlg.py:359
+#: ../../src/plugdlg.py:363
 msgid "Downloaded"
 msgstr ""
 
@@ -267,7 +279,7 @@ msgstr ""
 msgid "Downloaded: "
 msgstr ""
 
-#: ../../src/plugdlg.py:438
+#: ../../src/plugdlg.py:442
 msgid "Downloading"
 msgstr ""
 
@@ -276,7 +288,7 @@ msgstr ""
 msgid "Downloading To: %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:664
+#: ../../src/prefdlg.py:693
 msgid "Downloading Update"
 msgstr ""
 
@@ -293,32 +305,40 @@ msgstr ""
 msgid "Downloads are incomplete"
 msgstr ""
 
-#: ../../src/plugdlg.py:500
-msgid "Drag and Drop previously downloaded plugins to the list\n"
-msgstr ""
-
-#: ../../src/ed_menu.py:346 ../../src/prefdlg.py:438
+#: ../../src/ed_menu.py:371 ../../src/prefdlg.py:467
 msgid "EOL Mode"
 msgstr ""
 
-#: ../../src/ed_main.py:384 ../../src/ed_main.py:417
+#: ../../src/ed_main.py:399 ../../src/ed_main.py:432
 #, python-format
 msgid "ERROR: Failed to save %s"
 msgstr ""
 
-#: ../../src/ed_menu.py:275
+#: ../../src/prefdlg.py:400
+msgid "Edge Guide"
+msgstr ""
+
+#: ../../src/prefdlg.py:405
+msgid "Edge Guide Column"
+msgstr ""
+
+#: ../../src/ed_menu.py:297
 msgid "Edit"
 msgstr ""
 
-#: ../../src/ed_menu.py:274
+#: ../../src/ed_menu.py:296
 msgid "Edit Preferences / Settings"
 msgstr ""
 
-#: ../../src/ed_menu.py:377
+#: ../../src/ed_menu.py:402
 msgid "Edit the way syntax is highlighted"
 msgstr ""
 
-#: ../../src/prefdlg.py:304
+#: ../../src/ed_menu.py:320
+msgid "Editor"
+msgstr ""
+
+#: ../../src/prefdlg.py:309
 msgid "Editor Mode"
 msgstr ""
 
@@ -326,23 +346,28 @@ msgstr ""
 msgid "Editra Style Sheet"
 msgstr ""
 
-#: ../../src/ed_menu.py:347
+#: ../../src/ed_pages.py:192
+#, python-format
+msgid "Editra could not properly open %s\n"
+msgstr ""
+
+#: ../../src/ed_menu.py:372
 msgid "End of line character formatting"
 msgstr ""
 
-#: ../../src/plugdlg.py:585
+#: ../../src/plugdlg.py:592
 msgid "Error"
 msgstr ""
 
-#: ../../src/ed_pages.py:198
+#: ../../src/ed_pages.py:193
 msgid "Error Opening File"
 msgstr ""
 
-#: ../../src/ed_menu.py:215
+#: ../../src/ed_menu.py:237
 msgid "Exit"
 msgstr ""
 
-#: ../../src/ed_menu.py:216
+#: ../../src/ed_menu.py:238
 msgid "Exit the Program"
 msgstr ""
 
@@ -358,12 +383,12 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: ../../src/plugdlg.py:587
+#: ../../src/plugdlg.py:594
 #, python-format
 msgid "Failed to install %d plugins"
 msgstr ""
 
-#: ../../src/ed_main.py:386 ../../src/ed_main.py:412
+#: ../../src/ed_main.py:401 ../../src/ed_main.py:427
 #, python-format
 msgid ""
 "Failed to save file: %s\n"
@@ -372,15 +397,15 @@ msgid ""
 "%d"
 msgstr ""
 
-#: ../../src/prefdlg.py:373
+#: ../../src/prefdlg.py:390
 msgid "Features"
 msgstr ""
 
-#: ../../src/ed_menu.py:388
+#: ../../src/ed_menu.py:413
 msgid "Feedback"
 msgstr ""
 
-#: ../../src/ed_menu.py:217
+#: ../../src/ed_menu.py:239
 msgid "File"
 msgstr ""
 
@@ -388,34 +413,34 @@ msgstr ""
 msgid "File Browser"
 msgstr ""
 
-#: ../../src/prefdlg.py:481
+#: ../../src/prefdlg.py:510
 msgid "File History Depth"
 msgstr ""
 
-#: ../../src/ed_main.py:341
+#: ../../src/ed_main.py:356
 msgid "File Not Found"
 msgstr ""
 
-#: ../../src/ed_pages.py:156
+#: ../../src/ed_pages.py:159
 msgid ""
 "File is already open in an existing page.\n"
 "Do you wish to open it again?"
 msgstr ""
 
-#: ../../src/ed_cmdbar.py:196 ../../src/ed_menu.py:266
+#: ../../src/ed_cmdbar.py:196 ../../src/ed_menu.py:288
 #: ../../src/ed_search.py:181 ../../src/ed_toolbar.py:61
 msgid "Find"
 msgstr ""
 
-#: ../../src/ed_menu.py:267 ../../src/ed_toolbar.py:61
+#: ../../src/ed_menu.py:289 ../../src/ed_toolbar.py:61
 msgid "Find Text"
 msgstr ""
 
-#: ../../src/ed_menu.py:269 ../../src/ed_toolbar.py:62
+#: ../../src/ed_menu.py:291 ../../src/ed_toolbar.py:62
 msgid "Find and Replace Text"
 msgstr ""
 
-#: ../../src/ed_menu.py:268 ../../src/ed_search.py:178
+#: ../../src/ed_menu.py:290 ../../src/ed_search.py:178
 #: ../../src/ed_toolbar.py:62
 msgid "Find/Replace"
 msgstr ""
@@ -424,15 +449,15 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
-#: ../../src/plugdlg.py:573 ../../src/plugdlg.py:575
+#: ../../src/plugdlg.py:580 ../../src/plugdlg.py:582
 msgid "Finished Installing Plugins"
 msgstr ""
 
-#: ../../src/plugdlg.py:363
+#: ../../src/plugdlg.py:367
 msgid "Finshed downloading plugins"
 msgstr ""
 
-#: ../../src/ed_menu.py:312 ../../src/style_editor.py:328
+#: ../../src/ed_menu.py:337 ../../src/style_editor.py:328
 msgid "Font"
 msgstr ""
 
@@ -444,177 +469,177 @@ msgstr ""
 msgid "Foreground"
 msgstr ""
 
-#: ../../src/ed_menu.py:348 ../../src/prefdlg.py:424
+#: ../../src/ed_menu.py:373 ../../src/prefdlg.py:453
 msgid "Format"
 msgstr ""
 
-#: ../../src/ed_menu.py:338 ../../src/ed_menu.py:341 ../../src/ed_menu.py:344
+#: ../../src/ed_menu.py:363 ../../src/ed_menu.py:366 ../../src/ed_menu.py:369
 #, python-format
 msgid "Format all EOL characters to %s Mode"
 msgstr ""
 
-#: ../../src/prefdlg.py:354
+#: ../../src/prefdlg.py:371
 msgid "General"
 msgstr ""
 
-#: ../../src/generator.py:234 ../../src/generator.py:517
-#: ../../src/generator.py:715
+#: ../../src/generator.py:240 ../../src/generator.py:528
+#: ../../src/generator.py:701
 #, python-format
 msgid "Generate %s"
 msgstr ""
 
-#: ../../src/generator.py:108
+#: ../../src/generator.py:109
 msgid "Generate Code and Documents"
 msgstr ""
 
-#: ../../src/generator.py:235 ../../src/generator.py:716
+#: ../../src/generator.py:241 ../../src/generator.py:702
 #, python-format
 msgid "Generate a %s version of the current document"
 msgstr ""
 
-#: ../../src/generator.py:518
+#: ../../src/generator.py:529
 #, python-format
 msgid "Generate an %s version of the current document"
 msgstr ""
 
-#: ../../src/generator.py:107
+#: ../../src/generator.py:108
 msgid "Generator"
 msgstr ""
 
-#: ../../src/plugdlg.py:574
+#: ../../src/plugdlg.py:581
 msgid "Go to configuration page?"
 msgstr ""
 
-#: ../../src/ed_cmdbar.py:169 ../../src/ed_menu.py:297
+#: ../../src/ed_cmdbar.py:169 ../../src/ed_menu.py:322
 msgid "Goto Line"
 msgstr ""
 
-#: ../../src/ed_menu.py:298
+#: ../../src/ed_menu.py:323
 msgid "Goto Line Number"
 msgstr ""
 
-#: ../../src/ed_main.py:169 ../../src/ed_menu.py:390
+#: ../../src/ed_main.py:176 ../../src/ed_menu.py:415
 msgid "Help"
 msgstr ""
 
-#: ../../src/ed_menu.py:360
+#: ../../src/ed_menu.py:385
 msgid "Highlight Brackets/Braces"
 msgstr ""
 
-#: ../../src/prefdlg.py:505
+#: ../../src/prefdlg.py:534
 msgid "Icon Size"
 msgstr ""
 
-#: ../../src/prefdlg.py:501
+#: ../../src/prefdlg.py:530
 msgid "Icon Theme"
 msgstr ""
 
-#: ../../src/ed_menu.py:319
+#: ../../src/ed_menu.py:344
 msgid "Indent Lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:320
+#: ../../src/ed_menu.py:345
 msgid "Indent the selected lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:288 ../../src/prefdlg.py:378
+#: ../../src/ed_menu.py:310 ../../src/prefdlg.py:395
 msgid "Indentation Guides"
 msgstr ""
 
-#: ../../src/plugdlg.py:147 ../../src/plugdlg.py:504
+#: ../../src/plugdlg.py:147 ../../src/plugdlg.py:511
 msgid "Install"
 msgstr ""
 
-#: ../../src/plugdlg.py:510
+#: ../../src/plugdlg.py:517
 msgid ""
 "Install the plugins for all users\n"
 " **requires administrative privileges**"
 msgstr ""
 
-#: ../../src/plugdlg.py:508
+#: ../../src/plugdlg.py:515
 msgid "Install the plugins only for the current user"
 msgstr ""
 
-#: ../../src/plugdlg.py:589
+#: ../../src/plugdlg.py:596
 msgid "Installation Error"
 msgstr ""
 
-#: ../../src/prefdlg.py:564
+#: ../../src/prefdlg.py:593
 msgid "Installed Version"
 msgstr ""
 
-#: ../../src/ed_pages.py:270
+#: ../../src/ed_pages.py:296
 #, python-format
 msgid "Invalid file: %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:723
+#: ../../src/prefdlg.py:752
 msgid "Item"
 msgstr ""
 
-#: ../../src/ed_menu.py:250
+#: ../../src/ed_menu.py:272
 msgid "Join Lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:251
+#: ../../src/ed_menu.py:273
 msgid "Join the Selected Lines"
 msgstr ""
 
-#: ../../plugins/filebrowser/filebrowser/__init__.py:139
+#: ../../plugins/filebrowser/filebrowser/__init__.py:142
 msgid "Jump to Saved Path"
 msgstr ""
 
-#: ../../src/ed_menu.py:372
+#: ../../src/ed_menu.py:397
 msgid "Keyword Helper"
 msgstr ""
 
-#: ../../src/prefdlg.py:333
+#: ../../src/prefdlg.py:349
 msgid "Language"
 msgstr ""
 
-#: ../../src/prefdlg.py:571
+#: ../../src/prefdlg.py:600
 msgid "Latest Version"
 msgstr ""
 
-#: ../../src/ed_main.py:164
+#: ../../src/ed_main.py:171
 msgid "Lexers"
 msgstr ""
 
-#: ../../src/ed_menu.py:254
+#: ../../src/ed_menu.py:276
 msgid "Line Edit"
 msgstr ""
 
-#: ../../src/ed_main.py:714
+#: ../../src/ed_main.py:731
 #, python-format
 msgid "Line: %d  Column: %d"
 msgstr ""
 
-#: ../../src/ed_menu.py:205
+#: ../../src/ed_menu.py:227
 msgid "Load Profile"
 msgstr ""
 
-#: ../../src/ed_main.py:447 ../../src/ed_menu.py:206
+#: ../../src/ed_main.py:462 ../../src/ed_menu.py:228
 msgid "Load a Custom Profile"
 msgstr ""
 
-#: ../../src/ed_main.py:455
+#: ../../src/ed_main.py:470
 #, python-format
 msgid "Loaded Profile: %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:350
+#: ../../src/prefdlg.py:367
 msgid "Locale Settings"
 msgstr ""
 
-#: ../../src/ed_menu.py:337 ../../src/ed_menu.py:338 ../../src/prefdlg.py:440
+#: ../../src/ed_menu.py:362 ../../src/ed_menu.py:363 ../../src/prefdlg.py:469
 msgid "Macintosh (\\r)"
 msgstr ""
 
-#: ../../src/ed_menu.py:375
+#: ../../src/ed_menu.py:400
 msgid "Manage, Download, and Install plugins"
 msgstr ""
 
-#: ../../src/ed_main.py:165
+#: ../../src/ed_main.py:172
 msgid "Manually Set a Lexer/Syntax"
 msgstr ""
 
@@ -622,48 +647,48 @@ msgstr ""
 msgid "Match Case"
 msgstr ""
 
-#: ../../src/prefdlg.py:451 ../../src/prefdlg.py:557
+#: ../../src/prefdlg.py:480 ../../src/prefdlg.py:586
 msgid "Misc"
 msgstr ""
 
-#: ../../src/ed_menu.py:185 ../../src/ed_toolbar.py:52
+#: ../../src/ed_menu.py:207 ../../src/ed_toolbar.py:52
 #: ../../src/style_editor.py:367
 msgid "New"
 msgstr ""
 
-#: ../../src/ed_menu.py:239
+#: ../../src/ed_menu.py:261
 msgid "New Line After"
 msgstr ""
 
-#: ../../src/ed_menu.py:242
+#: ../../src/ed_menu.py:264
 msgid "New Line Before"
 msgstr ""
 
-#: ../../src/ed_menu.py:299
+#: ../../src/ed_menu.py:324
 msgid "Next Bookmark"
 msgstr ""
 
-#: ../../src/plugdlg.py:258
+#: ../../src/plugdlg.py:261
 msgid "No Description Available"
 msgstr ""
 
-#: ../../src/ed_pages.py:277
+#: ../../src/ed_pages.py:303
 msgid "No Valid Files to Open"
 msgstr ""
 
-#: ../../src/prefdlg.py:126 ../../src/style_editor.py:139
+#: ../../src/prefdlg.py:127 ../../src/style_editor.py:139
 msgid "Ok"
 msgstr ""
 
-#: ../../src/ed_menu.py:187 ../../src/ed_toolbar.py:53
+#: ../../src/ed_menu.py:209 ../../src/ed_toolbar.py:53
 msgid "Open"
 msgstr ""
 
-#: ../../src/ed_pages.py:284
+#: ../../src/ed_pages.py:310
 msgid "Open Directory?"
 msgstr ""
 
-#: ../../src/ed_pages.py:158
+#: ../../src/ed_pages.py:161
 msgid "Open File"
 msgstr ""
 
@@ -671,20 +696,20 @@ msgstr ""
 msgid "Open File Browser sidepanel"
 msgstr ""
 
-#: ../../src/ed_menu.py:189
+#: ../../src/ed_menu.py:211
 msgid "Open Recent"
 msgstr ""
 
-#: ../../src/ed_menu.py:271
+#: ../../src/ed_menu.py:293
 msgid "Open the Quick Find Bar"
 msgstr ""
 
-#: ../../src/ed_pages.py:299
+#: ../../src/ed_pages.py:325
 #, python-format
 msgid "Opened file: %s"
 msgstr ""
 
-#: ../../src/ed_menu.py:208
+#: ../../src/ed_menu.py:230
 msgid "Page Setup"
 msgstr ""
 
@@ -693,27 +718,27 @@ msgstr ""
 msgid "Page: %d"
 msgstr ""
 
-#: ../../src/ed_menu.py:232 ../../src/ed_toolbar.py:60
+#: ../../src/ed_menu.py:254 ../../src/ed_toolbar.py:60
 msgid "Paste"
 msgstr ""
 
-#: ../../src/ed_menu.py:233 ../../src/ed_toolbar.py:60
+#: ../../src/ed_menu.py:255 ../../src/ed_toolbar.py:60
 msgid "Paste Text from Clipboard to File"
 msgstr ""
 
-#: ../../plugins/filebrowser/filebrowser/__init__.py:123
-msgid "Pathmarks..."
+#: ../../src/ed_main.py:159
+msgid "Perspectives"
 msgstr ""
 
-#: ../../src/plugdlg.py:681
+#: ../../src/plugdlg.py:688
 msgid "Plugin"
 msgstr ""
 
-#: ../../src/ed_main.py:613 ../../src/ed_menu.py:374
+#: ../../src/ed_main.py:630 ../../src/ed_menu.py:399
 msgid "Plugin Manager"
 msgstr ""
 
-#: ../../src/ed_menu.py:273 ../../src/prefdlg.py:108
+#: ../../src/ed_menu.py:295 ../../src/prefdlg.py:109
 msgid "Preferences"
 msgstr ""
 
@@ -721,35 +746,35 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: ../../src/ed_menu.py:211
+#: ../../src/ed_menu.py:233
 msgid "Preview Printout"
 msgstr ""
 
-#: ../../src/ed_menu.py:301
+#: ../../src/ed_menu.py:326
 msgid "Previous Bookmark"
 msgstr ""
 
-#: ../../src/ed_menu.py:212 ../../src/ed_toolbar.py:55
+#: ../../src/ed_menu.py:234 ../../src/ed_toolbar.py:55
 msgid "Print"
 msgstr ""
 
-#: ../../src/ed_menu.py:213 ../../src/ed_toolbar.py:55
+#: ../../src/ed_menu.py:235 ../../src/ed_toolbar.py:55
 msgid "Print Current File"
 msgstr ""
 
-#: ../../src/ed_menu.py:210 ../../src/ed_print.py:90
+#: ../../src/ed_menu.py:232 ../../src/ed_print.py:90
 msgid "Print Preview"
 msgstr ""
 
-#: ../../src/prefdlg.py:314
+#: ../../src/prefdlg.py:319
 msgid "Printer Mode"
 msgstr ""
 
-#: ../../src/ed_main.py:432 ../../src/ed_main.py:448
+#: ../../src/ed_main.py:447 ../../src/ed_main.py:463
 msgid "Profile"
 msgstr ""
 
-#: ../../src/ed_main.py:440
+#: ../../src/ed_main.py:455
 #, python-format
 msgid "Profile Saved as: %s"
 msgstr ""
@@ -758,19 +783,19 @@ msgstr ""
 msgid "Profile Updated"
 msgstr ""
 
-#: ../../src/prefdlg.py:366
+#: ../../src/prefdlg.py:383
 msgid "Profile Viewer"
 msgstr ""
 
-#: ../../src/ed_menu.py:386
+#: ../../src/ed_menu.py:411
 msgid "Project Homepage"
 msgstr ""
 
-#: ../../src/ed_menu.py:373
+#: ../../src/ed_menu.py:398
 msgid "Provides a Contextual Help Menu Listing Standard Keywords/Functions"
 msgstr ""
 
-#: ../../src/ed_menu.py:270
+#: ../../src/ed_menu.py:292
 msgid "Quick Find"
 msgstr ""
 
@@ -783,55 +808,55 @@ msgstr ""
 msgid "Recent Searches"
 msgstr ""
 
-#: ../../src/ed_menu.py:190
+#: ../../src/ed_menu.py:212
 msgid "Recently Opened Files"
 msgstr ""
 
-#: ../../src/ed_menu.py:225 ../../src/ed_toolbar.py:57
+#: ../../src/ed_menu.py:247 ../../src/ed_toolbar.py:57
 msgid "Redo"
 msgstr ""
 
-#: ../../src/ed_menu.py:226 ../../src/ed_toolbar.py:57
+#: ../../src/ed_menu.py:248 ../../src/ed_toolbar.py:57
 msgid "Redo Last Undo"
 msgstr ""
 
-#: ../../src/ed_pages.py:330
+#: ../../src/ed_pages.py:356
 msgid "Reload File?"
 msgstr ""
 
-#: ../../src/prefdlg.py:490
+#: ../../src/prefdlg.py:519
 msgid "Remember File Position"
 msgstr ""
 
-#: ../../src/prefdlg.py:543
+#: ../../src/prefdlg.py:572
 msgid "Remember Window Position on Exit"
 msgstr ""
 
-#: ../../src/prefdlg.py:540
+#: ../../src/prefdlg.py:569
 msgid "Remember Window Size on Exit"
 msgstr ""
 
-#: ../../src/ed_menu.py:261
+#: ../../src/ed_menu.py:283
 msgid "Remove All Bookmarks"
 msgstr ""
 
-#: ../../src/ed_menu.py:259
+#: ../../src/ed_menu.py:281
 msgid "Remove Bookmark"
 msgstr ""
 
-#: ../../plugins/filebrowser/filebrowser/__init__.py:141
+#: ../../plugins/filebrowser/filebrowser/__init__.py:144
 msgid "Remove Saved Path"
 msgstr ""
 
-#: ../../src/ed_menu.py:262
+#: ../../src/ed_menu.py:284
 msgid "Remove all bookmarks from the current document"
 msgstr ""
 
-#: ../../src/ed_menu.py:260
+#: ../../src/ed_menu.py:282
 msgid "Remove bookmark from current line"
 msgstr ""
 
-#: ../../src/ed_menu.py:333
+#: ../../src/ed_menu.py:358
 msgid "Remove trailing whitespace"
 msgstr ""
 
@@ -842,43 +867,43 @@ msgid ""
 "A Total of %d matches were replaced"
 msgstr ""
 
-#: ../../src/ed_pages.py:314
+#: ../../src/ed_pages.py:340
 msgid "Resave File?"
 msgstr ""
 
-#: ../../src/ed_menu.py:197 ../../src/ed_toolbar.py:54
+#: ../../src/ed_menu.py:219 ../../src/ed_toolbar.py:54
 msgid "Save"
 msgstr ""
 
-#: ../../src/ed_menu.py:201
+#: ../../src/ed_menu.py:223
 msgid "Save All"
 msgstr ""
 
-#: ../../src/ed_menu.py:199 ../../src/ed_menu.py:200
+#: ../../src/ed_menu.py:221 ../../src/ed_menu.py:222
 msgid "Save As"
 msgstr ""
 
-#: ../../src/ed_main.py:830
+#: ../../src/ed_main.py:851
 msgid "Save Changes?"
 msgstr ""
 
-#: ../../src/ed_menu.py:198 ../../src/ed_toolbar.py:54
+#: ../../src/ed_menu.py:220 ../../src/ed_toolbar.py:54
 msgid "Save Current File"
 msgstr ""
 
-#: ../../src/ed_menu.py:204
+#: ../../src/ed_menu.py:226
 msgid "Save Current Settings to a New Profile"
 msgstr ""
 
-#: ../../src/ed_main.py:387 ../../src/ed_main.py:413
+#: ../../src/ed_main.py:402 ../../src/ed_main.py:428
 msgid "Save Error"
 msgstr ""
 
-#: ../../src/ed_menu.py:203
+#: ../../src/ed_menu.py:225
 msgid "Save Profile"
 msgstr ""
 
-#: ../../plugins/filebrowser/filebrowser/__init__.py:138
+#: ../../plugins/filebrowser/filebrowser/__init__.py:141
 msgid "Save Selected Paths"
 msgstr ""
 
@@ -886,37 +911,41 @@ msgstr ""
 msgid "Save Styles"
 msgstr ""
 
-#: ../../src/ed_menu.py:201
+#: ../../src/ed_menu.py:223
 msgid "Save all open pages"
 msgstr ""
 
-#: ../../src/ed_main.py:419
+#: ../../src/ed_main.py:434
 #, python-format
 msgid "Saved File As: %s"
 msgstr ""
 
-#: ../../src/ed_main.py:382
+#: ../../src/ed_main.py:397
 #, python-format
 msgid "Saved File: %s"
 msgstr ""
 
-#: ../../src/ed_menu.py:235
+#: ../../plugins/filebrowser/filebrowser/__init__.py:125
+msgid "Saved Paths..."
+msgstr ""
+
+#: ../../src/ed_menu.py:257
 msgid "Select All"
 msgstr ""
 
-#: ../../src/ed_menu.py:236
+#: ../../src/ed_menu.py:258
 msgid "Select All Text in Document"
 msgstr ""
 
-#: ../../src/plugdlg.py:303
+#: ../../src/plugdlg.py:307
 msgid "Select the desired plugins and then Click Download"
 msgstr ""
 
-#: ../../src/ed_menu.py:389
+#: ../../src/ed_menu.py:414
 msgid "Send me bug reports and suggestions"
 msgstr ""
 
-#: ../../src/ed_menu.py:366 ../../src/prefdlg.py:480
+#: ../../src/ed_menu.py:391 ../../src/prefdlg.py:509
 msgid "Settings"
 msgstr ""
 
@@ -924,40 +953,48 @@ msgstr ""
 msgid "Show A Python Shell"
 msgstr ""
 
-#: ../../src/ed_menu.py:290 ../../src/ed_menu.py:291 ../../src/prefdlg.py:454
+#: ../../src/ed_menu.py:314 ../../src/ed_menu.py:315 ../../src/prefdlg.py:483
 msgid "Show EOL Markers"
 msgstr ""
 
-#: ../../plugins/filebrowser/filebrowser/__init__.py:260
+#: ../../src/ed_menu.py:312
+msgid "Show Edge Guide"
+msgstr ""
+
+#: ../../plugins/filebrowser/filebrowser/__init__.py:272
 msgid "Show Hidden Files"
 msgstr ""
 
-#: ../../src/ed_menu.py:289
+#: ../../src/ed_menu.py:311
 msgid "Show Indentation Guides"
 msgstr ""
 
-#: ../../src/ed_menu.py:293
+#: ../../src/ed_menu.py:317
 msgid "Show Line Number Margin"
 msgstr ""
 
-#: ../../src/ed_menu.py:292 ../../src/prefdlg.py:456
+#: ../../src/ed_menu.py:316 ../../src/prefdlg.py:485
 msgid "Show Line Numbers"
 msgstr ""
 
-#: ../../src/prefdlg.py:327
+#: ../../src/prefdlg.py:343
 msgid "Show Splash Screen"
 msgstr ""
 
-#: ../../src/ed_menu.py:305
+#: ../../src/ed_menu.py:330
 msgid "Show Toolbar"
 msgstr ""
 
-#: ../../src/ed_menu.py:294 ../../src/prefdlg.py:458
+#: ../../src/ed_menu.py:318 ../../src/prefdlg.py:487
 msgid "Show Whitespace"
 msgstr ""
 
-#: ../../src/ed_menu.py:295
+#: ../../src/ed_menu.py:319
 msgid "Show Whitespace Markers"
+msgstr ""
+
+#: ../../src/ed_menu.py:313
+msgid "Show the edge column guide"
 msgstr ""
 
 #: ../../src/style_editor.py:341
@@ -968,15 +1005,15 @@ msgstr ""
 msgid "Some styles have been changed would you like to save before exiting?"
 msgstr ""
 
-#: ../../src/ed_menu.py:328
+#: ../../src/ed_menu.py:353
 msgid "Spaces to Tabs"
 msgstr ""
 
-#: ../../src/ed_menu.py:186 ../../src/ed_toolbar.py:52
+#: ../../src/ed_menu.py:208 ../../src/ed_toolbar.py:52
 msgid "Start a New File"
 msgstr ""
 
-#: ../../src/prefdlg.py:346
+#: ../../src/prefdlg.py:362
 msgid "Startup Settings"
 msgstr ""
 
@@ -984,7 +1021,7 @@ msgstr ""
 msgid "Status Unknown"
 msgstr ""
 
-#: ../../src/ed_menu.py:376 ../../src/style_editor.py:74
+#: ../../src/ed_menu.py:401 ../../src/style_editor.py:74
 msgid "Style Editor"
 msgstr ""
 
@@ -1001,7 +1038,7 @@ msgstr ""
 msgid "Switch Lexer to %s"
 msgstr ""
 
-#: ../../src/prefdlg.py:386
+#: ../../src/prefdlg.py:415
 msgid "Syntax && Completion"
 msgstr ""
 
@@ -1009,89 +1046,91 @@ msgstr ""
 msgid "Syntax Files"
 msgstr ""
 
-#: ../../src/ed_menu.py:363 ../../src/prefdlg.py:387
+#: ../../src/ed_menu.py:388 ../../src/prefdlg.py:416
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: ../../src/plugdlg.py:509
+#: ../../src/plugdlg.py:516
 msgid "System Directory"
 msgstr ""
 
-#: ../../src/prefdlg.py:425
+#: ../../src/prefdlg.py:454
 msgid "Tab Width"
 msgstr ""
 
-#: ../../src/ed_menu.py:330
+#: ../../src/ed_menu.py:355
 msgid "Tabs to Spaces"
 msgstr ""
 
-#: ../../src/prefdlg.py:473
+#: ../../src/prefdlg.py:502
 msgid "Text"
 msgstr ""
 
-#: ../../src/ed_main.py:828
+#: ../../src/ed_main.py:849
 #, python-format
 msgid ""
 "The file: \"%s\" has been modified since the last save point.\n"
 " Would you like to save the changes?"
 msgstr ""
 
-#: ../../src/plugdlg.py:501
-msgid "Then click on Install to install the plugins in the list"
-msgstr ""
-
-#: ../../src/ed_pages.py:275
+#: ../../src/ed_pages.py:301
 #, python-format
 msgid "There are no files that Editra can open in %s"
 msgstr ""
 
-#: ../../src/ed_pages.py:197
-#, python-format
-msgid "There was an error opening %s"
+#: ../../src/plugdlg.py:505
+msgid ""
+"To add a new item drag and drop the plugin file into the list.\n"
+"\n"
+"To remove an item select it and hit Delete or Backspace."
 msgstr ""
 
-#: ../../src/plugdlg.py:195
+#: ../../src/plugdlg.py:198
 msgid "To enable a plugin check the box next to its label"
 msgstr ""
 
-#: ../../plugins/filebrowser/filebrowser/__init__.py:132
+#: ../../plugins/filebrowser/filebrowser/__init__.py:135
 #, python-format
 msgid "To open multiple files at once %s+Click to select the desired files/folders then hit Enter to open them all at once"
 msgstr ""
 
-#: ../../src/ed_menu.py:357
+#: ../../src/ed_menu.py:382
 msgid "Toggle Auto-Indentation functionality"
 msgstr ""
 
-#: ../../src/ed_menu.py:362
+#: ../../src/ed_menu.py:387
 msgid "Toggle Code Foldering"
 msgstr ""
 
-#: ../../src/ed_menu.py:304
+#: ../../src/ed_menu.py:320
+msgid "Toggle Editor View Options"
+msgstr ""
+
+#: ../../src/ed_menu.py:329
 msgid "Toolbar"
 msgstr ""
 
-#: ../../src/ed_menu.py:379
+#: ../../src/ed_menu.py:404
 msgid "Tools"
 msgstr ""
 
-#: ../../src/prefdlg.py:520
+#: ../../src/prefdlg.py:549
 msgid "Transparency"
 msgstr ""
 
-#: ../../src/ed_menu.py:252
+#: ../../src/ed_menu.py:274
 msgid "Transpose Line"
 msgstr ""
 
-#: ../../src/ed_menu.py:253
+#: ../../src/ed_menu.py:275
 msgid "Transpose the current line with the previous one"
 msgstr ""
 
-#: ../../src/ed_menu.py:332
+#: ../../src/ed_menu.py:357
 msgid "Trim Trailing Whitespace"
 msgstr ""
 
-#: ../../src/plugdlg.py:384
+#: ../../src/plugdlg.py:388
 msgid "Unable to retrieve available downloads"
 msgstr ""
 
@@ -1099,96 +1138,96 @@ msgstr ""
 msgid "Unable to retrieve version info"
 msgstr ""
 
-#: ../../src/ed_menu.py:316
+#: ../../src/ed_menu.py:341
 msgid "Uncomment Lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:317
+#: ../../src/ed_menu.py:342
 msgid "Uncomment the selected lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:223 ../../src/ed_toolbar.py:56
+#: ../../src/ed_menu.py:245 ../../src/ed_toolbar.py:56
 msgid "Undo"
 msgstr ""
 
-#: ../../src/ed_menu.py:224 ../../src/ed_toolbar.py:56
+#: ../../src/ed_menu.py:246 ../../src/ed_toolbar.py:56
 msgid "Undo Last Action"
 msgstr ""
 
-#: ../../src/ed_menu.py:321
+#: ../../src/ed_menu.py:346
 msgid "Unindent Lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:322
+#: ../../src/ed_menu.py:347
 msgid "Unindent the selected lines"
 msgstr ""
 
-#: ../../src/ed_menu.py:340 ../../src/ed_menu.py:341 ../../src/prefdlg.py:440
+#: ../../src/ed_menu.py:365 ../../src/ed_menu.py:366 ../../src/prefdlg.py:469
 msgid "Unix (\\n)"
 msgstr ""
 
-#: ../../src/plugdlg.py:262 ../../src/plugdlg.py:266
+#: ../../src/plugdlg.py:265 ../../src/plugdlg.py:269
 msgid "Unknown"
 msgstr ""
 
-#: ../../src/prefdlg.py:619
+#: ../../src/prefdlg.py:648
 msgid "Update"
 msgstr ""
 
-#: ../../src/prefdlg.py:563
+#: ../../src/prefdlg.py:592
 msgid "Update Status"
 msgstr ""
 
-#: ../../src/ed_menu.py:355
+#: ../../src/ed_menu.py:380
 msgid "Use Auto Completion when available"
 msgstr ""
 
-#: ../../src/prefdlg.py:534
+#: ../../src/prefdlg.py:563
 msgid "Use Metal Style (OS X Only)"
 msgstr ""
 
-#: ../../src/prefdlg.py:429
+#: ../../src/prefdlg.py:458
 msgid "Use Tabs Instead of Whitespaces"
 msgstr ""
 
-#: ../../src/plugdlg.py:506
+#: ../../src/plugdlg.py:513
 msgid "User Directory"
 msgstr ""
 
-#: ../../src/prefdlg.py:724
+#: ../../src/prefdlg.py:753
 msgid "Value"
 msgstr ""
 
-#: ../../src/plugdlg.py:684
+#: ../../src/plugdlg.py:691
 msgid "Version"
 msgstr ""
 
-#: ../../src/ed_menu.py:306
+#: ../../src/ed_menu.py:331
 msgid "View"
 msgstr ""
 
-#: ../../src/ed_menu.py:300
+#: ../../src/ed_menu.py:325
 msgid "View Line of Next Bookmark"
 msgstr ""
 
-#: ../../src/ed_menu.py:302
+#: ../../src/ed_menu.py:327
 msgid "View Line of Previous Bookmark"
 msgstr ""
 
-#: ../../src/ed_menu.py:387
+#: ../../src/ed_menu.py:412
 #, python-format
 msgid "Visit the project homepage %s"
 msgstr ""
 
-#: ../../src/ed_main.py:431
+#: ../../src/ed_main.py:446
 msgid "Where to Save Profile?"
 msgstr ""
 
-#: ../../src/ed_menu.py:334
+#: ../../src/ed_menu.py:359
 msgid "Whitespace"
 msgstr ""
 
-#: ../../src/ed_menu.py:335
+#: ../../src/ed_menu.py:360
 msgid "Whitespace formating commands"
 msgstr ""
 
@@ -1196,15 +1235,15 @@ msgstr ""
 msgid "Whole Word"
 msgstr ""
 
-#: ../../src/ed_menu.py:343 ../../src/ed_menu.py:344 ../../src/prefdlg.py:440
+#: ../../src/ed_menu.py:368 ../../src/ed_menu.py:369 ../../src/prefdlg.py:469
 msgid "Windows (\\r\\n)"
 msgstr ""
 
-#: ../../src/ed_menu.py:324 ../../src/prefdlg.py:445
+#: ../../src/ed_menu.py:349 ../../src/prefdlg.py:474
 msgid "Word Wrap"
 msgstr ""
 
-#: ../../src/ed_menu.py:325
+#: ../../src/ed_menu.py:350
 msgid "Wrap Text Horizontally"
 msgstr ""
 
@@ -1212,15 +1251,15 @@ msgstr ""
 msgid "Your profile has been updated to the latest version"
 msgstr ""
 
-#: ../../src/ed_menu.py:285 ../../src/ed_menu.py:286
+#: ../../src/ed_menu.py:307 ../../src/ed_menu.py:308
 msgid "Zoom Default"
 msgstr ""
 
-#: ../../src/ed_menu.py:283 ../../src/ed_menu.py:284
+#: ../../src/ed_menu.py:305 ../../src/ed_menu.py:306
 msgid "Zoom In"
 msgstr ""
 
-#: ../../src/ed_menu.py:281 ../../src/ed_menu.py:282
+#: ../../src/ed_menu.py:303 ../../src/ed_menu.py:304
 msgid "Zoom Out"
 msgstr ""
 
