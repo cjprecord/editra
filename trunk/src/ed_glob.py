@@ -39,7 +39,7 @@ __revision__ = "$Id: $"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.1.27'
+version = __version__ = u'0.1.28'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"

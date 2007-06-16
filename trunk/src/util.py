@@ -232,23 +232,12 @@ def GetPathChar():
 def GetPathName(path):
     """Gets the path minus filename"""
     path_char = GetPathChar()
-    pieces = path.split(path_char)
-    p_len = len(pieces)
-    if os.path.isabs(path) and p_len <= 2:
-        root = []
-        if os.sys.platform == 'win32':
-            root.append(pieces[0])
-            root.append(path_char)
-            pieces = root + pieces[1:]
-        else:
-            root.append(path_char)
-            pieces = root + pieces
-    rpath = path_char.join(pieces[0:p_len-1])
-    return rpath
+    pieces = os.path.split(path)
+    return pieces[0]
 
 def GetFileName(path):
     """Gets last atom on end of string as filename"""
-    pieces = path.split(GetPathChar())
+    pieces = os.path.split(path)
     filename = pieces[-1]
     return filename
 
