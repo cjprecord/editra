@@ -64,6 +64,7 @@ except ImportError:
 #     that has all of Editra's dependancies installed on.
 if __name__ == '__main__':
     src_dir = os.path.dirname(esrc.__file__)
+    cwd = os.getcwd()
     try:
         os.chdir(src_dir)
     except OSError:
@@ -73,5 +74,5 @@ if __name__ == '__main__':
         args = u''
         if len(sys.argv) > 1:
             args = " ".join(sys.argv[1:])
-        res = os.system("python Editra.py " + args)
+        res = os.system("python Editra.py --oldPath=" + cwd + " " + args)
         exit(res)

@@ -8,7 +8,7 @@ Changes since last release:
 
 #---------------------------------------------------------------------------------#
 VERSION 0.1.27
-DATE 0x/xx/2007
+DATE 06/15/2007
 2nd Alpha Release
 
 NEWS:
@@ -32,7 +32,7 @@ frequently used paths.
 +Many minor performance enhancements
 +Support for Lua, Fortran77, Fortran95
 +RTF generator/exporter
-+Massive perfomance improvements to Html/Latex generators
++Massive performance improvements to Html/Latex generators
 +Drag and Drop now accepts folders of files
 +New Commands (Save All, Close All)
 +New Formatting options (Convert Tabs to Spaces, Convert Spaces to Tabs, 
@@ -45,6 +45,7 @@ case of it having been deleted.
 +If current page is empty and unmodified, opening a new file will open it
 in the current page instead of a new page.
 +Adjustable edge column guide
++MAC a more HIG compliant document icon
 
 BUG FIXES:
 +Tab images now get set properly regardless of how file is opened

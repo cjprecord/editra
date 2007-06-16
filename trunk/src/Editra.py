@@ -288,13 +288,18 @@ def Main():
         EDITRA = Editra(False)
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "", [])
-    except getopt.GetoptError:
+        opts, args = getopt.getopt(sys.argv[1:], "", ["oldPath="])
+    except getopt.GetoptError, msg:
         dev_tool.DEBUGP("[main] Error with getting command line args")
         opts = list()
         args = list()
     else:
         pass
+
+    if len(opts) and opts[0][0] == "--oldPath":
+        oldpath = opts[0][1]
+        os.chdir(oldpath)
+        opts.pop(0)
 
     # 2. Initialize the Language Settings
     langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
@@ -329,7 +334,6 @@ def Main():
                 arg = os.path.abspath(arg)
             _frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, arg)
         except IndexError, msg:
-            #TODO why does this cause an exception each time
             dev_tool.DEBUGP("[main] [exception] Trapped Commandline IndexError on Init")
             pass
 
