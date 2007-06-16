@@ -7,7 +7,7 @@ Change Log:
 Changes since last release:
 
 #---------------------------------------------------------------------------------#
-VERSION 0.1.27
+VERSION 0.1.28
 DATE 06/15/2007
 2nd Alpha Release
 
@@ -55,6 +55,8 @@ BUG FIXES:
 +MAC the notebook now refreshes properly when all have been closed
 +MSW  update downloader window displays properly
 +Clicking in text area now properly updates line/column status
++Drag and Drop now works with files that have non ascii characters in
+their name/path.
 
 #---------------------------------------------------------------------------------#
 VERSION 0.1.0

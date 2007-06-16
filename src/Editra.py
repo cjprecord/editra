@@ -332,7 +332,7 @@ def Main():
         try:
             if not os.path.isabs(arg):
                 arg = os.path.abspath(arg)
-            _frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, arg)
+            _frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, unicode(arg.decode('utf-8')))
         except IndexError, msg:
             dev_tool.DEBUGP("[main] [exception] Trapped Commandline IndexError on Init")
             pass
