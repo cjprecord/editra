@@ -152,7 +152,8 @@ class Editra(wx.App):
         window = self.GetTopWindow()
         if window != None and window.__name__ == "MainWindow":
             try:
-                window.DoOpen(wx.ID_ANY, filename)
+                window.DoOpen(wx.ID_ANY, unicode(filename.decode('utf-8')))
+                self._log("[app][info] MacOpenFile Fired")
             finally:
                 pass
         else:

@@ -181,12 +181,12 @@ class ED_Pages(FNB.FlatNotebook):
         # Open file and get contents
         err = False
         in_txt = u''
+        enc = u'utf-8'
         if os.path.exists(path2file):
             try:
-                reader = util.GetFileReader(path2file)
-                in_txt = reader.read()
-                reader.close()
+                in_txt, enc = util.GetDecodedText(path2file)
             except Exception, msg:
+                self.LOG("[ed_pages][err] Failed to open file %s" % path2File)
                 # File could not be opened/read give up
                 reader.close()
                 err = wx.MessageDialog(self, _("Editra could not properly open %s\n") \
@@ -203,7 +203,7 @@ class ED_Pages(FNB.FlatNotebook):
         if new_pg:
             control.Show()
             self.control = control
-        self.control.SetText(in_txt)
+        self.control.SetText(in_txt, enc)
         # Pass directory and file name info to control object to save reference
         self.control.dirname = path
         self.control.filename = filename
