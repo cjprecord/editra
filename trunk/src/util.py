@@ -120,6 +120,48 @@ def SetClipboardText(txt):
     return 0
 
 # File Helper Functions
+BOM ={ 'utf-8' : codecs.BOM_UTF8,
+       'utf-16-be' : codecs.BOM_UTF16_BE,
+       'utf-16-le' : codecs.BOM_UTF16_LE,
+#        (codecs.BOM_UTF32_BE, 'utf-32-be'),
+#        (codecs.BOM_UTF32_LE, 'utf-32-le'),
+       'utf-7' : '+\v8-',
+       'latin-1' : '',
+       'ascii' : '' }
+
+ENC = [ 'utf-8', 'utf-16-be', 'utf-16-le', 
+  #      'utf-32-be', 'utf-32-le', 
+        'utf-7', 'latin-1', 'ascii']
+
+def GetDecodedText(fname):
+    """Gets the text from a file and decodes the text using
+    a compatible decoder. Returns a tuple of the text and the
+    encoding it was decoded from.
+
+    """
+    try:
+        f_handle = file(fname, 'rb')
+        txt = f_handle.read()
+        f_handle.close()
+    except Exception, msg:
+        f_handle.close()
+        return -1
+    else:
+        decoded = None
+        for enc in ENC:
+            try:
+                decoded = txt.decode(enc)
+            except Exception:
+                continue
+            else:
+                break
+        if decoded:
+            dev_tool.DEBUGP("[txtdecoder] Decoded text as %s" % enc)
+            return decoded, enc
+        else:
+            dev_tool.DEBUGP("[txtdecoder] [err] Failed to decode text returning raw text")
+            return txt, enc
+
 def FilterFiles(file_list):
     """Filters a list of paths and returns a list of paths
     that are valid, not directories, and not seemingly not binary.
@@ -182,7 +224,7 @@ def GetFileModTime(file_name):
         mod_time = 0
     return mod_time
 
-def GetFileReader(file_name):
+def GetFileReader(file_name, enc='utf-8'):
     """Returns a file stream reader object for reading the
     supplied file name. It returns a utf-8 reader if the host
     system supports it other wise it will return an ascii reader.
@@ -196,13 +238,13 @@ def GetFileReader(file_name):
         dev_tool.DEBUGP("[file_reader] Failed to open file %s" % file_name)
         return -1
     try:
-        reader = codecs.lookup('utf-8')[2](file_h)
+        reader = codecs.lookup(enc)[2](file_h)
     except:
         dev_tool.DEBUGP('[file_reader] Failed to get UTF-8 Reader')
         reader = file_h
     return reader
 
-def GetFileWriter(file_name):
+def GetFileWriter(file_name, enc='utf-8'):
     """Returns a file stream writer object for reading the
     supplied file name. It returns a utf-8 reader if the host
     system supports it other wise it will return an ascii reader.
@@ -216,7 +258,7 @@ def GetFileWriter(file_name):
         dev_tool.DEBUGP("[file_writer] Failed to open file %s" % file_name)
         return -1
     try:
-        writer = codecs.lookup('utf-8')[3](file_h)
+        writer = codecs.lookup(enc)[3](file_h)
     except:
         dev_tool.DEBUGP('[file_writer] Failed to get UTF-8 Writer')
         writer = file_h
