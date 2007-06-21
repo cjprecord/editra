@@ -172,7 +172,8 @@ class ED_Menu(wx.Menu):
         """
         try:
             bmp = wx.ArtProvider.GetBitmap(str(item.GetId()), wx.ART_MENU)
-            item.SetBitmap(bmp)
+            if not bmp.IsNull():
+                item.SetBitmap(bmp)
         finally:
             pass
 
@@ -401,6 +402,10 @@ class ED_MenuBar(wx.MenuBar):
         toolsmenu.Append(ed_glob.ID_STYLE_EDIT, _("Style Editor"), 
                          _("Edit the way syntax is highlighted"))
         toolsmenu.AppendSeparator()
+        toolsmenu.Append(ed_glob.ID_MACRO_START, _("Record Macro"),
+                         _("Start macro recording"))
+        toolsmenu.Append(ed_glob.ID_MACRO_STOP, _("Stop Recording"),
+                         _("Stop macro recording"))
         self.Append(toolsmenu, _("Tools"))
         return toolsmenu
 
