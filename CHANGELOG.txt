@@ -6,7 +6,23 @@ Change Log:
 
 Changes since last release:
 
-#---------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+VERSION 0.1.xx
+DATE 0x/xx/2007
+3rd Alpha Release
+
+NEWS:
+
+NEW: [features/improvements]
++Support for utf-7, uft-16 encoded files
++Improved command line support
++CssOptimizer plugin available in plugin manager
+
+BUG FIXES:
++Respects BOM byte if one is present in the file
+
+
+#-------------------------------------------------------------------------------#
 VERSION 0.1.28
 DATE 06/15/2007
 2nd Alpha Release
@@ -58,7 +74,7 @@ BUG FIXES:
 +Drag and Drop now works with files that have non ascii characters in
 their name/path.
 
-#---------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
 VERSION 0.1.0
 DATE 05/24/2007
 1st Alpha Release
@@ -131,7 +147,7 @@ BUG FIXES:
 +MSW all menu icons now show properly
 +All config directories are properly created on an upgrade/install
 
-#---------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
 VERSION 0.0.97
 DATE 04/10/2007
 15th Snapshot Release
@@ -160,7 +176,7 @@ BUG FIXES:
 +Fixed incorrect pascal file detection and highlighter errors
 +Fixed some display issues that occured when switching styles
 
-#---------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
 VERSION 0.0.96
 DATE 04/05/2007
 14th Snapshot Release
