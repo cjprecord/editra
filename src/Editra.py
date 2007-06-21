@@ -94,13 +94,13 @@ class Editra(wx.App):
     """The Editra Application"""
     def OnInit(self):
         """Initialize the Editor"""
+        wx.ArtProvider.PushProvider(ed_art.ED_Art())
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Editra is Initializing")
         self._lock = False
         self._pluginmgr = plugin.PluginManager()
         self._windows = dict()
         self._log("[app][info] Registering Editra's ArtProvider")
-        wx.ArtProvider.PushProvider(ed_art.ED_Art())
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
@@ -279,6 +279,41 @@ def InitConfig():
 
 def Main():
     """Configures and Runs an instance of Editra"""
+    shortopts = "hv"
+    longopts = ['help', 'oldPath=', 'version']
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
+    except getopt.GetoptError, msg:
+        dev_tool.DEBUGP("[main] Error with getting command line args")
+        opts = list()
+        args = list()
+    else:
+        pass
+
+    # Process command line options
+    if len(opts):
+        if opts[0][0] == "--oldPath":
+            oldpath = opts[0][1]
+            os.chdir(oldpath)
+            opts.pop(0)
+        if True in [x[0] in ['-h', '--help'] for x in opts]:
+            print ("Editra - %s - Developers Text Editor\n"
+                   "Cody Precord (2005-2007)\n\n"
+                   "usage: Editra [arguments] [files... ]\n\n"
+                   "Short Arguments:\n"
+                   "  -h         Show this help message\n"
+                   "  -v         Print version number and exit\n"
+                   "\nLong Arguments:\n"
+                   "  --help     Show this help message\n"
+                   "  --oldPath  Don't use this!!\n"
+                   "  --version  Print version number and exit\n"
+                  ) % ed_glob.version
+            exit(0)
+        if True in [x[0] in ['-v', '--version'] for x in opts]:
+            print "%s - v%s - Developers Editor" % (ed_glob.prog_name, ed_glob.version)
+            exit(0)
+
+    # We are ready to run so fire up the config and launch the app
     PROFILE_UPDATED = InitConfig()
 
     # 1. Create Application
@@ -287,20 +322,6 @@ def Main():
         EDITRA = Editra(True)
     else:
         EDITRA = Editra(False)
-
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "", ["oldPath="])
-    except getopt.GetoptError, msg:
-        dev_tool.DEBUGP("[main] Error with getting command line args")
-        opts = list()
-        args = list()
-    else:
-        pass
-
-    if len(opts) and opts[0][0] == "--oldPath":
-        oldpath = opts[0][1]
-        os.chdir(oldpath)
-        opts.pop(0)
 
     # 2. Initialize the Language Settings
     langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
@@ -312,7 +333,9 @@ def Main():
     language.install()
 
     if PROFILE_UPDATED:
-        alert = wx.MessageBox(_("Your profile has been updated to the latest version"),
+        alert = wx.MessageBox(_("Your profile has been updated to the latest version") + \
+                              u"\n" + \
+                              _("Please check the preferences dialog to reset you preferences"),
                               _("Profile Updated"))
 
     # Splash a warning if version is not a final version
