@@ -1,0 +1,4 @@
+Name=CssOptimizer
+Author=Cody Precord
+Description=Generates Optimised CSS code
+Version=0.2
