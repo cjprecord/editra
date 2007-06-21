@@ -19,7 +19,7 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 # Plugin Metadata
-"""Generate optimised Css code"""
+"""Generate optimized Css code"""
 __author__ = "Cody Precord"
 __version__ = "0.2"
 

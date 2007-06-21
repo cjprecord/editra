@@ -1,4 +1,4 @@
 Name=CssOptimizer
 Author=Cody Precord
-Description=Generates Optimised CSS code
+Description=Generates Optimized CSS code
 Version=0.2
