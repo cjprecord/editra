@@ -66,6 +66,7 @@ import ed_i18n
 import ed_event
 import updater
 import util
+import syntax.syntax as syntax
 
 # On mac use the native control as it looks much nicer
 # if wx.Platform == "__WXMAC__":
@@ -260,6 +261,7 @@ class PrefPages(wx.Notebook):
         self.CodePage()
         self.TextPage()
         self.UpdatePage()
+        self.TestPage()
         self.ProfilePage()
 
     #---- End Init ----#
@@ -369,6 +371,15 @@ class PrefPages(wx.Notebook):
         gen_panel.SetSizer(sizer)
 
         self.AddPage(gen_panel, _("General"))
+
+    def TestPage(self):
+        tpanel = wx.Panel(self, wx.ID_ANY)
+        border = wx.BoxSizer(wx.VERTICAL)
+        elist = ExtListCtrl(tpanel)
+        elist.LoadList()
+        border.Add(elist, 1, wx.EXPAND)
+        tpanel.SetSizer(border)
+        self.AddPage(tpanel, _("File Extensions"))
 
     def ProfilePage(self):
         """Creates the profile editor page"""
@@ -752,9 +763,7 @@ class ProfileListCtrl(wx.ListCtrl,
         self.InsertColumn(0, _("Item"))
         self.InsertColumn(1, _("Value"))
 
-        prof = []
-        for ind in ed_glob.PROFILE:
-            prof.append(ind)
+        prof = ed_glob.PROFILE.keys()
         prof.sort()
 
         for key in prof:
@@ -768,32 +777,70 @@ class ProfileListCtrl(wx.ListCtrl,
 
 
     #---- End Function Definitions ----#
-class PluginListCtrl(wx.ListCtrl, 
-                  listmix.ListCtrlAutoWidthMixin,
-                  listmix.CheckListCtrlMixin):
+class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditMixin):
     """Class to manage the profile editor"""
+    FILE_COL = 0
+    EXT_COL = 1
     def __init__(self, parent):
         """Initializes the Profile List Control"""
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
                              wx.DefaultPosition, wx.DefaultSize, 
-                             style = wx.LC_REPORT | wx.LC_SORT_ASCENDING |
-                                     wx.LC_VRULES)
+                             style = wx.LC_REPORT | wx.LC_SORT_ASCENDING | wx.LC_VRULES)
 
         listmix.ListCtrlAutoWidthMixin.__init__(self)
-        listmix.CheckListCtrlMixin.__init__(self)
+        listmix.TextEditMixin.__init__(self)
+        self.InsertColumn(self.FILE_COL, _("Lexer"))
+        self.InsertColumn(self.EXT_COL, _("Extensions (space separated, no dots)"))
+        self._extreg = syntax.ExtensionRegister()
+        self._editing = None
 
-    def OnCheckItem(self, index, flag):
-        """Handles the enableling/disabling of plugins
-        when they are clicked on in the dialog.
-        
+    def CloseEditor(self, evt=None):
+        """Update list and extension register after edit window
+        closes.
+
         """
-        p_mgr = wx.GetApp().GetPluginManager()
-        plugin = self.GetItemText(index)
-        if flag:
-            p_mgr.EnablePlugin(plugin)
+        listmix.TextEditMixin.CloseEditor(self, evt)
+        if self._editing != None:
+            vals = self.GetItem(self._editing[1], self._editing[0]).GetText()
+            ftype = self.GetItem(self._editing[1], self.FILE_COL).GetText()
+            self._editing = None
+            self._extreg.SetAssociation(ftype, vals)
+        wx.CallAfter(self.UpdateExtensions)
+
+    def LoadList(self):
+        """Loads the list of filetypes to file extension mappings into the
+        list control.
+
+        """
+        keys = self._extreg.keys()
+        keys.sort()
+        for key in keys:
+            index = self.InsertStringItem(sys.maxint, key)
+            self.SetStringItem(index, self.FILE_COL, key)
+            self.SetStringItem(index, self.EXT_COL, u'  ' + u' '.join(self._extreg[key]))
+            if not index % 2:
+                color = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT), 70)
+                self.SetItemBackgroundColour(index, color)
+
+        self.SetColumnWidth(self.FILE_COL, wx.LIST_AUTOSIZE)
+        self.SetColumnWidth(self.EXT_COL, wx.LIST_AUTOSIZE)
+
+    def OpenEditor(self, col, row):
+        """Disable the editor for the first column"""
+        if col == self.FILE_COL:
+            return
         else:
-            p_mgr.DisablePlugin(plugin)
-        listmix.CheckListCtrlMixin.OnCheckItem(self, index, flag)
+            self._editing = (col, row)
+            listmix.TextEditMixin.OpenEditor(self, col, row)
+
+    def UpdateExtensions(self):
+        """Updates the values in the EXT_COL to reflect changes
+        in the ExtensionRegister.
+
+        """
+        for row in xrange(self.GetItemCount()):
+            ftype = self.GetItem(row, self.FILE_COL).GetText()
+            self.SetStringItem(row, self.EXT_COL, u'  ' + u' '.join(self._extreg[ftype]))
 
 #----------------------------------------------------------------------------#
 class ExChoice(wx.Choice):
