@@ -61,6 +61,7 @@ __revision__ = "$Id: Exp $"
 #-----------------------------------------------------------------------------#
 # Dependencies
 import wx
+import os
 import sys
 import synglob
 
@@ -68,21 +69,17 @@ import synglob
 # Data Objects / Constants
 
 # Used to index the tuple returned by getting data from EXT_REG
-LANG_ID     = 0
-LEXER_ID    = 1
-MODULE      = 2
+LANG_ID    = 0
+LEXER_ID   = 1
+MODULE     = 2
 
 # Constants for getting values from SyntaxData's return dictionary
-KEYWORDS = 0    # Keyword set(s)
-LEXER    = 1    # Lexer to use
-SYNSPEC  = 2    # Highligter specs
-PROPERTIES = 3  # Extra Properties
-LANGUAGE = 4    # Language ID
-COMMENT = 5     # Gets the comment characters pattern
-
-# Dynamically loaded modules are put here to keep them accessable to all text
-# controls that access this module, so that they dont need to be reloaded.
-LOADED_SYN = {}
+KEYWORDS   = 0    # Keyword set(s)
+LEXER      = 1    # Lexer to use
+SYNSPEC    = 2    # Highligter specs
+PROPERTIES = 3    # Extra Properties
+LANGUAGE   = 4    # Language ID
+COMMENT    = 5    # Gets the comment characters pattern
 
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
@@ -95,17 +92,21 @@ class SyntaxMgr(object):
     """
     instance = None
     first = True
-    def __init__(self, extmap=None):
-        """Initialize a syntax manager. If the optional value
-        extmap(dict) is specified, the items in the map will
-        be used to extend or overwrite the default map.
+    def __init__(self, config=None):
+        """Initialize a syntax manager. If the optional
+        value config is set the mapping of extensions to
+        lexers will be loaded from a config file.
 
         """
         if self.first:
             object.__init__(self)
             self.first = False
             self._extreg = ExtensionRegister()
-            self._extreg.LoadDefault()
+            self._config = config
+            if self._config:
+                self._extreg.LoadFromConfig(self._config)
+            else:
+                self._extreg.LoadDefault()
             self._loaded = dict()
 
     def __new__(self, *args, **kargs):
@@ -152,13 +153,26 @@ class SyntaxMgr(object):
         """
         if modname == None:
             return False
-        if IsModLoaded(modname):
+        if self.IsModLoaded(modname):
            pass
         else:
             try:
                 self._loaded[modname] = __import__(modname, globals(), locals(), [''])
             except ImportError:
                 return False
+        return True
+
+    def SaveState(self):
+        """Saves the current configuration state of the manager to
+        disk for use in other sessions.
+
+        """
+        if not self._config or not os.path.exists(self._config):
+            return False
+        path = os.path.join(self._config, self._extreg.config)
+        file_h = file(path, "wb")
+        file_h.write(str(self._extreg))
+        file_h.close()
         return True
 
     def SyntaxData(self, ext):
@@ -191,6 +205,7 @@ class SyntaxMgr(object):
         syn_data[LANGUAGE] = lex_cfg[LANG_ID]
         syn_data[COMMENT] = mod.CommentPattern(lex_cfg[LANG_ID])
         return syn_data
+
 #-----------------------------------------------------------------------------#
 
 class ExtensionRegister(dict):
@@ -201,6 +216,7 @@ class ExtensionRegister(dict):
     """
     instance = None
     first = True
+    config = u'synmap'
     def __init__(self):
         if self.first:
             self.first = False
@@ -215,6 +231,32 @@ class ExtensionRegister(dict):
     def __missing__(self, key):
         """Return the default value if an item is not found"""
         return u'txt'
+
+    def __setitem__(self, i, y):
+        """Ensures that only one filetype is associated with any
+        given extension at one time.
+
+        """
+        if not isinstance(y, list):
+            raise TypeError, "Extension Register Expects a List for setting values"
+        for key, val in self.iteritems():
+            for item in y:
+                if item in val:
+                    val.pop(val.index(item))
+        y.sort()
+        dict.__setitem__(self, i, y)
+
+    def __str__(self):
+        """Converts the Register to a string that is formatted
+        for output to a config file.
+
+        """
+        keys = self.keys()
+        keys.sort()
+        tmp = list()
+        for key in keys:
+            tmp.append("%s=%s" % (key, u':'.join(self.__getitem__(key))))
+        return os.linesep.join(tmp)
 
     def Associate(self, ftype, ext):
         """Associate a given file type with the given file extension(s).
@@ -234,7 +276,7 @@ class ExtensionRegister(dict):
         self.__setitem__(ftype, assoc)
 
     def Disassociate(self, ftype, ext):
-        """Disassociate a file type with a given extention or space
+        """Disassociate a file type with a given extension or space
         separated list of extensions.
 
         """
@@ -272,6 +314,23 @@ class ExtensionRegister(dict):
         self.clear()
         for key in synglob.EXT_MAP:
             self.__setitem__(synglob.EXT_MAP[key], key.split())
+
+    def LoadFromConfig(self, config):
+        """Load the extention register with values from a config file"""
+        path = os.path.join(config, self.config)
+        if not os.path.exists(path):
+            self.LoadDefault()
+        else:
+            file_h = file(path, "rb")
+            lines = file_h.readlines()
+            file_h.close()
+            for line in lines:
+                tmp = line.split(u'=')
+                if len(tmp) != 2:
+                    continue
+                ftype = tmp[0].strip()
+                exts = tmp[1].split(u':')
+                self.__setitem__(ftype, exts)
 
     def SetAssociation(self, ftype, ext):
         """Like Associate but overrides any current settings instead of

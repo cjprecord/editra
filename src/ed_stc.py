@@ -110,7 +110,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.brackethl = PROFILE["BRACKETHL"]
         self.folding = PROFILE['CODE_FOLD']
         self.highlight = PROFILE["SYNTAX"]
-        self._synmgr = syntax.SyntaxMgr()
+        self._synmgr = syntax.SyntaxMgr(CONFIG['CACHE_DIR'])
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
         self._comment = list()
