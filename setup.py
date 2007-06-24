@@ -50,14 +50,14 @@ AUTHOR_EMAIL = "staff@editra.org"
 YEAR = 2007
 
 CLASSIFIERS = [
-            'Development Status :: 2 - Alpha',
+            'Development Status :: 3 - Alpha',
             'Environment :: MacOS X',
             'Environment :: Win32 (MS Windows)',
             'Environment :: X11 Applications :: GTK',
             'Intended Audience :: Developers',
             'Intended Audience :: Information Technology',
             'Intended Audience :: End Users/Desktop',
-            'OSI Approved :: GNU General Public License (GPL)',
+            'License :: OSI Approved :: GNU General Public License (GPL)',
             'Natural Language :: English',
             'Natural Language :: Japanese',
             'Operating System :: MacOS :: MacOS X',
@@ -243,6 +243,12 @@ else:
     # Force optimization
     if 'install' in sys.argv and ('O1' not in sys.argv or '02' not in sys.argv):
         sys.argv.append('-O2')
+
+    if 'bdist_egg' in sys.argv:
+        try:
+            from setuptools import setup
+        except ImportError:
+            pass
 
     setup(
         name = NAME,
