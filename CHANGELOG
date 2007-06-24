@@ -16,10 +16,12 @@ NEWS:
 NEW: [features/improvements]
 +Support for utf-7, uft-16 encoded files
 +Improved command line support
-+CssOptimizer plugin available in plugin manager
++CssOptimizer plugin available via the plugin manager
++File type detection is now configurable
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
++Cursor/Selection is now set properly after a comment/uncomment action
 
 
 #-------------------------------------------------------------------------------#
