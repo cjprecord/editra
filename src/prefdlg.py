@@ -743,7 +743,27 @@ class PrefPages(wx.Notebook):
         evt.Skip()
 
 #---- End Function Definitions ----#
+#----------------------------------------------------------------------------#
 
+class NewPreferencesDialog(wx.Frame):
+    """Preference dialog for configuring the editor"""
+    def __init__(self, parent, id, title, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=wx.DEFAULT_FRAME_STYLE):
+        """Initialises the dialog"""
+        wx.Frame.__init__(parent, id, title, pos=pos, size=size, style=style)
+        
+        # Attributes
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        hsizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+
+class PrefTools(wx.Toolbook):
+    """Main sections of the configuration pages"""
+    GENERAL_PG = 0
+    def __init__(self, parent, id, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=wx.BK_DEFAULT):
+        wx.Toolbook.__init__(self, parent, id, pos=pos, size=size, style=style)
+        
 #----------------------------------------------------------------------------#
 
 class ProfileListCtrl(wx.ListCtrl, 
@@ -800,11 +820,14 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
 
         """
         listmix.TextEditMixin.CloseEditor(self, evt)
-        if self._editing != None:
-            vals = self.GetItem(self._editing[1], self._editing[0]).GetText()
-            ftype = self.GetItem(self._editing[1], self.FILE_COL).GetText()
+        def UpdateRegister(itempos):
+            """Update teh ExtensionRegister"""
+            vals = self.GetItem(itempos[1], itempos[0]).GetText()
+            ftype = self.GetItem(itempos[1], self.FILE_COL).GetText()
             self._editing = None
             self._extreg.SetAssociation(ftype, vals)
+        if self._editing != None:
+            wx.CallAfter(UpdateRegister, self._editing)
         wx.CallAfter(self.UpdateExtensions)
 
     def LoadList(self):
@@ -819,7 +842,7 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
             self.SetStringItem(index, self.FILE_COL, key)
             self.SetStringItem(index, self.EXT_COL, u'  ' + u' '.join(self._extreg[key]))
             if not index % 2:
-                color = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT), 70)
+                color = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT), 75)
                 self.SetItemBackgroundColour(index, color)
 
         self.SetColumnWidth(self.FILE_COL, wx.LIST_AUTOSIZE)
