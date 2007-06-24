@@ -81,7 +81,7 @@ class PluginDialog(wx.Frame):
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self.CreateStatusBar(2)
-        self.SetStatusWidths([-1, 155]) # TODO variable width
+        self.SetStatusWidths([-1, 155])
         self._nb = PluginPages(self, wx.ID_ANY)
         
         # Layout Dialog
@@ -131,11 +131,14 @@ class PluginPages(wx.Toolbook):
         self._imglst = wx.ImageList(32,32)
         self._imgind = dict()
         self._imgind[CONFIG_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( 
-                                                   str(ed_glob.ID_PLUGIN_CFG), wx.ART_OTHER))
+                                                   str(ed_glob.ID_PLUGIN_CFG), \
+                                                       wx.ART_OTHER))
         self._imgind[DOWNLOAD_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap(
-                                                  str(ed_glob.ID_PLUGIN_DL), wx.ART_OTHER))
+                                                  str(ed_glob.ID_PLUGIN_DL), \
+                                                      wx.ART_OTHER))
         self._imgind[INSTALL_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( 
-                                                  str(ed_glob.ID_PLUGIN_INST),wx.ART_OTHER))
+                                                  str(ed_glob.ID_PLUGIN_INST), \
+                                                      wx.ART_OTHER))
         self._config = ConfigPanel(self, wx.ID_ANY)
         self._download = DownloadPanel(self, wx.ID_ANY)
         self._install = InstallPanel(self, wx.ID_ANY)
@@ -179,6 +182,7 @@ class PluginPages(wx.Toolbook):
             pass
         else:
             pass
+
         evt.Skip()
 
 class ConfigPanel(wx.Panel):
@@ -385,7 +389,8 @@ class DownloadPanel(wx.Panel):
         plugins = self._GetPluginListData()
         p_list = dict()
         if len(plugins) < 2:
-            self.GetGrandParent().SetStatusText(_("Unable to retrieve available downloads"), 0)
+            gp = self.GetGrandParent()
+            gp.SetStatusText(_("Unable to retrieve available downloads"), 0)
             return p_list
         for meta in plugins:
             data = meta.split("\n")
@@ -512,10 +517,12 @@ class InstallPanel(wx.Panel):
         self._instb.Disable()
         self._usercb = wx.CheckBox(self, self.ID_USER, _("User Directory"))
         self._usercb.SetValue(True)
-        self._usercb.SetToolTip(wx.ToolTip(_("Install the plugins only for the current user")))
+        tt = wx.ToolTip(_("Install the plugins only for the current user"))
+        self._usercb.SetToolTip(tt)
         self._syscb = wx.CheckBox(self, self.ID_SYS, _("System Directory"))
-        self._syscb.SetToolTip(wx.ToolTip(_("Install the plugins for all users\n"
-                                            " **requires administrative privileges**")))
+        tt = wx.ToolTip(_("Install the plugins for all users\n"
+                           " **requires administrative privileges**"))
+        self._syscb.SetToolTip(tt)
         if not util.CanWrite(ed_glob.CONFIG['SYS_PLUGIN_DIR']):
             self._syscb.Disable()
         

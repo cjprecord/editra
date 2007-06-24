@@ -92,11 +92,11 @@ import wx
 import ed_glob
 import util
 try:
-   import pkg_resources
-except ImportError, msg:
+    import pkg_resources
+except ImportError:
     try:
         from extern import pkg_resources
-    except ImportError, msg:
+    except ImportError:
         pkg_resources = None
 
 #--------------------------------------------------------------------------#
@@ -125,8 +125,13 @@ class ExtensionPoint(property):
         return '<ExtensionPoint %s>' % self.interface.__name__
 
     def Extensions(self, component):
+        """Return a list of plugins that declare to impliment the
+        given extension point.
+
+        """
+        component = wx.GetApp().GetPluginManager()
         extensions = PluginMeta._registry.get(self.interface, [])
-        return filter(None, [wx.GetApp()._pluginmgr[cls] for cls in extensions])
+        return filter(None, [component[cls] for cls in extensions])
 
 class PluginMeta(type):
     """Acts as the registration point for plugin entrypoint objects.
@@ -136,10 +141,10 @@ class PluginMeta(type):
     """
     _plugins = list()
     _registry = dict()
-    def __new__(cls, name, bases, d):
+    def __new__(mcs, name, bases, d):
         d['_implements'] = _implements[:]
         del _implements[:]
-        new_obj = type.__new__(cls, name, bases, d)
+        new_obj = type.__new__(mcs, name, bases, d)
         if name == 'Plugin':
             return new_obj
         init = d.get("__init__")
@@ -172,7 +177,7 @@ class Plugin(object):
             return self
 
         pluginmgr = args[0]
-        self = pluginmgr._plugins.get(cls)
+        self = pluginmgr.GetPlugins().get(cls)
         if self is None:
             self = super(Plugin, cls).__new__(cls)
             self.pluginmgr = pluginmgr
@@ -209,7 +214,7 @@ class PluginData(object):
         if not isinstance(name, basestring):
             try:
                 name = str(name)
-            except:
+            except (ValueError, TypeError):
                 name = u''
         self._name = name
 
@@ -218,7 +223,7 @@ class PluginData(object):
         if not isinstance(descript, basestring):
             try:
                 descript = str(descript)
-            except:
+            except (ValueError, TypeError):
                 descript = u''
         self._description = descript
 
@@ -227,7 +232,7 @@ class PluginData(object):
         if not isinstance(author, basestring):
             try:
                 author = str(author)
-            except:
+            except (ValueError, TypeError):
                 author = u''
         self._author = author
 
@@ -236,7 +241,7 @@ class PluginData(object):
         if not isinstance(ver, basestring):
             try:
                 ver = str(ver)
-            except:
+            except (ValueError, TypeError):
                 ver = u''
         self._version = ver
 
@@ -300,6 +305,7 @@ class PluginManager(object):
                 plugin = cls(self)
             except TypeError, msg:
                 self.LOG("[pluginmgr][err] Unable in initialize plugin")
+                self.LOG("[pluginmgr][err] %s" % str(msg))
         return plugin
 
     def CallPluginOnce(self, plugin):
@@ -357,6 +363,10 @@ class PluginManager(object):
         """
         return self._env
 
+    def GetPlugins(self):
+        """Returns a the dictionary of plugins managed by this manager"""
+        return self._plugins
+
     def InitPlugins(self, env):
         """Initializes the plugins that are contained in the given
         enviroment. After calling this the list of available plugins
@@ -366,18 +376,17 @@ class PluginManager(object):
         if pkg_resources == None:
             return
         pkg_env = env
-        plugins = {}
         for name in pkg_env:
             egg = pkg_env[name][0]  # egg is of type Distrobution
             egg.activate()
-            modules = []
             for name in egg.get_entry_map(ENTRYPOINT):
                 try:
                     entry_point = egg.get_entry_info(ENTRYPOINT, name)
                     cls = entry_point.load() # Loaded entry points call Impliments
-                except ImportError, e:
+                except ImportError, msg:
                     self.LOG("[pluginmgr][err] Failed to load plugin %s from %s" % \
                              (name, egg.location))
+                    self.LOG("[pluginmgr][err] %s" % str(msg))
                 else:
                     try:
                         self._plugins[cls] = cls(self)

@@ -120,14 +120,14 @@ def SetClipboardText(txt):
     return 0
 
 # File Helper Functions
-BOM ={ 'utf-8' : codecs.BOM_UTF8,
-       'utf-16-be' : codecs.BOM_UTF16_BE,
-       'utf-16-le' : codecs.BOM_UTF16_LE,
+BOM = { 'utf-8' : codecs.BOM_UTF8,
+        'utf-16-be' : codecs.BOM_UTF16_BE,
+        'utf-16-le' : codecs.BOM_UTF16_LE,
 #        (codecs.BOM_UTF32_BE, 'utf-32-be'),
 #        (codecs.BOM_UTF32_LE, 'utf-32-le'),
-       'utf-7' : '+\v8-',
-       'latin-1' : '',
-       'ascii' : '' }
+        'utf-7' : '+\v8-',
+        'latin-1' : '',
+        'ascii' : '' }
 
 ENC = [ 'utf-8', 'utf-16-be', 'utf-16-le', 
   #      'utf-32-be', 'utf-32-le', 
@@ -143,7 +143,7 @@ def GetDecodedText(fname):
         f_handle = file(fname, 'rb')
         txt = f_handle.read()
         f_handle.close()
-    except Exception, msg:
+    except Exception:
         f_handle.close()
         return -1
     else:
@@ -234,12 +234,12 @@ def GetFileReader(file_name, enc='utf-8'):
     """
     try:
         file_h = file(file_name, "rb")
-    except:
+    except (IOError, OSError):
         dev_tool.DEBUGP("[file_reader] Failed to open file %s" % file_name)
         return -1
     try:
         reader = codecs.lookup(enc)[2](file_h)
-    except:
+    except (LookupError, IndexError):
         dev_tool.DEBUGP('[file_reader] Failed to get UTF-8 Reader')
         reader = file_h
     return reader
@@ -259,7 +259,7 @@ def GetFileWriter(file_name, enc='utf-8'):
         return -1
     try:
         writer = codecs.lookup(enc)[3](file_h)
-    except:
+    except (LookupError, IndexError):
         dev_tool.DEBUGP('[file_writer] Failed to get UTF-8 Writer')
         writer = file_h
     return writer
@@ -523,15 +523,15 @@ def HexToRGB(hex_str):
     hex string.
     
     """
-    hex = hex_str
-    if hex[0] == u"#":
-        hex = hex[1:]
-    ldiff = 6 - len(hex)
-    hex += ldiff * u"0"
+    hexval = hex_str
+    if hexval[0] == u"#":
+        hexval = hexval[1:]
+    ldiff = 6 - len(hexval)
+    hexval += ldiff * u"0"
     # Convert hex values to integer
-    red = int(hex[0:2], 16)
-    green =int(hex[2:4], 16)
-    blue = int(hex[4:], 16)
+    red = int(hexval[0:2], 16)
+    green = int(hexval[2:4], 16)
+    blue = int(hexval[4:], 16)
     return [red, green, blue]
 
 def SetWindowIcon(window):
@@ -580,7 +580,7 @@ def StrToTuple(tu_str):
 
 class IntValidator(wx.PyValidator):
     """A Generic integer validator"""
-    def __init__(self, min=0, max=0):
+    def __init__(self, min = 0, max = 0):
         wx.PyValidator.__init__(self)
         self._min = min
         self._max = max

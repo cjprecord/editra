@@ -97,7 +97,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.encoding = u'utf-8'            # Default Encoding
         self._hasbom = False                # Write BOM bit or not
         self.modtime = 0
-        self.path_char = util.GetPathChar()	# Path Character / 0r \
         # Macro Attributes
         self._macro = list()
         self.recording = False
@@ -292,6 +291,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """Returns whether auto-indent is being used"""
         return self._autoindent
 
+    def GetLangId(self):
+        """Returns the language identifer of this control"""
+        return self.lang_id
+
     def GetPos(self, key):
         """ Update Line/Column information """
         pos = self.GetCurrentPos()
@@ -345,7 +348,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def GetFileName(self):
         """Returns the full path name of the current file"""
-        return "".join([self.dirname, self.path_char, self.filename])
+        return "".join([self.dirname, util.GetPathChar(), self.filename])
 
     def GetStyleSheet(self, sheet_name=None):
         """Finds the current style sheet and returns its path. The
@@ -818,7 +821,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.BeginUndoAction()
             p1 = self.GetTextRange(0, pos).replace(cmd[0], cmd[1])
-            self.SetText(p1 + self.GetTextRange(pos, self.GetLength()).replace(cmd[0], cmd[1]))
+            tmptxt = self.GetTextRange(pos, self.GetLength()).replace(cmd[0], cmd[1])
+            self.SetText(p1 + tmptxt)
             self.GotoPos(len(p1))
             self.SetUseTabs(tabs)
             self.EndUndoAction()
@@ -857,6 +861,27 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def HasBom(self):
         """Returns whether the loaded file had a BOM byte or not"""
         return self._hasbom
+
+    def IsBracketHlOn(self):
+        """Returns whether bracket highlighting is being used by this
+        control or not.
+
+        """
+        return self.brackethl
+
+    def IsFoldingOn(self):
+        """Returns whether code folding is being used by this
+        control or not.
+
+        """
+        return self.folding
+
+    def IsHighlightingOn(self):
+        """Returns whether syntax highlighting is being used by this
+        control or not.
+
+        """
+        return self.highlight
 
     def IsRecording(self):
         """Returns whether the control is in the middle of recording
@@ -1035,9 +1060,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.dirname = util.GetPathName(path)
         return result
 
-    # XXX with utf-16 encoded text not removing the BOM prior to setting
-    #     the text causes alignment issues in the display of the first line 
-    #     of text. Potentially a BUG in scintilla or wxStyledTextCtrl
+    # With utf-16 encoded text need to remove the BOM prior to setting
+    # the text or there is alignment issues in the display of the first line 
+    # of text. Potentially a BUG in scintilla or wxStyledTextCtrl
     def SetText(self, txt, enc=u'utf-8'):
         """Sets the text of the control and the encoding to use for
         writting the file with.
@@ -1086,10 +1111,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         # Set the ID of the selected lexer
         try:
-           self.lang_id = syn_data[syntax.LANGUAGE]
+            self.lang_id = syn_data[syntax.LANGUAGE]
         except KeyError:
-           self.LOG("[stc][err] Failed to get Lang Id from Syntax package")
-           self.lang_id = 0
+            self.LOG("[stc][err] Failed to get Lang Id from Syntax package")
+            self.lang_id = 0
 
         lexer = syn_data[syntax.LEXER]
         # Check for special cases
@@ -1188,7 +1213,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.LOG("[ed_stc][warn] Improperly formated style tag: %s" % str(syn[1]))
                     continue
                 else:
-                    self.StyleSetSpec(getattr(wx.stc, syn[0]), self.GetStyleByName(syn[1]))
+                    self.StyleSetSpec(getattr(wx.stc, syn[0]), \
+                                      self.GetStyleByName(syn[1]))
                     valid_settings.append(syn)
         self.syntax_set = valid_settings
         return True
@@ -1203,7 +1229,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if len(prop) != 2:
                 continue
             else:
-                if not isinstance(prop[0], basestring) or not isinstance(prop[1], basestring):
+                if not isinstance(prop[0], basestring) or not \
+                   isinstance(prop[1], basestring):
                     continue
                 else:
                     self.SetProperty(prop[0], prop[1])

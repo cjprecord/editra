@@ -25,7 +25,7 @@
 # LANGUAGE: Python                                                         #
 # SUMMARY:                                                                 #
 #    Provides various methods and classes for generating code and          #
-# transforming code to different formats such as html.                     #
+# transforming code to different formats such as html, latex, rtf          #
 #                                                                          #
 # METHODS:                                                                 #
 #
@@ -61,7 +61,7 @@ class GeneratorI(plugin.Interface):
     to impliment this interface.
 
     """
-    def Generate(self, txt_ctrl):
+    def Generate(self, stc):
         """Generates the code. The txt_ctrl parameter is a reference
         to an ED_STC object (see ed_stc.py). The return value of this
         function needs to be a 2 item tuple with the first item being
@@ -673,7 +673,8 @@ class Rtf(plugin.Plugin):
                 start = end
             last_id = id
             parse_pos = parse_pos + 1
-        head = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 %s;}}" % stc.GetDefaultFont().GetFaceName()
+        head = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 %s;}}" % \
+                stc.GetDefaultFont().GetFaceName()
         return u"%s%s%s}" % (head, self._colortbl, "".join(tmp_txt))
 
     #---- End Protected Member Functions ----#

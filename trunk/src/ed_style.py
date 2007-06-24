@@ -61,7 +61,7 @@ STY_EX_ATTRIBUTES  = u"eol bold italic underline"
 #      This currenlty causes problems when customizing values in the StyleEditor
 #      Changing this is fairly easy in this class but it will require changes
 #      to the StyleMgr and Editor as well.
-class StyleItem:
+class StyleItem(object):
     """A storage class for holding styling information"""
     def __init__(self, fore=wx.EmptyString, back=wx.EmptyString, 
                     face=wx.EmptyString, size=wx.EmptyString):
@@ -81,6 +81,7 @@ class StyleItem:
             10            = A font point size
             %(size)s      = Format string to be swapped at runtime
         """
+        object.__init__(self)
         if fore != wx.EmptyString:
             self.fore = fore        # Foreground color hex code
         if face != wx.EmptyString:
@@ -237,7 +238,7 @@ class StyleItem:
 
 #-----------------------------------------------------------------------------#
 
-class StyleMgr:
+class StyleMgr(object):
     """Manages style definitions and provides them on request.
     Also provides functionality for loading custom style sheets and 
     modifying styles during run time.
@@ -252,7 +253,7 @@ class StyleMgr:
 
     def __init__(self, custom=wx.EmptyString):
         """Initializes the Style Manager"""
-
+        object.__init__(self)
         # Attributes
         self.fonts = self.GetFontDictionary()
         self.style_set = custom
@@ -453,7 +454,7 @@ class StyleMgr:
         if os.path.exists(style_sheet):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
-                self.LOG("[styles] [exception] Failed to open style sheet: %s" % style_sheet)
+                self.LOG("[styles][err] Failed to open style sheet: %s" % style_sheet)
                 return False
             ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
             reader.close()

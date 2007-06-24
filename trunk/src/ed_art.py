@@ -154,7 +154,7 @@ CLIENTS = { wx.ART_MENU    : u'menu',       # $theme/menu
 
 #--------------------------------------------------------------------------#
 
-class ED_Art(wx.ArtProvider):
+class EditraArt(wx.ArtProvider):
     """Editras Art Provider. Provides the mimetype images and
     loads any custom user defined icon sets as well.
 
@@ -163,94 +163,85 @@ class ED_Art(wx.ArtProvider):
         """Initializes the art provider"""
         wx.ArtProvider.__init__(self)
 
-    # XXX Why when making a call to the ArtProvider and supplying a size
+    # ??? Why when making a call to the ArtProvider and supplying a size
     #     does it degrade the image quality so much. If no size is supplied
     #     and the image is scaled it looks fine, but if a size is supplied and
     #     the image is not scaled it will still look poor.
-    def CreateBitmap(self, id, client, size):
+    def CreateBitmap(self, artId, client, size):
         """Makes the bitmaps from the images"""
         # All art ids we can handle can be converted to int
         try:
-            id = int(id)
+            artId = int(artId)
         except ValueError:
             return wx.NullBitmap
 
         # If using default theme let the system provide the art when possible
-        if ed_glob.PROFILE['ICONS'].lower() == u'default' and DEFAULT.has_key(int(id)):
-            return wx.ArtProvider.GetBitmap(DEFAULT[int(id)], client, size)
+        if ed_glob.PROFILE['ICONS'].lower() == u'default' and DEFAULT.has_key(artId):
+            return wx.ArtProvider.GetBitmap(DEFAULT[artId], client, size)
         if CLIENTS.has_key(client) and \
-           (ART.has_key(int(id)) or \
-            OTHER_ART.has_key(int(id)) or \
-            MIME_ART.has_key(int(id))):
-            resource_path = self.GetArtPath(client)
+           (ART.has_key(artId) or \
+            OTHER_ART.has_key(artId) or \
+            MIME_ART.has_key(artId)):
+            resource_path = GetArtPath(client)
             if client == wx.ART_OTHER:
-                if OTHER_ART.has_key(int(id)):
-                    return OTHER_ART[int(id)].getBitmap()
-                else:
-                    return wx.NullBitmap
+                return OTHER_ART[artId].getBitmap()
             else:
-                if ART.has_key(int(id)):
-                    art_src = resource_path + ART[int(id)]
+                if ART.has_key(artId):
+                    art_src = resource_path + ART[artId]
                 else:
-                    mime_path = self.GetArtPath(client, mime=True)
-                    art_src = mime_path + MIME_ART[int(id)]
+                    mime_path = GetArtPath(client, mime=True)
+                    art_src = mime_path + MIME_ART[artId]
 
             if os.path.exists(art_src):
                 img = wx.Image(art_src, wx.BITMAP_TYPE_PNG)
+                img_sz = img.GetSize()
             else:
                 return wx.NullBitmap
 
-            img_sz = img.GetSize()
-            if client == wx.ART_MENU:
-                size = wx.Size(16, 16) # Menu icons must be 16x16
-            elif client == wx.ART_TOOLBAR:
+            # Assume ART_MENU by default since its most common
+            size = wx.Size(16, 16) # Menu icons must be 16x16
+            if client == wx.ART_TOOLBAR:
                 size = ed_glob.PROFILE['ICON_SZ']
-            else:
-                pass
 
             # Rescale image to specified size if need be but dont allow upscaling
             # as it reduces quality.
-            if client == wx.ART_TOOLBAR and wx.Platform == '__WXMAC__':
-                # Dont worry about scaling on MAC it is done by the
-                # toolbar automagically.
-                pass
-            elif client != wx.ART_OTHER and size[0] < img_sz[0]:
+            if client != wx.ART_OTHER and size[0] < img_sz[0] and not \
+               (client == wx.ART_TOOLBAR and wx.Platform == '__WXMAC__'):
                 img.Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH)
-            else:
-                pass
+
             bmp = wx.BitmapFromImage(img)
-            if bmp.IsOk():
+            if bmp.IsOk() and not bmp.IsNull():
                 return bmp
-            else:
-                return wx.NullBitmap
+        # All failed so return a Null
+        return wx.NullBitmap
+
+#-----------------------------------------------------------------------------#
+def GetArtPath(client, mime=False):
+    """Gets the path of the resource directory to get
+    the bitmaps from.
+
+    """
+    if ed_glob.CONFIG['THEME_DIR'] == u'':
+        theme = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
+        ed_glob.CONFIG['THEME_DIR'] = theme
+
+    if not CLIENTS.has_key(client):
+        return wx.EmptyString
+
+    # ART_OTHER is used for dialogs and other base icon that are
+    # not meant to be themeable by the user.
+    if client == wx.ART_OTHER:
+        path = ed_glob.CONFIG['SYSPIX_DIR']
+    else:
+        if mime:
+            path = ed_glob.CONFIG['SYSPIX_DIR'] + util.GetPathChar() + \
+                   u'mime' + util.GetPathChar()
         else:
-            return wx.NullBitmap
+            path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
+                   ed_glob.PROFILE['ICONS'] + util.GetPathChar() + \
+                   CLIENTS[client] + util.GetPathChar()
 
-    def GetArtPath(self, client, mime=False):
-        """Gets the path of the resource directory to get
-        the bitmaps from.
-
-        """
-        if ed_glob.CONFIG['THEME_DIR'] == u'':
-            ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
-
-        if not CLIENTS.has_key(client):
-            return wx.EmptyString
-
-        # ART_OTHER is used for dialogs and other base icon that are
-        # not meant to be themeable by the user.
-        if client == wx.ART_OTHER:
-            path = ed_glob.CONFIG['SYSPIX_DIR']
-        else:
-            if mime:
-                path = ed_glob.CONFIG['SYSPIX_DIR'] + util.GetPathChar() + \
-                       u'mime' + util.GetPathChar()
-            else:
-                path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                       ed_glob.PROFILE['ICONS'] + util.GetPathChar() + \
-                       CLIENTS[client] + util.GetPathChar()
-
-        if os.path.exists(path):
-            return path
-        else:
-            return wx.EmptyString
+    if os.path.exists(path):
+        return path
+    else:
+        return wx.EmptyString

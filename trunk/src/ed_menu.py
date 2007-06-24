@@ -318,7 +318,8 @@ class ED_MenuBar(wx.MenuBar):
                                   _("Show Line Number Margin"), wx.ITEM_CHECK)
         self._vieweditmenu.Append(ed_glob.ID_SHOW_WS, _("Show Whitespace"), 
                                   _("Show Whitespace Markers"), wx.ITEM_CHECK)
-        viewmenu.AppendSubMenu(self._vieweditmenu, _("Editor"), _("Toggle Editor View Options"))
+        viewmenu.AppendSubMenu(self._vieweditmenu, _("Editor"), \
+                               _("Toggle Editor View Options"))
         viewmenu.AppendSeparator()
         viewmenu.Append(ed_glob.ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
                             _("Goto Line Number"))
@@ -361,14 +362,14 @@ class ED_MenuBar(wx.MenuBar):
                               _("Whitespace formating commands"))
         lineformat = self._lineformatmenu
         lineformat.Append(ed_glob.ID_EOL_MAC, _("Macintosh (\\r)"), 
-                              _("Format all EOL characters to %s Mode") % _("Macintosh (\\r)"),
-                              wx.ITEM_CHECK)
+                              _("Format all EOL characters to %s Mode") % \
+                              u"Macintosh (\\r)", wx.ITEM_CHECK)
         lineformat.Append(ed_glob.ID_EOL_UNIX, _("Unix (\\n)"), 
-                              _("Format all EOL characters to %s Mode") % _("Unix (\\n)"),
-                              wx.ITEM_CHECK)
+                              _("Format all EOL characters to %s Mode") % \
+                              u"Unix (\\n)", wx.ITEM_CHECK)
         lineformat.Append(ed_glob.ID_EOL_WIN, _("Windows (\\r\\n)"), 
-                              _("Format all EOL characters to %s Mode") % _("Windows (\\r\\n)"),
-                              wx.ITEM_CHECK)
+                              _("Format all EOL characters to %s Mode") % \
+                              "Windows (\\r\\n)", wx.ITEM_CHECK)
         formatmenu.AppendMenu(ed_glob.ID_EOL_MODE, _("EOL Mode"), lineformat,
                                   _("End of line character formatting"))
         self.Append(formatmenu, _("Format"))
@@ -396,16 +397,18 @@ class ED_MenuBar(wx.MenuBar):
         """Makes and attaches the tools menu"""
         toolsmenu = ED_Menu()
         toolsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper") + u'\tCtrl+K', 
-                         _("Provides a Contextual Help Menu Listing Standard Keywords/Functions"))
+                         _("Provides a Contextual Help Menu Listing Standard "
+                           "Keywords/Functions"))
         toolsmenu.Append(ed_glob.ID_PLUGMGR, _("Plugin Manager"),
                          _("Manage, Download, and Install plugins"))
         toolsmenu.Append(ed_glob.ID_STYLE_EDIT, _("Style Editor"), 
                          _("Edit the way syntax is highlighted"))
         toolsmenu.AppendSeparator()
-        toolsmenu.Append(ed_glob.ID_MACRO_START, _("Record Macro"),
-                         _("Start macro recording"))
-        toolsmenu.Append(ed_glob.ID_MACRO_STOP, _("Stop Recording"),
-                         _("Stop macro recording"))
+#         toolsmenu.Append(ed_glob.ID_MACRO_START, _("Record Macro"),
+#                          _("Start macro recording"))
+#         toolsmenu.Append(ed_glob.ID_MACRO_STOP, _("Stop Recording"),
+#                          _("Stop macro recording"))
+#         toolsmenu.Append(ed_glob.ID_MACRO_PLAY, "Play Macro", "Play Macro")
         self.Append(toolsmenu, _("Tools"))
         return toolsmenu
 

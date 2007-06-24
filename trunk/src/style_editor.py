@@ -110,7 +110,8 @@ class StyleEditor(wx.Dialog):
         ctrl_sizer.Add(left_colum, 0, wx.ALIGN_LEFT)
 
         # Divider
-        vline = wx.StaticLine(self.ctrl_pane, wx.ID_ANY, size=(-1,2), style=wx.LI_VERTICAL)
+        vline = wx.StaticLine(self.ctrl_pane, wx.ID_ANY, \
+                              size = (-1, 2), style = wx.LI_VERTICAL)
         ctrl_sizer.Add(vline, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND)
 
         # Control Panel Right Column
@@ -177,7 +178,8 @@ class StyleEditor(wx.Dialog):
             dlg = wx.MessageDialog(self, _("Some styles have been changed would "
                                           "you like to save before exiting?"),
                                    _("Save Styles"), 
-                                   style=wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+                                   style = wx.YES_NO | wx.YES_DEFAULT | \
+                                           wx.CANCEL | wx.ICON_INFORMATION)
             dlg.CenterOnParent()
             result = dlg.ShowModal()
             dlg.Destroy()

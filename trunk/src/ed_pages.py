@@ -46,7 +46,6 @@ __revision__ = "$Id: $"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
-import sys
 import glob
 import re
 import wx
@@ -76,10 +75,10 @@ class ED_Pages(FNB.FlatNotebook):
     def __init__(self, parent, id_num):
         """Initialize a notebook with a blank text control in it"""
         FNB.FlatNotebook.__init__(self, parent, id_num, 
-                                  style=TAB_STYLE |
-                                        FNB.FNB_X_ON_TAB | 
-                                        FNB.FNB_SMART_TABS |
-                                        FNB.FNB_BACKGROUND_GRADIENT
+                                  style = TAB_STYLE |
+                                          FNB.FNB_X_ON_TAB | 
+                                          FNB.FNB_SMART_TABS |
+                                          FNB.FNB_BACKGROUND_GRADIENT
                             )
 
         # Notebook attributes
@@ -96,7 +95,7 @@ class ED_Pages(FNB.FlatNotebook):
         self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
 
         # Setup the ImageList and the default image
-        il = wx.ImageList(16,16)
+        il = wx.ImageList(16, 16)
         txtbmp = wx.ArtProvider.GetBitmap(str(synglob.ID_LANG_TXT), wx.ART_MENU)
         self._index[synglob.ID_LANG_TXT] = il.Add(txtbmp)
         self.SetImageList(il)
@@ -136,7 +135,7 @@ class ED_Pages(FNB.FlatNotebook):
         self.control = ed_stc.EDSTC(self, self.pg_num)
         self.LOG("[nb_evt] Page Creation ID: %d" % self.control.GetId())
         self.AddPage(self.control, u"Untitled - %d" % self.pg_num)
-        self.SetPageImage(self.GetSelection(), str(self.control.lang_id))
+        self.SetPageImage(self.GetSelection(), str(self.control.GetLangId()))
 
     def OpenPageType(self, page, title):
         """A Generic Page open Function to allow pages to contain
@@ -186,9 +185,9 @@ class ED_Pages(FNB.FlatNotebook):
             try:
                 in_txt, enc = util.GetDecodedText(path2file)
             except Exception, msg:
-                self.LOG("[ed_pages][err] Failed to open file %s" % path2File)
+                self.LOG("[ed_pages][err] Failed to open file %s" % path2file)
+                self.LOG("[ed_pages][err] %s" % msg)
                 # File could not be opened/read give up
-                reader.close()
                 err = wx.MessageDialog(self, _("Editra could not properly open %s\n") \
                                        % path2file, _("Error Opening File"),
                                        style=wx.OK | wx.CENTER | wx.ICON_ERROR)
@@ -216,7 +215,7 @@ class ED_Pages(FNB.FlatNotebook):
             self.SetPageText(self.GetSelection(), self.control.filename)
             self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
                                                         self.control.dirname, 
-                                                        self.control.path_char, 
+                                                        util.GetPathChar(), 
                                                         self.control.filename))
         self.LOG("[nb_evt] Opened Page: ID = %d" % self.GetSelection())
 
@@ -236,7 +235,7 @@ class ED_Pages(FNB.FlatNotebook):
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
         pg_num = self.GetSelection()
-        self.SetPageImage(pg_num, str(self.control.lang_id))
+        self.SetPageImage(pg_num, str(self.control.GetLangId()))
 
         # Refocus on selected page
         self.GoCurrentPage()
@@ -333,6 +332,7 @@ class ED_Pages(FNB.FlatNotebook):
             lmod = util.GetFileModTime(cfile)
             if self.control.modtime and not lmod and not os.path.exists(cfile):
                 def PromptToReSave(cfile):
+                    """Show a dialog prompting to resave the current file"""
                     mdlg = wx.MessageDialog(self.frame,
                                             _("%s has been deleted since its "
                                               "last save point.\n\nWould you "
@@ -350,6 +350,7 @@ class ED_Pages(FNB.FlatNotebook):
 
             elif self.control.modtime < lmod:
                 def AskToReload(cfile):
+                    """Show a dialog asking if the file should be reloaded"""
                     mdlg = wx.MessageDialog(self.frame, 
                                             _("%s has been modified by another "
                                               "application.\n\nWould you like to "
@@ -373,19 +374,19 @@ class ED_Pages(FNB.FlatNotebook):
         """
         cord, tabIdx = self._pages.HitTest(evt.GetPosition())
         if cord == FNB.FNB_X:
-           # Make sure that the button was pressed before
-           if self._pages._nXButtonStatus != FNB.FNB_BTN_PRESSED:
-               return
-           self._pages._nXButtonStatus = FNB.FNB_BTN_HOVER
-           self.ClosePage()
+            # Make sure that the button was pressed before
+            if self._pages._nXButtonStatus != FNB.FNB_BTN_PRESSED:
+                return
+            self._pages._nXButtonStatus = FNB.FNB_BTN_HOVER
+            self.ClosePage()
         elif cord == FNB.FNB_TAB_X:
-           # Make sure that the button was pressed before
-           if self._pages._nTabXButtonStatus != FNB.FNB_BTN_PRESSED:
-               return 
-           self._pages._nTabXButtonStatus = FNB.FNB_BTN_HOVER
-           self.ClosePage()
+            # Make sure that the button was pressed before
+            if self._pages._nTabXButtonStatus != FNB.FNB_BTN_PRESSED:
+                return 
+            self._pages._nTabXButtonStatus = FNB.FNB_BTN_HOVER
+            self.ClosePage()
         else:
-           evt.Skip()
+            evt.Skip()
 
     def OnPageChanging(self, evt):
         """Page changing event handler."""
@@ -404,7 +405,7 @@ class ED_Pages(FNB.FlatNotebook):
 
         self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
                                                     self.control.dirname,
-                                                    self.control.path_char,
+                                                    util.GetPathChar(),
                                                     self.control.filename))
 
         matchstrn = re.compile('Untitled*')
@@ -496,7 +497,7 @@ class ED_Pages(FNB.FlatNotebook):
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
         self.LOG("[nb_info] Updating Page Image: Page %d" % pg_num)
-        self.SetPageImage(pg_num, str(self.control.lang_id))
+        self.SetPageImage(pg_num, str(self.control.GetLangId()))
 
     def OnUpdatePageText(self, evt):
         """Update the title text of the current page"""

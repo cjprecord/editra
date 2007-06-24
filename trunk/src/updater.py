@@ -405,7 +405,8 @@ class UpdateProgress(wx.Gauge, UpdateService):
         try:
             result = delayedResult.get()
             if id == self.ID_CHECKING:
-                mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, self.ID_CHECKING)
+                mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, \
+                                                self.ID_CHECKING)
                 wx.PostEvent(self._parent, mevt)
                 pass #TODO Need to flag if updates are available or not
             elif id == self.ID_DOWNLOADING:

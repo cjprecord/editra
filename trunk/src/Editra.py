@@ -44,6 +44,7 @@ import getopt
 import gettext
 import wx
 
+_ = wx.GetTranslation
 # Make sure we can run properly before importing the rest
 def CheckVersions():
     """Checks if the proper system libraries are available on the
@@ -63,14 +64,15 @@ def CheckVersions():
                "launch now but if you experience problems you should install "
                "\n!! a Unicode build of wxPython and try again. \n") % wxEnc
     if wxVer < REQUIRED_WX or pyVer < REQUIRED_PY:
-        msg = ("\nTo run properly Editra requires the following libraries to be installed:\n"
-              "---------------------------------------\n"
-              "| REQUIRED\t\t|\tFOUND |\n"
-              "---------------------------------------\n"
-              "Python: %s or higher\t|\t%s\n"
-              "wxPython: %s or higher\t|\t%s\n\n"
-              "Would you like to try anyway? [y/n]: ") % \
-              (REQUIRED_PY, pyVer, REQUIRED_WX, wxVer)
+        msg = ("\nTo run properly Editra requires the following libraries to be "
+               "installed:\n"
+               "---------------------------------------\n"
+               "| REQUIRED\t\t|\tFOUND |\n"
+               "---------------------------------------\n"
+               "Python: %s or higher\t|\t%s\n"
+               "wxPython: %s or higher\t|\t%s\n\n"
+               "Would you like to try anyway? [y/n]: ") % \
+               (REQUIRED_PY, pyVer, REQUIRED_WX, wxVer)
         ret = raw_input(msg)
         if ret == 'n':
             exit()
@@ -94,7 +96,7 @@ class Editra(wx.App):
     """The Editra Application"""
     def OnInit(self):
         """Initialize the Editor"""
-        wx.ArtProvider.PushProvider(ed_art.ED_Art())
+        wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Editra is Initializing")
         self._lock = False
@@ -185,7 +187,7 @@ class Editra(wx.App):
         try:
             wx.ArtProvider.PopProvider()
         finally:
-            wx.ArtProvider.PushProvider(ed_art.ED_Art())
+            wx.ArtProvider.PushProvider(ed_art.EditraArt())
 
     def UnLock(self):
         """Unlocks the application"""
@@ -200,7 +202,7 @@ class Editra(wx.App):
         
         """
         if self._windows.has_key(name):
-            win = self._windows.pop(name)
+            self._windows.pop(name)
             cur_top = self.GetTopWindow()
             if not len(self._windows):
                 self._log("[app][info] No more open windows shutting down")
@@ -283,7 +285,7 @@ def Main():
     longopts = ['help', 'oldPath=', 'version']
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
-    except getopt.GetoptError, msg:
+    except getopt.GetoptError:
         dev_tool.DEBUGP("[main] Error with getting command line args")
         opts = list()
         args = list()
@@ -319,9 +321,9 @@ def Main():
     # 1. Create Application
     dev_tool.DEBUGP("[main_info] Initializing Application...")
     if ed_glob.PROFILE['MODE'] == u"GUI_DEBUG":
-        EDITRA = Editra(True)
+        editraApp = Editra(True)
     else:
-        EDITRA = Editra(False)
+        editraApp = Editra(False)
 
     # 2. Initialize the Language Settings
     langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
@@ -333,10 +335,10 @@ def Main():
     language.install()
 
     if PROFILE_UPDATED:
-        alert = wx.MessageBox(_("Your profile has been updated to the latest version") + \
-                              u"\n" + \
-                              _("Please check the preferences dialog to reset you preferences"),
-                              _("Profile Updated"))
+        wx.MessageBox(_("Your profile has been updated to the latest version") + \
+                      u"\n" + \
+                      _("Please check the preferences dialog to reset you preferences"),
+                      _("Profile Updated"))
 
     # Splash a warning if version is not a final version
     if ed_glob.PROFILE['APPSPLASH'] and int(ed_glob.version[0]) < 1:
@@ -347,23 +349,22 @@ def Main():
         splash.Show()
         wx.FutureCall(3000, splash.Destroy)
 
-    _frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
+    frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
                                     ed_glob.prog_name)
-    EDITRA.RegisterWindow(repr(_frame), _frame, True)
-    EDITRA.SetTopWindow(_frame)
+    editraApp.RegisterWindow(repr(frame), frame, True)
+    editraApp.SetTopWindow(frame)
 
     for arg in args:
         try:
             if not os.path.isabs(arg):
                 arg = os.path.abspath(arg)
-            _frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, unicode(arg.decode('utf-8')))
-        except IndexError, msg:
+            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, unicode(arg.decode('utf-8')))
+        except IndexError:
             dev_tool.DEBUGP("[main] [exception] Trapped Commandline IndexError on Init")
-            pass
 
     # 3. Start Applications Main Loop
     dev_tool.DEBUGP("[main_info] Starting MainLoop...")
-    EDITRA.MainLoop()
+    editraApp.MainLoop()
 
 #-----------------------------------------------------------------------------#
 if __name__ == '__main__':
