@@ -399,16 +399,14 @@ def ResolvConfigDir(config_dir, sys_only=False):
         if os.path.exists(user_config):
             return user_config + path_char
 
-    # The following lines are used only when Editra is installed as a
-    # Python Package. If it fails then editra has been installed and is
-    # being run in some other manner.
-    base = u''
-    for key in sys.path_importer_cache:
-        if os.path.basename(key) == 'Editra':
-            base = key
-            break
-    if base != u'':
-        return os.path.join(base, config_dir) + path_char
+    # The following lines are used only when Editra is being run as a
+    # source package. If the found path does not exist then Editra is
+    # running as as a built package.
+    path = __file__
+    path = path_char.join(path.split(path_char)[:-2])
+    path =  path + path_char + config_dir + path_char
+    if os.path.exists(path):
+        return path
 
     # If we get here we need to do some platform dependant lookup
     # to find everything. This is probably much more of a mess than
