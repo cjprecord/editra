@@ -189,16 +189,21 @@ Section "MainSection" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "w9xpopen.exe"
-  File "README.txt"
+  File "AUTHORS"
+  File "CHANGELOG"
+  File "COPYING"
+  File "FAQ"
+  File "NEWS"
+  File "README"
+  File "THANKS"
+  File "TODO"
   File "python25.dll"
   File "editra.exe"
+  File "MSVCR71.dll"
+  File "library.zip"
   CreateDirectory "$SMPROGRAMS\Editra"
   CreateShortCut "$SMPROGRAMS\Editra\Editra.lnk" "$INSTDIR\editra.exe"
   CreateShortCut "$DESKTOP\Editra.lnk" "$INSTDIR\editra.exe"
-  File "MSVCR71.dll"
-  File "library.zip"
-  File "COPYING.txt"
-  File "CHANGELOG.txt"
 SectionEnd
 
 Section -AdditionalIcons
@@ -220,7 +225,7 @@ SectionEnd
 
 ; Functions
 Function LaunchEditra
-  Exec '"$INSTDIR\Editra.exe" "$INSTDIR\CHANGELOG.TXT" '
+  Exec '"$INSTDIR\Editra.exe" "$INSTDIR\CHANGELOG" '
 FunctionEnd
 
 Function un.onUninstSuccess
@@ -235,14 +240,18 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\CHANGELOG.txt"
-  Delete "$INSTDIR\COPYING.txt"
+  Delete "$INSTDIR\uninst.exe"  Delete "$INSTDIR\AUTHORS"
+  Delete "$INSTDIR\CHANGELOG"
+  Delete "$INSTDIR\COPYING"
+  Delete "$INSTDIR\FAQ"
+  Delete "$INSTDIR\NEWS"
+  Delete "$INSTDIR\README"
+  Delete "$INSTDIR\THANKS"
+  Delete "$INSTDIR\TODO"
   Delete "$INSTDIR\library.zip"
   Delete "$INSTDIR\MSVCR71.dll"
   Delete "$INSTDIR\editra.exe"
   Delete "$INSTDIR\python25.dll"
-  Delete "$INSTDIR\README.txt"
   Delete "$INSTDIR\w9xpopen.exe"
   Delete "$INSTDIR\docs\editra_style_sheets.txt"
   Delete "$INSTDIR\locale\en_US\LC_MESSAGES\Editra.mo"
@@ -388,7 +397,6 @@ Section Uninstall
   RMDir "$INSTDIR\styles"
   RMDir "$INSTDIR\test_data"
   RMDir "$INSTDIR"
-
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true

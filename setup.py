@@ -97,11 +97,12 @@ DATA_FILES = [("include/python2.5", glob.glob("include/python2.5/%s/*" % __platf
               ("locale/ja_JP/LC_MESSAGES", ["locale/ja_JP/LC_MESSAGES/Editra.mo"]),
               ("styles", glob.glob("styles/*.ess")),
               ("test_data", glob.glob("test_data/*")),
-              ("docs", glob.glob("docs/*.txt")),
-              "README.txt","CHANGELOG.txt","COPYING.txt", "pixmaps/editra_doc.icns"
+              ("docs", glob.glob("docs/*.txt")), "AUTHORS", "FAQ", "INSTALL",
+              "README","CHANGELOG","COPYING", "NEWS", "THANKS", "TODO",
+              "pixmaps/editra_doc.icns"
              ]
 
-DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py",
+DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py", "docs/*.txt",
          "pixmaps/*.png", "pixmaps/editra.ico", 'Editra',
          "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Default/README",
          "pixmaps/theme/Nuovo/AUTHOR", "pixmaps/theme/Nuovo/COPYING", 
@@ -110,10 +111,11 @@ DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py",
          "pixmaps/theme/Default/README", "profiles/default.pp", "profiles/.loader",
          "profiles/default.pp.sample", "locale/en_US/LC_MESSAGES/Editra.mo",
          "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "test_data/*", 
-         "README.txt","CHANGELOG.txt","COPYING.txt", "plugins/*.egg"
+         "AUTHORS", "CHANGELOG","COPYING", "FAQ", "INSTALL", "NEWS", "README",
+         "THANKS", "TODO", "plugins/*.egg"
 ]
 
-DESCRIPTION = "Code Editor"
+DESCRIPTION = "Developer's Text Editor"
 
 ICON = { 'Win' : "pixmaps/editra.ico",
          'Mac' : "pixmaps/Editra.icns"
