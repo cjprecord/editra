@@ -1,0 +1,13 @@
+Editra is made possible by the following "free" technologies and
+the communities that develop them.
+
+Python Programming Language (http://www.python.org)
+wxPython Class Library (http://www.wxpython.org)
+setuptools (http://peak.telecommunity.com/DevCenter/setuptools)
+py2app (http://undefined.org/python/#py2app)
+py2exe (http://py2exe.org) 
+
+The bulk of the icons that are distributed in the default Editra icon theme
+'Nuovo' are derived from the excellent Dropline Nuovo! icon set.
+http://www.silvestre.com.ar/
+
