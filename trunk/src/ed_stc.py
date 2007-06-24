@@ -280,7 +280,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                         self.ReplaceTarget(text)
             finally:
                 self.EndUndoAction()
-                self.SetSelection(sel[0], sel[1] + nchars)
+                if sel[0] != sel[1]:
+                    self.SetSelection(sel[0], sel[1] + nchars)
+                else:
+                    print sel[0], nchars
+                    if len(self._comment) > 1:
+                        nchars = nchars - len(self._comment[1])
+                    self.GotoPos(sel[0] + nchars)
 
     def GetAutoIndent(self):
         """Returns whether auto-indent is being used"""
