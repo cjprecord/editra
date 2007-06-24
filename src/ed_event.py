@@ -40,7 +40,6 @@ __revision__ = "$Revision:  $"
 #--------------------------------------------------------------------------#
 # Dependancies
 import wx
-import ed_glob
 
 #--------------------------------------------------------------------------#
 
@@ -48,10 +47,10 @@ edEVT_UPDATE_TEXT = wx.NewEventType()
 EVT_UPDATE_TEXT = wx.PyEventBinder(edEVT_UPDATE_TEXT, 1)
 class UpdateTextEvent(wx.PyCommandEvent):
     """Event to signal that text needs updating"""
-    def __init__(self, evtType, id, value = None):
-        wx.PyCommandEvent.__init__(self, evtType, id)
+    def __init__(self, evtType, evtId, value = None):
+        wx.PyCommandEvent.__init__(self, evtType, evtId)
         self._evtType = evtType
-        self._id = id
+        self._id = evtId
         self._value = value
 
     def GetEvtType(self):
@@ -72,10 +71,10 @@ edEVT_NOTIFY = wx.NewEventType()
 EVT_NOTIFY = wx.PyEventBinder(edEVT_NOTIFY, 1)
 class NotificationEvent(wx.PyCommandEvent):
     """General notification event"""
-    def __init__(self, evtType, id, value = None, obj = None):
-        wx.PyCommandEvent.__init__(self, evtType, id)
+    def __init__(self, evtType, evtId, value = None, obj = None):
+        wx.PyCommandEvent.__init__(self, evtType, evtId)
         self._evtType = evtType
-        self._id = id
+        self._id = evtId
         self._value = value
         self._obj = obj
 

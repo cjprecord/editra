@@ -47,6 +47,7 @@ import wx.stc
 import ed_glob
 import dev_tool
 
+_ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 # Globals
 COLOURMODES = { 'black_white'    : wx.stc.STC_PRINT_BLACKONWHITE,
@@ -103,10 +104,10 @@ class ED_Printer:
             self.print_data = wx.PrintData(printer.GetPrintDialogData().GetPrintData())
         printout.Destroy()
         
-    def SetColourMode(self, mode_str):
+    def SetColourMode(self, modeStr):
         """Sets the color mode that the text is to be rendered with"""
-        if COLOURMODES.has_key(mode_str):
-            self.print_mode = mode_str
+        if COLOURMODES.has_key(modeStr):
+            self.print_mode = modeStr
             ret = True
         else:
             ret = False

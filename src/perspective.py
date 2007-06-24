@@ -43,7 +43,6 @@ __revision__ = "$Revision:  $"
 import os
 import wx
 import util
-import ed_glob
 import ed_menu
 
 #--------------------------------------------------------------------------#
@@ -118,16 +117,16 @@ class PerspectiveManager(object):
         """Adds an entry to list of perpectives in the menu for this manager."""
         if not len(name):
             return
-        id = wx.NewId()
-        self._ids.append(id)
-        self._menu.InsertAlpha(id, name, _("Change view to \"%s\"") % name, 
-                               after=ID_DELETE_PERSPECTIVE)
+        perId = wx.NewId()
+        self._ids.append(perId)
+        self._menu.InsertAlpha(perId, name, _("Change view to \"%s\"") % name, 
+                               after = ID_DELETE_PERSPECTIVE)
 
     def GetPerspectiveControls(self):
         """Returns the control menu for the manager"""
         return self._menu
 
-    def GetPerspective(self, name):
+    def GetPerspective(self):
         """Returns the name of the current perspective used"""
         return self._currview
 
@@ -202,9 +201,9 @@ class PerspectiveManager(object):
         """Removes a named perspective from the managed set"""
         if self._viewset.has_key(name):
             del self._viewset[name]
-            id = self._menu.RemoveItemByName(name)
-            if id:
-                self._ids.remove(id)
+            remId = self._menu.RemoveItemByName(name)
+            if remId:
+                self._ids.remove(remId)
 
     def SavePerspectives(self):
         """Writes the perspectives out to disk. Returns
@@ -218,7 +217,7 @@ class PerspectiveManager(object):
             for perspect in self._viewset:
                 writer.write(u"%s=%s\n" % (perspect, self._viewset[perspect]))
             del self._viewset[LAST_KEY]
-        except IOError, OSError:
+        except (IOError, OSError):
             return False
         else:
             return True
@@ -237,12 +236,12 @@ class PerspectiveManager(object):
         else:
             return False
 
-    def SetPerspectiveById(self, id):
+    def SetPerspectiveById(self, perId):
         """Sets the perspective using the given control id"""
         name = None
         for pos in range(self._menu.GetMenuItemCount()):
             item = self._menu.FindItemByPosition(pos)
-            if id == item.GetId():
+            if perId == item.GetId():
                 name = item.GetLabel()
                 break
         if name:

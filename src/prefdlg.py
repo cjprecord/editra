@@ -330,10 +330,11 @@ class PrefPages(wx.Notebook):
 
         ## Perspective Manager
         perspect_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        perspect_lbl = wx.StaticText(gen_panel, wx.ID_ANY, _("Default Perspective") + u": ")
+        perspect_lbl = wx.StaticText(gen_panel, wx.ID_ANY, \
+                                     _("Default Perspective") + u": ")
         perspect_ch = ExChoice(gen_panel, ed_glob.ID_PERSPECTIVES,
-                               choices=wx.GetApp().GetMainWindow().GetPerspectiveList(),
-                               default=ed_glob.PROFILE['DEFAULT_VIEW'])
+                               choices = wx.GetApp().GetMainWindow().GetPerspectiveList(),
+                               default = ed_glob.PROFILE['DEFAULT_VIEW'])
         perspect_sizer.Add((15, 0))
         perspect_sizer.Add(perspect_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         perspect_sizer.Add((5, 5))
@@ -341,7 +342,7 @@ class PrefPages(wx.Notebook):
 
         # Splash Screen
         splash_sz = wx.BoxSizer(wx.HORIZONTAL)
-        splash_sz.Add(wx.Size(15,0))
+        splash_sz.Add(wx.Size(15, 0))
         splash_cb = wx.CheckBox(gen_panel, ed_glob.ID_APP_SPLASH, _("Show Splash Screen"))
         splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
         splash_sz.Add(splash_cb, 0, wx.ALIGN_LEFT)
@@ -373,6 +374,7 @@ class PrefPages(wx.Notebook):
         self.AddPage(gen_panel, _("General"))
 
     def TestPage(self):
+        """Temporary page till rewrite of dialog"""
         tpanel = wx.Panel(self, wx.ID_ANY)
         border = wx.BoxSizer(wx.VERTICAL)
         elist = ExtListCtrl(tpanel)
@@ -388,8 +390,8 @@ class PrefPages(wx.Notebook):
         # Bind size evt to this panel
         #prof_panel.Bind(wx.EVT_SIZE, self.OnSize)
         # Add Profile Viewer to Panel
-        list = ProfileListCtrl(prof_panel)
-        border.Add(list, 1, wx.EXPAND)
+        plist = ProfileListCtrl(prof_panel)
+        border.Add(plist, 1, wx.EXPAND)
         prof_panel.SetSizer(border)
         self.AddPage(prof_panel, _("Profile Viewer"))
 
@@ -401,9 +403,11 @@ class PrefPages(wx.Notebook):
         feat_lbl = self.SectionHead(code_panel, _("Features"))
         ai_cb = wx.CheckBox(code_panel, ed_glob.ID_AUTOINDENT, _("Auto-Indent"))
         ai_cb.SetValue(ed_glob.PROFILE['AUTO_INDENT'])
-        br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, _("Bracket Highlighting"))
+        br_cb = wx.CheckBox(code_panel, ed_glob.ID_BRACKETHL, 
+                            _("Bracket Highlighting"))
         br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
-        ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"))
+        ind_cb = wx.CheckBox(code_panel, ed_glob.ID_INDENT_GUIDES, 
+                             _("Indentation Guides"))
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
         fold_cb = wx.CheckBox(code_panel, ed_glob.ID_FOLDING, _("Code Folding"))
         fold_cb.SetValue(ed_glob.PROFILE['CODE_FOLD'])
@@ -414,7 +418,7 @@ class PrefPages(wx.Notebook):
         col_sz.Add((100, 0), 1, wx.EXPAND)
         col_sz.Add(wx.StaticText(code_panel, wx.ID_ANY, 
                    _("Edge Guide Column") + u": "), 0, wx.ALIGN_CENTER_VERTICAL)
-        col_sz.Add((5,5))
+        col_sz.Add((5, 5))
         edge_ch = ExChoice(code_panel, ed_glob.ID_PREF_EDGE,
                            choices=range(40, 101),
                            default=str(ed_glob.PROFILE['EDGE']))
@@ -424,7 +428,8 @@ class PrefPages(wx.Notebook):
 
         # Syntax / Completion Settings
         syn_lbl = self.SectionHead(code_panel, _("Syntax && Completion"))
-        syn_cb = wx.CheckBox(code_panel, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
+        syn_cb = wx.CheckBox(code_panel, ed_glob.ID_SYNTAX, 
+                             _("Syntax Highlighting"))
         syn_cb.SetValue(ed_glob.PROFILE['SYNTAX'])
 
         syn_theme_lbl = wx.StaticText(code_panel, wx.ID_ANY, _("Color Scheme") + u": ")
@@ -466,7 +471,8 @@ class PrefPages(wx.Notebook):
         tw_cb = ExChoice(text_panel, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
                           default=str(ed_glob.PROFILE['TABWIDTH']))
-        ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, _("Use Tabs Instead of Whitespaces"))
+        ut_cb = wx.CheckBox(text_panel, ed_glob.ID_PREF_TABS, 
+                            _("Use Tabs Instead of Whitespaces"))
         ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
         tab_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tabw_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -477,8 +483,9 @@ class PrefPages(wx.Notebook):
         tab_sizer.Add(tabw_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
         eol_lbl = wx.StaticText(text_panel, wx.ID_ANY, _("EOL Mode") + u":  ")
         eol_cb = ExChoice(text_panel, ed_glob.ID_EOL_MODE,
-                          choices=[_("Macintosh (\\r)"), _("Unix (\\n)"), _("Windows (\\r\\n)")],
-                          default=ed_glob.PROFILE['EOL'])
+                          choices = [_("Macintosh (\\r)"), _("Unix (\\n)"), 
+                                   _("Windows (\\r\\n)")],
+                          default = ed_glob.PROFILE['EOL'])
         eol_sizer = wx.BoxSizer(wx.HORIZONTAL)
         eol_sizer.Add(eol_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
         eol_sizer.Add(eol_cb, 0, wx.ALIGN_CENTER_VERTICAL)
@@ -518,7 +525,8 @@ class PrefPages(wx.Notebook):
 
         # Misc Settings Section
         set_lbl = self.SectionHead(misc_panel, _("Settings"))
-        fh_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("File History Depth") + u":  ")
+        fh_lbl = wx.StaticText(misc_panel, wx.ID_ANY, 
+                               _("File History Depth") + u":  ")
         fh_cb = ExChoice(misc_panel, ed_glob.ID_PREF_FHIST,
                           choices=['1','2','3','4','5','6','7','8','9'],
                           default=str(ed_glob.PROFILE['FHIST_LVL']))
@@ -527,10 +535,12 @@ class PrefPages(wx.Notebook):
         fh_sizer.Add(fh_cb, 0, wx.ALIGN_CENTER_VERTICAL)
         set_sizer = wx.BoxSizer(wx.VERTICAL)
         set_sizer.Add(fh_sizer, 0, wx.ALIGN_LEFT)
-        pos_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_SPOS, _("Remember File Position"))
+        pos_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_SPOS, 
+                             _("Remember File Position"))
         pos_cb.SetValue(ed_glob.PROFILE['SAVE_POS'])
         chkmod_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_CHKMOD, 
-                                _("Check if on disk file has been modified by others"))
+                                _("Check if on disk file has been "
+                                  "modified by others"))
         chkmod_cb.SetValue(ed_glob.PROFILE['CHECKMOD'])
         set_sizer.Add(pos_cb, 0, wx.ALIGN_LEFT)
         set_sizer.Add(chkmod_cb, 0, wx.ALIGN_LEFT)
@@ -540,12 +550,14 @@ class PrefPages(wx.Notebook):
         app_sizer = wx.BoxSizer(wx.VERTICAL)
         tb_icont = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Theme") + u": ")
         tb_icon = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICON,
-                            choices=util.GetResources(u"pixmaps" + util.GetPathChar() + u"theme"), 
-                            default=ed_glob.PROFILE['ICONS'].title())
+                            choices = util.GetResources(u"pixmaps" + \
+                                                        util.GetPathChar() + \
+                                                        u"theme"), 
+                            default = ed_glob.PROFILE['ICONS'].title())
         tb_isz_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Size") + u": ")
-        tb_isz_ch = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICONSZ,
-                              choices=['16', '24', '32'],
-                              default=str(ed_glob.PROFILE['ICON_SZ'][0]))
+        tb_isz_ch = ExChoice(misc_panel, id = ed_glob.ID_PREF_ICONSZ,
+                              choices = ['16', '24', '32'],
+                              default = str(ed_glob.PROFILE['ICON_SZ'][0]))
         tbi_sizer = wx.BoxSizer(wx.HORIZONTAL)
         tbi_sizer.Add(tb_icont, 0, wx.ALIGN_LEFT)
         tbi_sizer.Add(tb_icon, 0, wx.ALIGN_LEFT)
@@ -567,20 +579,24 @@ class PrefPages(wx.Notebook):
             app_sizer.Add((5, 5))
             app_sizer.Add(trans_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
             app_sizer.Add((5, 5))
-            self.Bind(wx.EVT_SLIDER, self.OnSetTransparent, id=ed_glob.ID_TRANSPARENCY)
+            self.Bind(wx.EVT_SLIDER, self.OnSetTransparent, \
+                      id = ed_glob.ID_TRANSPARENCY)
 
         # Activate Metal Style Windows for OSX
         if wx.Platform == '__WXMAC__':
-            m_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_METAL, _("Use Metal Style (OS X Only)"))
+            m_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_METAL, \
+                               _("Use Metal Style (OS X Only)"))
             if ed_glob.PROFILE.has_key('METAL'):
                 m_cb.SetValue(ed_glob.PROFILE['METAL'])
             else:
                 m_cb.SetValue(False)
             app_sizer.Add(m_cb, 0, wx.ALIGN_CENTER_VERTICAL)
-        ws_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WSIZE, _("Remember Window Size on Exit"))
+        ws_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WSIZE, \
+                            _("Remember Window Size on Exit"))
         ws_cb.SetValue(ed_glob.PROFILE['SET_WSIZE'])
         app_sizer.Add(ws_cb, 0, wx.ALIGN_CENTER_VERTICAL)
-        wp_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WPOS, _("Remember Window Position on Exit"))
+        wp_cb = wx.CheckBox(misc_panel, ed_glob.ID_PREF_WPOS, \
+                            _("Remember Window Position on Exit"))
         wp_cb.SetValue(ed_glob.PROFILE['SET_WPOS'])
         app_sizer.Add(wp_cb, 0, wx.ALIGN_CENTER_VERTICAL)
 
@@ -624,32 +640,32 @@ class PrefPages(wx.Notebook):
 
         # Status Text
         stat_sz = wx.BoxSizer(wx.HORIZONTAL)
-        stat_sz.Add(wx.Size(15,15))
+        stat_sz.Add(wx.Size(15, 15))
         stat_sz.Add(cur_sz, 1, wx.ALIGN_LEFT)
-        stat_sz.Add(wx.Size(50,50))
+        stat_sz.Add(wx.Size(50, 50))
         stat_sz.Add(upd_bsz, 1, wx.ALIGN_RIGHT)
 
         # Progress Bar
         p_barsz = wx.BoxSizer(wx.HORIZONTAL)
-        p_barsz.Add(wx.Size(15,15))
+        p_barsz.Add(wx.Size(15, 15))
         p_barsz.Add(e_update, 0, wx.ALIGN_CENTER_VERTICAL)
 
         # Progress bar control buttons
         btn_sz = wx.BoxSizer(wx.HORIZONTAL)
-        btn_sz.Add(wx.Size(15,15))
+        btn_sz.Add(wx.Size(15, 15))
         check_b = wx.Button(upd_panel, ID_CHECK_UPDATE, _("Check"))
         btn_sz.Add(check_b, 0, wx.ALIGN_LEFT)
-        btn_sz.Add(wx.Size(30,30))
+        btn_sz.Add(wx.Size(30, 30))
         dl_b    = wx.Button(upd_panel, ID_DOWNLOAD, _("Download"))
         dl_b.Disable()
         btn_sz.Add(dl_b, 0, wx.ALIGN_RIGHT)
-        btn_sz.Add(wx.Size(15,15))
+        btn_sz.Add(wx.Size(15, 15))
 
-        v_stack.Add(wx.Size(15,15))
+        v_stack.Add(wx.Size(15, 15))
         v_stack.Add(stat_sz, 0, wx.ALIGN_CENTER)
-        v_stack.Add(wx.Size(20,20))
+        v_stack.Add(wx.Size(20, 20))
         v_stack.Add(p_barsz, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        v_stack.Add(wx.Size(20,20))
+        v_stack.Add(wx.Size(20, 20))
         v_stack.Add(btn_sz, 0, wx.ALIGN_CENTER_HORIZONTAL)
 
         border.Add(v_stack, 0, wx.ALIGN_LEFT)
@@ -735,12 +751,6 @@ class PrefPages(wx.Notebook):
                     dl_bt.Enable()
                 if chk_bt != None:
                     chk_bt.Enable()
-
-    def OnSize(self, evt):
-        """Resizes the list control to fit the panel"""
-        width, height = self.GetClientSizeTuple()
-        self.list.SetDimensions(0, 0, width, height)
-        evt.Skip()
 
 #---- End Function Definitions ----#
 #----------------------------------------------------------------------------#
@@ -842,7 +852,8 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
             self.SetStringItem(index, self.FILE_COL, key)
             self.SetStringItem(index, self.EXT_COL, u'  ' + u' '.join(self._extreg[key]))
             if not index % 2:
-                color = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT), 75)
+                syscolor = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT)
+                color = util.AdjustColour(syscolor, 75)
                 self.SetItemBackgroundColour(index, color)
 
         self.SetColumnWidth(self.FILE_COL, wx.LIST_AUTOSIZE)
@@ -873,12 +884,14 @@ class ExChoice(wx.Choice):
     wx.Choice to have a default selected value on init.
 
     """
-    def __init__(self, parent, id, pos=(-1, -1), size=(-1, -1), choices=[], default=None):
+    def __init__(self, parent, id, pos=(-1, -1), \
+                 size=(-1, -1), choices = [], default=None):
         """Constructs a Choice Control"""
         if len(choices) and isinstance(choices[0], int):
             for ind in range(len(choices)):
                 choices[ind] = str(choices[ind])
-        wx.Choice.__init__(self, parent=parent, id=id, pos=pos, size=size, choices=choices)
+        wx.Choice.__init__(self, parent=parent, id = id, pos = pos, \
+                           size = size, choices = choices)
         if default != None:
             self.SetStringSelection(default)
 

@@ -169,6 +169,9 @@ ID_LEXER         = wx.NewId()
 ID_KWHELPER      = wx.NewId()
 ID_PLUGMGR       = wx.NewId()
 ID_STYLE_EDIT    = wx.ID_EDIT
+ID_MACRO_START   = wx.NewId()
+ID_MACRO_STOP    = wx.NewId()
+ID_MACRO_PLAY    = wx.NewId()
 ID_GENERATOR     = wx.NewId()
 ID_HTML_GEN      = wx.NewId()
 ID_TEX_GEN       = wx.NewId()
@@ -214,7 +217,7 @@ PROFILE = {
            'BRACKETHL'  : True,             # Use bracket highlighting
            'CHECKMOD'   : True,             # Auto check file for file modifications
            'CODE_FOLD'  : True,             # Use code folding
-           'DEFAULT'    : False,            # TODO No longer used I believe
+           'DEFAULT'    : False,            # No longer used I believe
            'DEFAULT_VIEW' : 'Default',      # Default Perspective
            'EDGE'       : 80,               # Edge guide column
            'EOL'        : 'Unix (\\n)',     # EOL mode
@@ -233,7 +236,7 @@ PROFILE = {
            'SYNTAX'     : True,             # Use Syntax Highlighting
            'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
            'TABWIDTH'   : 8,                # Tab width
-           'THEME'      : 'DEFAULT',        # XXX For future use
+           'THEME'      : 'DEFAULT',        # For future use
            'TOOLBAR'    : True,             # Show Toolbar
            'USETABS'    : True,             # Use tabs instead of spaces
            'SHOW_WS'    : False,            # Show whitespace markers

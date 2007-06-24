@@ -38,12 +38,8 @@ __revision__ = "$Id Exp $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import os
 import wx
-import glob
 import ed_glob
-import ed_search
-import util
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -72,12 +68,12 @@ TOOL_ID = [ ed_glob.ID_NEW, ed_glob.ID_OPEN, ed_glob.ID_SAVE, ed_glob.ID_PRINT,
 
 class ED_ToolBar(wx.ToolBar):
     """Toolbar wrapper class"""
-    def __init__(self, parent, tb_id, icon_size=0, style=0):
+    def __init__(self, parent, toolId):
         """Initializes the toolbar"""
         sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT
         if wx.Platform == '__WXGTK__':
             sstyle = sstyle | wx.TB_DOCKABLE
-        wx.ToolBar.__init__(self, parent, tb_id, style=sstyle)
+        wx.ToolBar.__init__(self, parent, toolId, style = sstyle)
 
         # Attributes
         self._theme = ed_glob.PROFILE['ICONS']
@@ -92,15 +88,15 @@ class ED_ToolBar(wx.ToolBar):
     #---- End Init ----#
 
     #---- Function Definitions----#
-    def AddSimpleTool(self, id):
+    def AddSimpleTool(self, toolId):
         """Overides the default function to allow for easier tool
         generation/placement.
         
         """
-        tool_bmp = wx.ArtProvider.GetBitmap(str(id), wx.ART_TOOLBAR)
-        lbl = TOOLS[id][ID_TLBL]
-        help = TOOLS[id][ID_THELP]
-        wx.ToolBar.AddSimpleTool(self, id, tool_bmp, _(lbl), _(help))
+        tool_bmp = wx.ArtProvider.GetBitmap(str(toolId), wx.ART_TOOLBAR)
+        lbl = TOOLS[toolId][ID_TLBL]
+        helpstr = TOOLS[toolId][ID_THELP]
+        wx.ToolBar.AddSimpleTool(self, toolId, tool_bmp, _(lbl), _(helpstr))
 
     def GetToolSize(self):
         """Returns the size of the tools in the toolbar"""
@@ -110,15 +106,16 @@ class ED_ToolBar(wx.ToolBar):
         """Returns the name of the current toolsets theme"""
         return self._theme
 
-    def InsertSimpleTool(self, pos, id):
+    def InsertSimpleTool(self, pos, toolId):
         """Overides the default function to allow for easier tool
         generation/placement.
         
         """
-        tool_bmp = wx.ArtProvider.GetBitmap(str(id), wx.ART_TOOLBAR)
-        lbl = TOOLS[id][ID_TLBL]
-        help = TOOLS[id][ID_THELP]
-        wx.ToolBar.InsertSimpleTool(self, pos, id, tool_bmp, _(lbl), _(help))
+        tool_bmp = wx.ArtProvider.GetBitmap(str(toolId), wx.ART_TOOLBAR)
+        lbl = TOOLS[toolId][ID_TLBL]
+        helpstr = TOOLS[toolId][ID_THELP]
+        wx.ToolBar.InsertSimpleTool(self, pos, toolId, tool_bmp, \
+                                    _(lbl), _(helpstr))
 
     def PopulateTools(self):
         """Sets the tools in the toolbar"""
@@ -153,22 +150,19 @@ class ED_ToolBar(wx.ToolBar):
         self.SetToolBitmapSize(self.tool_size)
         self.GetParent().Freeze()
         self.Freeze()
-        for id in TOOL_ID:
+        for toolId in TOOL_ID:
             pos = pos + 1
-            try:
-                if lastpos != self.GetToolPos(id):
-                    pos = pos + 1
-                lastpos = self.GetToolPos(id)
-                self.RemoveTool(id)
-            except:
-                pass
-            else:
-                if pos > total:
-                    pos = pos - 1
-                tools.append((id, pos))
+            if lastpos != self.GetToolPos(toolId):
+                pos = pos + 1
+            lastpos = self.GetToolPos(toolId)
+            self.RemoveTool(toolId)
 
-        for id, pos in tools:
-            self.InsertSimpleTool(pos, id)
+            if pos > total:
+                pos = pos - 1
+            tools.append((toolId, pos))
+
+        for toolId, pos in tools:
+            self.InsertSimpleTool(pos, toolId)
         self.Realize()
         self.GetParent().Thaw()
         self.Thaw()

@@ -41,14 +41,13 @@ __revision__ = "$Revision:  $"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
-import wx
 import ed_glob
 import util
 import dev_tool
 
 #--------------------------------------------------------------------------#
 
-class DocPositionMgr:
+class DocPositionMgr(object):
     """Object for managing the saving and settign of a
     documents position between sessions. Through the use
     of an in memory dictionary during run time and on 
@@ -57,6 +56,7 @@ class DocPositionMgr:
     """
     def __init__(self, book_path):
         """Creates the position manager object"""
+        object.__init__(self)
         self._book = book_path
         self._records = dict()
         if ed_glob.PROFILE['SAVE_POS']:
@@ -101,7 +101,7 @@ class DocPositionMgr:
             try:
                 tfile = util.GetFileWriter(book)
                 tfile.close()
-            except:
+            except (IOError, OSError):
                 return False
 
         reader = util.GetFileReader(book)
@@ -114,7 +114,8 @@ class DocPositionMgr:
                 continue
             try:
                 vals[1] = int(vals[1])
-            except:
+            except (TypeError, ValueError), msg:
+                dev_tool.DEBUGP("[docpositionmgr] %s" % str(msg))
                 continue
             else:
                 self.AddRecord(vals)
@@ -127,6 +128,6 @@ class DocPositionMgr:
             for key in self._records:
                 writer.write(u"%s=%d\n" % (key, self._records[key]))
             writer.close()
-        except AttributeError:
-            pass
+        except AttributeError, msg:
+            dev_tool.DEBUGP("[docpositionmgr] %s" % str(msg))
 

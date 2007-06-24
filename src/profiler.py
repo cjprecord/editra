@@ -268,7 +268,8 @@ def UpdateProfileLoader():
     LOADER = GetLoader()
     writer = util.GetFileWriter(LOADER)
     if writer == -1:
-        dev_tool.DEBUGP("[profiler] [exception] Failed to open profile loader for writting")
+        dev_tool.DEBUGP("[profiler] [exception] Failed to open "
+                        "profile loader for writting")
         return 1
 
     if isinstance(writer, file):

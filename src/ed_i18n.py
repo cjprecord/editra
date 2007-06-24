@@ -49,7 +49,6 @@ from wx.lib import langlistctrl
 import wx.combo
 import glob
 import ed_glob
-import dev_tool
 
 #----------------------------------------------------------------------------#
 # Global Variables
@@ -105,16 +104,17 @@ def GetLangId(lang_n):
 #---- Language List Combo Box----#
 class LangListCombo(wx.combo.BitmapComboBox):
     """Combines a langlistctrl and a BitmapComboBox"""
-    def __init__(self, parent, id, default=None):
+    def __init__(self, parent, id, default = None):
         """Initializes the combobox"""
         self.default = default
         lang_ids = GetLocaleDict(GetAvailLocales()).values()
         if wx.LANGUAGE_DEFAULT not in lang_ids:
             lang_ids.append(wx.LANGUAGE_DEFAULT)
-        lang_items = langlistctrl.CreateLanguagesResourceLists(langlistctrl.LC_ONLY, lang_ids)
+        lang_items = langlistctrl.CreateLanguagesResourceLists(langlistctrl.LC_ONLY, \
+                                                               lang_ids)
         wx.combo.BitmapComboBox.__init__(self, parent, id, 
-                                         size=wx.Size(320, 26), 
-                                         style=wx.CB_READONLY)
+                                         size = wx.Size(320, 26), 
+                                         style = wx.CB_READONLY)
         for lang_d in lang_items[1]:
             bit_m = lang_items[0].GetBitmap(lang_items[1].index(lang_d))
             self.Append(lang_d, bit_m)
