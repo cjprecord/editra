@@ -233,8 +233,9 @@ class ExtensionRegister(dict):
         return u'txt'
 
     def __setitem__(self, i, y):
-        """Ensures that only one filetype is associated with any
-        given extension at one time.
+        """Ensures that only one filetype is associated with an extension
+        at one time. The behavior is that more recent settings override
+        and remove associations from older settings.
 
         """
         if not isinstance(y, list):
@@ -244,7 +245,7 @@ class ExtensionRegister(dict):
                 if item in val:
                     val.pop(val.index(item))
         y.sort()
-        dict.__setitem__(self, i, y)
+        dict.__setitem__(self, i, [x.strip() for x in y])
 
     def __str__(self):
         """Converts the Register to a string that is formatted
