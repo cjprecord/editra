@@ -3,10 +3,12 @@ Cody Precord 2005-2007
 LICENSE: GPLv2
 
 Change Log:
+$Revision: $
+$Date: $
 
 Changes since last release:
 
-#-------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.1.xx
 DATE 0x/xx/2007
 3rd Alpha Release
@@ -22,9 +24,10 @@ NEW: [features/improvements]
 BUG FIXES:
 +Respects BOM byte if one is present in the file
 +Cursor/Selection is now set properly after a comment/uncomment action
++Bracket highlighting can be toggled on/off properly
 
 
-#-------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.1.28
 DATE 06/15/2007
 2nd Alpha Release
@@ -76,7 +79,7 @@ BUG FIXES:
 +Drag and Drop now works with files that have non ascii characters in
 their name/path.
 
-#-------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.1.0
 DATE 05/24/2007
 1st Alpha Release
@@ -149,7 +152,7 @@ BUG FIXES:
 +MSW all menu icons now show properly
 +All config directories are properly created on an upgrade/install
 
-#-------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.97
 DATE 04/10/2007
 15th Snapshot Release
@@ -178,7 +181,7 @@ BUG FIXES:
 +Fixed incorrect pascal file detection and highlighter errors
 +Fixed some display issues that occured when switching styles
 
-#-------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.96
 DATE 04/05/2007
 14th Snapshot Release
@@ -238,7 +241,7 @@ BUG FIXES:
 +Fixed some sizing issues when switching controls in the command bar
 +Indentation Guide Visibility can be properly toggled again
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.94
 DATE 03/12/2007
 13th Snapshot Release
@@ -291,7 +294,7 @@ BUG FIXES:
 +Fixed a dialog closer issues in the style editor
 +Fixed various Unicode bugs/errors throughout the editor
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.90
 DATE 02/27/2007
 Twelfth Snapshot Release
@@ -355,7 +358,7 @@ BUG FIXES:
 leak.
 +All file handles are now properly closed after they are not needed
 +Fixed minor display problem in debugging messages
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.83
 DATE 01/15/2007
 Eleventh Snapshot Release
@@ -399,7 +402,7 @@ BUG FIXES:
 +Menu Updating Fixes
 +Proper handling of file save/saveas errors
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.80
 DATE 12/02/2006
 Tenth Snapshot Release
@@ -451,7 +454,7 @@ BUG FIXES:
   +Toolbar now updates properly
   +Misc minor memory leaks cleaned up
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.76
 Ninth Snapshot Release
 
@@ -475,7 +478,7 @@ BUG FIXES:
   +Filenames can have spaces in them and be loaded into file history properly
   +FileHistory is ordered properly on each application load
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 Previous Releases:
 
 VERSION 0.0.70
@@ -516,7 +519,7 @@ BUG FIXES:
    not crash and will now instead create a new empty file with that name.
   +Fixed string not found dialog in Find/Replace
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 
 VERSION 0.0.63
 Seventh Snapshot Release
@@ -538,7 +541,7 @@ BUG FIXES:
   +Zoom In/Out display properly in menu, disabled when at max in/out.
 
 
-#---------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 
 VERSION 0.0.55
 Sixth Snapshot Release
@@ -570,7 +573,7 @@ BUG FIXES:
   +Fixed other minor errors caused from drag and drop files
   +Minor Menu Bugs fixed
 
-#-------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 
 VERSION 0.0.41
 Fifth Snapshot Release
@@ -593,7 +596,7 @@ BUG FIXES:
   +Drag and Drop file support is now functional (opens doc in top page DOES NOT 
 						perform proper checking before open) 
 
-#-------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 
 VERSION 0.0.30:
 Fourth Snapshot Release
@@ -618,7 +621,7 @@ BUG FIXES:
   +Find works with highlighting and setting focus correctly
   +Check if modified before doing open and ask for save instead of just opening new file
 
-#-------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.24:
 Third Snapshot Release
 
@@ -642,7 +645,7 @@ Windows Specific:
   +Uninstaller
   +Optimized Byte Code
 
-#-------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.12:
 Second Snapshot Release
 
@@ -654,7 +657,7 @@ NEW:
   +Key Accelerators
   +Status Bar Notifications
 
-#-------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
 VERSION 0.0.1:
 Initial Snapshot Release
 
@@ -662,4 +665,4 @@ NEW:
   +Basic text control
   +Open and Save functions
 
-#-------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------#
