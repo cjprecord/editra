@@ -43,7 +43,6 @@ __revision__ = "$Revision:  $"
 #--------------------------------------------------------------------------#
 # Dependancies
 import wx
-import ed_glob
 import util
 import ed_search
 

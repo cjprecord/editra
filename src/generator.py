@@ -669,7 +669,8 @@ class Rtf(plugin.Plugin):
                 if bid != last_back:
                     last_back = bid
                     tplate = tplate + (back_tmp % bid)
-                tmp_txt.append(tplate + " " + self.TransformText(stc.GetTextRange(start, end)))
+                tmp_txt.append(tplate + " " + \
+                               self.TransformText(stc.GetTextRange(start, end)))
                 start = end
             last_id = id
             parse_pos = parse_pos + 1

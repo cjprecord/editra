@@ -143,7 +143,7 @@ def GetDecodedText(fname):
         f_handle = file(fname, 'rb')
         txt = f_handle.read()
         f_handle.close()
-    except Exception:
+    except (IOError, OSError):
         f_handle.close()
         return -1
     else:
@@ -151,10 +151,12 @@ def GetDecodedText(fname):
         for enc in ENC:
             try:
                 decoded = txt.decode(enc)
-            except Exception:
+            except (UnicodeDecodeError, UnicodeWarning):
                 continue
             else:
                 break
+        if 'enc' not in locals():
+            enc = u''
         if decoded:
             dev_tool.DEBUGP("[txtdecoder] Decoded text as %s" % enc)
             return decoded, enc
@@ -220,7 +222,7 @@ def GetFileModTime(file_name):
     """Returns the time that the given file was last modified on"""
     try:
         mod_time = os.path.getmtime(file_name)
-    except:
+    except EnvironmentError:
         mod_time = 0
     return mod_time
 
@@ -254,7 +256,7 @@ def GetFileWriter(file_name, enc='utf-8'):
     """
     try:
         file_h = file(file_name, "wb")
-    except:
+    except IOError:
         dev_tool.DEBUGP("[file_writer] Failed to open file %s" % file_name)
         return -1
     try:
@@ -273,7 +275,6 @@ def GetPathChar():
 
 def GetPathName(path):
     """Gets the path minus filename"""
-    path_char = GetPathChar()
     pieces = os.path.split(path)
     return pieces[0]
 
@@ -411,11 +412,11 @@ def ResolvConfigDir(config_dir, sys_only=False):
     # If we get here we need to do some platform dependant lookup
     # to find everything. This is probably much more of a mess than
     # need be.
-    path = sys.argv[0] #os.path.dirname(os.path.abspath(sys.argv[0]))
+    path = sys.argv[0]
 
     # If it is a link get the real path
     if os.path.islink(path):
-        path = os.path._resolve_link(path)
+        path = os.path.realpath(path)
 
     # Tokenize path
     pieces = path.split(path_char)
@@ -449,10 +450,6 @@ def ResolvConfigDir(config_dir, sys_only=False):
         # On OS X the config directories are in the applet under Resources
         pro_path = u"%s%sResources%s%s%s" % (pro_path, path_char, path_char,
                                              config_dir, path_char)
-        if not os.path.exists(pro_path):
-            # Path failed try looking relative to the src directory setup
-            pro_path = pro_path.split(u"Resources")
-            pro_path = "".join(pro_path)
     else:
         pro_path = pro_path + path_char + config_dir + path_char
     pro_path = os.path.normpath(pro_path) + path_char

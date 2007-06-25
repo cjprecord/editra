@@ -549,13 +549,13 @@ class PrefPages(wx.Notebook):
         app_lbl = self.SectionHead(misc_panel, _("Appearance"))
         app_sizer = wx.BoxSizer(wx.VERTICAL)
         tb_icont = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Theme") + u": ")
-        tb_icon = ExChoice(misc_panel, id=ed_glob.ID_PREF_ICON,
+        tb_icon = ExChoice(misc_panel, ed_glob.ID_PREF_ICON,
                             choices = util.GetResources(u"pixmaps" + \
                                                         util.GetPathChar() + \
                                                         u"theme"), 
                             default = ed_glob.PROFILE['ICONS'].title())
         tb_isz_lbl = wx.StaticText(misc_panel, wx.ID_ANY, _("Icon Size") + u": ")
-        tb_isz_ch = ExChoice(misc_panel, id = ed_glob.ID_PREF_ICONSZ,
+        tb_isz_ch = ExChoice(misc_panel, ed_glob.ID_PREF_ICONSZ,
                               choices = ['16', '24', '32'],
                               default = str(ed_glob.PROFILE['ICON_SZ'][0]))
         tbi_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -770,9 +770,10 @@ class NewPreferencesDialog(wx.Frame):
 class PrefTools(wx.Toolbook):
     """Main sections of the configuration pages"""
     GENERAL_PG = 0
-    def __init__(self, parent, id, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.BK_DEFAULT):
-        wx.Toolbook.__init__(self, parent, id, pos=pos, size=size, style=style)
+    def __init__(self, parent, tbid, pos = wx.DefaultPosition,
+                 size = wx.DefaultSize, style = wx.BK_DEFAULT):
+        wx.Toolbook.__init__(self, parent, tbid, pos = pos, \
+                             size = size, style = style)
         
 #----------------------------------------------------------------------------#
 
@@ -884,14 +885,13 @@ class ExChoice(wx.Choice):
     wx.Choice to have a default selected value on init.
 
     """
-    def __init__(self, parent, id, pos=(-1, -1), \
-                 size=(-1, -1), choices = [], default=None):
+    def __init__(self, parent, cid, pos = (-1, -1), \
+                 size = (-1, -1), choices = [''], default = None):
         """Constructs a Choice Control"""
         if len(choices) and isinstance(choices[0], int):
             for ind in range(len(choices)):
                 choices[ind] = str(choices[ind])
-        wx.Choice.__init__(self, parent=parent, id = id, pos = pos, \
-                           size = size, choices = choices)
+        wx.Choice.__init__(self, parent, cid, pos, size, choices)
         if default != None:
             self.SetStringSelection(default)
 

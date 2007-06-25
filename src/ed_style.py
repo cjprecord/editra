@@ -195,16 +195,16 @@ class StyleItem(object):
         else:
             self.size = u"%s,%s" % (str(size), ex)
 
-    def SetExAttr(self, ex_attr, set=True):
+    def SetExAttr(self, ex_attr, add=True):
         """Adds an extra text attribute to a StyleItem. Currently
         (bold, eol, italic, underline) are supported. If the optional
-        set value is set to False the attribute will be removed from
+        add value is set to False the attribute will be removed from
         the StyleItem.
 
         """
         # Get currently set attributes
         cur_str = self.__str__()
-        if not set:
+        if not add:
             cur_str = cur_str.replace(u',' + ex_attr, wx.EmptyString)
             self.SetAttrFromStr(cur_str)
         else:
@@ -651,11 +651,8 @@ class StyleMgr(object):
         # Build a StyleItem Dictionary
         for key in style_dict:
             new_item = StyleItem()
-            try:
-                new_item.SetAttrFromStr(style_dict[key])
-                style_dict[key] = new_item
-            except:
-                pass
+            new_item.SetAttrFromStr(style_dict[key])
+            style_dict[key] = new_item
         return style_dict
 
     def SetGlobalFont(self, font_tag, fontface):
@@ -688,6 +685,8 @@ class StyleMgr(object):
             self.styles = self.PackStyleSet(style_dict)
             return True
 
+        # Merge the given style set with the default set to fill in any
+        # unset attributes/tags
         if isinstance(style_dict, dict):
             # Check for bad data
             for style in style_dict:

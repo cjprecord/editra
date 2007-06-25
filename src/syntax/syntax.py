@@ -109,14 +109,14 @@ class SyntaxMgr(object):
                 self._extreg.LoadDefault()
             self._loaded = dict()
 
-    def __new__(self, *args, **kargs):
+    def __new__(cls, *args, **kargs):
         """Ensure only a single instance is shared amongst
         all objects.
 
         """
-        if not self.instance:
-            self.instance = object.__new__(self, *args, **kargs)
-        return self.instance
+        if not cls.instance:
+            cls.instance = object.__new__(cls, *args, **kargs)
+        return cls.instance
 
     def _ExtToMod(self, ext):
         """Gets the name of the module that is is associated
@@ -153,9 +153,7 @@ class SyntaxMgr(object):
         """
         if modname == None:
             return False
-        if self.IsModLoaded(modname):
-           pass
-        else:
+        if not self.IsModLoaded(modname):
             try:
                 self._loaded[modname] = __import__(modname, globals(), locals(), [''])
             except ImportError:
@@ -197,7 +195,8 @@ class SyntaxMgr(object):
             # Bail out as nothing else can be done at this point
             return syn_data
 
-        # This little bit of code fetches the keyword/syntax spec set(s) from the specified module
+        # This little bit of code fetches the keyword/syntax 
+        # spec set(s) from the specified module
         mod = self._loaded[lex_cfg[MODULE]]  #HACK
         syn_data[KEYWORDS] = mod.Keywords(lex_cfg[LANG_ID])
         syn_data[SYNSPEC] = mod.SyntaxSpec(lex_cfg[LANG_ID])
@@ -394,20 +393,20 @@ def GetLexerList():
 def SyntaxIds():
     """Gets a list of all Syntax Ids and returns it"""
     s_glob = dir(synglob)
-    s_ids = list()
+    synIds = list()
     for item in s_glob:
         if item.startswith("ID_LANG"):
-            s_ids.append(item)
+            synIds.append(item)
     
     # Fetch actual values
     ret_ids = list()
-    for id in s_ids:
-        ret_ids.append(getattr(synglob, id))
+    for synId in synIds:
+        ret_ids.append(getattr(synglob, synId))
 
     return ret_ids
 
-def GetExtFromId(id):
+def GetExtFromId(extId):
     """Takes a language ID and fetches an appropriate file extension string"""
     extreg = ExtensionRegister()
-    ftype = synglob.ID_MAP.get(id, synglob.ID_MAP[synglob.ID_LANG_TXT])
+    ftype = synglob.ID_MAP.get(extId, synglob.ID_MAP[synglob.ID_LANG_TXT])
     return extreg[ftype][0]
