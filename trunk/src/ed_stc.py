@@ -52,7 +52,7 @@ __revision__ = "$Id:  $"
 import os
 import wx, wx.stc
 import ed_event
-from ed_glob import *
+import ed_glob
 from syntax import syntax
 from autocomp import autocomp
 import util
@@ -66,23 +66,26 @@ FOLD_MARGIN = 2
 class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text in"""
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
-    def __init__(self, parent, win_id,
+    def __init__(self, parent, winId,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
                  style=0, useDT=True):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
 
         """
-        wx.stc.StyledTextCtrl.__init__(self, parent, win_id, pos, size, style)
+        wx.stc.StyledTextCtrl.__init__(self, parent, winId, pos, size, style)
         ed_style.StyleMgr.__init__(self, self.GetStyleSheet())
 
-        self.SetModEventMask(wx.stc.STC_PERFORMED_UNDO | wx.stc.STC_PERFORMED_REDO | \
-                             wx.stc.STC_MOD_DELETETEXT | wx.stc.STC_MOD_INSERTTEXT | \
+        self.SetModEventMask(wx.stc.STC_PERFORMED_UNDO | \
+                             wx.stc.STC_PERFORMED_REDO | \
+                             wx.stc.STC_MOD_DELETETEXT | \
+                             wx.stc.STC_MOD_INSERTTEXT | \
                              wx.stc.STC_PERFORMED_USER)
 
-        self.CmdKeyAssign(ord('-'), wx.stc.STC_SCMOD_CTRL, wx.stc.STC_CMD_ZOOMOUT)
-        self.CmdKeyAssign(ord('+'), wx.stc.STC_SCMOD_CTRL | wx.stc.STC_SCMOD_SHIFT, \
-                          wx.stc.STC_CMD_ZOOMIN)
+        self.CmdKeyAssign(ord('-'), wx.stc.STC_SCMOD_CTRL, \
+                          wx.stc.STC_CMD_ZOOMOUT)
+        self.CmdKeyAssign(ord('+'), wx.stc.STC_SCMOD_CTRL | \
+                          wx.stc.STC_SCMOD_SHIFT, wx.stc.STC_CMD_ZOOMIN)
         #---- Drop Target ----#
         if useDT:
             self.fdt = util.DropTargetFT(parent)
@@ -104,12 +107,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.zoom = 0
         self.old_pos = -1
         self._autocomp_svc = autocomp.AutoCompService(self)
-        self._use_autocomp = PROFILE['AUTO_COMP']
-        self._autoindent = PROFILE['AUTO_INDENT']
-        self.brackethl = PROFILE["BRACKETHL"]
-        self.folding = PROFILE['CODE_FOLD']
-        self.highlight = PROFILE["SYNTAX"]
-        self._synmgr = syntax.SyntaxMgr(CONFIG['CACHE_DIR'])
+        self._use_autocomp = ed_glob.PROFILE['AUTO_COMP']
+        self._autoindent = ed_glob.PROFILE['AUTO_INDENT']
+        self.brackethl = ed_glob.PROFILE["BRACKETHL"]
+        self.folding = ed_glob.PROFILE['CODE_FOLD']
+        self.highlight = ed_glob.PROFILE["SYNTAX"]
+        self._synmgr = syntax.SyntaxMgr(ed_glob.CONFIG['CACHE_DIR'])
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
         self._comment = list()
@@ -160,38 +163,41 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         return
-        if not len(self._macro):
-            return
+#         if not len(self._macro):
+#             return
 
-        # Get command mappings
-        cmds = list()
-        for x in dir(wx.stc):
-            if x.startswith('STC_CMD_'):
-                cmds.append(x)
-        cmdvals = [getattr(wx.stc, x) for x in cmds]
-        cmds = [x.replace('STC_CMD_', u'') for x in cmds]
-        # Get the commands names used in the macro
-        named = list()
-        for x in self._macro:
-            if x[0] in cmdvals:
-                named.append(cmds[cmdvals.index(x[0])])
-        code = list()
-        stc_dict = wx.stc.StyledTextCtrl.__dict__
-        for cmd in named:
-            for attr in stc_dict:
-                if attr.upper() == cmd:
-                    code.append(attr)
-                    break
-        code_txt = u''
-        for fun in code:
-            code_txt += "    self.%s()\n" % fun
-        code_txt += "    print \"Executed\""    #TEST
-        code_txt = "def macro(self):\n" + code_txt
-        code = compile(code_txt, self.__module__, 'exec')
-        exec code in self.__dict__ # Inject new code into this namespace
-        self.macro()
+#         # Get command mappings
+#         cmds = list()
+#         for x in dir(wx.stc):
+#             if x.startswith('STC_CMD_'):
+#                 cmds.append(x)
+#         cmdvals = [getattr(wx.stc, x) for x in cmds]
+#         cmds = [x.replace('STC_CMD_', u'') for x in cmds]
+#         # Get the commands names used in the macro
+#         named = list()
+#         for x in self._macro:
+#             if x[0] in cmdvals:
+#                 named.append(cmds[cmdvals.index(x[0])])
+#         code = list()
+#         stc_dict = wx.stc.StyledTextCtrl.__dict__
+#         for cmd in named:
+#             for attr in stc_dict:
+#                 if attr.upper() == cmd:
+#                     code.append(attr)
+#                     break
+#         code_txt = u''
+#         for fun in code:
+#             code_txt += "    self.%s()\n" % fun
+#         code_txt += "    print \"Executed\""    #TEST
+#         code_txt = "def macro(self):\n" + code_txt
+#         code = compile(code_txt, self.__module__, 'exec')
+#         exec code in self.__dict__ # Inject new code into this namespace
 
     def PlayMacro(self):
+        """Send the list of built up macro messages to the editor
+        to be played back.
+
+        """
         print "Playing Macro"
         self.BeginUndoAction()
         for msg in self._macro:
@@ -222,31 +228,29 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def Configure(self):
         """Configures the editors settings by using profile values"""
-        self.SetWrapMode(PROFILE['WRAP']) 
-        self.SetViewWhiteSpace(PROFILE['SHOW_WS'])
-        self.SetUseAntiAliasing(PROFILE['AALIASING'])
-        self.SetUseTabs(PROFILE['USETABS'])
-        self.SetIndent(int(PROFILE['TABWIDTH']))
-        self.SetTabWidth(int(PROFILE['TABWIDTH']))
-        self.SetIndentationGuides(PROFILE['GUIDES'])
-        self.SetEOLFromString(PROFILE['EOL'])
-        self.SetViewEOL(PROFILE['SHOW_EOL'])
-        self.SyntaxOnOff(PROFILE['SYNTAX'])  # <- need to do before autocomp
-        self.SetAutoComplete(PROFILE['AUTO_COMP'])
-        self.FoldingOnOff(PROFILE['CODE_FOLD'])
-        self.ToggleAutoIndent(PROFILE['AUTO_INDENT'])
-        self.ToggleBracketHL(PROFILE['BRACKETHL'])
-        self.ToggleLineNumbers(PROFILE['SHOW_LN'])
-        self.SetViewEdgeGuide(PROFILE['SHOW_EDGE'])
+        self.SetWrapMode(ed_glob.PROFILE['WRAP']) 
+        self.SetViewWhiteSpace(ed_glob.PROFILE['SHOW_WS'])
+        self.SetUseAntiAliasing(ed_glob.PROFILE['AALIASING'])
+        self.SetUseTabs(ed_glob.PROFILE['USETABS'])
+        self.SetIndent(int(ed_glob.PROFILE['TABWIDTH']))
+        self.SetTabWidth(int(ed_glob.PROFILE['TABWIDTH']))
+        self.SetIndentationGuides(ed_glob.PROFILE['GUIDES'])
+        self.SetEOLFromString(ed_glob.PROFILE['EOL'])
+        self.SetViewEOL(ed_glob.PROFILE['SHOW_EOL'])
+        self.SyntaxOnOff(ed_glob.PROFILE['SYNTAX'])  # <- do before autocomp
+        self.SetAutoComplete(ed_glob.PROFILE['AUTO_COMP'])
+        self.FoldingOnOff(ed_glob.PROFILE['CODE_FOLD'])
+        self.ToggleAutoIndent(ed_glob.PROFILE['AUTO_INDENT'])
+        self.ToggleBracketHL(ed_glob.PROFILE['BRACKETHL'])
+        self.ToggleLineNumbers(ed_glob.PROFILE['SHOW_LN'])
+        self.SetViewEdgeGuide(ed_glob.PROFILE['SHOW_EDGE'])
 
     def Comment(self, uncomment=False):
         """(Un)Comments a line or a selected block of text
         in a document.
 
         """
-        if self.GetLexer() == wx.stc.STC_LEX_NULL or not len(self._comment):
-            return
-        else:
+        if len(self._comment):
             sel = self.GetSelection()
             start = self.LineFromPosition(sel[0])
             end = self.LineFromPosition(sel[1])
@@ -271,8 +275,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                             nchars = nchars + len(c_start + c_end)
                         else:
                             text = text.replace(c_start, u'', 1)
-                            if len(c_end):
-                                text = text.replace(c_end, u'', 1)
+                            text = text.replace(c_end, u'', 1)
                             nchars = nchars - len(c_start + c_end)
                         self.SetTargetStart(lstart)
                         self.SetTargetEnd(lend)
@@ -282,7 +285,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 if sel[0] != sel[1]:
                     self.SetSelection(sel[0], sel[1] + nchars)
                 else:
-                    print sel[0], nchars
                     if len(self._comment) > 1:
                         nchars = nchars - len(self._comment[1])
                     self.GotoPos(sel[0] + nchars)
@@ -332,13 +334,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetFoldMarginHiColour(True, fore)
         self.SetFoldMarginColour(True, fore)
 
-    def FindTagById(self, id):
+    def FindTagById(self, styleId):
         """Find the style tag that is associated with the given
         Id. If not found it returns an empty string.
 
         """
         for data in self.syntax_set:
-            if id == getattr(wx.stc, data[0]):
+            if styleId == getattr(wx.stc, data[0]):
                 return data[1]
         return 'default_style'
 
@@ -361,12 +363,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             style = sheet_name
             if sheet_name.split(u'.')[-1] != u"ess":
                 style += u".ess"
-        elif PROFILE['SYNTHEME'].split(u'.')[-1] != u"ess":
-            style = (PROFILE['SYNTHEME'] + u".ess").lower()
+        elif ed_glob.PROFILE['SYNTHEME'].split(u'.')[-1] != u"ess":
+            style = (ed_glob.PROFILE['SYNTHEME'] + u".ess").lower()
         else:
-            style = PROFILE['SYNTHEME'].lower()
-        user = os.path.join(CONFIG['STYLES_DIR'], style)
-        sys = os.path.join(CONFIG['SYS_STYLES_DIR'], style)
+            style = ed_glob.PROFILE['SYNTHEME'].lower()
+        user = os.path.join(ed_glob.CONFIG['STYLES_DIR'], style)
+        sys = os.path.join(ed_glob.CONFIG['SYS_STYLES_DIR'], style)
         if os.path.exists(user):
             return user
         elif os.path.exists(sys):
@@ -385,7 +387,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
                 return
             line = self.GetCurrentLine()
-            text = self.GetTextRange(self.PositionFromLine(line), self.GetCurrentPos())
+            text = self.GetTextRange(self.PositionFromLine(line), \
+                                     self.GetCurrentPos())
             if text.strip() == u'':
                 self.AddText(self.GetEOLChar() + text)
                 self.EnsureCaretVisible()
@@ -433,7 +436,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if self.IsRecording():
             msg = evt.GetMessage()
             if msg == 2170:
-                lparm = self.GetTextRange(self.GetCurrentPos()-1, self.GetCurrentPos())
+                lparm = self.GetTextRange(self.GetCurrentPos()-1, \
+                                          self.GetCurrentPos())
             else:
                 lparm = evt.GetLParam()
             mac = (msg, evt.GetWParam(), lparm)
@@ -445,6 +449,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             evt.Skip()
             
     def GetCommandStr(self):
+        """Gets the command string to the left of the autocomp
+        activation character.
+
+        """
         curr_pos = self.GetCurrentPos()
         start = curr_pos - 1
         col = self.GetColumn(curr_pos)
@@ -461,7 +469,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         cmd = self.GetTextRange(start, curr_pos)
         return cmd.strip()
 
-    def ShowAutoCompOpt(self, command, offset=0):
+    def ShowAutoCompOpt(self, command):
         """Shows the autocompletion options list for the command"""
         lst = self._autocomp_svc.GetAutoCompList(command)
         if len(lst):
@@ -508,7 +516,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         if caretPos > 0:
             charBefore = self.GetCharAt(caretPos - 1)
-            styleBefore = self.GetStyleAt(caretPos - 1)
 
         # check before
         if charBefore and chr(charBefore) in "[]{}()<>": 
@@ -517,7 +524,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # check after
         if braceAtCaret < 0:
             charAfter = self.GetCharAt(caretPos)
-            styleAfter = self.GetStyleAt(caretPos)
             if charAfter and chr(charAfter) in "[]{}()<>":
                 braceAtCaret = caretPos
 
@@ -668,19 +674,26 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
-        e_type = evt.GetEventType()
-        e_map = { ID_COPY  : self.Copy,         ID_CUT  : self.Cut,
-                  ID_PASTE : self.Paste,        ID_UNDO : self.Undo,
-                  ID_REDO  : self.Redo,         ID_KWHELPER: self.ShowKeywordHelp,
-                  ID_CUT_LINE : self.LineCut,   ID_BRACKETHL : self.ToggleBracketHL,
-                  ID_COPY_LINE : self.LineCopy, ID_SYNTAX : self.SyntaxOnOff,
-                  ID_INDENT : self.Tab,         ID_UNINDENT : self.BackTab,
-                  ID_TRANSPOSE : self.LineTranspose, ID_SELECTALL: self.SelectAll,
-                  ID_FOLDING : self.FoldingOnOff, ID_SHOW_LN : self.ToggleLineNumbers,
-                  ID_COMMENT : self.Comment, ID_AUTOINDENT : self.ToggleAutoIndent,
-                  ID_LINE_AFTER : self.AddLine, ID_TRIM_WS : self.TrimWhitespace,
-                  ID_MACRO_START : self.StartRecord, ID_MACRO_STOP : self.StopRecord,
-                  ID_MACRO_PLAY : self.PlayMacro
+        e_map = { ed_glob.ID_COPY  : self.Copy, ed_glob.ID_CUT  : self.Cut,
+                  ed_glob.ID_PASTE : self.Paste, ed_glob.ID_UNDO : self.Undo,
+                  ed_glob.ID_REDO  : self.Redo, ed_glob.ID_INDENT : self.Tab,
+                  ed_glob.ID_KWHELPER: self.ShowKeywordHelp,
+                  ed_glob.ID_CUT_LINE : self.LineCut, 
+                  ed_glob.ID_COPY_LINE : self.LineCopy,
+                  ed_glob.ID_BRACKETHL : self.ToggleBracketHL,
+                  ed_glob.ID_SYNTAX : self.SyntaxOnOff,
+                  ed_glob.ID_UNINDENT : self.BackTab,
+                  ed_glob.ID_TRANSPOSE : self.LineTranspose, 
+                  ed_glob.ID_SELECTALL: self.SelectAll,
+                  ed_glob.ID_FOLDING : self.FoldingOnOff, 
+                  ed_glob.ID_SHOW_LN : self.ToggleLineNumbers,
+                  ed_glob.ID_COMMENT : self.Comment, 
+                  ed_glob.ID_AUTOINDENT : self.ToggleAutoIndent,
+                  ed_glob.ID_LINE_AFTER : self.AddLine, 
+                  ed_glob.ID_TRIM_WS : self.TrimWhitespace,
+                  ed_glob.ID_MACRO_START : self.StartRecord, 
+                  ed_glob.ID_MACRO_STOP : self.StopRecord,
+                  ed_glob.ID_MACRO_PLAY : self.PlayMacro
         }
         if e_obj.GetClassName() == "wxToolBar":
             self.LOG("[stc_evt] Caught Event Generated by ToolBar")
@@ -688,37 +701,37 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 e_map[e_id]()
             return
 
-        if e_id in [ID_ZOOM_OUT, ID_ZOOM_IN, ID_ZOOM_NORMAL]:
-            zoom_level = self.DoZoom(e_id)
+        if e_id in [ed_glob.ID_ZOOM_OUT, ed_glob.ID_ZOOM_IN, \
+                    ed_glob.ID_ZOOM_NORMAL]:
+            self.DoZoom(e_id)
         elif e_map.has_key(e_id):
             e_map[e_id]()
-        elif e_id == ID_SHOW_EDGE:
+        elif e_id == ed_glob.ID_SHOW_EDGE:
             self.SetViewEdgeGuide(not self.GetEdgeMode())
-        elif e_id == ID_SHOW_EOL:
+        elif e_id == ed_glob.ID_SHOW_EOL:
             self.SetViewEOL(not self.GetViewEOL())
-        elif e_id == ID_SHOW_WS:
+        elif e_id == ed_glob.ID_SHOW_WS:
             self.SetViewWhiteSpace(not self.GetViewWhiteSpace())
-        elif e_id == ID_WORD_WRAP:
+        elif e_id == ed_glob.ID_WORD_WRAP:
             self.SetWrapMode(not bool(self.WrapMode))
-        elif e_id in [ ID_NEXT_MARK, ID_PRE_MARK, ID_ADD_BM, ID_DEL_BM,
-                     ID_DEL_ALL_BM]:
+        elif e_id in [ ed_glob.ID_NEXT_MARK, ed_glob.ID_PRE_MARK, \
+                       ed_glob.ID_ADD_BM, ed_glob.ID_DEL_BM, \
+                       ed_glob.ID_DEL_ALL_BM]:
             n = self.GetCurrentLine()
-            if e_id == ID_ADD_BM:
+            mark = -1
+            if e_id == ed_glob.ID_ADD_BM:
                 self.MarkerAdd(n, MARK_MARGIN)
-                return
-            elif e_id == ID_DEL_BM:
+            elif e_id == ed_glob.ID_DEL_BM:
                 self.MarkerDelete(n, MARK_MARGIN)
-                return
-            elif e_id == ID_DEL_ALL_BM:
+            elif e_id == ed_glob.ID_DEL_ALL_BM:
                 self.MarkerDeleteAll(MARK_MARGIN)
-                return
-            elif e_id == ID_NEXT_MARK:
+            elif e_id == ed_glob.ID_NEXT_MARK:
                 if self.MarkerGet(n):
                     n += 1
                 mark = self.MarkerNext(n, 1)
                 if mark == -1:
                     mark = self.MarkerNext(0, 1)
-            elif e_id == ID_PRE_MARK:
+            elif e_id == ed_glob.ID_PRE_MARK:
                 if self.MarkerGet(n):
                     n -= 1
                 mark = self.MarkerPrevious(n, 1)
@@ -727,25 +740,25 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if mark != -1:
                 self.GotoLine(mark)
             return
-        elif e_id == ID_JOIN_LINES:
+        elif e_id == ed_glob.ID_JOIN_LINES:
             self.SetTargetStart(self.GetSelectionStart())
             self.SetTargetEnd(self.GetSelectionEnd())
             self.LinesJoin()
-        elif e_id == ID_INDENT_GUIDES:
+        elif e_id == ed_glob.ID_INDENT_GUIDES:
             self.SetIndentationGuides(not bool(self.GetIndentationGuides()))
-        elif e_id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
+        elif e_id in [ed_glob.ID_EOL_MAC, ed_glob.ID_EOL_UNIX, ed_glob.ID_EOL_WIN]:
             self.ConvertLineMode(e_id)
         elif e_id in syntax.SyntaxIds():
             f_ext = syntax.GetExtFromId(e_id)
             self.LOG("[stc_evt] Manually Setting Lexer to %s" % str(f_ext))
             self.FindLexer(f_ext)
-        elif e_id == ID_AUTOCOMP:
+        elif e_id == ed_glob.ID_AUTOCOMP:
             self.SetAutoComplete(not self.GetAutoComplete())
-        elif e_id == ID_UNCOMMENT:
+        elif e_id == ed_glob.ID_UNCOMMENT:
             self.Comment(True)
-        elif e_id == ID_LINE_BEFORE:
+        elif e_id == ed_glob.ID_LINE_BEFORE:
             self.AddLine(before=True)
-        elif e_id in [ID_SPACE_TO_TAB, ID_TAB_TO_SPACE]:
+        elif e_id in [ed_glob.ID_SPACE_TO_TAB, ed_glob.ID_TAB_TO_SPACE]:
             self.ConvertWhitespace(e_id)
         else:
             evt.Skip()
@@ -795,21 +808,21 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         format.
 
         """
-        eol_map = { ID_EOL_MAC  : wx.stc.STC_EOL_CR,
-                    ID_EOL_UNIX : wx.stc.STC_EOL_LF,
-                    ID_EOL_WIN  : wx.stc.STC_EOL_CRLF
+        eol_map = { ed_glob.ID_EOL_MAC  : wx.stc.STC_EOL_CR,
+                    ed_glob.ID_EOL_UNIX : wx.stc.STC_EOL_LF,
+                    ed_glob.ID_EOL_WIN  : wx.stc.STC_EOL_CRLF
                   }
         self.ConvertEOLs(eol_map[mode_id])
         self.SetEOLMode(eol_map[mode_id])
 
     def ConvertWhitespace(self, mode_id):
         """Convert whitespace from using tabs to spaces or visa versa"""
-        if mode_id not in (ID_TAB_TO_SPACE, ID_SPACE_TO_TAB):
+        if mode_id not in (ed_glob.ID_TAB_TO_SPACE, ed_glob.ID_SPACE_TO_TAB):
             return
         tw = self.GetIndent()
         pos = self.GetCurrentPos()
         sel = self.GetSelectedText()
-        if mode_id == ID_TAB_TO_SPACE:
+        if mode_id == ed_glob.ID_TAB_TO_SPACE:
             cmd = (u"\t", u" "*tw)
             tabs = False
         else:
@@ -821,7 +834,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.BeginUndoAction()
             p1 = self.GetTextRange(0, pos).replace(cmd[0], cmd[1])
-            tmptxt = self.GetTextRange(pos, self.GetLength()).replace(cmd[0], cmd[1])
+            tmptxt = self.GetTextRange(pos, self.GetLength()).replace(cmd[0], \
+                                                                      cmd[1])
             self.SetText(p1 + tmptxt)
             self.GotoPos(len(p1))
             self.SetUseTabs(tabs)
@@ -831,9 +845,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def GetEOLChar(self):
         """Gets the eol character used in document"""
         m_id = self.GetEOLModeId()
-        if m_id == ID_EOL_MAC:
+        if m_id == ed_glob.ID_EOL_MAC:
             return u'\r'
-        elif m_id == ID_EOL_WIN:
+        elif m_id == ed_glob.ID_EOL_WIN:
             return u'\r\n'
         else:
             return u'\n'
@@ -852,9 +866,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def GetEOLModeId(self):
         """Gets the id of the eol format"""
         eol_mode = self.GetEOLMode()
-        eol_map = { wx.stc.STC_EOL_CR : ID_EOL_MAC,
-                    wx.stc.STC_EOL_LF : ID_EOL_UNIX,
-                    wx.stc.STC_EOL_CRLF : ID_EOL_WIN
+        eol_map = { wx.stc.STC_EOL_CR : ed_glob.ID_EOL_MAC,
+                    wx.stc.STC_EOL_LF : ed_glob.ID_EOL_UNIX,
+                    wx.stc.STC_EOL_CRLF : ed_glob.ID_EOL_WIN
                   }
         return eol_map[eol_mode]
 
@@ -912,10 +926,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.SetEOLMode(wx.stc.STC_EOL_LF)
 
-    def SetViewEdgeGuide(self, set=None):
+    def SetViewEdgeGuide(self, switch=None):
         """Toggles the visibility of the edge guide"""
-        if (set == None and not self.GetEdgeMode()) or set:
-            self.SetEdgeColumn(int(PROFILE.get("EDGE", 80)))
+        if (switch == None and not self.GetEdgeMode()) or switch:
+            self.SetEdgeColumn(int(ed_glob.PROFILE.get("EDGE", 80)))
             self.SetEdgeMode(wx.stc.STC_EDGE_LINE)
         else:
             self.SetEdgeMode(wx.stc.STC_EDGE_NONE)
@@ -923,14 +937,16 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def StartRecord(self):
         """Starts recording all events and"""
         self.recording = True
-        wx.GetApp().GetMainWindow().SetStatusText(_("Recording Macro") + u"...", SB_INFO)
+        wx.GetApp().GetMainWindow().SetStatusText(_("Recording Macro") + \
+                                                  u"...", ed_glob.SB_INFO)
         wx.stc.StyledTextCtrl.StartRecord(self)
 
     def StopRecord(self):
         """Stops the recording and builds the macro script"""
         self.recording = False
         wx.stc.StyledTextCtrl.StopRecord(self)
-        wx.GetApp().GetMainWindow().SetStatusText(_("Recording Finished"), SB_INFO)
+        wx.GetApp().GetMainWindow().SetStatusText(_("Recording Finished"), \
+                                                  ed_glob.SB_INFO)
         self._BuildMacro()
 
     def TrimWhitespace(self):
@@ -959,9 +975,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.GotoPos(cpos)
         del txt
 
-    def FoldingOnOff(self, set=None):
+    def FoldingOnOff(self, switch = None):
         """Turn code folding on and off"""
-        if (set == None and not self.folding) or set:
+        if (switch == None and not self.folding) or switch:
             self.LOG("[stc_evt] Code Folding Turned On")
             self.folding = True
             self.SetMarginWidth(FOLD_MARGIN, 12)
@@ -970,9 +986,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.folding = False
             self.SetMarginWidth(FOLD_MARGIN, 0)
 
-    def SyntaxOnOff(self, set=None):
+    def SyntaxOnOff(self, switch = None):
         """Turn Syntax Highlighting on and off"""
-        if (set == None and not self.highlight) or set:
+        if (switch == None and not self.highlight) or switch:
             self.LOG("[stc_evt] Syntax Highlighting Turned On")
             self.highlight = True
             self.FindLexer()
@@ -984,27 +1000,29 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.UpdateBaseStyles()
         return 0
 
-    def ToggleAutoIndent(self, set=None):
+    def ToggleAutoIndent(self, switch = None):
         """Toggles Auto-indent On and Off"""
-        if (set == None and not self._autoindent) or set:
+        if (switch == None and not self._autoindent) or switch:
             self._autoindent = True
         else:
             self._autoindent = False
 
-    def ToggleBracketHL(self, set=None):
+    def ToggleBracketHL(self, switch = None):
         """Toggle Bracket Highlighting On and Off"""
-        if (set == None and not self.brackethl) or set:
+        if (switch == None and not self.brackethl) or switch:
             self.LOG("[stc_evt] Bracket Highlighting Turned On")
             self.brackethl = True
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
         else:
             self.LOG("[stc_evt] Bracket Highlighting Turned Off")
             self.brackethl = False
+            # XXX Why must I call Unbind twice here???
+            self.Unbind(wx.stc.EVT_STC_UPDATEUI)
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
 
-    def ToggleLineNumbers(self, set=None):
+    def ToggleLineNumbers(self, switch = None):
         """Toggles the visibility of the line number margin"""
-        if (set == None and not self.GetMarginWidth(NUM_MARGIN)) or set:
+        if (switch == None and not self.GetMarginWidth(NUM_MARGIN)) or switch:
             self.LOG("[stc_evt] Showing Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 30)
         else:
@@ -1082,10 +1100,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """Zoom control in or out"""
         id_type = mode
         zoomlevel = self.GetZoom()
-        if id_type == ID_ZOOM_OUT:
+        if id_type == ed_glob.ID_ZOOM_OUT:
             if zoomlevel > -9:
                 self.ZoomOut()
-        elif id_type == ID_ZOOM_IN:
+        elif id_type == ed_glob.ID_ZOOM_IN:
             if zoomlevel < 19:
                 self.ZoomIn()
         else:
@@ -1185,8 +1203,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 else:
                     self.keywords += kw[1]
                     wx.stc.StyledTextCtrl.SetKeyWords(self, kw[0], kw[1])
-        #TODO These next four lines are very expensive for languages with
-        # many keywords. 
+
         kwlist = self.keywords.split()      # Split into a list of words
         kwlist = list(set(kwlist))          # Uniqueify the list
         kwlist.sort()                       # Sort into alphbetical order
@@ -1206,11 +1223,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.LOG("[ed_stc][warn] Error setting syntax spec")
                 continue
             else:
-                if not isinstance(syn[0], basestring) or not hasattr(wx.stc, syn[0]):
+                if not isinstance(syn[0], basestring) or \
+                   not hasattr(wx.stc, syn[0]):
                     self.LOG("[ed_stc][warn] Unknown syntax region: %s" % str(syn[0]))
                     continue
                 elif not isinstance(syn[1], basestring):
-                    self.LOG("[ed_stc][warn] Improperly formated style tag: %s" % str(syn[1]))
+                    self.LOG("[ed_stc][warn] Poorly formated styletag: %s" % str(syn[1]))
                     continue
                 else:
                     self.StyleSetSpec(getattr(wx.stc, syn[0]), \
@@ -1257,7 +1275,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.StyleResetDefault()
         self.StyleClearAll()
         self.SetCaretForeground(wx.NamedColor("black"))
-        self.Colourise(0,-1)
+        self.Colourise(0, -1)
 
     def UpdateBaseStyles(self):
         """Updates the base styles of editor to the current settings"""
@@ -1286,3 +1304,4 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Refresh()
 
     #---- End Style Definitions ----#
+

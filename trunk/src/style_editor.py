@@ -71,16 +71,16 @@ class StyleEditor(wx.Dialog):
     for editing/configuring the syntax highlighting styles.
 
     """
-    def __init__(self, parent, id=wx.ID_ANY, title=_("Style Editor"),
-               pos=wx.DefaultPosition, size=wx.DefaultSize, 
-               style=wx.DEFAULT_DIALOG_STYLE | wx.RAISED_BORDER):
+    def __init__(self, parent, id = wx.ID_ANY, title = _("Style Editor"),
+               pos = wx.DefaultPosition, size = wx.DefaultSize, 
+               style = wx.DEFAULT_DIALOG_STYLE | wx.RAISED_BORDER):
         """Initializes the Dialog"""
         wx.Dialog.__init__(self, parent, id, title, pos, size, style)
 
         # Attributes
         self.LOG = wx.GetApp().GetLog()
-        self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size=(-1,200),
-                                    style = wx.SUNKEN_BORDER, useDT=False)
+        self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size = (-1, 200),
+                                    style = wx.SUNKEN_BORDER, useDT = False)
         self.styles_new = self.preview.GetStyleSet()
         # Save original settings so that changes can be un-done if need be.
         self.styles_orig = self.DuplicateStyleDict(self.styles_new)
@@ -90,7 +90,7 @@ class StyleEditor(wx.Dialog):
         # Main Sizer
         self.SetSizeHints(300, 250)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
-        self.sizer.Add((10,10)) # Spacer
+        self.sizer.Add((10, 10)) # Spacer
 
         # Control Panel
         self.ctrl_pane = wx.Panel(self, wx.ID_ANY, style=wx.RAISED_BORDER)
@@ -99,13 +99,13 @@ class StyleEditor(wx.Dialog):
         right_colum = wx.BoxSizer(wx.VERTICAL)   # Right Column
 
         # Control Panel Left Column
-        left_colum.Add((10,10))
+        left_colum.Add((10, 10))
         left_colum.Add(self.StyleSheets(), 0, wx.ALIGN_LEFT)
-        left_colum.Add((10,10))
+        left_colum.Add((10, 10))
         left_colum.Add(self.LexerChoice(), 0, wx.ALIGN_LEFT)
-        left_colum.Add((10,10))
+        left_colum.Add((10, 10))
         left_colum.Add(self.StyleTags(), 0, wx.ALIGN_LEFT)
-        left_colum.Add((10,10))
+        left_colum.Add((10, 10))
         self.left_side = left_colum
         ctrl_sizer.Add(left_colum, 0, wx.ALIGN_LEFT)
 
@@ -123,12 +123,12 @@ class StyleEditor(wx.Dialog):
         self.sizer.Add(self.ctrl_pane, 0, wx.ALIGN_CENTER)
 
         # Spacer
-        self.sizer.Add((10,10))
+        self.sizer.Add((10, 10))
 
         # Preview Area
         pre_sizer = wx.BoxSizer(wx.HORIZONTAL)
         pre_lbl = wx.StaticText(self, wx.ID_ANY, _("Preview") + u": ")
-        pre_sizer.AddMany([(10,10),(pre_lbl, 0, wx.ALIGN_LEFT)])
+        pre_sizer.AddMany([(10, 10), (pre_lbl, 0, wx.ALIGN_LEFT)])
         self.sizer.Add(pre_sizer, 0, wx.ALIGN_LEFT)
         self.sizer.Add(self.preview, 0, wx.EXPAND | wx.BOTTOM)
 
@@ -150,9 +150,9 @@ class StyleEditor(wx.Dialog):
         self.EnableSettings(False)
 
         # Event Handlers
-        self.Bind(wx.EVT_BUTTON, self.OnCancel, id=wx.ID_CANCEL)
-        self.Bind(wx.EVT_BUTTON, self.OnOk, id=wx.ID_OK)
-        self.Bind(wx.EVT_BUTTON, self.OnExport, id=wx.ID_SAVE)
+        self.Bind(wx.EVT_BUTTON, self.OnCancel, id = wx.ID_CANCEL)
+        self.Bind(wx.EVT_BUTTON, self.OnOk, id = wx.ID_OK)
+        self.Bind(wx.EVT_BUTTON, self.OnExport, id = wx.ID_SAVE)
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -198,10 +198,10 @@ class StyleEditor(wx.Dialog):
             new_dict[tag].SetAttrFromStr(unicode(style_dict[tag]))
         return new_dict
         
-    def EnableSettings(self, enable=True):
+    def EnableSettings(self, enable = True):
         """Enables/Disables all settings controls"""
-        for id in SETTINGS_IDS:
-            ctrl = self.FindWindowById(id)
+        for sid in SETTINGS_IDS:
+            ctrl = self.FindWindowById(sid)
             ctrl.Enable(enable)
         self.settings_enabled = enable
 
@@ -213,8 +213,8 @@ class StyleEditor(wx.Dialog):
             if not os.path.exists(user_config):
                 try:
                     os.mkdir(user_config)
-                except:
-                    pass
+                except (OSError, IOError), msg:
+                    self.LOG("[style_editor][err] %s" % msg)
                 else:
                     ed_glob.CONFIG['STYLES_DIR'] = user_config
 
@@ -275,8 +275,9 @@ class StyleEditor(wx.Dialog):
         lexer_lst = wx.Choice(self.ctrl_pane, ed_glob.ID_LEXER, 
                               choices=syntax.GetLexerList())
         lexer_lst.SetStringSelection(u"CPP")
-        lex_sizer.AddMany([((10,10)), (lexer_lbl,0,wx.ALIGN_CENTER_VERTICAL), ((5,0)), 
-                          (lexer_lst,1,wx.ALIGN_CENTER_VERTICAL), ((10,10))])
+        lex_sizer.AddMany([((10, 10)), (lexer_lbl, 0, wx.ALIGN_CENTER_VERTICAL), \
+                           ((5, 0)), (lexer_lst, 1, wx.ALIGN_CENTER_VERTICAL), \
+                           ((10, 10))])
         return lex_sizer
 
     def Settings(self):
@@ -285,29 +286,29 @@ class StyleEditor(wx.Dialog):
         setting_top = wx.BoxSizer(wx.HORIZONTAL)
 
         # Settings top
-        setting_sizer.Add((10,10))
+        setting_sizer.Add((10, 10))
         color_box = wx.StaticBox(self.ctrl_pane, wx.ID_ANY, _("Color") + u":")
         cbox_sizer = wx.StaticBoxSizer(color_box, wx.VERTICAL)
         # Foreground
         fground_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fground_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Foreground") + u": ")
         fground_sel = csel.ColourSelect(self.ctrl_pane, ID_FORE_COLOR, "#000000", 
-                                        (0,0,0), size=(80,25))
-        fground_sizer.AddMany([((5,5)), (fground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                              (fground_sel, 0, wx.ALIGN_CENTER_VERTICAL), ((5,5))])
+                                        (0, 0, 0), size=(80, 25))
+        fground_sizer.AddMany([((5, 5)), (fground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                              (fground_sel, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 5))])
         cbox_sizer.Add(fground_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
-        cbox_sizer.Add((10,10))
+        cbox_sizer.Add((10, 10))
         # Background
         bground_sizer = wx.BoxSizer(wx.HORIZONTAL)
         bground_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Background") + u": ")
         bground_sel = csel.ColourSelect(self.ctrl_pane, ID_BACK_COLOR, "#FFFFFF", 
-                                        (255,255,255), size=(80,25))
-        bground_sizer.AddMany([((5,5)), (bground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                              (bground_sel, 0, wx.ALIGN_CENTER_VERTICAL), ((5,5))])
+                                        (255, 255, 255), size = (80, 25))
+        bground_sizer.AddMany([((5, 5)), (bground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                              (bground_sel, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 5))])
         cbox_sizer.Add(bground_sizer, 0, wx.ALIGN_LEFT)
         setting_top.Add(cbox_sizer, 0, wx.ALIGN_TOP)
         # Attrib Box
-        setting_top.Add((10,10))
+        setting_top.Add((10, 10))
         attrib_box = wx.StaticBox(self.ctrl_pane, wx.ID_ANY, _("Attributes") + u":")
         abox_sizer = wx.StaticBoxSizer(attrib_box, wx.VERTICAL)
         # Attributes
@@ -329,28 +330,28 @@ class StyleEditor(wx.Dialog):
         fsizer = wx.BoxSizer(wx.HORIZONTAL)
         flbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Font") + u": ")
         fontenum = wx.FontEnumerator()
-        fontenum.EnumerateFacenames(fixedWidthOnly=True)
+        fontenum.EnumerateFacenames(fixedWidthOnly = True)
         f_lst = fontenum.GetFacenames()
         f_lst.sort()
         font_lst = ["%(helv)s", "%(mono)s", "%(other)s", "%(times)s"]
         font_lst.extend(f_lst)
-        fchoice = wx.Choice(self.ctrl_pane, ID_FONT,choices=font_lst)
-        fsizer.AddMany([((5,5)), (flbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                        (fchoice, 0, wx.ALIGN_CENTER_VERTICAL), ((5,5,))])
+        fchoice = wx.Choice(self.ctrl_pane, ID_FONT, choices = font_lst)
+        fsizer.AddMany([((5, 5)), (flbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                        (fchoice, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 5))])
         fbox_sizer.Add(fsizer, 0, wx.ALIGN_LEFT)
         # Font Size
         fsize_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fsize_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Size") + u": ")
         fsizes = ['%(size)d', '%(size2)d']
-        for num in range(4,21):
+        for num in range(4, 21):
             fsizes.append(str(num))
         fs_choice = wx.Choice(self.ctrl_pane, ID_FONT_SIZE, 
-                              choices=fsizes)
-        fsize_sizer.AddMany([((5,5)), (fsize_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                             (fs_choice, 0, wx.ALIGN_CENTER_VERTICAL), ((5,5))])
-        fbox_sizer.AddMany([((5,5)), (fsize_sizer, 0, wx.ALIGN_LEFT)])
-        fh_sizer.AddMany([((10,10)), (fbox_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL),
-                          ((10,10))])
+                              choices = fsizes)
+        fsize_sizer.AddMany([((5, 5)), (fsize_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                             (fs_choice, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 5))])
+        fbox_sizer.AddMany([((5, 5)), (fsize_sizer, 0, wx.ALIGN_LEFT)])
+        fh_sizer.AddMany([((10, 10)), (fbox_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL),
+                          ((10, 10))])
 
         # Build Section
         setting_sizer.AddMany([(setting_top, 0, wx.ALIGN_CENTER_HORIZONTAL), 
@@ -358,6 +359,10 @@ class StyleEditor(wx.Dialog):
         return setting_sizer
 
     def StyleSheets(self):
+        """Returns a sizer item that contains a choice control with
+        all the available style sheets listed in it.
+
+        """
         ss_sizer = wx.BoxSizer(wx.HORIZONTAL)
         ss_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY,
                                _("Style Theme") + u": ")
@@ -367,9 +372,9 @@ class StyleEditor(wx.Dialog):
                               choices=ss_lst)
         ss_choice.SetStringSelection(ed_glob.PROFILE['SYNTHEME'])
         ss_new = wx.CheckBox(self.ctrl_pane, wx.ID_NEW, _("New"))
-        ss_sizer.AddMany([((10,10)), (ss_lbl, 0, wx.ALIGN_CENTER_VERTICAL), ((5,0)),
-                          (ss_choice, 0, wx.ALIGN_CENTER_VERTICAL), ((10,0)), 
-                          (ss_new, 0, wx.ALIGN_CENTER_VERTICAL), ((10,10))])
+        ss_sizer.AddMany([((10, 10)), (ss_lbl, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 0)),
+                          (ss_choice, 0, wx.ALIGN_CENTER_VERTICAL), ((10, 0)), 
+                          (ss_new, 0, wx.ALIGN_CENTER_VERTICAL), ((10, 10))])
         return ss_sizer
 
     def StyleTags(self):
@@ -383,15 +388,13 @@ class StyleEditor(wx.Dialog):
                                   _("Style Tags") + u": ")
         style_tags = self.styles_orig.keys()
         style_tags.sort()
-        parent_size = self.ctrl_pane.GetSize()
-        p_width = parent_size[0]
-        style_lst = wx.ListBox(self.ctrl_pane, ID_STYLES, size=(150,100),
-                               choices=style_tags, style=wx.LB_SINGLE)
+        style_lst = wx.ListBox(self.ctrl_pane, ID_STYLES, size = (150, 100),
+                               choices = style_tags, style = wx.LB_SINGLE)
         style_sizer2.AddMany([(style_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                              (style_lst, 0, wx.ALIGN_CENTER_VERTICAL)])
-        style_sizer.AddMany([((10,10)), 
+        style_sizer.AddMany([((10, 10)), 
                              (style_sizer2, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND), 
-                             ((10,10))])
+                             ((10, 10))])
         return style_sizer
 
     def OnCancel(self, evt):
@@ -561,30 +564,30 @@ class StyleEditor(wx.Dialog):
                     ID_FONT_SIZE  : syntax_data.GetSize()
                   }
         if u"#" not in val_map[ID_FORE_COLOR]:
-            val_map[ID_FORE_COLOR] = self.preview.GetDefaultForeColour(hex=True)
+            val_map[ID_FORE_COLOR] = self.preview.GetDefaultForeColour(hex = True)
         if u"#" not in val_map[ID_BACK_COLOR]:
-            val_map[ID_BACK_COLOR] = self.preview.GetDefaultBackColour(hex=True)
+            val_map[ID_BACK_COLOR] = self.preview.GetDefaultBackColour(hex = True)
 
-        for id in SETTINGS_IDS:
-            ctrl = self.FindWindowById(id)
+        for sid in SETTINGS_IDS:
+            ctrl = self.FindWindowById(sid)
             c_type = ctrl.GetClassName()
             if c_type == 'wxCheckBox':
-                ctrl.SetValue(val_map[id])
+                ctrl.SetValue(val_map[sid])
             elif c_type == "wxChoice":
-                ctrl.SetStringSelection(val_map[id])
+                ctrl.SetStringSelection(val_map[sid])
             elif c_type == "wxBitmapButton":
-                ctrl.SetValue(wx.Color(int(val_map[id][1:3], 16), 
-                                       int(val_map[id][3:5], 16), 
-                                       int(val_map[id][5:7], 16)))
-                ctrl.SetLabel(val_map[id][:7])
+                ctrl.SetValue(wx.Color(int(val_map[sid][1:3], 16), 
+                                       int(val_map[sid][3:5], 16), 
+                                       int(val_map[sid][5:7], 16)))
+                ctrl.SetLabel(val_map[sid][:7])
                 # HACK the button refuses to update rightaway unless I do this in
                 #      this order. wxMac: ?Bug?
                 ctrl.Refresh()
                 ctrl.Update()
-                ctrl.SetValue(wx.Color(int(val_map[id][1:3], 16), 
-                                       int(val_map[id][3:5], 16), 
-                                       int(val_map[id][5:7], 16)))
-                ctrl.SetLabel(val_map[id][:7])
+                ctrl.SetValue(wx.Color(int(val_map[sid][1:3], 16), 
+                                       int(val_map[sid][3:5], 16), 
+                                       int(val_map[sid][5:7], 16)))
+                ctrl.SetLabel(val_map[sid][:7])
 
         return True
 
