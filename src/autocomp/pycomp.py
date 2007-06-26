@@ -32,8 +32,8 @@
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: Exp $"
-__revision__ = "$Revision:  $"
+__cvsid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -64,10 +64,14 @@ from wx.py import introspect
 #     decendants. The code is in place but currently dissabled to allow for
 #     the autcompletion of local objects, due to some troublesome bugs that
 #     come up in certain cases.
-class Completer:
+class Completer(object):
     """Code completer provider"""
     def __init__(self, stc_buffer):
-        """Initiliazes the completer"""
+        """Initiliazes the completer
+        @param stc_buffer: buffer that contains code
+
+        """
+        object.__init__(self)
         self._buffer = stc_buffer
         self._autocomp_keys = [ord('.')]
         self._autocomp_stop = ' .,;:([)]}\'"\\<>%^&+-=*/|`'
@@ -98,7 +102,7 @@ class Completer:
     def CollectNamespace(self):
         """Analyzes the buffer and collects available namespace
         data into the collector.
-        Note: Only collects import statements
+        @note: Only collects import statements
 
         """
         self._collector = list()        # Clear the collector TEMP
@@ -118,6 +122,7 @@ class Completer:
     def GetAutoCompKeys(self):
         """Returns the list of key codes for activating the
         autocompletion.
+        @return: list of autocomp activation keys
 
         """
         if hasattr(self, "_autocomp_keys"):
@@ -125,10 +130,12 @@ class Completer:
         else:
             return list()
 
-    def GetAutoCompList(self, command, namespace=None):
+    def GetAutoCompList(self, command, namespace = None):
         """Returns the list of possible completions for a 
         command string. If namespace is not specified the lookup
         is based on the locals namespace
+        @param command: commadn lookup is done on
+        @keyword namespace: namespace to do lookup in
 
         """
         if not len(self._locals) and namespace == None:
@@ -140,6 +147,7 @@ class Completer:
     def GetAutoCompStops(self):
         """Returns a string of characters that should cancel
         the autocompletion lookup.
+        @return: string of keys that will cancel autocomp/calltip actions
 
         """
         if hasattr(self, '_autocomp_stop'):
@@ -147,9 +155,11 @@ class Completer:
         else:
             return u''
 
-    def GetCallTip(self, command, namespace=None):
+    def GetCallTip(self, command, namespace = None):
         """Returns the formated calltip string for the command.
         If the namespace command is unset the locals namespace is used.
+        @param command: command to get calltip for
+        @keyword namespace: namespace to do lookup in
 
         """
         if not len(self._locals) and namespace == None:
@@ -159,7 +169,10 @@ class Completer:
         return calltip[2]
 
     def GetCallTipKeys(self):
-        """Returns the list of keys to activate a calltip on"""
+        """Returns the list of keys to activate a calltip on
+        @return: list of keys that can activate a calltip
+
+        """
         if hasattr(self, '_calltip_keys'):
             return self._calltip_keys
         else:
@@ -168,6 +181,7 @@ class Completer:
     def GetCaseSensitive(self):
         """Returns whether the autocomp commands are case sensitive
         or not.
+        @return: whether lookup is case sensitive or not
 
         """
         if hasattr(self, '_case_sensitive'):
@@ -178,6 +192,7 @@ class Completer:
     def SetCaseSensitive(self, value):
         """Sets whether the completer should be case sensitive
         or not, and returns True if the value was set.
+        @param value: toggle case sensitivity
 
         """
         if isinstance(value, bool):
@@ -186,9 +201,11 @@ class Completer:
         else:
             return False
 
-    def UpdateNamespace(self, imports_only=False):
+    def UpdateNamespace(self, imports_only = False):
         """Updates the namespace to search for autocompletion lists
         and calltips in.
+        @keyword imports_only: build namespace from import statements only
+                               without using local namespace
 
         """
         if imports_only:

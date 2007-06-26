@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependancies
@@ -400,33 +402,46 @@ syntax_items = [ ('STC_HPHP_DEFAULT', 'default_style'),
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns List of Keyword Specifications"""
-    # Support Embedded HTML highlighting
-    KEYWORDS = html_keywords
-    KEYWORDS.append((4, php_keywords))
-    return KEYWORDS
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
 
-def SyntaxSpec(type=0):
-    """"Syntax Specifications"""
+    """
+    # Support Embedded HTML highlighting
+    keywords = html_keywords
+    keywords.append((4, php_keywords))
+    return keywords
+
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
     return html.syntax_items + syntax_items
 
-def Properties(type=0):
-    """Extra Properties"""
-    # TODO why doesnt folding work??
-    return [ ("fold", "1"), ("fold.html", "1") ]
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
+
+    """
+    return [("fold", "1"), ("fold.html", "1")]
 
 # TODO currently unsupported because of difficulties due to having
 #      other inline code such as html that require different
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
     return list()
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString(option=0):
-    """Returns the specified Keyword String"""
-    # Unused by this module, stubbed in for consistancy
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
     return php_keywords
 
 #---- End Syntax Modules Internal Functions ----#

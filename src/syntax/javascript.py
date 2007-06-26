@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 import synglob
@@ -78,30 +80,44 @@ syntax_items = [ ('STC_HJ_COMMENT', 'comment_style'),
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns Keyword Settings List"""
-    KEYWORDS = [js_keywords]
-    return KEYWORDS
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
 
-def SyntaxSpec(type=0):
-    """Syntax Specifications"""
-    if type == synglob.ID_LANG_HTML:
+    """
+    return [js_keywords]
+
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
+    if langId == synglob.ID_LANG_HTML:
         return syntax_items
     else:
         return cpp.syntax_items
 
-def Properties(type=0):
-    """Extra Properties"""
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
+
+    """
     return [("fold", "1")]
 
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
     return [ u'//' ]
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString(option=0):
-    """Returns just keyword string"""
+    """Returns the specified Keyword String
+    @param option: specific subset of keywords to get
+
+    """
     return js_keywords[1]
 
 #---- End Syntax Modules Internal Functions ----#

@@ -57,12 +57,14 @@
 # METHODS:                                                                 #
 # ReadProfile: Reads a profile into the profile dictionary                 #
 # WriteProfile: Writes a profile dictionary to a file	                   #
-# LoadProfile: Checks loader for last used profile	                   #
+# LoadProfile: Checks loader for last used profile	                       #
 # UpdateProfileLoader: Updates loader after changes to profile	           #
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id:  Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies

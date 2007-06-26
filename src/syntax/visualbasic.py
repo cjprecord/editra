@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependancies
@@ -178,30 +180,45 @@ fold = ("fold", "1")
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns Keyword Specifications List"""
-    KEYWORDS = list()
-    TMP = [vb_kw, vb_ukw1, vb_ukw2, vb_ukw3]
-    for kw in TMP:
-        KEYWORDS.append((kw[0], kw[1].lower()))
-    return KEYWORDS
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
 
-def SyntaxSpec(type=0):
-    """Syntax Specifications"""
+    """
+    keywords = list()
+    tmp = [vb_kw, vb_ukw1, vb_ukw2, vb_ukw3]
+    for kw in tmp:
+        keywords.append((kw[0], kw[1].lower()))
+    return keywords
+
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
     return syntax_items
 
-def Properties(type=0):
-    """Extra Properties"""
-    return [ fold ]
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
 
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
-    return [ u'\'' ]
+    """
+    return [fold]
+
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
+    return [u'\'']
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString(option=0):
-    """Returns the keyword string"""
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
     return None
 
 #---- End Syntax Modules Internal Functions ----#

@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependancies
@@ -87,27 +89,41 @@ timmy = ("fold.timmy.whinge.level", "1")
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns Keyword Specifications List"""
-    KEYWORDS = [ruby_kw]
-    return KEYWORDS
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
 
-def SyntaxSpec(type=0):
-    """Syntax Specifications"""
+    """
+    return [ruby_kw]
+
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
     return syntax_items
 
-def Properties(type=0):
-    """Properties"""
-    return [ fold, timmy ]
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
 
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
+    """
+    return [fold, timmy]
+
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
     return [ u'#' ]
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString(option=0):
-    """Returns the keyword string"""
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
     return ruby_kw[1]
 
 #---- End Syntax Modules Internal Functions ----#

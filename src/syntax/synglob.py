@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
@@ -188,7 +190,7 @@ EXT_MAP = {
            'css'                : LANG_CSS,
            'ess'                : LANG_ESS,
            'f for'              : LANG_F77,
-           'f90 f96 f2k fpp'    : LANG_F95,
+           'f90 f95 f2k fpp'    : LANG_F95,
            'ksh'                : LANG_KSH,
            'java'               : LANG_JAVA,
            'js'                 : LANG_JS,

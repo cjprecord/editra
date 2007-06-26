@@ -19,6 +19,7 @@
 ############################################################################
 
 """
+@summary: mostly unimplemented
 #--------------------------------------------------------------------------#
 # FILE: ed_theme.py                                                        #
 # AUTHOR: Cody Precord                                                     #
@@ -37,8 +38,9 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id$"
-__author__ = "$Author$"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -55,4 +57,7 @@ class ED_Theme(wx.FileConfig):
     
     """
     def __init__():
-        """Initializes the object"""
+        """Initializes the object
+        @note: unimplemented
+
+        """

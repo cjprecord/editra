@@ -56,7 +56,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
@@ -92,10 +94,11 @@ class SyntaxMgr(object):
     """
     instance = None
     first = True
-    def __init__(self, config=None):
+    def __init__(self, config = None):
         """Initialize a syntax manager. If the optional
         value config is set the mapping of extensions to
         lexers will be loaded from a config file.
+        @keyword config: path of config file to load file extension config from
 
         """
         if self.first:
@@ -112,6 +115,7 @@ class SyntaxMgr(object):
     def __new__(cls, *args, **kargs):
         """Ensure only a single instance is shared amongst
         all objects.
+        @return: class instance
 
         """
         if not cls.instance:
@@ -122,6 +126,7 @@ class SyntaxMgr(object):
         """Gets the name of the module that is is associated
         with the given extension or None in the event that there
         is no association or that the association is plain text.
+        @param ext: extension string to lookup module for
 
         """
         ftype = self._extreg.FileTypeFromExt(ext)
@@ -134,13 +139,17 @@ class SyntaxMgr(object):
     def GetLangId(self, ext):
         """Gets the language Id that is associated with the file
         extension.
+        @param ext: extension to get lang id for
 
         """
         ftype = self._extreg.FileTypeFromExt(ext)
         return synglob.LANG_MAP[ftype][0]
 
     def IsModLoaded(self, modname):
-        """Checks if a module has already been loaded"""
+        """Checks if a module has already been loaded
+        @param modname: name of module to lookup
+
+        """
         if modname in sys.modules or modname in self._loaded:
             return True
         else:
@@ -149,6 +158,7 @@ class SyntaxMgr(object):
     def LoadModule(self, modname):
         """Dynamically loads a module by name. The loading is only
         done if the modules data set is not already being managed
+        @param modname: name of syntax module to load
 
         """
         if modname == None:
@@ -163,6 +173,7 @@ class SyntaxMgr(object):
     def SaveState(self):
         """Saves the current configuration state of the manager to
         disk for use in other sessions.
+        @return: whether save was successful or not
 
         """
         if not self._config or not os.path.exists(self._config):
@@ -176,10 +187,9 @@ class SyntaxMgr(object):
     def SyntaxData(self, ext):
         """Fetches the language data based on a file extention string.
         The file extension is used to look up the default lexer actions from the
-        EXT_REG dictionary (see synglob.py).
-        
-        PARAMETER: langstr, a string representing the file extension
-        RETURN: Returns a Dictionary of Lexer Config Data
+        EXT_REG dictionary (@see L{synglob.py}).
+        @param ext: a string representing the file extension
+        @return: Returns a Dictionary of Lexer Config Data
 
         """
         # The Return Value
@@ -217,24 +227,33 @@ class ExtensionRegister(dict):
     first = True
     config = u'synmap'
     def __init__(self):
+        """Initializes the register"""
         if self.first:
             self.first = False
             self.LoadDefault()
 
     def __new__(self, *args, **kargs):
-        """Maintain only a single instance of this object"""
+        """Maintain only a single instance of this object
+        @return: instance of this class
+
+        """
         if not self.instance:
             self.instance = dict.__new__(self, *args, **kargs)
         return self.instance
 
     def __missing__(self, key):
-        """Return the default value if an item is not found"""
+        """Return the default value if an item is not found
+        @return: txt extension for plain text
+
+        """
         return u'txt'
 
     def __setitem__(self, i, y):
         """Ensures that only one filetype is associated with an extension
         at one time. The behavior is that more recent settings override
         and remove associations from older settings.
+        @param i: key to set
+        @param y: value to set
 
         """
         if not isinstance(y, list):
@@ -249,6 +268,7 @@ class ExtensionRegister(dict):
     def __str__(self):
         """Converts the Register to a string that is formatted
         for output to a config file.
+        @return the register as a string
 
         """
         keys = self.keys()
@@ -262,6 +282,8 @@ class ExtensionRegister(dict):
         """Associate a given file type with the given file extension(s).
         The ext parameter can be a string of space separated extensions
         to allow for multiple associations at once.
+        @param ftype: file type description string
+        @param ext: file extension to associate
         
         """
         assoc = self.get(ftype, None)
@@ -278,6 +300,8 @@ class ExtensionRegister(dict):
     def Disassociate(self, ftype, ext):
         """Disassociate a file type with a given extension or space
         separated list of extensions.
+        @param ftype: filetype description string
+        @param ext: extension to disassociate
 
         """
         to_drop = ext.strip().split()
@@ -294,6 +318,7 @@ class ExtensionRegister(dict):
         """Returns the file type that is associated with
         the extension. If no association is found Plain Text
         will be returned by default.
+        @param ext: extension to lookup
 
         """
         for key, val in self.iteritems():
@@ -302,7 +327,10 @@ class ExtensionRegister(dict):
         return synglob.LANG_TXT
 
     def GetAllExtensions(self):
-        """Returns a sorted list of all extensions registered"""
+        """Returns a sorted list of all extensions registered
+        @return: list of all registered extensions
+
+        """
         ext = list()
         for x in self.values():
             ext.extend(x) 
@@ -310,13 +338,19 @@ class ExtensionRegister(dict):
         return ext
 
     def LoadDefault(self):
-        """Loads the default settings"""
+        """Loads the default settings
+        @postcondition: sets dictionary back to default installation state
+
+        """
         self.clear()
         for key in synglob.EXT_MAP:
             self.__setitem__(synglob.EXT_MAP[key], key.split())
 
     def LoadFromConfig(self, config):
-        """Load the extention register with values from a config file"""
+        """Load the extention register with values from a config file
+        @param config: path to config file to load settings from
+
+        """
         path = os.path.join(config, self.config)
         if not os.path.exists(path):
             self.LoadDefault()
@@ -335,6 +369,8 @@ class ExtensionRegister(dict):
     def SetAssociation(self, ftype, ext):
         """Like Associate but overrides any current settings instead of
         just adding to them.
+        @param ftype: File type description string
+        @param ext: file extension to set
 
         """
         self.__setitem__(ftype, list(set(ext.split())))
@@ -342,7 +378,11 @@ class ExtensionRegister(dict):
 #-----------------------------------------------------------------------------#
 
 def GenLexerMenu():
-    """Generates a menu of available syntax configurations"""
+    """Generates a menu of available syntax configurations
+    @return: alphabetically ordered menu of of all lexer settings
+    @rtype: wx.Menu
+
+    """
     lex_menu = wx.Menu()
     f_types = dict()
     for key in synglob.LANG_MAP:
@@ -356,7 +396,10 @@ def GenLexerMenu():
     return lex_menu
 
 def GenFileFilters():
-    """Generates a list of file filters"""
+    """Generates a list of file filters
+    @return: list of all file filters based on exentsion associations
+
+    """
     extreg = ExtensionRegister()
     # Convert extension list into a formated string
     f_dict = dict()
@@ -377,12 +420,17 @@ def GenFileFilters():
 def GetFileExtensions():
     """Gets a sorted list of all file extensions the editor is configured
     to handle.
+    @return: all registered file extensions
+
     """
     extreg = ExtensionRegister()
     return extreg.GetAllExtensions()
 
 def GetLexerList():
-    """Gets a list of unique file lexer configurations available""" 
+    """Gets a list of unique file lexer configurations available
+    @return: list of all lexer identifiers
+
+    """ 
     f_types = dict()
     for key, val in synglob.LANG_MAP.iteritems():
         f_types[key] = val[LANG_ID]
@@ -391,7 +439,10 @@ def GetLexerList():
     return f_order
 
 def SyntaxIds():
-    """Gets a list of all Syntax Ids and returns it"""
+    """Gets a list of all Syntax Ids and returns it
+    @return: list of all syntax language ids
+
+    """
     s_glob = dir(synglob)
     synIds = list()
     for item in s_glob:
@@ -406,7 +457,12 @@ def SyntaxIds():
     return ret_ids
 
 def GetExtFromId(extId):
-    """Takes a language ID and fetches an appropriate file extension string"""
+    """Takes a language ID and fetches an appropriate file extension string
+    @param extId: language id to get extension for
+    @return: file extension
+    @rtype: string
+
+    """
     extreg = ExtensionRegister()
     ftype = synglob.ID_MAP.get(extId, synglob.ID_MAP[synglob.ID_LANG_TXT])
     return extreg[ftype][0]

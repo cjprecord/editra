@@ -34,7 +34,9 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies
@@ -278,7 +280,7 @@ def InitConfig():
     ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
     ed_glob.CONFIG['SYS_PLUGIN_DIR'] = util.ResolvConfigDir("plugins", True)
     ed_glob.CONFIG['SYS_STYLES_DIR'] = util.ResolvConfigDir("styles", True)
-    ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test_data", True)
+    ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test", True)
     if not util.HasConfigDir("cache"):
         util.MakeConfigDir("cache")
     ed_glob.CONFIG['CACHE_DIR'] = util.ResolvConfigDir("cache")

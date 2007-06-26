@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 import synglob
@@ -135,24 +137,35 @@ fold_comp = ("fold.compact", "1")
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns Specified Keywords List"""
-    KEYWORDS = [fort_keywords, fort_func, fort_ext]
-    return KEYWORDS
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
 
-def SyntaxSpec(type=0):
-    """Syntax Specifications"""
+    """
+    return [fort_keywords, fort_func, fort_ext]
+
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
     return syntax_items
 
-def Properties(type=0):
-    """Property Settings"""
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
+
+    """
     return [fold, fold_comp]
 
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
-    if type == synglob.ID_LANG_F77:
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
+    if langId == synglob.ID_LANG_F77:
         return ['*']
-    elif type == synglob.ID_LANG_F95:
+    elif langId == synglob.ID_LANG_F95:
         return ['!']
     else:
         return list()
@@ -161,8 +174,10 @@ def CommentPattern(type=0):
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString():
-    """Returns the specified Keyword String"""
-    # Unused by this module, stubbed in for consistancy
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
     return None
 
 #---- End Syntax Modules Internal Functions ----#
