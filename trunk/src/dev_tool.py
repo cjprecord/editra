@@ -23,7 +23,9 @@
 @summary: Utility function for debuggin the editor
 
 """
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 import os
 import codecs

@@ -29,12 +29,14 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
-
 import synglob
+
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Specifications ----#
@@ -107,29 +109,41 @@ fold_else = ("fold.at.else", "0")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns List of Keyword Specifications"""
-    KEYWORDS = []
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
+
+    """
+    keywords= list()
     kw1_str = [c_keywords]
     kw2_str = [c_types]
-    if type == synglob.ID_LANG_CPP:
+    if langId == synglob.ID_LANG_CPP:
         kw1_str.append(cpp_keywords)
         kw2_str.append(cpp_types)
-    KEYWORDS.append((0, " ".join(kw1_str)))
-    KEYWORDS.append((1, " ".join(kw2_str)))
-    KEYWORDS.append(doc_keywords)
-    return KEYWORDS
+    keywords.append((0, " ".join(kw1_str)))
+    keywords.append((1, " ".join(kw2_str)))
+    keywords.append(doc_keywords)
+    return keywords
 
-def SyntaxSpec(type=0):
-    """Returns a list of syntax specifications"""
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
     return syntax_items
 
-def Properties(type=0):
-    """Returns a list of extra properties to set"""
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
+
+    """
     return [fold, fold_pre]
 
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
     if type == synglob.ID_LANG_CPP:
         return [ u'//' ]
     else:
@@ -139,8 +153,10 @@ def CommentPattern(type=0):
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString():
-    """Returns the specified Keyword String"""
-    # Unused by this module, stubbed in for consistancy
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
     return None
 
 #---- End Syntax Modules Internal Functions ----#

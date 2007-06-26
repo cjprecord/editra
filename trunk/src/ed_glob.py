@@ -35,7 +35,9 @@
 #--------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'

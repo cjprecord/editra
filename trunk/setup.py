@@ -31,6 +31,8 @@
   MacOSX:
   	python setup.py py2app
 """
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
 __revision__ = "$Revision$"
 
 #---- Imports ----#
@@ -96,7 +98,7 @@ DATA_FILES = [("include/python2.5", glob.glob("include/python2.5/%s/*" % __platf
               ("locale/en_US/LC_MESSAGES", ["locale/en_US/LC_MESSAGES/Editra.mo"]),
               ("locale/ja_JP/LC_MESSAGES", ["locale/ja_JP/LC_MESSAGES/Editra.mo"]),
               ("styles", glob.glob("styles/*.ess")),
-              ("test_data", glob.glob("test_data/*")),
+              ("tests", glob.glob("tests/*")),
               ("docs", glob.glob("docs/*.txt")), "AUTHORS", "FAQ", "INSTALL",
               "README","CHANGELOG","COPYING", "NEWS", "THANKS", "TODO",
               "pixmaps/editra_doc.icns"
@@ -110,7 +112,7 @@ DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py", "docs/*.txt",
          "pixmaps/theme/Nuovo/toolbar/*.png", "pixmaps/theme/Nuovo/menu/*.png", 
          "pixmaps/theme/Default/README", "profiles/default.pp", "profiles/.loader",
          "profiles/default.pp.sample", "locale/en_US/LC_MESSAGES/Editra.mo",
-         "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "test_data/*", 
+         "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "tests/*", 
          "AUTHORS", "CHANGELOG","COPYING", "FAQ", "INSTALL", "NEWS", "README",
          "THANKS", "TODO", "plugins/*.egg"
 ]

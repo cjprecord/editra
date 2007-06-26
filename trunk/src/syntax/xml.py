@@ -31,7 +31,9 @@
 #-----------------------------------------------------------------------------#
 """
 
-__revision__ = "$Id: Exp $"
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
@@ -43,7 +45,7 @@ import synglob
 
 # Xml Keywords
 xml_keywords = ("rss atom pubDate channel version title link description "
-                 "language generator item")
+                "language generator item")
 
 # SGML Keywords
 import html
@@ -57,28 +59,42 @@ syntax_items = html.syntax_items
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(type=0):
-    """Returns Keyword Specifications List"""
-    KEYWORDS = [(5, xml_keywords), (6, sgml_keywords)]
-    return KEYWORDS
+def Keywords(langId=0):
+    """Returns Specified Keywords List
+    @param langId: used to select specific subset of keywords
 
-def SyntaxSpec(type=0):
-    """Syntax Specifications"""
+    """
+    return [(5, xml_keywords), (6, sgml_keywords)]
+
+def SyntaxSpec(langId=0):
+    """Syntax Specifications
+    @param langId: used for selecting a specific subset of syntax specs
+
+    """
     return syntax_items
 
-def Properties(type=0):
-    """Extra Properties"""
-    return [ html.fold ]
+def Properties(langId=0):
+    """Returns a list of Extra Properties to set
+    @param langId: used to select a specific set of properties
 
-def CommentPattern(type=0):
-    """Returns a list of characters used to comment a block of code"""
-    return [ u'<!--', u'-->' ]
+    """
+    return [html.fold]
+
+def CommentPattern(langId=0):
+    """Returns a list of characters used to comment a block of code
+    @param langId: used to select a specific subset of comment pattern(s)
+
+    """
+    return [u'<!--', u'-->']
 
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
 def KeywordString(option=0):
-    """Returns the keyword string"""
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
     return None
 
 #---- End Syntax Modules Internal Functions ----#
