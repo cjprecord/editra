@@ -54,28 +54,38 @@ class ED_Menu(wx.Menu):
     customize and access items.
 
     """
-    def __init__(self, title=wx.EmptyString, style=0):
+    def __init__(self, title = wx.EmptyString, style = 0):
         """Initialize a Menu Object"""
         wx.Menu.__init__(self, title, style)
 
-    def Append(self, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, use_bmp=True):
-        """Append a MenuItem"""
+    def Append(self, id, text = u'', help = u'', \
+               kind = wx.ITEM_NORMAL, use_bmp = True):
+        """Append a MenuItem
+        @keyword use_bmp: try and set a bitmap if an appropriate one is 
+                          available in the ArtProvider
+
+        """
         item = wx.MenuItem(self, id, text, help, kind)
         self.AppendItem(item)
         return item
 
-    def AppendItem(self, item, use_bmp=True):
+    def AppendItem(self, item, use_bmp = True):
         """Appends a MenuItem to the menu and adds an associated
         bitmap if one is available, unless use_bmp is set to false.
+        @keyword use_bmp: try and set a bitmap if an appropriate one is 
+                          available in the ArtProvider
 
         """
         if use_bmp and item.GetKind() == wx.ITEM_NORMAL:
             self.SetItemBitmap(item)
         wx.Menu.AppendItem(self, item)
 
-    def Insert(self, pos, id, text=u'', help=u'', kind=wx.ITEM_NORMAL, use_bmp=True):
+    def Insert(self, pos, id, text = u'', help = u'', \
+               kind = wx.ITEM_NORMAL, use_bmp = True):
         """Insert an item at position and attach a bitmap
         if one is available.
+        @keyword use_bmp: try and set a bitmap if an appropriate one is 
+                          available in the ArtProvider
 
         """
         item = wx.Menu.Insert(self, pos, id, text, help, kind)
@@ -83,11 +93,14 @@ class ED_Menu(wx.Menu):
             self.SetItemBitmap(item)
         return item
 
-    def InsertAfter(self, item_id, id, label=u'', help=u'', 
-                    kind=wx.ITEM_NORMAL, use_bmp=True):
+    def InsertAfter(self, item_id, id, label = u'', help = u'', 
+                    kind = wx.ITEM_NORMAL, use_bmp = True):
         """Inserts the given item after the specified item id in
         the menu. If the id cannot be found then the item will appended
         to the end of the menu.
+        @keyword use_bmp: try and set a bitmap if an appropriate one is 
+                          available in the ArtProvider
+        @return: the inserted menu item
 
         """
         for pos in range(self.GetMenuItemCount()):
@@ -100,11 +113,14 @@ class ED_Menu(wx.Menu):
             mitem = self.Append(id, label, help, kind, use_bmp)
         return mitem
 
-    def InsertBefore(self, item_id, id, label=u'', help=u'', 
-                    kind=wx.ITEM_NORMAL, use_bmp=True):
+    def InsertBefore(self, item_id, id, label = u'', help = u'', 
+                    kind = wx.ITEM_NORMAL, use_bmp = True):
         """Inserts the given item before the specified item id in
         the menu. If the id cannot be found then the item will appended
         to the end of the menu.
+        @keyword use_bmp: try and set a bitmap if an appropriate one is 
+                          available in the ArtProvider
+        @return: menu item that was inserted
 
         """
         for pos in range(self.GetMenuItemCount()):
@@ -117,12 +133,16 @@ class ED_Menu(wx.Menu):
             mitem = self.Append(id, label, help, kind, use_bmp)
         return mitem
 
-    def InsertAlpha(self, id, label=u'', help=u'', 
-                    kind=wx.ITEM_NORMAL, after=0, use_bmp=True):
+    def InsertAlpha(self, id, label = u'', help = u'', 
+                    kind = wx.ITEM_NORMAL, after = 0, use_bmp = True):
         """Attempts to insert the new menuitem into the menu
         alphabetically. The optional parameter 'after' is used
         specify an item id to start the alphabetical lookup after.
         Otherwise the lookup begins from the first item in the menu.
+        @keyword after: id of item to start alpha lookup after
+        @keyword use_bmp: try and set a bitmap if an appropriate one is 
+                          available in the ArtProvider
+        @return: menu item that was inserted
 
         """
         if after:
@@ -154,6 +174,8 @@ class ED_Menu(wx.Menu):
         item matching the given name in the menu, the matching is
         case sensitive. The return value is the either the id of the
         removed item or None if the item was not found.
+        @param name: name of item to remove
+        @return: id of removed item or None if not found
 
         """
         id = None
@@ -168,6 +190,7 @@ class ED_Menu(wx.Menu):
     def SetItemBitmap(self, item):
         """Sets the MenuItems bitmap by getting the id from the
         artprovider if one exists.
+        @param item: item to set bitmap for
 
         """
         try:
@@ -182,8 +205,11 @@ class ED_MenuBar(wx.MenuBar):
     of menu components.
     
     """
-    def __init__(self, style=0):
-        """Initializes the Menubar"""
+    def __init__(self, style = 0):
+        """Initializes the Menubar
+        @keyword style: style to set for menu bar
+
+        """
         wx.MenuBar.__init__(self, style)
         self._filehistorymenu = ED_Menu()
         self._filemenu = self.GenFileMenu()
@@ -202,7 +228,10 @@ class ED_MenuBar(wx.MenuBar):
     #      init when the editor loads an associated widget. But this
     #      is the first step to get there.
     def GenFileMenu(self):
-        """Makes and attaches the file menu"""
+        """Makes and attaches the file menu
+        @return: the default file menu
+
+        """
         filemenu = ED_Menu()
         filehist = self._filehistorymenu
         filemenu.Append(ed_glob.ID_NEW, _("New") + u"\tCtrl+N", 
@@ -241,7 +270,10 @@ class ED_MenuBar(wx.MenuBar):
         return filemenu
 
     def GenEditMenu(self):
-        """Makes and attaches the edit menu"""
+        """Makes and attaches the edit menu
+        @return: the default edit menu
+
+        """
         editmenu = ED_Menu()
         editmenu.Append(ed_glob.ID_UNDO, _("Undo") + "\tCtrl+Z", 
                         _("Undo Last Action"))
@@ -299,7 +331,10 @@ class ED_MenuBar(wx.MenuBar):
         return editmenu
 
     def GenViewMenu(self):
-        """Makes and attaches the view menu"""
+        """Makes and attaches the view menu
+        @return: the default view menu
+
+        """
         viewmenu = ED_Menu()
         viewmenu.Append(ed_glob.ID_ZOOM_OUT, _("Zoom Out") + "\tCtrl+-", 
                         _("Zoom Out"))
@@ -334,7 +369,10 @@ class ED_MenuBar(wx.MenuBar):
         return viewmenu
 
     def GenFormatMenu(self):
-        """Makes and attaches the format menu"""
+        """Makes and attaches the format menu
+        @return: the default format menu
+
+        """
         formatmenu = ED_Menu()
         formatmenu.Append(ed_glob.ID_FONT, _("Font"), _("Change Font Settings"))
         formatmenu.AppendSeparator()
@@ -376,7 +414,10 @@ class ED_MenuBar(wx.MenuBar):
         return formatmenu
 
     def GenSettingsMenu(self):
-        """Makes and attaches the settings menu"""
+        """Makes and attaches the settings menu
+        @return: the default settings menu
+
+        """
         settingsmenu = ED_Menu()
         settingsmenu.Append(ed_glob.ID_AUTOCOMP, _("Auto-Completion"),
                             _("Use Auto Completion when available"), wx.ITEM_CHECK)
@@ -394,7 +435,10 @@ class ED_MenuBar(wx.MenuBar):
         return settingsmenu
 
     def GenToolsMenu(self):
-        """Makes and attaches the tools menu"""
+        """Makes and attaches the tools menu
+        @return: default tools menu
+
+        """
         toolsmenu = ED_Menu()
         toolsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper") + u'\tCtrl+K', 
                          _("Provides a Contextual Help Menu Listing Standard "
@@ -413,7 +457,10 @@ class ED_MenuBar(wx.MenuBar):
         return toolsmenu
 
     def GenHelpMenu(self):
-        """Makes and attaches the help menu"""
+        """Makes and attaches the help menu
+        @return: default help menu
+
+        """
         helpmenu = ED_Menu()
         helpmenu.Append(ed_glob.ID_ABOUT, _("&About") + u"...", _("About") + u"...")
         helpmenu.Append(ed_glob.ID_HOMEPAGE, _("Project Homepage"), 
@@ -424,7 +471,11 @@ class ED_MenuBar(wx.MenuBar):
         return helpmenu
 
     def GetMenuByName(self, namestr):
-        """Find and return a menu by name"""
+        """Find and return a menu by name
+        @param namestr: menuitems label
+        @return: menuitem or None if not found
+
+        """
         menu = "_%smenu" % namestr.lower()
         if hasattr(self, menu):
             return getattr(self, menu)

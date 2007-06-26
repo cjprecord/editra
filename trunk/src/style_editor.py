@@ -166,6 +166,8 @@ class StyleEditor(wx.Dialog):
         """Checks if the current style set is different from the
         original set. Used internally to check if a save prompt needs
         to be brought up. Returns True if the style sets are different.
+        @return: whether style set has been modified or not
+        @rtype: bool
 
         """
         diff = False
@@ -190,6 +192,8 @@ class StyleEditor(wx.Dialog):
         it, as simply assigning the dictionary to two different variables
         only copies a reference leaving both variables pointing to the 
         same object.
+        @param style_dict: dictionary of tags->StyleItems
+        @return: a copy of the given styleitem dictionary
 
         """
         new_dict = dict()
@@ -199,14 +203,20 @@ class StyleEditor(wx.Dialog):
         return new_dict
         
     def EnableSettings(self, enable = True):
-        """Enables/Disables all settings controls"""
+        """Enables/Disables all settings controls
+        @keyword enable: whether to enable/disable settings controls
+
+        """
         for sid in SETTINGS_IDS:
             ctrl = self.FindWindowById(sid)
             ctrl.Enable(enable)
         self.settings_enabled = enable
 
     def ExportStyleSheet(self):
-        """Writes the style sheet data out to a style sheet"""
+        """Writes the style sheet data out to a style sheet
+        @return: whether style sheet was exported properly or not
+
+        """
         if ed_glob.CONFIG['STYLES_DIR'] == ed_glob.CONFIG['SYS_STYLES_DIR']:
             user_config = os.path.join(wx.GetHomeDir(), 
                                         "." + ed_glob.prog_name, 'styles')
@@ -247,7 +257,11 @@ class StyleEditor(wx.Dialog):
         return result
 
     def GenerateStyleSheet(self):
-        """Generates a style sheet from the dialogs style data"""
+        """Generates a style sheet from the dialogs style data
+        @return: the dictionary of L{StyleItems} formated into a style sheet
+                 string
+
+        """
         sty_sheet = list()
         for tag in self.styles_new:
             sty_sheet.append(tag + u" {\n")
@@ -267,6 +281,8 @@ class StyleEditor(wx.Dialog):
     def LexerChoice(self):
         """Returns a sizer object containing a choice control with all
         available lexers listed in it.
+        @return: sizer item containing a choice control with all available
+                 syntax test files available
 
         """
         lex_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -281,7 +297,10 @@ class StyleEditor(wx.Dialog):
         return lex_sizer
 
     def Settings(self):
-        """Returns a sizer object holding all the settings controls"""
+        """Returns a sizer object holding all the settings controls
+        @return: main panel of configuration controls
+
+        """
         setting_sizer = wx.BoxSizer(wx.VERTICAL)
         setting_top = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -361,6 +380,7 @@ class StyleEditor(wx.Dialog):
     def StyleSheets(self):
         """Returns a sizer item that contains a choice control with
         all the available style sheets listed in it.
+        @return: sizer item holding all installed style sheets
 
         """
         ss_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -380,6 +400,7 @@ class StyleEditor(wx.Dialog):
     def StyleTags(self):
         """Returns a sizer object containing a choice control with all
         current style tags in it.
+        @return: sizer item containing list of all available style tags
 
         """
         style_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -400,13 +421,17 @@ class StyleEditor(wx.Dialog):
     def OnCancel(self, evt):
         """Catches the cancel button clicks and checks if anything
         needs to be done before closing the window.
+        @param evt: event that called this handler
 
         """
         self.LOG('[style_editor] [cancel] Cancel Clicked Closing Window')
         evt.Skip()
 
     def OnCheck(self, evt):
-        """Handels Checkbox events"""
+        """Handles Checkbox events
+        @param evt: event that called this handler
+
+        """
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
         if e_id == wx.ID_NEW:
@@ -427,7 +452,10 @@ class StyleEditor(wx.Dialog):
             evt.Skip()
 
     def OnChoice(self, evt):
-        """Handles the events generated from the choice controls"""
+        """Handles the events generated from the choice controls
+        @param evt: event that called this handler
+
+        """
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
         val = e_obj.GetStringSelection()
@@ -447,11 +475,17 @@ class StyleEditor(wx.Dialog):
             evt.Skip()
 
     def OnClose(self, evt):
-        """Handles the window closer event"""
+        """Handles the window closer event
+        @param evt: event that called this handler
+
+        """
         self.OnOk(evt)
 
     def OnColor(self, evt):
-        """Handles color selection events"""
+        """Handles color selection events
+        @param evt: event that called this handler
+
+        """
         e_id = evt.GetId()
         e_obj = self.FindWindowById(e_id)
         e_val = evt.GetValue()[0:3]
@@ -475,6 +509,7 @@ class StyleEditor(wx.Dialog):
         """Processes clicks in the preview control and sets the style
         selection in the style tags list to the style tag of the area
         the cursor has moved into.
+        @param evt: event that called this handler
 
         """
         style_id = self.preview.GetStyleAt(self.preview.GetCurrentPos())
@@ -489,6 +524,7 @@ class StyleEditor(wx.Dialog):
     def OnListBox(self, evt):
         """Catches the selection of a style tag in the listbox
         and updates the style window appropriatly.
+        @param evt: event that called this handler
 
         """
         e_id = evt.GetId()
@@ -503,6 +539,7 @@ class StyleEditor(wx.Dialog):
     def OnOk(self, evt):
         """Catches the OK button click and checks if any changes need to be
         saved before the window closes.
+        @param evt: event that called this handler
 
         """
         self.LOG('[style_editor] [Ok] Ok Clicked Closing Window')
@@ -517,7 +554,11 @@ class StyleEditor(wx.Dialog):
                 evt.Skip()
 
     def OnExport(self, evt):
-        """Catches save button event"""
+        """Catches save button event
+        @param evt: event that called this handler
+        @postcondition: export file dialog is opened
+
+        """
         self.LOG('[style_editor] [Save] Saving style changes')
         self.ExportStyleSheet()
         evt.Skip()
@@ -525,6 +566,7 @@ class StyleEditor(wx.Dialog):
     def OpenPreviewFile(self, file_lbl):
         """Opens a file using the names in the Syntax Files choice
         control as a search query.
+        @param file_lbl: name of file to open in test data directory
 
         """
         fname = file_lbl.replace(u" ", u"_").lower()
@@ -551,6 +593,7 @@ class StyleEditor(wx.Dialog):
     def UpdateSettingsPane(self, syntax_data):
         """Updates all the settings controls to hold the
         values of the selected tag.
+        @param syntax_data: syntax data set to configure panel from
 
         """
         val_str = str(syntax_data)
@@ -594,6 +637,7 @@ class StyleEditor(wx.Dialog):
     def UpdateStyleSet(self, id):
         """Updates the value of the style tag to reflect any changes
         made in the settings controls.
+        @param id: identifier of the style tag in the list
 
         """
         # Get the tag that has been modified

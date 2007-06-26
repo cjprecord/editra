@@ -67,10 +67,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text in"""
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
     def __init__(self, parent, winId,
-                 pos=wx.DefaultPosition, size=wx.DefaultSize,
-                 style=0, useDT=True):
+                 pos = wx.DefaultPosition, size = wx.DefaultSize,
+                 style = 0, useDT = True):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
+        @keyword useDT: wheter to use a drop target or not
 
         """
         wx.stc.StyledTextCtrl.__init__(self, parent, winId, pos, size, style)
@@ -160,6 +161,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def _BuildMacro(self):
         """Constructs a macro script from items in the macro
         record list.
+        @status: in limbo
 
         """
         return
@@ -196,22 +198,26 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def PlayMacro(self):
         """Send the list of built up macro messages to the editor
         to be played back.
+        @postcondition: the macro of this control has been played back
 
         """
-        print "Playing Macro"
         self.BeginUndoAction()
         for msg in self._macro:
             if msg[0] == 2170:
                 self.AddText(msg[2])
             elif msg[0] == 2001:
-                self.AddText(self.GetEOLChar() + u' '*(msg[1] - 1))
+                self.AddText(self.GetEOLChar() + u' ' * (msg[1] - 1))
             else:
                 self.SendMsg(msg[0], msg[1], msg[2])
         self.EndUndoAction()
 
     #---- Begin Function Definitions ----#
-    def AddLine(self, before=False):
-        """Add a new line to the document"""
+    def AddLine(self, before = False):
+        """Add a new line to the document
+        @param before: whether to add the line before current pos or not
+        @postcondition: a new line is added to the document
+
+        """
         line = self.LineFromPosition(self.GetCurrentPos())
         if before:
             line = line - 1
@@ -227,7 +233,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.GotoPos(pos + curr)
 
     def Configure(self):
-        """Configures the editors settings by using profile values"""
+        """Configures the editors settings by using profile values
+        @postcondition: all profile dependant attributes are configured
+
+        """
         self.SetWrapMode(ed_glob.PROFILE['WRAP']) 
         self.SetViewWhiteSpace(ed_glob.PROFILE['SHOW_WS'])
         self.SetUseAntiAliasing(ed_glob.PROFILE['AALIASING'])
@@ -245,9 +254,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.ToggleLineNumbers(ed_glob.PROFILE['SHOW_LN'])
         self.SetViewEdgeGuide(ed_glob.PROFILE['SHOW_EDGE'])
 
-    def Comment(self, uncomment=False):
+    def Comment(self, uncomment = False):
         """(Un)Comments a line or a selected block of text
         in a document.
+        @param uncomment: uncomment selection
 
         """
         if len(self._comment):
@@ -290,15 +300,26 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.GotoPos(sel[0] + nchars)
 
     def GetAutoIndent(self):
-        """Returns whether auto-indent is being used"""
+        """Returns whether auto-indent is being used
+        @return: whether autoindent is active or not
+        @rtype: bool
+
+        """
         return self._autoindent
 
     def GetLangId(self):
-        """Returns the language identifer of this control"""
+        """Returns the language identifer of this control
+        @return: language identifier of document
+        @rtype: int
+
+        """
         return self.lang_id
 
     def GetPos(self, key):
-        """ Update Line/Column information """
+        """Update Line/Column information
+        @param key: KeyEvent object
+
+        """
         pos = self.GetCurrentPos()
         line = self.GetCurrentLine()
         column = self.GetColumn(pos)
@@ -313,7 +334,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return (-1, -1)
 
     def DefineMarkers(self):
-        """Defines the folder and bookmark icons for this control"""
+        """Defines the folder and bookmark icons for this control
+        @postcondition: all margin markers are defined
+
+        """
         back = self.GetDefaultForeColour()
         fore = self.GetDefaultBackColour()
         self.MarkerDefine(wx.stc.STC_MARKNUM_FOLDEROPEN, 
@@ -337,6 +361,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def FindTagById(self, styleId):
         """Find the style tag that is associated with the given
         Id. If not found it returns an empty string.
+        @param styleId: id of tag to look for
+        @return: style tag string
 
         """
         for data in self.syntax_set:
@@ -345,18 +371,26 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         return 'default_style'
 
     def GetAutoComplete(self):
-        """Is Autocomplete being used by this instance"""
+        """Is Autocomplete being used by this instance
+        @return: whether autocomp is active or not
+
+        """
         return self._use_autocomp
 
     def GetFileName(self):
-        """Returns the full path name of the current file"""
+        """Returns the full path name of the current file
+        @return: full path name of document
+
+        """
         return "".join([self.dirname, util.GetPathChar(), self.filename])
 
-    def GetStyleSheet(self, sheet_name=None):
+    def GetStyleSheet(self, sheet_name = None):
         """Finds the current style sheet and returns its path. The
         Lookup is done by first looking in the users config directory
         and if it is not found there it looks for one on the system
         level and if that fails it returns None.
+        @param sheet_name: style sheet to look for
+        @return: full path to style sheet
 
         """
         if sheet_name:
@@ -379,6 +413,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def OnKeyDown(self, evt):
         """Handles keydown events, currently only deals with
         auto indentation.
+        @param evt: event that called this handler
+        @type evt: wx.KeyEvent
 
         """
         k_code = evt.GetKeyCode()
@@ -407,6 +443,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def OnChar(self, evt):
         """Handles Char events that arent caught by the
         KEY_DOWN event.
+        @param evt: event that called this handler
+        @type evt: wx.EVT_CHAR
 
         """
         if not self._use_autocomp:
@@ -432,7 +470,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         return
 
     def OnRecordMacro(self, evt):
-        """Records macro events"""
+        """Records macro events
+        @param evt: event that called this handler
+        @type evt: wx.stc.StyledTextEvent
+
+        """
         if self.IsRecording():
             msg = evt.GetMessage()
             if msg == 2170:
@@ -451,6 +493,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def GetCommandStr(self):
         """Gets the command string to the left of the autocomp
         activation character.
+        @return: the command string to the left of the autocomp char
 
         """
         curr_pos = self.GetCurrentPos()
@@ -470,14 +513,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         return cmd.strip()
 
     def ShowAutoCompOpt(self, command):
-        """Shows the autocompletion options list for the command"""
+        """Shows the autocompletion options list for the command
+        @param command: command to look for autocomp options for
+
+        """
         lst = self._autocomp_svc.GetAutoCompList(command)
         if len(lst):
             options = u' '.join(lst)
             self.AutoCompShow(0, options)
 
     def ShowCallTip(self, command):
-        """Shows call tip for given command"""
+        """Shows call tip for given command
+        @param command: command to  look for calltips for
+
+        """
         if self.CallTipActive():
             self.CallTipCancel()
         tip = self._autocomp_svc.GetCallTip(command)
@@ -489,7 +538,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.CallTipShow(tip_pos, tip)
 
     def ShowKeywordHelp(self):
-        """Displays the keyword helper"""
+        """Displays the keyword helper
+        @postcondition: shows keyword helper list control
+
+        """
         if self.AutoCompActive():
             self.AutoCompCancel()
         elif len(self.keywords) > 1:
@@ -502,13 +554,19 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def OnModified(self, evt):
         """Handles updates that need to take place after
         the control has been modified.
+        @param evt: event that called this handler
+        @type evt: wx.stc.StyledTextEvent
 
         """
         mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, self.GetId())
         wx.PostEvent(self.GetParent(), mevt)
 
     def OnUpdateUI(self, evt):
-        """Check for matching braces"""
+        """Check for matching braces
+        @param evt: event that called this handler
+        @type evt: wx.stc.StyledTextEvent
+
+        """
         braceAtCaret = -1
         braceOpposite = -1
         charBefore = None
@@ -537,7 +595,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         evt.Skip()
 
     def OnMarginClick(self, evt):
-        """Open and Close Folders as Needed"""
+        """Open and Close Folders as Needed
+        @param evt: event that called this handler
+        @type evt: wx.stc.StyledTextEvent
+
+        """
         if evt.GetMargin() == FOLD_MARGIN:
             if evt.GetShift() and evt.GetControl():
                 self.FoldAll()
@@ -565,7 +627,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.MarkerAdd(lineClicked, MARK_MARGIN)
 
     def FoldAll(self):
-        """Fold Tree In or Out"""
+        """Fold Tree In or Out
+        @postcondition: code tree is folded open or closed
+
+        """
         lineCount = self.GetLineCount()
         expanding = True
 
@@ -597,8 +662,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
             lineNum = lineNum + 1
 
-    def Expand(self, line, doExpand, force=False, visLevels=0, level=-1):
-        """Open the Margin Folder"""
+    def Expand(self, line, doExpand, force = False, visLevels = 0, level = -1):
+        """Open the Margin Folder
+        @postcondition: the selected folder is expanded
+
+        """
         lastChild = self.GetLastChild(line, level)
         line = line + 1
 
@@ -628,8 +696,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 line = line + 1
         return line
 
-    def FindLexer(self, set_ext=0):
-        """Sets Text Controls Lexer Based on File Extension"""
+    def FindLexer(self, set_ext = 0):
+        """Sets Text Controls Lexer Based on File Extension
+        @param set_ext: explicit extension to use in search
+        @postcondition: lexer is configured for file
+
+        """
         if not self.highlight:
             return 2
 
@@ -670,6 +742,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def ControlDispatch(self, evt):
         """Dispatches events caught from the mainwindow to the
         proper functions in this module.
+        @param evt: event that was posted to this handler
 
         """
         e_id = evt.GetId()
@@ -772,6 +845,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         current mode the editor will switch modes to preserve the eol
         type of the file, if the eol chars are mixed then the editor
         will toggle on eol visibility.
+        @postcondition: eol mode is configured to best match file
 
         """
         mixed = diff = False
@@ -806,6 +880,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def ConvertLineMode(self, mode_id):
         """Converts all line endings in a document to a specified
         format.
+        @param mode_id: id of eol mode to set
 
         """
         eol_map = { ed_glob.ID_EOL_MAC  : wx.stc.STC_EOL_CR,
@@ -816,7 +891,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetEOLMode(eol_map[mode_id])
 
     def ConvertWhitespace(self, mode_id):
-        """Convert whitespace from using tabs to spaces or visa versa"""
+        """Convert whitespace from using tabs to spaces or visa versa
+        @param mode_id: id of conversion mode
+
+        """
         if mode_id not in (ed_glob.ID_TAB_TO_SPACE, ed_glob.ID_SPACE_TO_TAB):
             return
         tw = self.GetIndent()
@@ -843,7 +921,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             del p1
 
     def GetEOLChar(self):
-        """Gets the eol character used in document"""
+        """Gets the eol character used in document
+        @returns the character used for eol in this document
+
+        """
         m_id = self.GetEOLModeId()
         if m_id == ed_glob.ID_EOL_MAC:
             return u'\r'
@@ -853,18 +934,27 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return u'\n'
 
     def GetIndentChar(self):
-        """Gets the indentation char used in document"""
+        """Gets the indentation char used in document
+        @return: indentation char used either space or tab
+
+        """
         if self.GetUseTabs():
             return u'\t'
         else:
             return u' ' * self.GetTabWidth()
 
     def GetEncoding(self):
-        """Returns the encoding of the current document"""
+        """Returns the encoding of the current document
+        @return: the encoding of the document
+
+        """
         return self.encoding
 
     def GetEOLModeId(self):
-        """Gets the id of the eol format"""
+        """Gets the id of the eol format
+        @return: id of the eol mode of this document
+
+        """
         eol_mode = self.GetEOLMode()
         eol_map = { wx.stc.STC_EOL_CR : ed_glob.ID_EOL_MAC,
                     wx.stc.STC_EOL_LF : ed_glob.ID_EOL_UNIX,
@@ -873,12 +963,16 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         return eol_map[eol_mode]
 
     def HasBom(self):
-        """Returns whether the loaded file had a BOM byte or not"""
+        """Returns whether the loaded file had a BOM byte or not
+        @return: whether file had a bom byte or not
+
+        """
         return self._hasbom
 
     def IsBracketHlOn(self):
         """Returns whether bracket highlighting is being used by this
         control or not.
+        @return: status of bracket highlight activation
 
         """
         return self.brackethl
@@ -886,6 +980,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def IsFoldingOn(self):
         """Returns whether code folding is being used by this
         control or not.
+        @return: whether folding is on or not
 
         """
         return self.folding
@@ -893,6 +988,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def IsHighlightingOn(self):
         """Returns whether syntax highlighting is being used by this
         control or not.
+        @return: whether syntax highlighting is on or not
 
         """
         return self.highlight
@@ -900,23 +996,34 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def IsRecording(self):
         """Returns whether the control is in the middle of recording
         a macro or not.
+        @return: whether recording macro or not
 
         """
         return self.recording
 
     def SetAutoComplete(self, value):
-        """Turns Autocompletion on and off"""
+        """Turns Autocompletion on and off
+        @param value: use autocomp or not
+        @type value: bool
+
+        """
         if isinstance(value, bool):
             self._use_autocomp = value
             if value:
                 self._autocomp_svc.LoadCompProvider(self.GetLexer())
 
     def SetEncoding(self, enc):
-        """Sets the encoding of the current document"""
+        """Sets the encoding of the current document
+        @param enc: encoding to set for document
+
+        """
         self.encoding = enc
 
     def SetEOLFromString(self, mode_str):
-        """Sets the EOL mode from a string descript"""
+        """Sets the EOL mode from a string descript
+        @param mode_str: eol mode to set
+
+        """
         mode_map = { 'Macintosh (\\r\\n)' : wx.stc.STC_EOL_CR,
                      'Unix (\\n)' : wx.stc.STC_EOL_LF,
                      'Windows (\\r\\n)' : wx.stc.STC_EOL_CRLF
@@ -926,8 +1033,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.SetEOLMode(wx.stc.STC_EOL_LF)
 
-    def SetViewEdgeGuide(self, switch=None):
-        """Toggles the visibility of the edge guide"""
+    def SetViewEdgeGuide(self, switch = None):
+        """Toggles the visibility of the edge guide
+        @keyword switch: force a particular setting
+
+        """
         if (switch == None and not self.GetEdgeMode()) or switch:
             self.SetEdgeColumn(int(ed_glob.PROFILE.get("EDGE", 80)))
             self.SetEdgeMode(wx.stc.STC_EDGE_LINE)
@@ -935,14 +1045,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetEdgeMode(wx.stc.STC_EDGE_NONE)
 
     def StartRecord(self):
-        """Starts recording all events and"""
+        """Starts recording all events
+        @return: None
+
+        """
         self.recording = True
         wx.GetApp().GetMainWindow().SetStatusText(_("Recording Macro") + \
                                                   u"...", ed_glob.SB_INFO)
         wx.stc.StyledTextCtrl.StartRecord(self)
 
     def StopRecord(self):
-        """Stops the recording and builds the macro script"""
+        """Stops the recording and builds the macro script
+        @postcondition: macro recording is stopped
+
+        """
         self.recording = False
         wx.stc.StyledTextCtrl.StopRecord(self)
         wx.GetApp().GetMainWindow().SetStatusText(_("Recording Finished"), \
@@ -950,7 +1066,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self._BuildMacro()
 
     def TrimWhitespace(self):
-        """Trims trailing whitespace from all lines in the document."""
+        """Trims trailing whitespace from all lines in the document.
+        @postcondition: all trailing whitespace is removed from document
+
+        """
         txt = u''
         cpos = self.GetCurrentPos()
         cline = self.GetCurrentLine()
@@ -976,7 +1095,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         del txt
 
     def FoldingOnOff(self, switch = None):
-        """Turn code folding on and off"""
+        """Turn code folding on and off
+        @keyword switch: force a particular setting
+
+        """
         if (switch == None and not self.folding) or switch:
             self.LOG("[stc_evt] Code Folding Turned On")
             self.folding = True
@@ -987,7 +1109,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetMarginWidth(FOLD_MARGIN, 0)
 
     def SyntaxOnOff(self, switch = None):
-        """Turn Syntax Highlighting on and off"""
+        """Turn Syntax Highlighting on and off
+        @keyword switch: force a particular setting
+
+        """
         if (switch == None and not self.highlight) or switch:
             self.LOG("[stc_evt] Syntax Highlighting Turned On")
             self.highlight = True
@@ -1001,14 +1126,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         return 0
 
     def ToggleAutoIndent(self, switch = None):
-        """Toggles Auto-indent On and Off"""
+        """Toggles Auto-indent On and Off
+        @keyword switch: force a particular setting
+
+        """
         if (switch == None and not self._autoindent) or switch:
             self._autoindent = True
         else:
             self._autoindent = False
 
     def ToggleBracketHL(self, switch = None):
-        """Toggle Bracket Highlighting On and Off"""
+        """Toggle Bracket Highlighting On and Off
+        @keyword switch: force a particular setting
+
+        """
         if (switch == None and not self.brackethl) or switch:
             self.LOG("[stc_evt] Bracket Highlighting Turned On")
             self.brackethl = True
@@ -1021,7 +1152,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
 
     def ToggleLineNumbers(self, switch = None):
-        """Toggles the visibility of the line number margin"""
+        """Toggles the visibility of the line number margin
+        @keyword switch: force a particular setting
+
+        """
         if (switch == None and not self.GetMarginWidth(NUM_MARGIN)) or switch:
             self.LOG("[stc_evt] Showing Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 30)
@@ -1032,6 +1166,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def ReloadFile(self):
         """Reloads the current file, returns True on success and
         False if there is a failure.
+        @return: whether file was reloaded or not
+        @rtype: bool
 
         """
         cfile = os.path.join(self.dirname, self.filename)
@@ -1056,7 +1192,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return False
 
     def SaveFile(self, path):
-        """Save buffers contents to disk"""
+        """Save buffers contents to disk
+        @param path: path of file to save
+        @return: whether file was written or not
+        @rtype: bool
+
+        """
         result = True
         try:
             writer = util.GetFileWriter(path, enc=self.encoding)
@@ -1081,9 +1222,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     # With utf-16 encoded text need to remove the BOM prior to setting
     # the text or there is alignment issues in the display of the first line 
     # of text. Potentially a BUG in scintilla or wxStyledTextCtrl
-    def SetText(self, txt, enc=u'utf-8'):
+    def SetText(self, txt, enc = u'utf-8'):
         """Sets the text of the control and the encoding to use for
         writting the file with.
+        @keyword enc: encoding to use for decoding text
 
         """
         bom = util.BOM.get(enc, u'')
@@ -1097,7 +1239,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.encoding = enc
 
     def DoZoom(self, mode):
-        """Zoom control in or out"""
+        """Zoom control in or out
+        @param mode: either zoom in or out
+        @type mode: int id value
+
+        """
         id_type = mode
         zoomlevel = self.GetZoom()
         if id_type == ed_glob.ID_ZOOM_OUT:
@@ -1113,6 +1259,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def ConfigureAutoComp(self):
         """Sets up the Autocompleter, the autocompleter
         configuration depends on the currently set lexer
+        @postcondition: autocomp is configured
 
         """
         self.AutoCompSetAutoHide(False)
@@ -1124,7 +1271,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self._autocomp_svc.UpdateNamespace(True)
 
     def ConfigureLexer(self, file_ext):
-        """Sets Lexer and Lexer Keywords for the specifed file extension"""
+        """Sets Lexer and Lexer Keywords for the specifed file extension
+        @param file_ext: a file extension to configure the lexer from
+
+        """
         syn_data = self._synmgr.SyntaxData(file_ext)
 
         # Set the ID of the selected lexer
@@ -1186,7 +1336,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def SetKeyWords(self, kw_lst):
         """Sets the keywords from a list of keyword sets
-        PARAM: kw_lst [ (KWLVL, "KEWORDS"), (KWLVL2, "KEYWORDS2"), ect...]
+        @param kw_lst: [ (KWLVL, "KEWORDS"), (KWLVL2, "KEYWORDS2"), ect...]
 
         """
         # Parse Keyword Settings List simply ignoring bad values and badly
@@ -1212,7 +1362,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
  
     def SetSyntax(self, syn_lst):
         """Sets the Syntax Style Specs from a list of specifications
-        PARAM: syn_lst = [(STYLE_ID, "STYLE_TYPE"), (STYLE_ID2, "STYLE_TYPE2)]
+        @param syn_lst: [(STYLE_ID, "STYLE_TYPE"), (STYLE_ID2, "STYLE_TYPE2)]
 
         """
         # Parses Syntax Specifications list, ignoring all bad values
@@ -1239,7 +1389,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def SetProperties(self, prop_lst):
         """Sets the Lexer Properties from a list of specifications
-        PARAM: prop_lst = [ ("PROPERTY", "VAL"), ("PROPERTY2", "VAL2) ]
+        @param prop_lst: [ ("PROPERTY", "VAL"), ("PROPERTY2", "VAL2) ]
 
         """
         # Parses Property list, ignoring all bad values
@@ -1260,6 +1410,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def RefreshStyles(self):
         """Refreshes the colorization of the window by reloading any 
         style tags that may have been modified.
+        @postcondition: all style settings are refreshed in the control
 
         """
         self.Freeze()
@@ -1271,14 +1422,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Refresh()
 
     def StyleDefault(self):
-        """Clears the editor styles to default"""
+        """Clears the editor styles to default
+        @postcondition: style is reset to default
+
+        """
         self.StyleResetDefault()
         self.StyleClearAll()
         self.SetCaretForeground(wx.NamedColor("black"))
         self.Colourise(0, -1)
 
     def UpdateBaseStyles(self):
-        """Updates the base styles of editor to the current settings"""
+        """Updates the base styles of editor to the current settings
+        @postcondtion: base style info is updated
+
+        """
         self.StyleDefault()
         self.SetMargins(0, 0)
         # Global default styles for all languages
@@ -1295,8 +1452,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.DefineMarkers()
         self.Colourise(0, -1)
 
-    def UpdateAllStyles(self, spec_style=None):
-        """Refreshes all the styles and attributes of the control"""
+    def UpdateAllStyles(self, spec_style = None):
+        """Refreshes all the styles and attributes of the control
+        @param spec_style: style scheme name
+        @postcondtion: style scheme is set to specified style
+
+        """
         self.LoadStyleSheet(self.GetStyleSheet(spec_style))
         self.UpdateBaseStyles()
         self.SetSyntax(self.syntax_set)
@@ -1304,4 +1465,3 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Refresh()
 
     #---- End Style Definitions ----#
-

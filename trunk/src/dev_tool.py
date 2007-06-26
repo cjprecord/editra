@@ -18,7 +18,11 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-""" Development Tools """
+""" Development Tools 
+@author: Cody Precord
+@summary: Utility function for debuggin the editor
+
+"""
 __revision__ = "$Id: Exp $"
 
 import os
@@ -30,15 +34,15 @@ from ed_glob import PROFILE
 
 def DEBUGP(statement, mode="std", log_lvl="none"):
     """Used to print Debug Statements
-    Modes of operation:
-       std = stdout
-       log = writes to log file
+    1. Modes of operation:
+       - std = stdout
+       - log = writes to log file
     
-    Log Levels:
-       none = used with stdout
-       INFO = Basic Information
-       WARN = Could be a potential problem
-       ERROR = Serious problem has occured
+    2. Log Levels:
+       - none = used with stdout
+       - INFO = Basic Information
+       - WARN = Could be a potential problem
+       - ERROR = Serious problem has occured
        
     """
     # Turn off normal debugging messages when not in Debug mode
@@ -77,5 +81,3 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
         print u"Improper DEBUG MODE: Defaulting to stdout"
         print statement
         return 1
-
-

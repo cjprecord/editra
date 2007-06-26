@@ -21,9 +21,9 @@
 """
 #--------------------------------------------------------------------------#
 # FILE:	plugdlg.py                                                         #
-# AUTHOR: Cody Precord                                                     #
+# @author: Cody Precord                                                    #
 # LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
+# @summary:                                                                #
 #     Provides a dialog for downloading, installing and configuring        #
 # plugins for Editra.                                                      #
 #                                                                          #
@@ -96,6 +96,8 @@ class PluginDialog(wx.Frame):
     def OnClose(self, evt):
         """Handles closing the dialog and unregistering it from
         the mainloop.
+        @param evt: Event fired that called this handler
+        @type evt: wx.EVT_CLOSE
 
         """
         busy = self._nb.IsBusy()
@@ -111,7 +113,10 @@ class PluginDialog(wx.Frame):
         evt.Skip()
 
     def Show(self, show=True):
-        """Shows the dialog"""
+        """Shows the dialog
+        @postcondition: Dialog is registered with the main loop and shown
+
+        """
         wx.GetApp().RegisterWindow(repr(self), self, True)
         wx.Frame.Show(self, show)
 
@@ -124,7 +129,7 @@ class PluginPages(wx.Toolbook):
     """
     def __init__(self, parent, tbid, pos = wx.DefaultPosition, 
                  size = wx.DefaultSize, style = wx.TB_TOP):
-        """Creates the Notebook"""
+        """Creates the Toolbook"""
         wx.Toolbook.__init__(self, parent, tbid, pos, size, style)
 
         # Create Pages
@@ -158,7 +163,8 @@ class PluginPages(wx.Toolbook):
         notebook are busy such as downloads or installs.
         The return will be None if not busy and a message
         string if it is busy.
-
+        @return: status of dialog
+        @rtype: string or None
         """
         dl_pg = self.GetPage(DOWNLOAD_PG)
         if dl_pg and dl_pg.IsDownloading():
@@ -167,7 +173,11 @@ class PluginPages(wx.Toolbook):
             return None
 
     def OnPageChanging(self, evt):
-        """Updates pages as they are being changed to"""
+        """Updates pages as they are being changed to.
+        @param evt: Event fired that called this handler
+        @type evt: wx.EVT_NOTEBOOK_PAGE_CHANGING
+
+        """
         cur_pg = evt.GetSelection()
         parent = self.GetParent()
         parent.SetTitle(parent._title + " | " + self.GetPageText(cur_pg))
@@ -209,6 +219,9 @@ class ConfigPanel(wx.Panel):
         """Gets the named item and returns its identifier. The
         identifier is the combination of the name and version 
         strings.
+        @param name: name of item in list
+        @type name: string
+        @return: identifier for the named list item
 
         """
         identifer = None
@@ -219,7 +232,12 @@ class ConfigPanel(wx.Panel):
         return identifer
 
     def HasItem(self, name):
-        """Checks if a given named plugin is the list of this panel"""
+        """Checks if a given named plugin is the list of this panel.
+        @param name: name of item to look for
+        @type name: string
+        @return: whether item is in list or not
+        @rtype: bool
+        """
         if self._list.FindItem(0, name) >= 0:
             return True
         else:
@@ -228,6 +246,8 @@ class ConfigPanel(wx.Panel):
     def OnNotify(self, evt):
         """Handles the notification events that are
         posted from the list control.
+        @param evt: Event fired that called this handler
+        @type evt: ed_event.NotificationEvent
 
         """
         index = evt.GetId()
@@ -244,6 +264,9 @@ class ConfigPanel(wx.Panel):
         this function will clear the list and Repopulate it
         with current config values. Returns the number of
         items populated to the list
+        @postcondition: list is popluated with all plugins that are
+                        currently loaded and sets the checkmarks accordingly
+        @return: number of items added to list
 
         """
         p_mgr = wx.GetApp().GetPluginManager()
@@ -290,7 +313,7 @@ class DownloadPanel(wx.Panel):
 
     def __init__(self, parent, pid, pos = wx.DefaultPosition,
                  size = wx.DefaultSize, style = wx.NO_BORDER):
-        """ """
+        """Initializes the panel"""
         wx.Panel.__init__(self, parent, pid, pos, size, style)
 
         # Attributes
@@ -323,7 +346,11 @@ class DownloadPanel(wx.Panel):
     # XXX *args is really a string but for some reason when it passed
     #     here from startWorker it gets broken into a list of chars
     def _DownloadPlugin(self, *args):
-        """Downloads the plugin at the given url"""
+        """Downloads the plugin at the given url.
+        @return: name, completed, egg data
+        @rtype: tuple
+
+        """
         url = "".join(args)
         egg = None
         try:
@@ -342,6 +369,7 @@ class DownloadPanel(wx.Panel):
     def _GetPluginListData(self, url = PLUGIN_REPO):
         """Gets the list of plugins and their related meta data
         as a string and returns it.
+        @return: list of data of available plugins from website
         
         """
         text = u''
@@ -374,6 +402,7 @@ class DownloadPanel(wx.Panel):
     def GetDownloadedData(self):
         """Returns the dictionary of downloaded data or an
         empty dictionary if no data has been downloaded.
+        @return: set of all successfully downloaded plugins
 
         """
         return self._eggbasket
@@ -381,6 +410,8 @@ class DownloadPanel(wx.Panel):
     def GetPluginList(self, url = PLUGIN_REPO):
         """Gets the list of available plugins from the web and returns
         it as a dictionary of names mapped to metadata.
+        @return: PluginData of all available plugins
+        @rtype: dict
 
         """
         plugins = self._GetPluginListData()
@@ -424,6 +455,8 @@ class DownloadPanel(wx.Panel):
     def IsDownloading(self):
         """Returns whether the panel has active download
         threads or not.
+        @return: status of downloading
+        @rtype: boolean
 
         """
         if self._eggcount:
@@ -432,7 +465,11 @@ class DownloadPanel(wx.Panel):
             return False
 
     def OnButton(self, evt):
-        """Handles the Button Events"""
+        """Handles the Button Events.
+        @param evt: Event that called this handler
+        @type evt: wx.EVT_BUTTON
+
+        """
         e_id = evt.GetId()
         if e_id == self.ID_DOWNLOAD:
             urls = list()
@@ -450,6 +487,8 @@ class DownloadPanel(wx.Panel):
     def OnNotify(self, evt):
         """Handles the notification events that are posted by the
         list control when items are checked.
+        @param evt: Event that called this handler
+        @type evt: ed_event.NotificationEvent
 
         """
         index = evt.GetId()
@@ -471,6 +510,7 @@ class DownloadPanel(wx.Panel):
     def PopulateList(self):
         """Populates the list control based off data in the plugin data
         list.
+        @return: number of items added to control
 
         """
         self._p_list = self.GetPluginList()
@@ -497,7 +537,7 @@ class InstallPanel(wx.Panel):
 
     def __init__(self, parent, pid, pos = wx.DefaultPosition,
                  size = wx.DefaultSize, style = wx.NO_BORDER):
-        """ """
+        """Initializes the panel"""
         wx.Panel.__init__(self, parent, pid, pos, size, style)
 
         # Attributes
@@ -546,7 +586,10 @@ class InstallPanel(wx.Panel):
         self._install.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
 
     def _Install(self):
-        """Install the plugins in the list"""
+        """Install the plugins in the list.
+        @postcondition: all plugins listed in the list are installed and loaded
+
+        """
         items = self._install.GetItems()
         if self._syscb.GetValue():
             inst_loc = ed_glob.CONFIG['SYS_PLUGIN_DIR']
@@ -607,6 +650,8 @@ class InstallPanel(wx.Panel):
         should be a string of the path to the item or
         the items name if it is an in memory file from the
         download page.
+        @param item: path or name of plugin item
+        @type item: string
 
         """
         if self._install.FindString(item) == wx.NOT_FOUND:
@@ -616,7 +661,11 @@ class InstallPanel(wx.Panel):
             pass
 
     def OnButton(self, evt):
-        """Handles button events generated by the panel"""
+        """Handles button events generated by the panel.
+        @param evt: Event that called this handler
+        @type evt: wx.EVT_BUTTON
+
+        """
         e_id = evt.GetId()
         if e_id == self.ID_INSTALL:
             self._Install()
@@ -626,6 +675,8 @@ class InstallPanel(wx.Panel):
     def OnCheckBox(self, evt):
         """Handles the checkbox events to make sure that
         only one of the two check boxes is checked at a time
+        @param evt: Event that called this handler
+        @type evt: wx.EVT_CHECKBOX
 
         """
         e_id = evt.GetId()
@@ -648,10 +699,13 @@ class InstallPanel(wx.Panel):
             pass
         evt.Skip()
 
-    # TODO should also check Extension points to make sure
-    #      that the eggs are Editra plugins
     def OnDrop(self, files):
-        """Get Drop files and place paths in control"""
+        """Get Drop files and place paths in control
+        @status: should also check entry points in addition to filetype
+        @param files: list of file paths
+        @postcondtion: all non egg files are filtered only placing
+                       the eggs in the list.
+        """
         # Filter out any files that are not eggs
         good = list()
         for fname in files:
@@ -664,6 +718,8 @@ class InstallPanel(wx.Panel):
     def OnKeyUp(self, evt):
         """Key Event handler. Removes the selected item from
         the list control when the delete or backspace kis is pressed.
+        @param evt: Event that called this handler
+        @type evt: wx.KeyEvent(wx.EVT_KEY_UP)
 
         """
         if evt.GetKeyCode() in [wx.WXK_DELETE, wx.WXK_BACK]:
@@ -701,6 +757,8 @@ class PluginListCtrl(wx.ListCtrl,
         """Returns a dictionary of item names mapped to check values,
         where the item name is the item at column zero and the
         dictionary contains all entries in the list.
+        @return: mapping of items to check falues
+        @rtype: dict string->bool
 
         """
         item_vals = dict()
@@ -712,6 +770,7 @@ class PluginListCtrl(wx.ListCtrl,
     def OnCheckItem(self, index, flag):
         """Sends a custom notification event to the lists parent
         so that it can handle the check event if it needs to.
+        @postcondition: checkbox is checked/unchecked and parent is notified
 
         """
         evt = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, index, flag, self)
@@ -722,6 +781,7 @@ class PluginListCtrl(wx.ListCtrl,
         """Does a smart add to the list that will insert the given
         a PluginData item alphabetically into the table based on
         the name value.
+        @postcondition: plugin is inserted alphabetically into list
 
         """
         items = self.GetItemCount()
@@ -747,19 +807,26 @@ class PluginListCtrl(wx.ListCtrl,
 
 class PluginData(plugin.PluginData):
     """Plugin Metadata storage class used to store data
-    about plugins and where to download them from.
+    about plugins and where to download them from
 
     """
-    def __init__(self, name=u'', descript=u'', author=u'', ver=u'', url=u''):
+    def __init__(self, name = u'', descript = u'', author = u'', \
+                 ver = u'', url = u''):
         plugin.PluginData.__init__(self, name, descript, author, ver)
         self._url = url
 
     def GetUrl(self):
-        """Returns the URL of the plugin"""
+        """Returns the URL of the plugin
+        @return: url string of plugins location
+
+        """
         return self._url
 
     def SetUrl(self, url):
-        """Sets the url of the plugin"""
+        """Sets the url of the plugin.
+        @param url: fully qualified url string
+
+        """
         if not isinstance(url, basestring):
             try:
                 url = str(url)

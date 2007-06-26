@@ -21,9 +21,9 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_event.py
-# AUTHOR:
+# @author: Cody Precord
 # LANGUAGE: Python
-# SUMMARY:
+# @summary:
 #    Provides custom events for the editors controls/objects to utilize
 #
 # METHODS:
@@ -48,21 +48,31 @@ EVT_UPDATE_TEXT = wx.PyEventBinder(edEVT_UPDATE_TEXT, 1)
 class UpdateTextEvent(wx.PyCommandEvent):
     """Event to signal that text needs updating"""
     def __init__(self, evtType, evtId, value = None):
+        """Creates the event object"""
         wx.PyCommandEvent.__init__(self, evtType, evtId)
         self._evtType = evtType
         self._id = evtId
         self._value = value
 
     def GetEvtType(self):
-        """Returns the event type"""
+        """Returns the event type
+        @return: this events event type (ed_event.edEVT_XXX_XXX)
+
+        """
         return self._evtType
 
     def GetId(self):
-        """Returns the event id"""
+        """Returns the event id
+        @return: The Id of this event
+
+        """
         return self._id
 
     def GetValue(self):
-        """Returns the value from the event."""
+        """Returns the value from the event.
+        @return: the value of this event
+
+        """
         return self._value
 
 #--------------------------------------------------------------------------#
@@ -79,17 +89,29 @@ class NotificationEvent(wx.PyCommandEvent):
         self._obj = obj
 
     def GetEventObject(self):
-        """Returns the object associated with this event"""
+        """Returns the object associated with this event
+        @return: the object associated with this event
+
+        """
         return self._obj
 
     def GetEvtType(self):
-        """Returns the event type"""
+        """Returns the event type
+        @return: this events event type (ed_event.edEVT_XXX_XXX)
+
+        """
         return self._evtType
 
     def GetId(self):
-        """Returns the event id"""
+        """Returns the event id
+        @return: the identifier of this event
+
+        """
         return self._id
 
     def GetValue(self):
-        """Returns the value from the event."""
+        """Returns the value from the event.
+        @return: the value of this event
+
+        """
         return self._value

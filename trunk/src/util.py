@@ -62,13 +62,19 @@ _ = wx.GetTranslation
 class DropTargetFT(wx.PyDropTarget):
     """Drop target capable of accepting dropped files and text"""
     def __init__(self, window):
-        """Initializes the Drop target"""
+        """Initializes the Drop target
+        @param window: window to recieve drop events from
+
+        """
         wx.PyDropTarget.__init__(self)
         self.window = window
         self.initObjects()
 
     def initObjects(self):
-        """Initializes the text and file data objects"""
+        """Initializes the text and file data objects
+        @postcondition: all data objects are initialized
+
+        """
         self.data = wx.DataObjectComposite()
         self.textDataObject = wx.TextDataObject()
         self.fileDataObject = wx.FileDataObject()
@@ -77,19 +83,32 @@ class DropTargetFT(wx.PyDropTarget):
         self.SetDataObject(self.data)
 
     def OnEnter(self, x, y, dragResult):
-        """Handles the window enter event"""
+        """Handles the window enter event
+        @return: result of drop object entering window
+
+        """
         return dragResult
 
-    def OnDrop(self, x=0, y=0):
-        """Gets the drop cords"""
+    def OnDrop(self, x = 0, y = 0):
+        """Gets the drop cords
+        @keyword x: x cord of drop object
+        @keyword y: y cord of drop object
+
+        """
         return True
 
     def OnDragOver(self, x, y, dragResult):
-        """Gets the drag results/cords"""
+        """Gets the drag results/cords
+        @return: result of drag over
+
+        """
         return dragResult
 
     def OnData(self, x, y, dragResult):
-        """Gets and processes the dropped data"""
+        """Gets and processes the dropped data
+        @postcondition: dropped data is processed
+
+        """
         if self.GetData():
             files = self.fileDataObject.GetFilenames()
             text = self.textDataObject.GetText()
@@ -110,7 +129,10 @@ class DropTargetFT(wx.PyDropTarget):
 
 #---- Misc Common Function Library ----#
 def SetClipboardText(txt):
-    """Copies text to the clipboard"""
+    """Copies text to the clipboard
+    @param txt: text to put in clipboard
+
+    """
     do = wx.TextDataObject()
     do.SetText(txt)
     if wx.TheClipboard.Open():
@@ -137,6 +159,7 @@ def GetDecodedText(fname):
     """Gets the text from a file and decodes the text using
     a compatible decoder. Returns a tuple of the text and the
     encoding it was decoded from.
+    @param fname: name of file to open and get text from
 
     """
     try:
@@ -167,6 +190,7 @@ def GetDecodedText(fname):
 def FilterFiles(file_list):
     """Filters a list of paths and returns a list of paths
     that are valid, not directories, and not seemingly not binary.
+    @param file_list: list of files/folders to filter for good files in
 
     """
     good = list()
@@ -210,6 +234,7 @@ def FilterFiles(file_list):
 def CanWrite(path):
     """Returns whether the user has write permissions
     to the given path.
+    @param path: path to check for writability
 
     """
     writable = False
@@ -219,19 +244,24 @@ def CanWrite(path):
     return writable
 
 def GetFileModTime(file_name):
-    """Returns the time that the given file was last modified on"""
+    """Returns the time that the given file was last modified on
+    @param file_name: path of file to get mtime of
+
+    """
     try:
         mod_time = os.path.getmtime(file_name)
     except EnvironmentError:
         mod_time = 0
     return mod_time
 
-def GetFileReader(file_name, enc='utf-8'):
+def GetFileReader(file_name, enc = 'utf-8'):
     """Returns a file stream reader object for reading the
     supplied file name. It returns a utf-8 reader if the host
     system supports it other wise it will return an ascii reader.
     If there is an error in creating the file reader the function 
     will return a negative number.
+    @param file_name: name of file to get a reader for
+    @keyword enc: encoding to use for reading the file
 
     """
     try:
@@ -246,12 +276,14 @@ def GetFileReader(file_name, enc='utf-8'):
         reader = file_h
     return reader
 
-def GetFileWriter(file_name, enc='utf-8'):
+def GetFileWriter(file_name, enc = 'utf-8'):
     """Returns a file stream writer object for reading the
     supplied file name. It returns a utf-8 reader if the host
     system supports it other wise it will return an ascii reader.
     If there is an error in creating the file reader the function 
     will return a negative number.
+    @param file_name: path of file to get writer for
+    @keyword enc: encoding to write text to file with
 
     """
     try:
@@ -267,19 +299,27 @@ def GetFileWriter(file_name, enc='utf-8'):
     return writer
 
 def GetPathChar():
-    """Returns the path character for the OS running the program"""
+    """Returns the path character for the OS running the program
+    @return: character used as file path separator
+    """
     if wx.Platform == '__WXMSW__':
         return u"\\"
     else:
         return u"/"
 
 def GetPathName(path):
-    """Gets the path minus filename"""
+    """Gets the path minus filename
+    @param path: full path to get base of
+
+    """
     pieces = os.path.split(path)
     return pieces[0]
 
 def GetFileName(path):
-    """Gets last atom on end of string as filename"""
+    """Gets last atom on end of string as filename
+    @param path: full path to get filename from
+
+    """
     pieces = os.path.split(path)
     filename = pieces[-1]
     return filename
@@ -287,6 +327,7 @@ def GetFileName(path):
 def GetExtension(file_str):
     """Gets last atom at end of string as extension if 
     no extension whole string is returned
+    @param file_str: path or file name to get extension from
 
     """
     pieces = file_str.split('.')
@@ -294,7 +335,11 @@ def GetExtension(file_str):
     return extension
 
 def GetIds(obj_lst):
-    """Gets a list of IDs from a list of objects"""
+    """Gets a list of IDs from a list of objects
+    @param obj_lst: list of objects to get ids from
+    @return: list of ids
+
+    """
     id_list = []
     for obj in obj_lst:
         id_list.append(obj.GetId())
@@ -303,6 +348,7 @@ def GetIds(obj_lst):
 def ResolvAbsPath(rel_path):
     """Takes a relative path and converts it to an
     absolute path.
+    @param rel_path: path to construct absolute path for
 
     """
     path_char = GetPathChar()
@@ -325,9 +371,10 @@ def ResolvAbsPath(rel_path):
 
     return apath + path_char + rpath
 
-def HasConfigDir(loc=""):
+def HasConfigDir(loc = ""):
     """ Checks if the user has a config directory and returns True 
     if the config directory exists or False if it does not.
+    @return: whether config dir in question exists on an expected path
 
     """
     pchar = GetPathChar()
@@ -338,7 +385,10 @@ def HasConfigDir(loc=""):
         return False
 
 def MakeConfigDir(name):
-    """Makes a user config direcotry"""
+    """Makes a user config direcotry
+    @param name: name of config directory to make in user config dir
+
+    """
     config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.prog_name
     try:
         os.mkdir(config_dir + GetPathChar() + name)
@@ -348,6 +398,7 @@ def MakeConfigDir(name):
 def CreateConfigDir():
     """ Creates the user config directory its default sub 
     directories and any of the default config files.
+    @postcondition: all default configuration files/folders are created
 
     """
     #---- Resolve Paths ----#
@@ -383,13 +434,15 @@ def CreateConfigDir():
     from profiler import UpdateProfileLoader
     UpdateProfileLoader()
 
-def ResolvConfigDir(config_dir, sys_only=False):
+def ResolvConfigDir(config_dir, sys_only = False):
     """Checks for a user config directory and if it is not
     found it then resolves the absolute path of the executables 
     directory from the relative execution path. This is then used 
     to find the location of the specified directory as it relates 
     to the executable directory, and returns that path as a
     string.
+    @param config_dir: name of config directory to resolve
+    @keyword sys_only: only get paths of system config directory or user one
 
     """
     path_char = GetPathChar()
@@ -456,7 +509,11 @@ def ResolvConfigDir(config_dir, sys_only=False):
     return pro_path
 
 def GetResources(resource):
-    """Returns a list of resource directories from a given toplevel config dir"""
+    """Returns a list of resource directories from a given toplevel config dir
+    @param resource: config directory name
+    @return: list of resource directory that exist under the given resource path
+
+    """
     rec_dir = ResolvConfigDir(resource)
     rec_lst = []
     if os.path.exists(rec_dir):
@@ -468,7 +525,7 @@ def GetResources(resource):
     else:
         return -1
 
-def GetResourceFiles(resource, trim=True, get_all=False):
+def GetResourceFiles(resource, trim = True, get_all = False):
     """Gets a list of resource files from a directory and trims the
     file extentions from the names if trim is set to True (default).
     If the get_all parameter is set to True the function will return
@@ -476,6 +533,10 @@ def GetResourceFiles(resource, trim=True, get_all=False):
     files and combining them, the default behavior returns the user
     level files if they exist or the system level files if the
     user ones do not exist.
+    @param resource: name of config directory
+    @keyword trim: trim file extensions or not
+    @keyword get_all: get a set of both system/user files or just user level
+    
 
     """
     rec_dir = ResolvConfigDir(resource)
@@ -498,9 +559,14 @@ def GetResourceFiles(resource, trim=True, get_all=False):
         return list(set(rec_list))
 
 # GUI helper functions
-def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
+def AdjustColour(color, percent, alpha = wx.ALPHA_OPAQUE):
     """ Brighten/Darken input colour by percent and adjust alpha
     channel if needed. Returns the modified color.
+    @param color: color object to adjust
+    @type color: wx.Color
+    @param percent: percent to adjust +(brighten) or -(darken)
+    @type percent: int
+    @keyword alpha: amount to adjust alpha channel
 
     """ 
     end_color = wx.WHITE
@@ -518,6 +584,7 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
 def HexToRGB(hex_str):
     """Returns a list of red/green/blue values from a
     hex string.
+    @param hex_str: hex string to convert to rgb
     
     """
     hexval = hex_str
@@ -534,6 +601,7 @@ def HexToRGB(hex_str):
 def SetWindowIcon(window):
     """Sets the given windows icon to be the programs
     application icon.
+    @param window: window to set app icon for
 
     """
     try:
@@ -550,6 +618,8 @@ def SetWindowIcon(window):
 def StrToTuple(tu_str):
     """Takes a tuple of ints that has been converted to a string format and
     reformats it back to a tuple value.
+    @param tu_str: a string of a tuple of ints i.e '(1, 4)'
+    @return: string turned into the tuple it represents
 
     """
     if tu_str[0] != u"(":
@@ -578,6 +648,11 @@ def StrToTuple(tu_str):
 class IntValidator(wx.PyValidator):
     """A Generic integer validator"""
     def __init__(self, min = 0, max = 0):
+        """Initialize the validator
+        @keyword min: min value to accept
+        @keyword max: max value to accept
+
+        """
         wx.PyValidator.__init__(self)
         self._min = min
         self._max = max
@@ -586,17 +661,26 @@ class IntValidator(wx.PyValidator):
         self.Bind(wx.EVT_CHAR, self.OnChar)
 
     def Clone(self):
-        """Clones the current validator"""
+        """Clones the current validator
+        @return: clone of this object
+
+        """
         return IntValidator(self._min, self._max)
 
     def Validate(self, win):
-        """Validate an window value"""
+        """Validate an window value
+        @param win: window to validate
+
+        """
         ctrl = self.GetWindow()
         val = ctrl.GetValue()      
         return val.isdigit()
 
     def OnChar(self, event):
-        """Process values as they are entered into the control"""
+        """Process values as they are entered into the control
+        @param event: event that called this handler
+
+        """
         key = event.GetKeyCode()
         if key < wx.WXK_SPACE or key == wx.WXK_DELETE or key > 255:
             event.Skip()

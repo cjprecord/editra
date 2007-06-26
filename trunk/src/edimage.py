@@ -13,6 +13,10 @@ class ImageClass: pass
 
 #----------------------------------------------------------------------
 def getsplashwarnData():
+    """Gets the raw image data
+    @return: raw image data
+
+    """
     return zlib.decompress(
 'x\xda4\x9a\x05P[\xef\xd3\xb6q\x82\x07\x0f.\xa5x)\x14\xd7\xe2\x14)\x14Z\xdc\
 \tP\xdc\xdd]\x03m)\xee\xd2\x94BH\xd1\x14ww)\t\xeeE\n\xc5\xdd?~\xffy\xbf\x99\
@@ -1494,13 +1498,25 @@ x\xab55\xcc\xe9S\xdc\xa8\xbaY\xf2[\x8a\xf4\x92\x83\xadh=\xac\x07L\xc2\xc5\
 \x90R' )
 
 def getsplashwarnBitmap():
+    """Gets bitmap of image data
+    @return: bitmap object
+
+    """
     return BitmapFromImage(getsplashwarnImage())
 
 def getsplashwarnImage():
+    """Gets Image from raw data
+    @return: wx.Image
+
+    """
     stream = cStringIO.StringIO(getsplashwarnData())
     return ImageFromStream(stream)
 
 def getsplashwarnIcon():
+    """Gets Icon from from bitmap data
+    @return: wx.Icon
+
+    """
     icon = EmptyIcon()
     icon.CopyFromBitmap(getsplashwarnBitmap())
     return icon
@@ -1515,6 +1531,10 @@ catalog['splashwarn'].getIcon = getsplashwarnIcon
 
 #----------------------------------------------------------------------
 def geteditra_dlData():
+    """Gets the raw image data
+    @return: raw image data
+
+    """
     return zlib.decompress(
 'x\xda\x01"\x16\xdd\xe9\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00@\x00\
 \x00\x00@\x08\x06\x00\x00\x00\xaaiq\xde\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\
@@ -1739,13 +1759,25 @@ n\xeaan|\x84h{\'k\xb9\'\xb5\xce\xb3A\x85R\xa9\x8c\xa6\xb5<\xf0\xc6\xbdwH\xe1\
 \xb20\xac\xea]\x00\x00\x00\x00IEND\xaeB`\x82\x15~*\x8e' )
 
 def geteditra_dlBitmap():
+    """Gets bitmap of image data
+    @return: bitmap object
+
+    """
     return BitmapFromImage(geteditra_dlImage())
 
 def geteditra_dlImage():
+    """Gets Image from raw data
+    @return: wx.Image
+
+    """
     stream = cStringIO.StringIO(geteditra_dlData())
     return ImageFromStream(stream)
 
 def geteditra_dlIcon():
+    """Gets Icon from from bitmap data
+    @return: wx.Icon
+
+    """
     icon = EmptyIcon()
     icon.CopyFromBitmap(geteditra_dlBitmap())
     return icon
@@ -1759,6 +1791,10 @@ catalog['editra_dl'].getIcon = geteditra_dlIcon
 
 #----------------------------------------------------------------------
 def getplugin_cfgData():
+    """Gets the raw image data
+    @return: raw image data
+
+    """
     return zlib.decompress(
 'x\xda\x01\xbd\x07B\xf8\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\
 \x00\x00 \x08\x06\x00\x00\x00szz\xf4\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\
@@ -1841,9 +1877,17 @@ rK\xbf\xa1l=\x181\xf4\x0e\xdd\x81i\x9a\x82\x88$\xc69\xd6\xdd\xf3!\x1a\x8d\n\
 \xb9\x1b' )
 
 def getplugin_cfgBitmap():
+    """Gets bitmap of image data
+    @return: bitmap object
+
+    """
     return BitmapFromImage(getplugin_cfgImage())
 
 def getplugin_cfgImage():
+    """Gets Image from raw data
+    @return: wx.Image
+
+    """
     stream = cStringIO.StringIO(getplugin_cfgData())
     return ImageFromStream(stream)
 
@@ -1855,6 +1899,10 @@ catalog['plugin_cfg'].getBitmap = getplugin_cfgBitmap
 
 #----------------------------------------------------------------------
 def getplugin_dlData():
+    """Gets the raw image data
+    @return: raw image data
+
+    """
     return zlib.decompress(
 'x\xda\x01a\x08\x9e\xf7\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\
 \x00\x00 \x08\x06\x00\x00\x00szz\xf4\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\
@@ -1941,9 +1989,17 @@ n\xb3\x90_${v\x01Q\x94\xd8\x8f\x18\xf4u?\xc8rT\xc4\x0b\xbdY\x13{\xf4\xcb\x86\
 ~n\xcd\x15\xe9?\xb5\xf7 1G\x96"<\x00\x00\x00\x00IEND\xaeB`\x82\xd5!$\x1a' )
 
 def getplugin_dlBitmap():
+    """Gets bitmap of image data
+    @return: bitmap object
+
+    """
     return BitmapFromImage(getplugin_dlImage())
 
 def getplugin_dlImage():
+    """Gets Image from raw data
+    @return: wx.Image
+
+    """
     stream = cStringIO.StringIO(getplugin_dlData())
     return ImageFromStream(stream)
 
@@ -1955,6 +2011,10 @@ catalog['plugin_dl'].getBitmap = getplugin_dlBitmap
 
 #----------------------------------------------------------------------
 def getplugin_installData():
+    """Gets the raw image data
+    @return: raw image data
+
+    """
     return zlib.decompress(
 'x\xda\x01\xd1\x06.\xf9\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\
 \x00\x00 \x08\x06\x00\x00\x00szz\xf4\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\
@@ -2026,9 +2086,17 @@ A\xcf\x0b\xdd\xb1\x91\x88\x83\x94\ne\x14R)\xa4\x96\x84\xba\xdbJ\xd5UDi\xdd\
 \xdfz\xe7\xa2\xe6\xd3K\x00\x04\x00\x00\x00\x00IEND\xaeB`\x82L\x9ef\xac' )
 
 def getplugin_installBitmap():
+    """Gets bitmap of image data
+    @return: bitmap object
+
+    """
     return BitmapFromImage(getplugin_installImage())
 
 def getplugin_installImage():
+    """Gets Image from raw data
+    @return: wx.Image
+
+    """
     stream = cStringIO.StringIO(getplugin_installData())
     return ImageFromStream(stream)
 

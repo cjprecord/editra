@@ -67,6 +67,8 @@ class GeneratorI(plugin.Interface):
         function needs to be a 2 item tuple with the first item being
         an associated file extention to use for setting highlighting
         if available and the second item is the string of the new document.
+        @param stc: reference to an an stc defined in ed_stc.py
+        @see: L{ed_stc.py}
 
         """
         pass
@@ -75,12 +77,17 @@ class GeneratorI(plugin.Interface):
         """Must return the Id used for the generator objects
         menu id. This is used to identify which Generator to
         call on a menu event.
+        @return: menu id that identifies the implemented generator
 
         """
         pass
 
     def GetMenuEntry(self, menu):
-        """Returns the MenuItem entry for this generator"""
+        """Returns the MenuItem entry for this generator
+        @return: menu entry for the implemented generator
+        @rtype: wx.MenuItem
+
+        """
         pass
 
 class Generator(plugin.Plugin):
@@ -94,6 +101,8 @@ class Generator(plugin.Plugin):
     def InstallMenu(self, menu):
         """Appends the menu of available Generators onto
         the given menu.
+        @param menu: menu to install entries into
+        @type menu: wx.Menu
 
         """
         menu_items = list()
@@ -111,13 +120,17 @@ class Generator(plugin.Plugin):
     def GenerateText(self, e_id, txt_ctrl):
         """Generates the new document text based on the given
         generator id and contents of the given ED_STC text control.
+        @param e_id: event id originating from menu entry
+        @param txt_ctrl: reference document to generate from
+        @type txt_ctrl: ED_STC
+        @return: the generated text
+        @rtype: string
         
         """
         gentext = None
         for ob in self.observers:
             if ob.GetId() == e_id:
                 gentext = ob.Generate(txt_ctrl)
-
         return gentext
 
 #--------------------------------------------------------------------------#
@@ -141,7 +154,10 @@ class Html(plugin.Plugin):
         self.body = wx.EmptyString
 
     def __str__(self):
-        """Returns the string of html"""
+        """Returns the string of html
+        @return string version of html object
+
+        """
         style = "<style type=\"text/css\">\n%s</style>"
         css = wx.EmptyString
         for key in self.css:
@@ -154,18 +170,28 @@ class Html(plugin.Plugin):
         return html
 
     def Unicode(self):
-        """Returns the html as unicode"""
+        """Returns the html as unicode
+        @return: unicode string of html
+
+        """
         return unicode(self.__str__())
 
     def Generate(self, stc_ctrl):
-        """Generates and returns the document"""
+        """Generates and returns the document
+        @param stc_ctrl: text control to get text from
+
+        """
         self.stc = stc_ctrl
         self.head = self.GenerateHead()
         self.body = self.GenerateBody()
         return ("html", self.__str__())
 
     def GenerateHead(self):
-        """Generates the html head block"""
+        """Generates the html head block
+        @return: html header information
+        @rtype: string
+
+        """
         return "<head>\n<title>%s</title>\n" \
                "<meta name=\"Generator\" content=\"Editra/%s\">\n" \
                "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" \
@@ -176,6 +202,7 @@ class Html(plugin.Plugin):
         this it does a character by character parse of the stc to determine
         style regions and generate css and and styled spans of html in order
         to generate an 'exact' html reqresentation of the stc's window.
+        @return: the body section of the html generated from the text control
 
         """
         html = list()
@@ -232,16 +259,25 @@ class Html(plugin.Plugin):
         return "<body class=\"default\">\n<pre>\n%s\n</pre>\n</body>" % "".join(html)
 
     def GetId(self):
-        """Returns the menu identifier for the HTML generator"""
+        """Returns the menu identifier for the HTML generator
+        @return: id of this object
+
+        """
         return self._id
 
     def GetMenuEntry(self, menu):
-        """Returns the Menu control for the HTML generator"""
+        """Returns the Menu control for the HTML generator
+        @return: menu entry for this generator
+
+        """
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"HTML",
                            _("Generate a %s version of the current document") % u"HTML")
 
     def OptimizeCss(self):
-        """Optimizes the CSS Set"""
+        """Optimizes the CSS Set
+        @postcondition: css is optimized to remove any redundant entries
+
+        """
         if not self.css.has_key('default_style'):
             return
         if self.css.has_key('operator_style'):
@@ -265,6 +301,8 @@ class Html(plugin.Plugin):
     def TransformText(self, text):
         """Does character substitution on a string and returns
         the html equivlant of the given string.
+        @param text: text to transform
+        @return: text with all special characters transformed
 
         """
         text = text.replace('&', "&amp;")      # Ampersands
@@ -273,16 +311,23 @@ class Html(plugin.Plugin):
         text = text.replace("\"", "&quot;")
         return text
 
-class CssItem:
+class CssItem(object):
     """Converts an Edtira StyleItem to a Css item for use in
     generating html.
 
     """
     def __init__(self, class_tag, style_item):
         """Initilizes a Css object equivilant of an Editra StyleItem
-        NOTE: it is left up to the caller to do any string substituition
+        @note: it is left up to the caller to do any string substituition
         for font faces and size values as this class will contruct the css
-        item as a mere reformation of StyleItem"""
+        item as a mere reformation of StyleItem
+        @param class_tag: StyleItem tag name
+        @param style_item: style item to convert to css
+        @type style_item: ed_style.StyleItem
+        @see: L{ed_style.py}
+
+        """
+        object.__init__(self)
         self._tag = class_tag
         self._back = style_item.GetBack()
         self._fore = style_item.GetFore()
@@ -292,14 +337,22 @@ class CssItem:
         self._decor = self.ExtractDecorators()
 
     def __eq__(self, css2):
-        """Defines the == operator for the CssItem class"""
+        """Defines the == operator for the CssItem class
+        @param css2: CssItem to compare to
+        @return: whether the two items are equivalant
+        @rtype: bool
+
+        """
         if self.__str__() == str(css2):
             return True
         else:
             return False
 
     def __str__(self):
-        """Outputs the css item as a formatted css block"""
+        """Outputs the css item as a formatted css block
+        @return: CssItem as a string
+
+        """
         css = ".%s {\n%s}"
         css_body = wx.EmptyString
         if self._font != wx.EmptyString:
@@ -331,6 +384,7 @@ class CssItem:
     def ExtractDecorators(self):
         """Pulls additional style specs from the StyleItem such
         as bold, italic, and underline styles.
+        @return: all decorators in the StyleItem (bold, underline, ect...)
 
         """
         decor = list()
@@ -343,46 +397,78 @@ class CssItem:
         return decor
 
     def GetBackground(self):
-        """Returns the Background value"""
+        """Returns the Background value
+        @return: background color attribute
+
+        """
         return self._back
 
     def GetColor(self):
-        """Returns the Font/Fore Color"""
+        """Returns the Font/Fore Color
+        @return: foreground color attribute
+
+        """
         return self._fore
 
     def GetDecorators(self):
-        """Returns the list of decorators"""
+        """Returns the list of decorators
+        @return: list of decorators item uses
+
+        """
         return self._decor
 
     def GetFont(self):
-        """Returns the Font Name"""
+        """Returns the Font Name
+        @return: font name attribute
+
+        """
         return self._font
 
     def GetFontSize(self):
-        """Returns the Font Size"""
+        """Returns the Font Size
+        @return: font size attribute
+
+        """
         return self._size
 
     def RemoveDecorator(self, item):
-        """Removes a specifed decorator from the decorator set"""
+        """Removes a specifed decorator from the decorator set
+        @param item: decorator item to remove
+        @type item: string
+
+        """
         if item in self._decor:
             self._decor.remove(item)
         else:
             pass
 
     def SetBackground(self, hex_str):
-        """Sets the Background Color"""
+        """Sets the Background Color
+        @param hex_str: hex color string to set backround attribute with
+
+        """
         self._back = hex_str
 
     def SetColor(self, hex_str):
-        """Sets the Font/Fore Color"""
+        """Sets the Font/Fore Color
+        @param hex_str: hex color string to set foreround attribute with
+
+        """
         self._fore = hex_str
 
     def SetFont(self, font_face):
-        """Sets the Font Face"""
+        """Sets the Font Face
+        @param font_face: font face name to set font attribute with
+
+        """
         self._font = font_face
 
     def SetFontSize(self, size_str):
-        """Sets the Font Point Size"""
+        """Sets the Font Point Size
+        @param size_str: point size to use for font in style
+        @type size_str: string
+
+        """
         self._size = size_str
 
 #-----------------------------------------------------------------------------#
@@ -406,11 +492,18 @@ class LaTeX(plugin.Plugin):
         self._preamble = wx.EmptyString
 
     def __str__(self):
-        """Returns the string representation of the object"""
+        """Returns the string representation of the object
+        @return: latex object as a string
+
+        """
         return self._preamble + self._body
 
     def CreateCmdName(self, name):
-        """Creates and returns a proper cmd name"""
+        """Creates and returns a proper cmd name
+        @param name: name to construct command from
+        @return: latex formated command string
+
+        """
         name = name.replace('_', '')
         tmp = list()
         alpha = "ABCDEFGHIJ"
@@ -422,7 +515,10 @@ class LaTeX(plugin.Plugin):
         return "".join(tmp)
 
     def GenDoc(self):
-        """Generates the document body of the LaTeX document"""
+        """Generates the document body of the LaTeX document
+        @returns: the main body of the reference document marked up with latex
+
+        """
         tex = list()
         tmp_tex = wx.EmptyString
         parse_pos = 0
@@ -484,7 +580,11 @@ class LaTeX(plugin.Plugin):
         return "\\begin{document}\n%s\n\\end{document}" % "".join(tex)
 
     def Generate(self, stc_doc):
-        """Generates the LaTeX document"""
+        """Generates the LaTeX document
+        @param stc_doc: text control to generate latex from
+        @return: the reference document marked up in LaTeX.
+
+        """
         self._stc = stc_doc
         default_si = self._stc.GetItemByName('default_style')
         self._dback = default_si.GetBack().split(',')[0]
@@ -496,7 +596,10 @@ class LaTeX(plugin.Plugin):
         return ("tex", self.__str__())
 
     def GenPreamble(self):
-        """Generates the Preamble of the document"""
+        """Generates the Preamble of the document
+        @return: the LaTeX document preamble
+
+        """
         pre = ("%% \iffalse meta-comment\n"
                "%%\n%% Generated by Editra %s\n"
                "%% This is generator is Very Experimental.\n"
@@ -520,17 +623,24 @@ class LaTeX(plugin.Plugin):
         return pre
 
     def GetId(self):
-        """Returns the menu identifier for the LaTeX generator"""
+        """Returns the menu identifier for the LaTeX generator
+        @return: id of that identifies this generator
+
+        """
         return self._id
 
     def GetMenuEntry(self, menu):
-        """Returns the Menu control for the LaTeX generator"""
+        """Returns the Menu control for the LaTeX generator
+        @param menu: menu to create MenuItem for
+
+        """
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"LaTeX",
                            _("Generate an %s version of the current document") % u"LaTeX")
 
     def HexToRGB(self, hex_str):
         """Returns a comma separated rgb string representation
         of the input hex string. 1.0 = White, 0.0 = Black.
+        @param hex_str: hex string to convert to latex rgb format
         
         """
         hex = hex_str
@@ -546,7 +656,10 @@ class LaTeX(plugin.Plugin):
 
     def RegisterStyleCmd(self, cmd_name, s_item):
         """Registers and generates a command from the
-        supplied StyleItem. 
+        supplied StyleItem.
+        @param cmd_name: name of command
+        @param s_item: style item to create command for
+        @postcondition: new styling command is created and registered for use 
         
         """
         cmd_name = self.CreateCmdName(cmd_name)
@@ -589,6 +702,8 @@ class LaTeX(plugin.Plugin):
     def TransformText(self, txt):
         """Transforms the given text into LaTeX format, by
         escaping all special characters and sequences.
+        @param txt: text to transform
+        @return: txt with all special characters transformed
         
         """
         ch_map = { "#" : "\\#", "$" : "\\$", "^" : "\\^",
@@ -622,13 +737,18 @@ class Rtf(plugin.Plugin):
         self._colortbl = RtfColorTbl()
 
     def __str__(self):
-        """Returns the RTF object as a string"""
+        """Returns the RTF object as a string
+        @return: rtf object as a string
+
+        """
         return self._GenRtf()
 
     #---- Protected Member Functions ----#
     def _GenRtf(self):
         """Generates the RTF equivalent of the displayed text in the current
         stc document window.
+        @precondition: self._stc must have been set by a call to Generate
+        @return: generated rtf marked up text
 
         """
         if not self._stc:
@@ -683,6 +803,8 @@ class Rtf(plugin.Plugin):
     def Generate(self, stc_doc):
         """Implements the GeneratorI's Generator Function by
         returning the RTF equvialent of the given stc_doc
+        @param stc_doc: document to generate text from
+        @return: document marked up in rtf
     
         """
         self._stc = stc_doc
@@ -691,6 +813,7 @@ class Rtf(plugin.Plugin):
     def GetId(self):
         """Implements the GeneratorI's GetId function by returning
         the identifier for this generator.
+        @return: identifier for this generator
 
         """
         return self._id
@@ -698,13 +821,17 @@ class Rtf(plugin.Plugin):
     def GetMenuEntry(self, menu):
         """Implements the GeneratorI's GetMenuEntry function by
         returning the MenuItem to associate with this object.
+        @return: menu entry item for this generator
 
         """
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"RTF", 
                            _("Generate a %s version of the current document") % u"RTF")
 
     def TransformText(self, text):
-        """Transforms the given text by converting it to RTF format"""
+        """Transforms the given text by converting it to RTF format
+        @param text: text to transform
+        @return: text with all special characters transformed
+        """
         chmap = { "\t" : "\\tab", "{" : "\\{", "}" : "\\}",
                   "\\" : "\\\\", "\n" : "\\par\n", "\r" : "\\par\n"}
         text = text.replace('\r\n', '\n')
@@ -719,6 +846,7 @@ class RtfColorTbl(object):
 
     """
     def __init__(self):
+        """Initialize the color table"""
         object.__init__(self)
         
         # Attributes
@@ -726,7 +854,10 @@ class RtfColorTbl(object):
         self._tbl = dict()   # map of style item color vals to rtf defs
 
     def __str__(self):
-        """Returns the string representation of the table"""
+        """Returns the string representation of the table
+        @return: rtf color table object as an rtf formatted string
+
+        """
         rstr = u''
         for item in self._index:
             rstr = rstr + self._tbl[item]
@@ -735,6 +866,8 @@ class RtfColorTbl(object):
     def AddColor(self, si_color):
         """Takes a style item and adds it to the table if
         has not already been defined in the table.
+        @param si_color: color to add to table
+        @type si_color: hex color string
 
         """
         if si_color not in self._index:
@@ -749,6 +882,8 @@ class RtfColorTbl(object):
         """Gets the index of a particular style items color
         definition from the color table. Returns -1 if item is
         not found.
+        @param si_color: style item color to find index in table for
+        @return: the colors index in the table
 
         """
         if si_color in self._index:

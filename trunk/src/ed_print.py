@@ -59,9 +59,11 @@ COLOURMODES = { 'black_white'    : wx.stc.STC_PRINT_BLACKONWHITE,
 # XXX current minimum print font is set to 12 point
 class ED_Printer:
     """Printer Class for the editor"""
-    def __init__(self, parent, stc_callable, mode='normal'):
+    def __init__(self, parent, stc_callable, mode = 'normal'):
         """Initializes the Printer, the stc_callable parameter
         must be a callable function that returns an STC instance object
+        @param stc_callable: function to get current stc document
+        @keyword mode: printer mode
 
         """
         self.stc = stc_callable
@@ -71,12 +73,18 @@ class ED_Printer:
         self.print_data = wx.PrintData()
 
     def CreatePrintout(self):
-        """Creates a printout of the current stc window"""
+        """Creates a printout of the current stc window
+        @return: a printout object
+
+        """
         colour = COLOURMODES[self.print_mode]
         return ED_Printout(self.stc(), colour, self.stc().filename)
 
     def PageSetup(self):
-        """Opens a print setup dialog"""
+        """Opens a print setup dialog
+        @return: None
+
+        """
         dlg_data = wx.PageSetupDialogData(self.print_data)
         print_dlg = wx.PageSetupDialog(self.parent, dlg_data)
         print_dlg.ShowModal()
@@ -84,7 +92,10 @@ class ED_Printer:
         print_dlg.Destroy()
 
     def Preview(self):
-        """Preview the Print"""
+        """Preview the Print
+        @return: None
+
+        """
         printout = self.CreatePrintout()
         printout2 = self.CreatePrintout()
         preview = wx.PrintPreview(printout, printout2, self.print_data)
@@ -93,7 +104,10 @@ class ED_Printer:
         pre_frame.Show()
 
     def Print(self):
-        """Prints the document"""
+        """Prints the document
+        @postcondition: the current document is printed
+
+        """
         pdd = wx.PrintDialogData()
         pdd.SetPrintData(self.print_data)
         printer = wx.Printer(pdd)
@@ -105,7 +119,12 @@ class ED_Printer:
         printout.Destroy()
         
     def SetColourMode(self, modeStr):
-        """Sets the color mode that the text is to be rendered with"""
+        """Sets the color mode that the text is to be rendered with
+        @param modeStr: mode to set the printer to use
+        @return: whether mode was set or not
+        @rtype: boolean
+
+        """
         if COLOURMODES.has_key(modeStr):
             self.print_mode = modeStr
             ret = True
@@ -116,8 +135,11 @@ class ED_Printer:
 #-----------------------------------------------------------------------------#
 class ED_Printout(wx.Printout):
     """Creates an printout from a STC"""
-    def __init__(self, stc_src, colour, title=wx.EmptyString):
-        """Initializes the printout object"""
+    def __init__(self, stc_src, colour, title = wx.EmptyString):
+        """Initializes the printout object
+        @param title: title of document
+
+        """
         wx.Printout.__init__(self)
         self.stc = stc_src
         self.colour = colour
@@ -130,14 +152,21 @@ class ED_Printout(wx.Printout):
             self.page_count += 1
 
     def HasPage(self, page):
-        """Is a page within range"""
+        """Is a page within range
+        @param page: page number
+        @return: wheter page is in range of document or not
+
+        """
         if page <= self.page_count:
             return True
         else:
             return False
 
     def OnPrintPage(self, page):
-        """Scales and Renders the page to a DC and prints it"""
+        """Scales and Renders the page to a DC and prints it
+        @param page: number of page to print
+
+        """
         line_height = self.stc.TextHeight(0)
         
         # Calculate sizes

@@ -21,9 +21,9 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: doctools.py                                                        #
-# AUTHOR: Cody Precord                                                     #
+# @author: Cody Precord                                                    #
 # LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
+# @summary:                                                                #
 #  Provides helper functions and classes for managing documents and        #
 # and their services.                                                      #
 #                                                                          #
@@ -55,7 +55,10 @@ class DocPositionMgr(object):
 
     """
     def __init__(self, book_path):
-        """Creates the position manager object"""
+        """Creates the position manager object
+        @param book_path: path to on disk data file
+
+        """
         object.__init__(self)
         self._book = book_path
         self._records = dict()
@@ -68,6 +71,8 @@ class DocPositionMgr(object):
     def AddRecord(self, vals):
         """Adds a record to the dictionary from a list of the
         filename vals[0] and the position value vals[1].
+        @param vals: file path, cursor postion
+        @type vals: tuple (str, int)
 
         """
         if len(vals) == 2:
@@ -77,12 +82,16 @@ class DocPositionMgr(object):
             return False
 
     def GetBook(self):
-        """Returns the current book used by this object"""
+        """Returns the current book used by this object
+        @return: path to book used by this manager
+
+        """
         return self._book
 
     def GetPos(self, name):
         """Get the position record for a given filename
         returns 0 if record is not found.
+        @return: postion value for the given filename
 
         """
         if self._records.has_key(name):
@@ -94,6 +103,8 @@ class DocPositionMgr(object):
         """Loads a set of records from an on disk dictionary
         the entries are formated as key=value with one entry
         per line in the file.
+        @return: whether book was loaded or not
+        @rtype: boolean
 
         """
         # If file does not exist create it and return
@@ -122,12 +133,15 @@ class DocPositionMgr(object):
         return True
 
     def WriteBook(self):
-        """Writes the in memory dictionary to the on disk one"""
+        """Writes the in memory dictionary to the on disk one
+        @postcondtion: in memory doc data is written out to disk
+
+        """
         writer = util.GetFileWriter(self.GetBook())
         try:
             for key in self._records:
                 writer.write(u"%s=%d\n" % (key, self._records[key]))
             writer.close()
-        except AttributeError, msg:
+        except (IOError, AttributeError), msg:
             dev_tool.DEBUGP("[docpositionmgr] %s" % str(msg))
 

@@ -71,9 +71,13 @@ else:
     TAB_STYLE = FNB.FNB_FANCY_TABS
 #--------------------------------------------------------------------------#
 class ED_Pages(FNB.FlatNotebook):
-    """ Editra tabbed pages class """
+    """Editras Notebook"""
     def __init__(self, parent, id_num):
-        """Initialize a notebook with a blank text control in it"""
+        """Initialize a notebook with a blank text control in it
+        @param parent: parent window of the notebook
+        @param id_num: this notebooks id
+
+        """
         FNB.FlatNotebook.__init__(self, parent, id_num, 
                                   style = TAB_STYLE |
                                           FNB.FNB_X_ON_TAB | 
@@ -116,13 +120,18 @@ class ED_Pages(FNB.FlatNotebook):
 
     #---- Function Definitions ----#
     def AddPage(self, control, title):
-        """Adds a page to the notebook"""
+        """Adds a page to the notebook
+        @param control: control panel to add to notebook
+        @param title: page title string
+
+        """
         self.pg_num += 1
         FNB.FlatNotebook.AddPage(self, control, title)
 
     def GetCurrentCtrl(self):
         """Returns the control of the currently selected
         page in the notebook.
+        @return: window object contained in current page or None
 
         """
         if hasattr(self, 'control'):
@@ -131,7 +140,10 @@ class ED_Pages(FNB.FlatNotebook):
             return None
 
     def NewPage(self):
-        """Create a new notebook page with a blank text control"""
+        """Create a new notebook page with a blank text control
+        @postcondition: a new page with an untitled document is opened
+
+        """
         self.control = ed_stc.EDSTC(self, self.pg_num)
         self.LOG("[nb_evt] Page Creation ID: %d" % self.control.GetId())
         self.AddPage(self.control, u"Untitled - %d" % self.pg_num)
@@ -140,12 +152,17 @@ class ED_Pages(FNB.FlatNotebook):
     def OpenPageType(self, page, title):
         """A Generic Page open Function to allow pages to contain
         any type of widget.
+        @status: currently incomplete
 
         """
         self.AddPage(page, title)
 
     def OpenPage(self, path, filename):
-        """Open a File Inside of a New Page"""
+        """Open a File Inside of a New Page
+        @param path: files base path
+        @param filename: name of file to open
+
+        """
         path2file = os.path.join(path, filename)
 
         # If file is non-existant or not a file give up
@@ -241,7 +258,10 @@ class ED_Pages(FNB.FlatNotebook):
         self.GoCurrentPage()
 
     def GoCurrentPage(self):
-        """Move Focus to Currently Selected Page"""
+        """Move Focus to Currently Selected Page.
+        @postcondition: focus is set to current page
+
+        """
         current_page = self.GetSelection()
         if current_page < 0:
             return current_page
@@ -256,6 +276,8 @@ class ED_Pages(FNB.FlatNotebook):
     def GetPageText(self, pg_num):
         """Gets the tab text from the given page number, stripping
         the * mark if there is one.
+        @param pg_num: index of page to get tab text from
+        @return: the tabs text
 
         """
         txt = FNB.FlatNotebook.GetPageText(self, pg_num)
@@ -265,7 +287,11 @@ class ED_Pages(FNB.FlatNotebook):
             return txt[1:]
 
     def GetTextControls(self):
-        """Gets all the currently opened text controls"""
+        """Gets all the currently opened text controls
+        @return: list containing reference to all stc controls opened in the
+                 notebook.
+
+        """
         children = self.GetChildren()
         controls = list()
         for child in children:
@@ -276,6 +302,9 @@ class ED_Pages(FNB.FlatNotebook):
     def HasFileOpen(self, fpath):
         """Checks if one of the currently active buffers has
         the named file in it.
+        @param fpath: full path of file to check
+        @return: whether file is currently open or not
+        @rtype: boolean
 
         """
         ctrls = self.GetTextControls()
@@ -286,13 +315,19 @@ class ED_Pages(FNB.FlatNotebook):
 
     #---- Event Handlers ----#
     def OnDrop(self, files):
-        """Opens drop files"""
+        """Opens dropped files
+        @param files: list of file paths
+        @postcondition: all files that could be properly opend are added to
+                        the notebook
+
+        """
         # Check file properties and make a "clean" list of file(s) to open
         valid_files = list()
         for fname in files:
             self.LOG("[fdt_evt] File(s) Dropped: %s" % fname)
             if not os.path.exists(fname):
-                self.frame.PushStatusText(_("Invalid file: %s") % fname, ed_glob.SB_INFO)
+                self.frame.PushStatusText(_("Invalid file: %s") % fname, \
+                                          ed_glob.SB_INFO)
             elif os.path.isdir(fname):
                 dcnt = glob.glob(os.path.join(fname, '*'))
                 dcnt = util.FilterFiles(dcnt)
@@ -300,14 +335,14 @@ class ED_Pages(FNB.FlatNotebook):
                     dlg = wx.MessageDialog(self, _("There are no files that Editra"
                                                    " can open in %s") % fname,
                                            _("No Valid Files to Open"),
-                                           style=wx.OK|wx.CENTER|wx.ICON_INFORMATION)
+                                           style=wx.OK | wx.CENTER | wx.ICON_INFORMATION)
                 else:
                     dlg = wx.MessageDialog(self, _("Do you wish to open all %d"
                                            " files in this directory?\n\nWarning opening"
                                            " many files at once may cause the"
                                            " editor to temporarly freeze.") % len(dcnt),
                                            _("Open Directory?"),
-                                           style = wx.YES|wx.NO|wx.ICON_INFORMATION)
+                                           style = wx.YES | wx.NO | wx.ICON_INFORMATION)
                 result = dlg.ShowModal()
                 dlg.Destroy()
                 if result == wx.ID_YES:
@@ -325,14 +360,21 @@ class ED_Pages(FNB.FlatNotebook):
         return
 
     def OnIdle(self, evt):
-        """Update tabs and check if files have been modified"""
+        """Update tabs and check if files have been modified
+        @param evt: Event that called this handler
+        @type evt: wx.IdleEvent
+
+        """
         if ed_glob.PROFILE['CHECKMOD'] and \
            wx.GetApp().IsActive() and self.GetPageCount():
             cfile = os.path.join(self.control.dirname, self.control.filename)
             lmod = util.GetFileModTime(cfile)
             if self.control.modtime and not lmod and not os.path.exists(cfile):
                 def PromptToReSave(cfile):
-                    """Show a dialog prompting to resave the current file"""
+                    """Show a dialog prompting to resave the current file
+                    @param cfile: the file in question
+
+                    """
                     mdlg = wx.MessageDialog(self.frame,
                                             _("%s has been deleted since its "
                                               "last save point.\n\nWould you "
@@ -350,7 +392,10 @@ class ED_Pages(FNB.FlatNotebook):
 
             elif self.control.modtime < lmod:
                 def AskToReload(cfile):
-                    """Show a dialog asking if the file should be reloaded"""
+                    """Show a dialog asking if the file should be reloaded
+                    @param cfile: the file to prompt for a reload of
+
+                    """
                     mdlg = wx.MessageDialog(self.frame, 
                                             _("%s has been modified by another "
                                               "application.\n\nWould you like to "
@@ -370,6 +415,8 @@ class ED_Pages(FNB.FlatNotebook):
     def OnLeftUp(self, evt):
         """Traps clicks sent to page close buttons and 
         redirects the action to the ClosePage function
+        @param evt: Event that called this handler
+        @type evt: wx.MouseEvent
 
         """
         cord, tabIdx = self._pages.HitTest(evt.GetPosition())
@@ -389,12 +436,20 @@ class ED_Pages(FNB.FlatNotebook):
             evt.Skip()
 
     def OnPageChanging(self, evt):
-        """Page changing event handler."""
+        """Page changing event handler.
+        @param evt: event that called this handler
+        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGING
+
+        """
         self.LOG("[nb_evt] Page Changed to %d" % evt.GetSelection())
         evt.Skip()
 
     def OnPageChanged(self, evt):
-        """Actions to do after a page change"""
+        """Actions to do after a page change
+        @param evt: event that called this handler
+        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGED
+
+        """
         current = evt.GetSelection()
         window = self.GetPage(current) #returns current stc
         window.SetFocus()
@@ -423,7 +478,11 @@ class ED_Pages(FNB.FlatNotebook):
         evt.Skip()
 
     def OnPageClosing(self, evt):
-        """Checks page status to flag warnings before closing"""
+        """Checks page status to flag warnings before closing
+        @param evt: event that called this handler
+        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CLOSING
+
+        """
         self.LOG("[nb_evt] Closing Page: #%d" % self.GetSelection())
         pg = self.GetCurrentPage()
         if len(pg.GetFileName()) > 1:
@@ -431,7 +490,11 @@ class ED_Pages(FNB.FlatNotebook):
         evt.Skip()
 
     def OnPageClosed(self, evt):
-        """Handles Paged Closed Event"""
+        """Handles Paged Closed Event
+        @param evt: event that called this handler
+        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CLOSED
+
+        """
         self.LOG("[nb_evt] Closed Page: #%d" % self.GetSelection())
         # wxMAC Bug? 
         # Make sure tab area is refreshed mostly for when all pages have been
@@ -443,14 +506,20 @@ class ED_Pages(FNB.FlatNotebook):
     #---- End Event Handlers ----#
 
     def CloseAllPages(self):
-        """Closes all open pages"""
+        """Closes all open pages
+        @postcondition: all pages in the notebook are closed
+
+        """
         for page in range(self.GetPageCount()):
             result = self.ClosePage()
             if result == wx.ID_CANCEL:
                 break
             
     def ClosePage(self):
-        """Closes Currently Selected Page"""
+        """Closes Currently Selected Page
+        @postcondtion: currently selected page is closed
+
+        """
         self.GoCurrentPage()
         pg_num = self.GetSelection()
         result = wx.ID_OK
@@ -480,6 +549,8 @@ class ED_Pages(FNB.FlatNotebook):
         on the language id associated with the type of open document.
         Any unknown filetypes are associated with the plaintext page
         image.
+        @param pg_num: page index to set image for
+        @param lang_id: language id of file type to get mime image for
 
         """
         il = self.GetImageList()
@@ -492,7 +563,10 @@ class ED_Pages(FNB.FlatNotebook):
         FNB.FlatNotebook.SetPageImage(self, pg_num, self._index[lang_id])
 
     def UpdatePageImage(self):
-        """Updates the page tab image"""
+        """Updates the page tab image
+        @postcondtion: page image is updated to reflect any changes in ctrl
+
+        """
         pg_num = self.GetSelection()
         ftype = self.control.filename.split(".")
         ftype = ftype[-1].upper()
@@ -500,7 +574,11 @@ class ED_Pages(FNB.FlatNotebook):
         self.SetPageImage(pg_num, str(self.control.GetLangId()))
 
     def OnUpdatePageText(self, evt):
-        """Update the title text of the current page"""
+        """Update the title text of the current page
+        @param evt: event that called this handler
+        @type evt: ed_event.UpdateTextEvent
+
+        """
         pg_num = self.GetSelection()
         if isinstance(self.control, ed_stc.EDSTC):
             title = self.control.filename
@@ -513,6 +591,8 @@ class ED_Pages(FNB.FlatNotebook):
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have
         been changed since initialization.
+        @postcondition: all stc controls in the notebook are reconfigured
+                        to match profile settings
 
         """
         for control in self.GetTextControls():
@@ -520,4 +600,3 @@ class ED_Pages(FNB.FlatNotebook):
             control.Configure()
 
 #---- End Function Definitions ----#
-
