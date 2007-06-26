@@ -211,7 +211,6 @@ test_data/smalltalk.st
 test_data/sql.sql
 test_data/svg.svg
 test_data/tcl_tk.tcl
-test_data/tex_latex.tex
 test_data/unicode_text.txt
 test_data/vhdl.vhdl
 test_data/visual_basic.vb

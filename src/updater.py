@@ -70,21 +70,27 @@ DL_WIN = 'Windows'
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-class UpdateService:
+class UpdateService(object):
     """Defines an updater service object for Editra"""
     def __init__(self):
         """Initializes the Updator Object"""
+        object.__init__(self)
         self._abort = False
         self._progress = (0, 100)
 
     def Abort(self):
-        """Cancel any pending or in progress actions."""
+        """Cancel any pending or in progress actions.
+        @postcondition: any download actions will be aborted
+
+        """
         self._abort = True
 
     def GetCurrFileURL(self):
         """Returns the url for the current version of the program
         for the current operating system, by requesting the data from
         project homepage.
+        @requires: active network connection
+        @return: url of latest available program version
         
         """
         if wx.Platform == '__WXGTK__':
@@ -108,7 +114,8 @@ class UpdateService:
     def GetCurrFileName(self):
         """Returns the name of the file that is currently available for
         download as a string.
-        
+        @return: name of currently available file without url
+
         """
         url = self.GetCurrFileURL()
         return url.split(u'/')[-1]
@@ -116,6 +123,8 @@ class UpdateService:
     def GetCurrentVersionStr(self):
         """Parses the project website front page for the most
         recent version of the program.
+        @requires: network connection
+        @return: verision number of latest available program
         
         """
         version = re.compile('<\s*a id\="VERSION"[^>]*>(.*?)<\s*/a\s*>')
@@ -127,7 +136,11 @@ class UpdateService:
             return _("Unable to retrieve version info")
 
     def GetFileSize(self, url):
-        """Gets the size of a file by address"""
+        """Gets the size of a file by address
+        @param url: url to look up file on
+        @return: size of the file in bytes
+
+        """
         size = 0
         try:
             dl_file = urllib.urlopen(url)
@@ -138,7 +151,12 @@ class UpdateService:
             return size
 
     def GetPageText(self, url):
-        """Gets the text of a url"""
+        """Gets the text of a url
+        @requires: network conection
+        @param url: url to get page from
+        @return: all text from the given url
+
+        """
         text = u''
         try:
             h_file = urllib.urlopen(url)
@@ -148,14 +166,18 @@ class UpdateService:
             return text
 
     def GetProgress(self):
-        """Returns the current progress/total tuple"""
+        """Returns the current progress/total tuple
+        @return: tuple of progress data
+
+        """
         return self._progress
 
-    def GetUpdateFiles(self, dl_to=wx.GetHomeDir()):
+    def GetUpdateFiles(self, dl_to = wx.GetHomeDir()):
         """Gets the requested version of the program from the website
         if possible. It will download the current files for the host system to
         location (dl_to). On success it returns True, otherwise it returns
         false.
+        @keyword dl_to: where to download the file to
         
         """
         # Check version to see if update is needed
@@ -193,6 +215,9 @@ class UpdateService:
     def UpdaterHook(self, count, block_sz, total_sz):
         """Updates the progress tuple of (amount_done, total) on
         each iterative call during the download.
+        @param count: number of blocks fetched
+        @param block_sz: size of download blocks
+        @param total_sz: total size of file to be downloaded
 
         """
         done = count * block_sz
@@ -233,13 +258,19 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self.Disable()
 
     def __del__(self):
-        """Cleans up when the control is destroyed"""
+        """Cleans up when the control is destroyed
+        @postcondition: if timer is running it is stopped before deletion
+
+        """
         if self._timer.IsRunning():
             self.LOG("[updateprog][info] Stopped timer on deletion")
             self._timer.Stop()
 
     def Abort(self):
-        """Overides the UpdateService abort function"""
+        """Overides the UpdateService abort function
+        @postcondtion: any download actions in the L{UpdateService} are aborted
+
+        """
         self.LOG("[updateprog][info] Aborting action, stopping progress bar")
         UpdateService.Abort(self)
         if self._timer.IsRunning():
@@ -253,7 +284,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         return value of the check function which is either a version string or
         an appropriate error message.
         
-        Also See: _UpdatesCheckThread
+        @see: L{_UpdatesCheckThread}
 
         """
         # Set bar to Checking mode so it knows to simulate update progress
@@ -270,6 +301,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         it was not. The updates will be downloaded to the 
         specified location or to the Users Desktop or Home
         Folder if no location is specified.
+        @keyword dl_loc: location to download file to
         
         """
         self.LOG("[updateprog][evt] Attempting to download updates...")
@@ -287,6 +319,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
     def GetDownloadResult(self):
         """Returns the status of the last download action. Either
         True for success or False for failure.
+        @return: whether last download was successfull or not
         
         """
         return self._dl_result
@@ -295,6 +328,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         """Returns the path that the file will be downloaded to.
         Currently will either return the users Desktop path or the
         users home directory in the case that there is no deskop directory
+        @return: path to download file
         
         """
         dl_loc = wx.GetHomeDir() + util.GetPathChar()
@@ -305,12 +339,16 @@ class UpdateProgress(wx.Gauge, UpdateService):
     def GetMode(self):
         """Returns the current mode of operation or 0 if the bar
         is currently inactive.
+        @return: mode of operation for the progres bar
         
         """
         return self._mode
 
     def GetStatus(self):
-        """Returns the status attribute string"""
+        """Returns the status attribute string
+        @return: status set by any update actions
+
+        """
         return self._status
 
     def GetUpdatesAvailable(self):
@@ -318,6 +356,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         program to see if updates are available. It is expected
         that CheckForUpdates has been called prior to calling this
         function. Returns True if Available and False otherwise.
+        @return: whether udpates are available or not
         
         """
         if self._status[0].isdigit():
@@ -328,6 +367,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
     def IsDownloading(self):
         """Returns a bool stating whether there is a download
         in progress or not.
+        @return: whether downloading is active or not
         
         """
         return self._downloading
@@ -335,6 +375,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
     def OnUpdate(self, evt):
         """Timer Event Handler Updates the progress bar
         on each cycle of the timer
+        @param evt: event that called this handler
         
         """
         mode = self.GetMode()
@@ -365,7 +406,10 @@ class UpdateProgress(wx.Gauge, UpdateService):
             pass
 
     def Start(self, msec = 100):
-        """Starts the progress bar and timer if not already active"""
+        """Starts the progress bar and timer if not already active
+        @keyword msec: pulse time for clock in milliseconds
+
+        """
         if not self._timer.IsRunning():
             self.LOG('[updateprog][evt] Starting Clock')
             self.Enable()
@@ -374,7 +418,10 @@ class UpdateProgress(wx.Gauge, UpdateService):
             pass
 
     def Stop(self):
-        """Stops the progress bar"""
+        """Stops the progress bar
+        @postcondition: progress bar is stopped
+
+        """
         if self._timer.IsRunning():
             self.LOG('[updateprog][evt] Stopping Clock')
             self._timer.Stop()
@@ -389,6 +436,8 @@ class UpdateProgress(wx.Gauge, UpdateService):
         """Processes the download and checks that the file has been downloaded
         properly. Then returns either True if the download was succesfull or
         False if it failed in some way.
+        @param loc: where to download file from
+        @return: success status of download
         
         """
         dl_ok = self.GetUpdateFiles(loc)
@@ -397,6 +446,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
     def _ResultNotifier(self, delayedResult):
         """Recieves the return from the result of the worker thread and
         notifies the interested party with the result.
+        @param delayedResult:  value from worker thread
         
         """
         jid = delayedResult.getJobID()
@@ -423,6 +473,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         while this function waits for the result from the network. Returns
         True to the consumer if updates are available and false if they
         are not or status is unknown.
+        @return: whether updates are available or not
         
         """
         self.LOG("[updateprog][evt] Checking for updates")
@@ -526,7 +577,10 @@ class DownloadDialog(wx.Frame):
         self.Bind(wx.EVT_TIMER, self.OnUpdate, id=self.ID_TIMER)
 
     def __del__(self):
-        """Cleans up on exit"""
+        """Cleans up on exit
+        @postcondition: if timer was running it is stopped
+
+        """
         if self._timer.IsRunning():
             self.LOG('[update-dlg][info] Stopping timer on deletion')
             self._timer.Stop()
@@ -534,6 +588,8 @@ class DownloadDialog(wx.Frame):
     def CalcDownRate(self):
         """Calculates and returns the approximate download rate
         in Kb/s
+        @return: current downlaod rate in Kb/s
+        @rtype: float
         
         """
         dlist = list()
@@ -545,7 +601,10 @@ class DownloadDialog(wx.Frame):
         return round((float(sum(dlist) / len(self._proghist)) / 1024), 2)
             
     def OnButton(self, evt):
-        """Handles events that are generated when buttons are pushed."""
+        """Handles events that are generated when buttons are pushed.
+        @param evt: event that called this handler
+
+        """
         e_id = evt.GetId()
         if e_id == wx.ID_CANCEL:
             self.LOG("[download-dlg] [evt] Cancel was pressed, aborting download")
@@ -556,7 +615,10 @@ class DownloadDialog(wx.Frame):
             evt.Skip()
 
     def OnClose(self, evt):
-        """Handles the window closer event"""
+        """Handles the window closer event
+        @param evt: event that called this handler
+
+        """
         self.LOG("[download-dlg] [evt] Closing Download Dialog")
         self._progress.Abort()
         # Wait till thread has halted before exiting
@@ -566,7 +628,10 @@ class DownloadDialog(wx.Frame):
         evt.Skip()
         
     def OnUpdate(self, evt):
-        """Updates the status text on each pulse from the timer"""
+        """Updates the status text on each pulse from the timer
+        @param evt: event that called this handler
+
+        """
         e_id = evt.GetId()
         if e_id == self.ID_TIMER:
             prog = self._progress.GetProgress()
@@ -594,7 +659,10 @@ class DownloadDialog(wx.Frame):
             evt.Skip()
 
     def Show(self):
-        """Shows the Dialog and starts downloading the updates"""
+        """Shows the Dialog and starts downloading the updates
+        @postcondtion: window is registered with mainloop and shown on screen
+
+        """
         # Tell the main loop we are busy
         wx.GetApp().RegisterWindow(repr(self), self, True)
         self._timer.Start(1000) # One pulse every second

@@ -52,9 +52,9 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: plugin.py
-# AUTHOR: Cody Precord
+# @author: Cody Precord
 # LANGUAGE: Python
-# SUMMARY:
+# @summary:
 #    This module provides the core functionality of the plugin system for
 # Editra. Its design is influenced by the system used in the web based
 # project management software Trac (trac.edgewall.org). To create a plugin
@@ -116,16 +116,17 @@ class Interface(object):
     pass
 
 class ExtensionPoint(property):
-    """Declares what interface a plugin is extending"""
+    """Declares what L{Interface} a plugin is extending"""
     def __init__(self, interface):
         property.__init__(self, self.Extensions)
         self.interface = interface
 
     def __repr__(self):
+        """@return: string representation of the object"""
         return '<ExtensionPoint %s>' % self.interface.__name__
 
     def Extensions(self, component):
-        """Return a list of plugins that declare to impliment the
+        """@return a list of plugins that declare to impliment the
         given extension point.
 
         """
@@ -142,6 +143,7 @@ class PluginMeta(type):
     _plugins = list()
     _registry = dict()
     def __new__(mcs, name, bases, d):
+        """@return a new metaclass object"""
         d['_implements'] = _implements[:]
         del _implements[:]
         new_obj = type.__new__(mcs, name, bases, d)
@@ -169,7 +171,9 @@ class Plugin(object):
         per manager. If an instance of this plugin has already be
         initialized, that instance will be returned. If not this will
         initialize a new instance of the plugin.
-        
+        @return: a new class object or an existing instance if one
+                 exists.
+
         """
         if issubclass(cls, PluginManager):
             self = super(Plugin, cls).__new__(cls)
@@ -184,9 +188,15 @@ class Plugin(object):
         return self
 
 class PluginData(object):
-    """A storage class for representing data about a plugin"""
+    """A storage class for representing data about a L{Plugin}"""
     def __init__(self, name=u'', descript=u'', author=u'', ver=u''):
-        """Create the plugin data object"""
+        """Create the plugin data object
+        @param name: Name of the plugin
+        @param descript: Short description of plugin
+        @param author: Who made the plugin
+        @param ver: Version of the plugin
+        @type ver: string
+        """
         object.__init__(self)
         self._name = name
         self._description = descript
@@ -194,23 +204,27 @@ class PluginData(object):
         self._version = ver
 
     def GetName(self):
-        """Returns the name of the plugin"""
+        """@returns: Plugin's name string"""
         return self._name
 
     def GetDescription(self):
-        """Returns the plugins description"""
+        """@returns: Plugins description string"""
         return self._description
 
     def GetAuthor(self):
-        """Returns the author of the plugin"""
+        """@returns: Author of the plugin"""
         return self._author
 
     def GetVersion(self):
-        """Returns the version of the plugin"""
+        """@returns: Plugin's version string"""
         return self._version
 
     def SetName(self, name):
-        """Returns the name of the plugin"""
+        """Sets the plugins name string
+        @param name: String to name plugin with
+        @postcondition: Plugins name string is set
+
+        """
         if not isinstance(name, basestring):
             try:
                 name = str(name)
@@ -219,7 +233,7 @@ class PluginData(object):
         self._name = name
 
     def SetDescription(self, descript):
-        """Returns the plugins description"""
+        """@returns: Plugins description string"""
         if not isinstance(descript, basestring):
             try:
                 descript = str(descript)
@@ -228,7 +242,11 @@ class PluginData(object):
         self._description = descript
 
     def SetAuthor(self, author):
-        """Returns the author of the plugin"""
+        """Sets the author attribute
+        @param author: New Authors name string
+        @postcondition: Author attribute is set to new value
+
+        """
         if not isinstance(author, basestring):
             try:
                 author = str(author)
@@ -237,7 +255,11 @@ class PluginData(object):
         self._author = author
 
     def SetVersion(self, ver):
-        """Returns the version of the plugin"""
+        """Sets the version attribute of the plugin.
+        @param ver: Version string
+        @postcondition: Plugins version attribute is set to new value
+
+        """
         if not isinstance(ver, basestring):
             try:
                 ver = str(ver)
@@ -246,7 +268,7 @@ class PluginData(object):
         self._version = ver
 
 def Implements(*interfaces):
-    """Used by plugins to declare the interface that they
+    """Used by L{Plugin}s to declare the interface that they
     implment/extend.
 
     """
@@ -260,10 +282,15 @@ def Implements(*interfaces):
 class PluginManager(object):
     """The PluginManger keeps track of the active plugins. It
     also provides an interface into loading and unloading plugins.
+    @status: Allows for dynamic loading of plugins but they can not
+             be called/used until the editor has been restarted.
 
     """
     def __init__(self):
-        """Initializes a PluginManager object"""
+        """Initializes a PluginManager object.
+        @postcondition: Plugin manager and plugins are initialized
+
+        """
         object.__init__(self)
         self.LOG = wx.GetApp().GetLog()
         self._config = self.LoadPluginConfig() # Enabled/Disabled Plugins
@@ -281,14 +308,17 @@ class PluginManager(object):
     def __contains__(self, cobj):
         """Returns True if a plugin is currently loaded and being
         managed by this manager.
-        
+        @param cobj: object to look for in loaded plugins
+
         """
         return cobj in self._plugins
 
     def __getitem__(self, cls):
         """Gets and returns the instance of given class if it has
         already been activated.
-        
+        @param cls: class object to get from metaregistery
+        @return: returns either None or the intialiazed class object
+
         """
         nspace = cls.__module__ + "." + cls.__name__
         if nspace in ed_glob.DEFAULT_PLUGINS:
@@ -309,12 +339,17 @@ class PluginManager(object):
         return plugin
 
     def CallPluginOnce(self, plugin):
-        """Makes a call to a given plugin"""
+        """Makes a call to a given plugin
+        @status: currently not implemented
+
+        """
         pass
 
     def CreateEnvironment(self, path):
         """Creates the environment based on the passed
         in path list
+        @param path: path(s) to scan for extension points
+        @type path: list of path strings
 
         """
         if pkg_resources != None:
@@ -325,7 +360,12 @@ class PluginManager(object):
         return env
 
     def DisablePlugin(self, plugin):
-        """Disables a named plugin"""
+        """Disables a named plugin.
+        @precondition: plugin must be managed by this manager instance
+        @postcondition: plugin is disabled and will not be activated on 
+                        next reload.
+
+        """
         self._config[plugin] = False
         for cls in self._enabled:
             pmod = cls.__module__
@@ -333,24 +373,23 @@ class PluginManager(object):
                 self._enabled[cls] = False
 
     def EnablePlugin(self, plugin):
-        """Enables a named plugin"""
+        """Enables a named plugin.
+        @precondition: plugin must be managed by this manager instance
+        @postcondtion: plugin is added to activate list for activation on
+                       next program start.
+
+        """
         self._config[plugin] = True
         for cls in self._enabled:
             pmod = cls.__module__
             if pmod == plugin:
                 self._enabled[cls] = True
-
-    def GetAvailPlugins(self):
-        """Returns a list of all available plugins. This list is
-        made up of the plugins available in a users config directory
-        as well as the plugins installed in the application data
-        directory.
-
-        """
         
     def GetConfig(self):
         """Returns a dictionary of plugins and there configuration
         state.
+        @return: the mapped set of available plugins
+        @rtype: dict
 
         """
         self.RefreshConfig()
@@ -359,19 +398,25 @@ class PluginManager(object):
     def GetEnvironment(self):
         """Returns the evironment that the plugin manager was 
         initiated in.
+        @return: the managers environment
 
         """
         return self._env
 
     def GetPlugins(self):
-        """Returns a the dictionary of plugins managed by this manager"""
+        """Returns a the dictionary of plugins managed by this manager
+        @return: all plugins managed by this manger
+        @rtype: dict
+        """
         return self._plugins
 
     def InitPlugins(self, env):
         """Initializes the plugins that are contained in the given
         enviroment. After calling this the list of available plugins
-        can be obtained by calling GetAvailPlugins
-        
+        can be obtained by calling GetAvailPlugins.
+        @note: plugins must emit the L{ENTRY_POINT} defined in this file
+        @postcondition: all plugins in the environment are initialized
+
         """
         if pkg_resources == None:
             return
@@ -405,12 +450,16 @@ class PluginManager(object):
         return True
 
     def LoadPluginByName(self, name):
-        """Loads a named plugin"""
+        """Loads a named plugin.
+        @status: currently not implemented
+
+        """
         
     def LoadPluginConfig(self):
         """Loads the plugin config file for the current user if
         it exists. The configuration file contains which plugins
         are active and which ones are not.
+        @return: configuration dictionary
 
         """
         config = dict()
@@ -444,6 +493,8 @@ class PluginManager(object):
         """Refreshes the config data comparing the loadable
         plugins against the config data and removing any entries
         that dont exist in both from the configuration data.
+        @postcondition: entries that could not be loaded or do not
+                        exist any longer are removed from the config
 
         """
         plugins = list()
@@ -458,6 +509,7 @@ class PluginManager(object):
     def RefreshEnvironment(self):
         """Refreshes the current environment to include any
         plugins that may have been added since init.
+        @postcondition: environment is refreshed
 
         """
         self._env = self.CreateEnvironment(self._pi_path)
@@ -465,6 +517,9 @@ class PluginManager(object):
     def ReInit(self):
         """Reinitializes the plugin environment and all plugins
         in the environment as well as the configuration data.
+        @postcondition: the manager is reinitialized to reflect
+                        any configuration or environment changes
+                        that may have occured.
 
         """
         self.RefreshEnvironment()
@@ -473,12 +528,17 @@ class PluginManager(object):
         self.UpdateConfig()
 
     def UnloadPluginByName(self, name):
-        """Unloads a named plugin"""
+        """Unloads a named plugin.
+        @status: currently not implemented
+
+        """
         
     def UpdateConfig(self):
         """Updates the in memory config data to recognize
         any plugins that may have been added or initialzed
         by a call to InitPlugins.
+        @postcondition: plugins are enabled or disabled based
+                        on the configuration data.
 
         """
         for pi in self._plugins:
@@ -489,7 +549,10 @@ class PluginManager(object):
                 self._enabled[pi] = False
 
     def WritePluginConfig(self):
-        """Writes out the plugin config"""
+        """Writes out the plugin config.
+        @postcondition: the configuration data is saved to disk
+
+        """
         writer = util.GetFileWriter(os.path.join(ed_glob.CONFIG['CONFIG_DIR'],
                                                  PLUGIN_CONFIG))
         if writer == -1:

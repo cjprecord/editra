@@ -21,9 +21,9 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_cmdbar.py                                                       #
-# AUTHOR: Cody Precord                                                     #
+# @author: Cody Precord                                                    #
 # LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
+# @summary:                                                                #
 #    This class creates a custom panel that can hide and show different    #
 # controls based an id value. The panel is generally between 24-32 pixels  #
 # in height but can grow to fit the controls inserted in it. The           #
@@ -53,7 +53,10 @@ from wx import ImageFromStream, BitmapFromImage
 import cStringIO, zlib
 
 def GetXData():
-    """Returns the raw image data for the close button"""
+    """Returns the raw image data for the close button
+    @return: raw image data
+
+    """
     return zlib.decompress(
 'x\xda\x011\x02\xce\xfd\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x0e\
 \x00\x00\x00\x0e\x08\x02\x00\x00\x00\x90*\xba\x86\x00\x00\x00\x03sBIT\x08\
@@ -80,11 +83,17 @@ def GetXData():
 \xbc\xe0^J\x00\x00\x00\x00IEND\xaeB`\x82\x7fU\x05\xed' )
 
 def GetXBitmap():
-    """Returns a bitmap version of the close button"""
+    """Returns a bitmap version of the close button
+    @return: bitmap of close button
+
+    """
     return BitmapFromImage(GetXImage())
 
 def GetXImage():
-    """Returns an image version of the close button"""
+    """Returns an image version of the close button
+    @return: image of close button
+
+    """
     stream = cStringIO.StringIO(GetXData())
     return ImageFromStream(stream)
 
@@ -106,7 +115,10 @@ class CommandBar(wx.Panel):
 
     """
     def __init__(self, parent, id, size = (-1, 24), style = wx.TAB_TRAVERSAL):
-        """Initializes the bar and its default widgets"""
+        """Initializes the bar and its default widgets
+        @postcondition: commandbar is created
+
+        """
         wx.Panel.__init__(self, parent, id, size = size, style = style)
 
         # Attributes
@@ -136,7 +148,10 @@ class CommandBar(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
 
     def Hide(self):
-        """Hides the control and notifies the parent"""
+        """Hides the control and notifies the parent
+        @postcondition: commandbar is hidden
+
+        """
         wx.Panel.Hide(self)
         if self._psizer != None:
             self._psizer.Layout()
@@ -145,7 +160,11 @@ class CommandBar(wx.Panel):
         self._parent.nb.GetCurrentCtrl().SetFocus()
 
     def InstallCtrl(self, ctrlId):
-        """Installs a control into the bar by ID"""
+        """Installs a control into the bar by ID
+        @postcondition: control is installed
+        @return: requested control or None
+
+        """
         if ctrlId == ID_SEARCH_CTRL:
             ctrl = self.InstallSearchCtrl()
         elif ctrlId == ID_LINE_CTRL:
@@ -155,7 +174,10 @@ class CommandBar(wx.Panel):
         return ctrl
 
     def InstallLineCtrl(self):
-        """Installs the go to line control into the panel."""
+        """Installs the go to line control into the panel.
+        @postcondition: GotoLine control is installed in bar.
+
+        """
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         v_sizer.Add((5, 5))
@@ -179,6 +201,7 @@ class CommandBar(wx.Panel):
         """Installs the search context controls into the panel.
         Other controls should be removed from the panel before calling
         this method.
+        @postcondition: search control is installed in bar
 
         """
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -221,7 +244,11 @@ class CommandBar(wx.Panel):
         return search
 
     def OnCheck(self, evt):
-        """Check box event handler"""
+        """Check box event handler
+        @param evt: Event that called this handler
+        @type evt: wx.EVT_CHECKBOX
+
+        """
         e_id = evt.GetId()
         if e_id in [ID_MATCH_CASE, ID_SEARCH_WORD]:
             flag_map = { ID_MATCH_CASE : wx.FR_MATCHCASE,
@@ -240,7 +267,10 @@ class CommandBar(wx.Panel):
             evt.Skip()
 
     def OnClose(self, evt):
-        """Closes the panel and cleans up the controls"""
+        """Closes the panel and cleans up the controls
+        @param evt: Event that called this handler
+
+        """
         e_id = evt.GetId()
         if e_id == ID_CLOSE_BUTTON:
             self.Hide()
@@ -249,7 +279,11 @@ class CommandBar(wx.Panel):
             evt.Skip()
 
     def OnPaint(self, evt):
-        """Paints the background of the bar with a nice gradient"""
+        """Paints the background of the bar with a nice gradient.
+        @param evt: Event that called this handler
+        @type evt: wx.PaintEvent
+
+        """
         dc = wx.PaintDC(self)
         gc = wx.GraphicsContext.Create(dc)
         col1 = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE), -50)
@@ -270,6 +304,7 @@ class CommandBar(wx.Panel):
     def Show(self, ctrlId=0):
         """Shows the control and installs it in the parents
         sizer if not installed already.
+        @param ctrlId: Id of control to show in bar
 
         """
         # Install self in parent
@@ -308,7 +343,10 @@ class CommandBar(wx.Panel):
                 ctrl.SelectAll()
 
     def Uninstall(self):
-        """Uninstalls self from parent control"""
+        """Uninstalls self from parent control
+        @postcondition: removes self from parent sizer
+
+        """
         for item in self.GetChildren():
             item.Destroy()
         self._psizer.Remove(self)
@@ -317,7 +355,11 @@ class CommandBar(wx.Panel):
         self.Destroy()
 
     def UninstallCtrl(self, obId):
-        """Hides the sizer object holding the control with the passed in id"""
+        """Hides the sizer object holding the control with the passed in id
+        @param obId: id of control to remove
+        @postcondition: control is removed from bar
+
+        """
         ctrl = self.FindWindowById(obId)
         if ctrl != None:
             c_sizer = ctrl.GetContainingSizer()
@@ -330,6 +372,7 @@ class CommandBar(wx.Panel):
 class CommandExecuter(wx.SearchCtrl):
     """Puts the editor into command mode to catch and execute
     key commands.
+    @status: not implemented waiting for some fixes in wx
     
     """
     def __init__(self, parent, id, pos = wx.DefaultPosition, size = wx.DefaultSize):
@@ -346,12 +389,16 @@ class CommandExecuter(wx.SearchCtrl):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnEnter)
 
     def ExecuteCommand(self, cmd_str):
-        """Interprets and executes a command"""
+        """Interprets and executes a command
+        @status: not implemented
+
+        """
         
 
     def OnEnter(self, evt):
         """Get the currently entered command string and
         execute it.
+        @status: not implemented
         
         """
         
@@ -359,7 +406,8 @@ class CommandExecuter(wx.SearchCtrl):
     def OnKeyUp(self, evt):
         """Records the key sequence that has been entered and
         then executes the command if a valid sequence is entered.
-        
+        @status: not implemented
+
         """
         
 # wxBug Validator doesnt work on Windows due to the SearchCtrl on
@@ -373,7 +421,10 @@ class LineCtrl(wx.SearchCtrl):
     """
     def __init__(self, parent, id, get_doc, pos = wx.DefaultPosition, 
                size=wx.DefaultSize, max = 0):
-        """Initializes the LineCtrl control and its attributes."""
+        """Initializes the LineCtrl control and its attributes.
+        @postcondition: gotoline control is initialized
+
+        """
         wx.SearchCtrl.__init__(self, parent, id, "", pos, size,
                              wx.TE_PROCESS_ENTER,
                              util.IntValidator(0, max))
@@ -390,7 +441,11 @@ class LineCtrl(wx.SearchCtrl):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnInput)
 
     def OnInput(self, evt):
-        """Processes the entered line number"""
+        """Processes the entered line number
+        @param evt: Event that called this handler
+        @type evt: wx.EVT_TEXT_ENTER
+
+        """
         val = self.GetValue()
         if not val.isdigit():
             return

@@ -80,6 +80,7 @@ def AddFileHistoryToProfile(file_history):
     """Manages work of adding a file from the profile in order
     to allow the top files from the history to be available 
     the next time the user opens the program.
+    @param file_history: add saved files to history list
 
     """
     size = file_history.GetNoHistoryFiles()
@@ -96,10 +97,10 @@ def AddFileHistoryToProfile(file_history):
 def CalcVersionValue(ver_str="0.0.0"):
     """Calculates a version value from the provided dot-formated string
 
-    SPECIFICATION: Version value calculation AA.BBB.CCC
-                   C values: < 1     (i.e 0.0.85 = 0.850)
-                   B values: 1 - 999 (i.e 0.1.85 = 1.850)
-                   A values: >= 1000 (i.e 1.1.85 = 1001.850)
+    1) SPECIFICATION: Version value calculation AA.BBB.CCC
+         - C values: < 1     (i.e 0.0.85 = 0.850)
+         - B values: 1 - 999 (i.e 0.1.85 = 1.850)
+         - A values: >= 1000 (i.e 1.1.85 = 1001.850)
 
     """
     ver_lvl = ver_str.split(u".")
@@ -128,6 +129,7 @@ def GetLoader():
 def GetProfileStr():
     """Reads the profile string from the loader and returns it.
     The profile string must be the first line in the loader file.
+    @return: path of profile used in last session
 
     """
     LOADER = GetLoader()
@@ -144,7 +146,10 @@ def GetProfileStr():
     return profile
 
 def LoadProfile():
-    """Loads Last Used Profile"""
+    """Loads Last Used Profile
+    @return: whether load was succesfull or not
+
+    """
     profile = GetProfileStr()
     if profile == "":
         profile = "default.pp"
@@ -158,6 +163,7 @@ def LoadProfile():
 def ProfileIsCurrent():
     """Checks if profile is compatible with current editor version
     and returns a bool stating if it is or not.
+    @return: whether profile on disk was written with current program version
 
     """
     if CalcVersionValue(ProfileVersionStr()) >= CalcVersionValue(version):
@@ -169,6 +175,8 @@ def ProfileVersionStr():
     """Checks the Loader for the profile version string and
     returns the version string. If there is an error or the
     string is not found it returns a zero version string.
+    @return: the version string value from the profile loader file
+
     """
     loader = GetLoader()
     reader = util.GetFileReader(loader)
@@ -196,6 +204,8 @@ def ProfileVersionStr():
 def ReadProfile(profile):
     """Reads profile settings from a file into the
     profile dictionary.
+    @postcondition: profile is loaded into memory from disk
+    @see: ed_glob.PROFILE
 
     """
     reader = util.GetFileReader(profile)
@@ -263,7 +273,11 @@ def ReadProfile(profile):
     return 0
 
 def UpdateProfileLoader():
-    """Updates Loader File"""
+    """Updates Loader File
+    @postcondition: on disk profile loader is updated
+    @return: 0 if no error, non zero for error condition
+
+    """
 
     LOADER = GetLoader()
     writer = util.GetFileWriter(LOADER)
@@ -283,7 +297,10 @@ def UpdateProfileLoader():
     return 0
 
 def WriteProfile(profile):
-    """Writes a profile to a file"""
+    """Writes a profile to a file
+    @postcondition: profile is saved to disk.
+
+    """
     writer = util.GetFileWriter(profile)
     if writer == -1:
         return -1

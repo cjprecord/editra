@@ -22,10 +22,10 @@
 #--------------------------------------------------------------------------#
 # FILE: ed_glob.py                                                         #
 #                                                                          #
-# AUTHOR: Cody Precord                                                     #
+# @author: Cody Precord                                                    #
 #                                                                          #
-# SUMMARY:                                                                 #
-#    This file contains variables that are or may be used in multiple      #
+# @summary:                                                                #
+#   This file contains variables that are or may be used in multiple       #
 #   files and libraries within the project. Its pupose is to create a      #
 #   globally accessable access point for all common variables in the       #
 #   project.                                                               #

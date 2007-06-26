@@ -63,14 +63,14 @@ STY_EX_ATTRIBUTES  = u"eol bold italic underline"
 #      to the StyleMgr and Editor as well.
 class StyleItem(object):
     """A storage class for holding styling information"""
-    def __init__(self, fore=wx.EmptyString, back=wx.EmptyString, 
-                    face=wx.EmptyString, size=wx.EmptyString):
+    def __init__(self, fore = wx.EmptyString, back = wx.EmptyString, 
+                    face = wx.EmptyString, size = wx.EmptyString):
         """Initiliazes the Style Object.
 
-        fore: Specifies the forground color (hex string)
-        face: Specifies the font face (string face name)
-        back: Specifies the background color (hex string)
-        size: Specifies font point size (int/formatted string)
+        @param fore: Specifies the forground color (hex string)
+        @param face: Specifies the font face (string face name)
+        @param back: Specifies the background color (hex string)
+        @param size: Specifies font point size (int/formatted string)
 
         SPECIFICATION:
           DATA FORMATS:
@@ -92,7 +92,12 @@ class StyleItem(object):
             self.size = size        # Font point size
 
     def __eq__(self, si2):
-        """Defines the == operator for the StyleItem Class"""
+        """Defines the == operator for the StyleItem Class
+        @param si2: style item to compare to
+        @return: whether the two items are equal
+        @rtype: bool
+
+        """
         if str(self) == str(si2):
             return True
         else:
@@ -115,28 +120,40 @@ class StyleItem(object):
 
     #---- Get Functions ----#
     def GetBack(self):
-        """Returns the value of the back attribute"""
+        """Returns the value of the back attribute
+        @return: style items background attribute
+
+        """
         if hasattr(self, 'back'):
             return self.back
         else:
             return wx.EmptyString
 
     def GetFace(self):
-        """Returns the value of the face attribute"""
+        """Returns the value of the face attribute
+        @return: style items font face attribute
+
+        """
         if hasattr(self, 'face'):
             return self.face
         else:
             return wx.EmptyString
 
     def GetFore(self):
-        """Returns the value of the fore attribute"""
+        """Returns the value of the fore attribute
+        @return: style items foreground attribute
+
+        """
         if hasattr(self, 'fore'):
             return self.fore
         else:
             return wx.EmptyString
 
     def GetSize(self):
-        """Returns the value of the size attribute as a string"""
+        """Returns the value of the size attribute as a string
+        @return: style items font size attribute
+
+        """
         if hasattr(self, 'size'):
             return self.size
         else:
@@ -148,6 +165,8 @@ class StyleItem(object):
         by parsing the string for the values. Only sets or 
         overwrites values does not zero out previously set values.
         Returning True if value(s) are set or false otherwise.
+        @param style_str: style information string (i.e fore:#888444)
+        @type style_str: string
 
         """
         atoms = style_str.split(u',')
@@ -167,39 +186,59 @@ class StyleItem(object):
         else:
             return False
 
-    def SetBack(self, back, ex=wx.EmptyString):
-        """Sets the Background Value"""
+    def SetBack(self, back, ex = wx.EmptyString):
+        """Sets the Background Value
+        @param back: hex color string
+        @keyword ex: extra attribute (i.e bold, italic, underline)
+
+        """
         if ex == wx.EmptyString:
             self.back = back
         else:
             self.back = u"%s,%s" % (back, ex)
 
-    def SetFace(self, face, ex=wx.EmptyString):
-        """Sets the Face Value"""
+    def SetFace(self, face, ex = wx.EmptyString):
+        """Sets the Face Value
+        @param back: font name string
+        @keyword ex: extra attribute (i.e bold, italic, underline)
+
+        """
         if ex == wx.EmptyString:
             self.face = face
         else:
             self.face = u"%s,%s" % (face, ex)
 
-    def SetFore(self, fore, ex=wx.EmptyString):
-        """Sets the Foreground Value"""
+    def SetFore(self, fore, ex = wx.EmptyString):
+        """Sets the Foreground Value
+        @param back: hex color string
+        @keyword ex: extra attribute (i.e bold, italic, underline)
+
+        """
         if ex == wx.EmptyString:
             self.fore = fore
         else:
             self.fore = u"%s,%s" % (fore, ex)
 
-    def SetSize(self, size, ex=wx.EmptyString):
-        """Sets the Font Size Value"""
+    def SetSize(self, size, ex = wx.EmptyString):
+        """Sets the Font Size Value
+        @param back: font point size
+        @type back: string or int
+        @keyword ex: extra attribute (i.e bold, italic, underline)
+
+        """
         if ex == wx.EmptyString:
             self.size = size
         else:
             self.size = u"%s,%s" % (str(size), ex)
 
-    def SetExAttr(self, ex_attr, add=True):
+    def SetExAttr(self, ex_attr, add = True):
         """Adds an extra text attribute to a StyleItem. Currently
         (bold, eol, italic, underline) are supported. If the optional
         add value is set to False the attribute will be removed from
         the StyleItem.
+        @param ex_attr: extra style attribute (bold, eol, italic, underline)
+        @type ex_attr: string
+        @keyword add: Add a style (True) or remove a style (False)
 
         """
         # Get currently set attributes
@@ -223,9 +262,11 @@ class StyleItem(object):
                 pass
 
     def SetNamedAttr(self, attr, value):
-        """Sets a StyleItem attribute by named string. NOTE this is
-        not intended to be used for setting extra attributes such as
-        bold, eol, ect..
+        """Sets a StyleItem attribute by named string.
+        @note: This is not intended to be used for setting extra 
+               attributes such as bold, eol, ect..
+        @param attr: a particular attribute to set (i.e fore, face, back, size)
+        @param value: value to set the attribute to contain
 
         """
         if hasattr(self, attr):
@@ -251,8 +292,11 @@ class StyleMgr(object):
     FONT_TAG_SIZE      = u"size"
     FONT_TAG_SIZE2     = u"size2"
 
-    def __init__(self, custom=wx.EmptyString):
-        """Initializes the Style Manager"""
+    def __init__(self, custom = wx.EmptyString):
+        """Initializes the Style Manager
+        @keyword custom: path to custom style sheet to use
+
+        """
         object.__init__(self)
         # Attributes
         self.fonts = self.GetFontDictionary()
@@ -261,36 +305,41 @@ class StyleMgr(object):
 
         # Get the Style Set
         if custom != wx.EmptyString and self.LoadStyleSheet(custom):
-            self.LOG("[styles] [init] Loaded custom style sheet %s" % custom)
+            self.LOG("[styles][init] Loaded custom style sheet %s" % custom)
         else:
-            self.LOG("[styles] [init_error] Failed to import styles from %s" % custom)
+            self.LOG("[styles][init_err] Failed to import styles from %s" % custom)
 
     def DefaultStyleDictionary(self):
         """This is the default style values that are used for styling
         documents. Its used as a fallback for undefined values in a 
         style sheet.
+        @note: used as a fallback in case loading style sheet fails
+        @note: incomplete style sheets are merged against this set to ensure
+               a full set of definitions is avaiable
 
         """
         def_dict = \
             {'brace_good' : StyleItem("#FFFFFF", "#0000FF,bold"),
-             'brace_bad'  : StyleItem(back="#FF0000,bold"),
+             'brace_bad'  : StyleItem(back = "#FF0000,bold"),
              'calltip' : StyleItem("#404040", "#FFFFB8"),
              'ctrl_char'  : StyleItem(),
-             'line_num'   : StyleItem(back="#C0C0C0", face="%(other)s", size="%(size2)d"),
-             'array_style': StyleItem("#EE8B02,bold", face="%(other)s"),
-             'btick_style': StyleItem("#8959F6,bold", size="%(size)d"),
-             'default_style': StyleItem("#000000", "#F6F6F6", "%(mono)s", "%(size)d"),
+             'line_num'   : StyleItem(back="#C0C0C0", face = "%(other)s", \
+                                      size = "%(size2)d"),
+             'array_style': StyleItem("#EE8B02,bold", face = "%(other)s"),
+             'btick_style': StyleItem("#8959F6,bold", size = "%(size)d"),
+             'default_style': StyleItem("#000000", "#F6F6F6", \
+                                        "%(mono)s", "%(size)d"),
              'char_style' : StyleItem("#FF3AFF"),
              'class_style' : StyleItem("#2E8B57,bold"),
              'class2_style' : StyleItem("#2E8B57,bold"),
              'comment_style' : StyleItem("#838383"),
-             'directive_style' : StyleItem("#0000FF,bold", face="%(other)s"),
+             'directive_style' : StyleItem("#0000FF,bold", face = "%(other)s"),
              'dockey_style' : StyleItem("#0000FF"),
-             'error_style' : StyleItem("#DD0101,bold", face="%(other)s"),
+             'error_style' : StyleItem("#DD0101,bold", face = "%(other)s"),
              'funct_style' : StyleItem("#008B8B,italic"),
-             'global_style' : StyleItem("#007F7F,bold", face="%(other)s"), 
-             'here_style' : StyleItem("#CA61CA,bold", face="%(other)s"),
-             'ideol_style' : StyleItem("#E0C0E0", face="%(other)s"),
+             'global_style' : StyleItem("#007F7F,bold", face = "%(other)s"), 
+             'here_style' : StyleItem("#CA61CA,bold", face = "%(other)s"),
+             'ideol_style' : StyleItem("#E0C0E0", face = "%(other)s"),
              'keyword_style' : StyleItem("#A52B2B,bold"),
              'keyword2_style' : StyleItem("#2E8B57,bold"),
              'keyword3_style' : StyleItem("#008B8B,bold"),
@@ -299,31 +348,38 @@ class StyleMgr(object):
              'folder_style' : StyleItem("#FFFFFF", "#000000"),
              'number_style' : StyleItem("#DD0101"),
              'number2_style' : StyleItem("#DD0101,bold"),
-             'operator_style' : StyleItem("#000000", face="%(mono)s,bold"),
+             'operator_style' : StyleItem("#000000", face = "%(mono)s,bold"),
              'pre_style' : StyleItem("#AB39F2,bold"),               
              'pre2_style' : StyleItem("#AB39F2,bold", "#FFFFFF"),
              'regex_style' : StyleItem("#008B8B"),
-             'scalar_style' : StyleItem("#AB37F2,bold", face="%(other)s"),
-             'scalar2_style' : StyleItem("#AB37F2", face="%(other)s"),
+             'scalar_style' : StyleItem("#AB37F2,bold", face = "%(other)s"),
+             'scalar2_style' : StyleItem("#AB37F2", face = "%(other)s"),
              'string_style' : StyleItem("#FF3AFF,bold"),
-             'stringeol_style' : StyleItem("#000000,bold", "#EEC0EE,eol","%(other)s"),
-             'unknown_style' : StyleItem("#FFFFFF,bold", "#DD0101,eol", "%(other)s")
+             'stringeol_style' : StyleItem("#000000,bold", "#EEC0EE,eol", \
+                                           "%(other)s"),
+             'unknown_style' : StyleItem("#FFFFFF,bold", "#DD0101,eol", \
+                                        "%(other)s")
              }
         return def_dict
 
     def BlankStyleDictionary(self):
         """Returns a dictionary of unset style items based on the
         tags defined in the current dictionary.
+        @return: dictionary of unset style items using the current tag set
+                 as keys.
 
         """
         sty_dict = self.DefaultStyleDictionary()
         for key in sty_dict:
-            sty_dict[key] = StyleItem(face=u"%(mono)s", size="%(size)d")
+            sty_dict[key] = StyleItem(face = u"%(mono)s", size = "%(size)d")
         return sty_dict
 
-    def GetFontDictionary(self, default=True):
+    def GetFontDictionary(self, default = True):
         """Does a system lookup to build a default set of fonts using
         ten point fonts as the standards size.
+        @keyword default: return default dictionary or custom
+        @type default: bool
+        @return: font dictionary (times, mono, helf, other) + (size, size2)
 
         """
         if hasattr(self, 'fonts') and not default:
@@ -352,6 +408,8 @@ class StyleMgr(object):
     def GetDefaultFont(self):
         """Constructs and returns a wxFont object from the settings
         of the default_style object.
+        @return: font object of default style
+        @rtype: wx.Font
 
         """
         if hasattr(self, "styles") and self.styles.has_key("default_style"):
@@ -367,10 +425,14 @@ class StyleMgr(object):
             font = wx.FFont(self.fonts[self.FONT_TAG_SIZE], wx.MODERN)
         return font
 
-    def GetDefaultForeColour(self, hex=False):
+    def GetDefaultForeColour(self, hex = False):
         """Gets the foreground color of the default style and returns
         a Colour object. Otherwise returns Black if the default
         style is not found.
+        @keyword hex: return a hex string or colour object
+        @type hex: bool
+        @return: wx.Colour of default style foreground or hex value
+        @rtype: wx.Colour or string
 
         """
         if self.HasNamedStyle(u'default_style'):
@@ -385,10 +447,14 @@ class StyleMgr(object):
                 fore = wx.NamedColor("black")
         return fore
 
-    def GetDefaultBackColour(self, hex=False):
+    def GetDefaultBackColour(self, hex = False):
         """Gets the background color of the default style and returns
         a Colour object. Otherwise returns white if the default
         style is not found.
+        @keyword hex: return a hex string or colour object
+        @type hex: bool
+        @return: wx.Colour of default style background or hex value
+        @rtype: wx.Colour or string 
 
         """
         if self.HasNamedStyle(u'default_style'):
@@ -404,7 +470,12 @@ class StyleMgr(object):
         return back
 
     def GetItemByName(self, name):
-        """Gets and returns a style item using its name for the search"""
+        """Gets and returns a style item using its name for the search
+        @param name: tag name of style item to get
+        @return: style item (may be empty/null style item)
+        @rtype: L{StyleItem}
+
+        """
         if self.HasNamedStyle(name):
             if u"%" in unicode(self.styles[name]):
                 val = unicode(self.styles[name]) % self.fonts
@@ -417,11 +488,20 @@ class StyleMgr(object):
             return StyleItem()
 
     def GetMonoFont(self):
-        """Returns the current global mono font facename"""
+        """Returns the current global mono font facename
+        @return face name of current mono spaced font in use
+
+        """
         return self.fonts[self.FONT_TAG_MONO]
 
     def GetStyleByName(self, name):
-        """Gets and returns a style string using its name for the search"""
+        """Gets and returns a style string using its name for the search
+        @param name: tag name of style to get
+        @type name: string
+        @return: style item in string form
+        @rtype: string
+
+        """
         if self.HasNamedStyle(name):
             if u"%" in unicode(self.styles[name]):
                 return unicode(self.styles[name]) % self.fonts
@@ -433,6 +513,8 @@ class StyleMgr(object):
     def GetStyleSet(self):
         """Returns the current set of styles or the
         default set if there is no current set.
+        @return: current style set dictionary
+        @rtype: dict
 
         """
         if hasattr(self, "styles"):
@@ -441,7 +523,11 @@ class StyleMgr(object):
             return self.DefaultStyleDictionary()
 
     def HasNamedStyle(self, name):
-        """Checks if a style has been set/loaded or not"""
+        """Checks if a style has been set/loaded or not
+        @param name: tag name of style to look for
+        @return: whether item is in style set or not
+
+        """
         if not hasattr(self, 'styles'):
             return False
         elif self.styles.has_key(name):
@@ -450,7 +536,12 @@ class StyleMgr(object):
             return False
 
     def LoadStyleSheet(self, style_sheet):
-        """Loads a custom style sheet and returns True on success"""
+        """Loads a custom style sheet and returns True on success
+        @param style_sheet: path to style sheet to load
+        @return: whether style sheet was loaded or not
+        @rtype: bool
+
+        """
         if os.path.exists(style_sheet):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
@@ -467,6 +558,9 @@ class StyleMgr(object):
     def MergeFonts(self, style_dict, font_dict):
         """Does any string substitution that the style dictionary
         may need to have fonts and their sizes set.
+        @param style_dict: dictionary of L{StyleItems}
+        @param font_dict: dictionary of font data
+        @return: style dictionary with all font format strings substituded in
 
         """
         for style in style_dict:
@@ -479,6 +573,9 @@ class StyleMgr(object):
         """Merges the styles from styles2 into styles1 overwriting
         any duplicate values already set in styles1 with the new
         data from styles2.
+        @param styles1: dictionary of StyleItems recieve merge
+        @param styles2: dictionary of StyleItems to merge from
+        @return: style1 with all values from styles2 merged into it
 
         """
         for style in styles2:
@@ -489,6 +586,8 @@ class StyleMgr(object):
         """Checks the difference of each item in the style set as
         compared to the default_style tag and packs any unset value
         in the item to be equal to the default style.
+        @param style_set: style set to pack
+        @return: style_set with all unset attributes set to match default style
 
         """
         if isinstance(style_set, dict) and style_set.has_key('default_style'):
@@ -506,11 +605,16 @@ class StyleMgr(object):
             pass
         return style_set
 
-    def ParseStyleData(self, style_data, strict=False):
+    def ParseStyleData(self, style_data, strict = False):
         """Parses a string style definitions read from an Editra
         Style Sheet. If the parameter 'strict' isnt set then any
         syntax errors are ignored and only good values are returned.
         If 'strict' is set the parser will raise errors and bailout.
+        @param style_data: style sheet data string
+        @type style_data: string
+        @keyword strict: should the parser raise errors or ignore
+        @return: dictionary of StyleItems constructed from the style sheet
+                 data.
 
         """
         # Compact data into a contiguous string
@@ -658,6 +762,8 @@ class StyleMgr(object):
     def SetGlobalFont(self, font_tag, fontface):
         """Sets one of the fonts in the global font set by tag
         and sets it to the named font. Returns true on success.
+        @param font_tag: fonttype identifier key
+        @param fontface: face name to set global font to
 
         """
         if hasattr(self, 'fonts'):
@@ -667,7 +773,12 @@ class StyleMgr(object):
             return False
 
     def SetStyleFont(self, named_style, wxFont):
-        """Sets the font of a specific style"""
+        """Sets the font of a specific style
+        @param named_style: style tag name to set value for
+        @param wxFont: font object to set styles font info from
+        @return: whether font was set or not
+
+        """
         if self.HasNamedStyle(named_style):
             self.styles[named_style].SetFont(wxFont.GetFaceName())
             self.styles[named_style].SetSize(wx.Font.GetPointSize())
@@ -676,11 +787,21 @@ class StyleMgr(object):
             return False
 
     def SetStyleTag(self, style_tag, value):
-        """Sets the value of style tag by name"""
+        """Sets the value of style tag by name
+        @param style_tag: desired tag name of style definition
+        @param value: style item to set tag for
+
+        """
         self.styles[style_tag] = value
 
-    def SetStyles(self, style_dict, nomerge=False):
-        """Sets the managers style data and returns True on success."""
+    def SetStyles(self, style_dict, nomerge = False):
+        """Sets the managers style data and returns True on success.
+        @param style_dict: dictionary of style items to use as managers style
+                           set.
+        @keyword nomerge: merge against default set or not
+        @type nomerge: bool
+
+        """
         if nomerge:
             self.styles = self.PackStyleSet(style_dict)
             return True

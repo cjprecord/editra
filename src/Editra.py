@@ -59,7 +59,10 @@ _ = wx.GetTranslation
 class Editra(wx.App):
     """The Editra Application"""
     def OnInit(self):
-        """Initialize the Editor"""
+        """Initialize the Editor
+        @postcondition: custom artprovider and plugins are loaded
+
+        """
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Editra is Initializing")
@@ -74,18 +77,25 @@ class Editra(wx.App):
         return True
 
     def Exit(self):
-        """Exit the program"""
+        """Exit the program
+        @postcondition: program is closed
+
+        """
         self._pluginmgr.WritePluginConfig()
         if not self._lock:
             wx.App.Exit(self)
 
     def GetLog(self):
-        """Returns the logging function used by the app"""
+        """Returns the logging function used by the app
+        @return: the logging function of this program instance
+
+        """
         return self._log
 
     def GetMainWindow(self):
         """Returns reference to the instance of the MainWindow
         that is running if available, and None if not.
+        @return: the L{MainWindow} of this app if it is open
         
         """
         for window in self._windows:
@@ -94,25 +104,40 @@ class Editra(wx.App):
         return None
 
     def GetOpenWindows(self):
-        """Returns a list of open windows"""
+        """Returns a list of open windows
+        @return: list of all open windows owned by app
+
+        """
         return self._windows
 
     def GetPluginManager(self):
-        """Returns the plugin manager used by this application"""
+        """Returns the plugin manager used by this application
+        @return: Apps plugin manager
+        @see: L{plugin.py}
+
+        """
         return self._pluginmgr
 
     def IsLocked(self):
-        """Returns whether the application is locked or not"""
+        """Returns whether the application is locked or not
+        @return: whether a window has locked the app from closing or not
+
+        """
         return self._lock
 
     def Lock(self):
-        """Locks the app from exiting"""
+        """Locks the app from exiting
+        @postcondition: program is locked from exiting
+
+        """
         self._lock = True
 
     def MacOpenFile(self, filename):
         """Macintosh Specific code for opening files that are associated
         with the editor and double clicked on after the editor is already
         running.
+        @param: file path string
+        @postcondition: if L{MainWindow} is open file will be opened in notebook
         
         """
         window = self.GetTopWindow()
@@ -126,7 +151,11 @@ class Editra(wx.App):
             pass
 
     def OnActivate(self, evt):
-        """Activation Event Handler"""
+        """Activation Event Handler
+        @param evt: event that called this handler
+        @type evt: wx.ActivateEvent
+
+        """
         if evt.GetActive():
             self._log("[app][info] I'm Awake!!")
          #   if self._frame.CanSetTransparent():
@@ -142,19 +171,28 @@ class Editra(wx.App):
         repr of window. The can_lock parameter is a boolean stating
         whether the window can keep the main app running after the 
         main frame has exited.
+        @param name: name of window
+        @param window: reference to window object
+        @keyword can_lock: whether window can lock exit or not
         
         """
         self._windows[name] = (window, can_lock)
 
     def ReloadArtProvider(self):
-        """Reloads the custom art provider onto the artprovider stack"""
+        """Reloads the custom art provider onto the artprovider stack
+        @postcondition: artprovider is removed and reloaded
+
+        """
         try:
             wx.ArtProvider.PopProvider()
         finally:
             wx.ArtProvider.PushProvider(ed_art.EditraArt())
 
     def UnLock(self):
-        """Unlocks the application"""
+        """Unlocks the application
+        @postcondition: application is unlocked so it can exit
+
+        """
         self._lock = False
 
     def UnRegisterWindow(self, name):
@@ -163,6 +201,7 @@ class Editra(wx.App):
         registered in the window stack it will promote the next one 
         it finds to be the top window. If no windows that fit this
         criteria are found it will close the application.
+        @param name: name of window to unregister
         
         """
         if self._windows.has_key(name):
@@ -193,6 +232,7 @@ class Editra(wx.App):
         not. The window must have been previously registered with
         a call to RegisterWindow for this function to have any
         real usefullness.
+        @param winname: name of window to query
         
         """
         if self._windows.has_key(winname):
@@ -204,7 +244,10 @@ class Editra(wx.App):
 #--------------------------------------------------------------------------#
 
 def InitConfig():
-    """Initializes the configuration data"""
+    """Initializes the configuration data
+    @postcondition: all configuration data is set
+
+    """
     ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
     import profiler
     PROFILE_UPDATED = False

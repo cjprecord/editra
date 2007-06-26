@@ -21,9 +21,9 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_art.py                                                          #
-# AUTHOR: Cody Precord                                                     #
+# @author: Cody Precord                                                    #
 # LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
+# @summary:                                                                #
 #    Provides and ArtProvider class for loading the custom images into the #
 #   editor.                                                                #
 #                                                                          #
@@ -168,7 +168,11 @@ class EditraArt(wx.ArtProvider):
     #     and the image is scaled it looks fine, but if a size is supplied and
     #     the image is not scaled it will still look poor.
     def CreateBitmap(self, artId, client, size):
-        """Makes the bitmaps from the images"""
+        """Makes the bitmaps from the images
+        @return: Requested image object if one exists
+        @rtype: wx.Bitmap
+
+        """
         # All art ids we can handle can be converted to int
         try:
             artId = int(artId)
@@ -216,9 +220,11 @@ class EditraArt(wx.ArtProvider):
         return wx.NullBitmap
 
 #-----------------------------------------------------------------------------#
-def GetArtPath(client, mime=False):
+def GetArtPath(client, mime = False):
     """Gets the path of the resource directory to get
     the bitmaps from.
+    @return: path of art resource
+    @rtype: string
 
     """
     if ed_glob.CONFIG['THEME_DIR'] == u'':

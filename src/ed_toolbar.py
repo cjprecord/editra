@@ -69,7 +69,11 @@ TOOL_ID = [ ed_glob.ID_NEW, ed_glob.ID_OPEN, ed_glob.ID_SAVE, ed_glob.ID_PRINT,
 class ED_ToolBar(wx.ToolBar):
     """Toolbar wrapper class"""
     def __init__(self, parent, toolId):
-        """Initializes the toolbar"""
+        """Initializes the toolbar
+        @param parent: parent window of this toolbar
+        @param toolId: toolbar id
+
+        """
         sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT
         if wx.Platform == '__WXGTK__':
             sstyle = sstyle | wx.TB_DOCKABLE
@@ -91,6 +95,7 @@ class ED_ToolBar(wx.ToolBar):
     def AddSimpleTool(self, toolId):
         """Overides the default function to allow for easier tool
         generation/placement.
+        @param toolId: Id of tool to add
         
         """
         tool_bmp = wx.ArtProvider.GetBitmap(str(toolId), wx.ART_TOOLBAR)
@@ -99,16 +104,24 @@ class ED_ToolBar(wx.ToolBar):
         wx.ToolBar.AddSimpleTool(self, toolId, tool_bmp, _(lbl), _(helpstr))
 
     def GetToolSize(self):
-        """Returns the size of the tools in the toolbar"""
+        """Returns the size of the tools in the toolbar
+        @return: size of tool icons in toolbar
+        @rtype: tuple (w, h)
+        """
         return self.tool_size
 
     def GetToolTheme(self):
-        """Returns the name of the current toolsets theme"""
+        """Returns the name of the current toolsets theme
+        @return: name of icon theme used by this toolbar
+
+        """
         return self._theme
 
     def InsertSimpleTool(self, pos, toolId):
         """Overides the default function to allow for easier tool
         generation/placement.
+        @param pos: position to insert tool at
+        @param toolId: id of tool to add
         
         """
         tool_bmp = wx.ArtProvider.GetBitmap(str(toolId), wx.ART_TOOLBAR)
@@ -118,7 +131,10 @@ class ED_ToolBar(wx.ToolBar):
                                     _(lbl), _(helpstr))
 
     def PopulateTools(self):
-        """Sets the tools in the toolbar"""
+        """Sets the tools in the toolbar
+        @postcondition: all default tools are added to toolbar
+
+        """
         # Place Icons in toolbar
         self.AddSimpleTool(ed_glob.ID_NEW)
         self.AddSimpleTool(ed_glob.ID_OPEN)
@@ -138,7 +154,10 @@ class ED_ToolBar(wx.ToolBar):
 
     # TODO Flickers too much, try and find a way to reduce it if possible
     def ReInit(self):
-        """Re-Initializes the tools in the toolbar"""
+        """Re-Initializes the tools in the toolbar
+        @postcondtion: all tool icons are recreated
+
+        """
         # Remove Current Tools
         total = self.GetToolsCount()
         tools = list()
