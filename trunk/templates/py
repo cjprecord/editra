@@ -20,9 +20,9 @@
 
 """
 #--------------------------------------------------------------------------#
-# FILE:							   
+# FILE:
 # AUTHOR:
-# LANGUAGE: Python							   
+# LANGUAGE: Python
 # SUMMARY:
 #
 #
@@ -33,7 +33,7 @@
 #--------------------------------------------------------------------------#
 """
 
-__author__ = "Cody Precord <cprecord@editra.org>"
+__author__ = ""
 __cvsid__ = "$Id: Exp $"
 __revision__ = "$Revision:  $"
 
