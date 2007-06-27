@@ -118,6 +118,10 @@ class Interface(object):
 class ExtensionPoint(property):
     """Declares what L{Interface} a plugin is extending"""
     def __init__(self, interface):
+        """Initializes the extension point
+        @param interface: interface object that the extension point extends
+
+        """
         property.__init__(self, self.Extensions)
         self.interface = interface
 
@@ -270,6 +274,7 @@ class PluginData(object):
 def Implements(*interfaces):
     """Used by L{Plugin}s to declare the interface that they
     implment/extend.
+    @param interfaces: list of interfaces the plugin implements
 
     """
     _implements.extend(interfaces)

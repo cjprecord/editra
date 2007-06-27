@@ -47,7 +47,7 @@ __revision__ = "$Revision$"
 # Dependancies
 import os
 import wx
-from wx.lib import langlistctrl
+import wx.lib.langlistctrl as langlist
 import wx.combo
 import glob
 import ed_glob
@@ -75,19 +75,20 @@ def GetAvailLocales():
             avail_loc.append(os.path.basename(path))
     return avail_loc
 
-def GetLocaleDict(loc_list, opt = OPT_NO_OP):
+def GetLocaleDict(loc_list, opt=OPT_NO_OP):
     """Takes a list of cannonical locale names and by default returns a 
     dictionary of available language values using the canonical name as 
     the key. Supplying the Option OPT_DESCRIPT will return a dictionary
     of language id's with languages description as the key.
     @param loc_list: list of locals
     @param opt: option for configuring return data
-    @return: dict of locales mapped to wx.LANGUAGE_XXX values
+    @return: dict of locales mapped to wx.LANGUAGE_*** values
 
     """
     lang_dict = dict()
     for lang in [x for x in dir(wx) if x.startswith("LANGUAGE")]:
-        loc_i = wx.Locale(wx.LANGUAGE_DEFAULT).GetLanguageInfo(getattr(wx, lang))
+        loc_i = wx.Locale(wx.LANGUAGE_DEFAULT).\
+                          GetLanguageInfo(getattr(wx, lang))
         if loc_i:
             if loc_i.CanonicalName in loc_list:
                 if opt == OPT_DESCRIPT:
@@ -100,7 +101,7 @@ def GetLangId(lang_n):
     """Gets the ID of a language from the description string. If the 
     language cannot be found the function simply returns the default language
     @param lang_n: Canonical name of a language
-    @return: wx.LANGUAGE_XXX id of language
+    @return: wx.LANGUAGE_*** id of language
     
     """
     lang_desc = GetLocaleDict(GetAvailLocales(), OPT_DESCRIPT)
@@ -111,8 +112,8 @@ def GetLangId(lang_n):
 
 #---- Language List Combo Box----#
 class LangListCombo(wx.combo.BitmapComboBox):
-    """Combines a langlistctrl and a BitmapComboBox"""
-    def __init__(self, parent, id, default = None):
+    """Combines a langlist and a BitmapComboBox"""
+    def __init__(self, parent, id_, default=None):
         """Initializes the combobox
         @postcondition: combo control containing all available locales
                         with their flags is returned.
@@ -122,11 +123,11 @@ class LangListCombo(wx.combo.BitmapComboBox):
         lang_ids = GetLocaleDict(GetAvailLocales()).values()
         if wx.LANGUAGE_DEFAULT not in lang_ids:
             lang_ids.append(wx.LANGUAGE_DEFAULT)
-        lang_items = langlistctrl.CreateLanguagesResourceLists(langlistctrl.LC_ONLY, \
+        lang_items = langlist.CreateLanguagesResourceLists(langlist.LC_ONLY, \
                                                                lang_ids)
-        wx.combo.BitmapComboBox.__init__(self, parent, id, 
-                                         size = wx.Size(320, 26), 
-                                         style = wx.CB_READONLY)
+        wx.combo.BitmapComboBox.__init__(self, parent, id_, 
+                                         size=wx.Size(320, 26), 
+                                         style=wx.CB_READONLY)
         for lang_d in lang_items[1]:
             bit_m = lang_items[0].GetBitmap(lang_items[1].index(lang_d))
             self.Append(lang_d, bit_m)

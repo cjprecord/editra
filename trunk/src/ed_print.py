@@ -29,8 +29,8 @@
 # inspired a python module STCPrinting written by Riaan Booysen.           #
 #                                                                          #
 # METHODS:                                                                 #
-# ED_Printer: Class for managing printing and providing print dialogs      #
-# ED_Printout: Scales and renders the given document to a printer.         #
+# EdPrinter: Class for managing printing and providing print dialogs       #
+# EdPrintout: Scales and renders the given document to a printer.          #
 #                                                                          #
 #--------------------------------------------------------------------------#
 """
@@ -41,10 +41,8 @@ __revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import os
 import wx
 import wx.stc
-import ed_glob
 import dev_tool
 
 _ = wx.GetTranslation
@@ -57,9 +55,9 @@ COLOURMODES = { 'black_white'    : wx.stc.STC_PRINT_BLACKONWHITE,
                 'normal'         : wx.stc.STC_PRINT_NORMAL }
 #--------------------------------------------------------------------------#
 # XXX current minimum print font is set to 12 point
-class ED_Printer:
+class EdPrinter:
     """Printer Class for the editor"""
-    def __init__(self, parent, stc_callable, mode = 'normal'):
+    def __init__(self, parent, stc_callable, mode='normal'):
         """Initializes the Printer, the stc_callable parameter
         must be a callable function that returns an STC instance object
         @param stc_callable: function to get current stc document
@@ -78,7 +76,7 @@ class ED_Printer:
 
         """
         colour = COLOURMODES[self.print_mode]
-        return ED_Printout(self.stc(), colour, self.stc().filename)
+        return EdPrintout(self.stc(), colour, self.stc().filename)
 
     def PageSetup(self):
         """Opens a print setup dialog
@@ -115,7 +113,8 @@ class ED_Printer:
         result = printer.Print(self.parent, printout)
 
         if result:
-            self.print_data = wx.PrintData(printer.GetPrintDialogData().GetPrintData())
+            dlg_data = printer.GetPrintDialogData()
+            self.print_data = wx.PrintData(dlg_data.GetPrintData())
         printout.Destroy()
         
     def SetColourMode(self, modeStr):
@@ -133,7 +132,7 @@ class ED_Printer:
         return ret
 
 #-----------------------------------------------------------------------------#
-class ED_Printout(wx.Printout):
+class EdPrintout(wx.Printout):
     """Creates an printout from a STC"""
     def __init__(self, stc_src, colour, title = wx.EmptyString):
         """Initializes the printout object
@@ -147,7 +146,8 @@ class ED_Printout(wx.Printout):
 
         self.margin = 0.1
         self.lines_pp = 69
-        self.page_count, remainder = divmod(self.stc.GetLineCount(), self.lines_pp)
+        self.page_count, remainder = divmod(self.stc.GetLineCount(), \
+                                            self.lines_pp)
         if remainder:
             self.page_count += 1
 
@@ -208,10 +208,11 @@ class ED_Printout(wx.Printout):
                                                 int(margin_h/scale),
                                                 max_w, 
                                                 int(text_area_h/scale)+1),
-                                        wx.Rect(0, (page - 1) * self.lines_pp * \
+                                        wx.Rect(0, (page - 1) * \
+                                                self.lines_pp * \
                                                 line_height, max_w, 
                                                 line_height * self.lines_pp))
 
         if end_point < end_pos:
-            dev_tool.DEBUGP("[ed_printout] [error] Rendering Error, page %s" % page)
+            dev_tool.DEBUGP("[ed_printout][err] Rendering Error, page %s" % page)
         return True

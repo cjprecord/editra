@@ -25,11 +25,18 @@
  Used for building the editra distribution files.
 
  USAGE:
-  Windows:
-  	python setup.py py2exe --bundle 2
+ 1) Windows:
+    - python setup.py py2exe --bundle 2
 
-  MacOSX:
-  	python setup.py py2app
+ 2) MacOSX:
+    - python setup.py py2app
+
+ 3) Boil an Egg
+    - python setup.py bdist_egg
+
+ 4) Install as a python package
+    - python setup.py install
+
 """
 __author__ = "Cody Precord <cprecord@editra.org>"
 __svnid__ = "$Id$"
@@ -78,7 +85,8 @@ SRC_SCRIPTS = [ ("src", glob.glob("src/*.py")),
                 ("scripts/i18n", glob.glob("scripts/i18n/*.po")),
 ]
 
-DATA_FILES = [("include/python2.5", glob.glob("include/python2.5/%s/*" % __platform__)),
+DATA_FILES = [("include/python2.5", 
+               glob.glob("include/python2.5/%s/*" % __platform__)),
               ("pixmaps", ["pixmaps/editra.png", "pixmaps/editra.ico",
                            "pixmaps/editra.icns", "pixmaps/editra_doc.icns",
                            "pixmaps/editra_doc.png"]),
@@ -88,15 +96,19 @@ DATA_FILES = [("include/python2.5", glob.glob("include/python2.5/%s/*" % __platf
                                       "pixmaps/theme/Nuovo/COPYING",
                                       "pixmaps/theme/Nuovo/DONATE",
                                       "pixmaps/theme/Nuovo/README"]),
-              ("pixmaps/theme/Nuovo/toolbar", glob.glob("pixmaps/theme/Nuovo/toolbar/*.png")),
-              ("pixmaps/theme/Nuovo/menu", glob.glob("pixmaps/theme/Nuovo/menu/*.png")),
+              ("pixmaps/theme/Nuovo/toolbar", 
+               glob.glob("pixmaps/theme/Nuovo/toolbar/*.png")),
+              ("pixmaps/theme/Nuovo/menu", 
+               glob.glob("pixmaps/theme/Nuovo/menu/*.png")),
               ("plugins", glob.glob("plugins/*.egg")),
               ("templates", glob.glob("templates/*")),
               ("profiles", ["profiles/default.pp",
                             "profiles/.loader", 
                             "profiles/default.pp.sample"]),
-              ("locale/en_US/LC_MESSAGES", ["locale/en_US/LC_MESSAGES/Editra.mo"]),
-              ("locale/ja_JP/LC_MESSAGES", ["locale/ja_JP/LC_MESSAGES/Editra.mo"]),
+              ("locale/en_US/LC_MESSAGES", 
+               ["locale/en_US/LC_MESSAGES/Editra.mo"]),
+              ("locale/ja_JP/LC_MESSAGES", 
+               ["locale/ja_JP/LC_MESSAGES/Editra.mo"]),
               ("styles", glob.glob("styles/*.ess")),
               ("tests", glob.glob("tests/*")),
               ("docs", glob.glob("docs/*.txt")), "AUTHORS", "FAQ", "INSTALL",
@@ -110,8 +122,9 @@ DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py", "docs/*.txt",
          "pixmaps/theme/Nuovo/AUTHOR", "pixmaps/theme/Nuovo/COPYING", 
          "pixmaps/theme/Nuovo/DONATE", "pixmaps/theme/Nuovo/README", 
          "pixmaps/theme/Nuovo/toolbar/*.png", "pixmaps/theme/Nuovo/menu/*.png", 
-         "pixmaps/theme/Default/README", "profiles/default.pp", "profiles/.loader",
-         "profiles/default.pp.sample", "locale/en_US/LC_MESSAGES/Editra.mo",
+         "pixmaps/theme/Default/README", "profiles/default.pp",
+         "profiles/.loader", "profiles/default.pp.sample", 
+         "locale/en_US/LC_MESSAGES/Editra.mo",
          "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "tests/*", 
          "AUTHORS", "CHANGELOG","COPYING", "FAQ", "INSTALL", "NEWS", "README",
          "THANKS", "TODO", "plugins/*.egg"
@@ -166,8 +179,8 @@ if __platform__ == "win32" and 'py2exe' in sys.argv:
     from distutils.core import setup
     try:
         import py2exe
-    except:
-        print "\n!! You dont have py2exe installed. Cant build a standalone .exe !!\n"
+    except ImportError:
+        print "\n!! You dont have py2exe installed. !!\n"
         exit()
 
     # put package on path for py2exe
@@ -176,10 +189,13 @@ if __platform__ == "win32" and 'py2exe' in sys.argv:
     setup(
         name = NAME, 
         version = VERSION, 
-        options = {"py2exe" : {"compressed" : 1, "optimize" : 2, "includes" : INCLUDES }},
+        options = {"py2exe" : {"compressed" : 1, "optimize" : 2, 
+                               "includes" : INCLUDES }},
         windows = [{"script": "src/Editra.py",
                     "icon_resources": [(1, ICON['Win'])], 
-                    "other_resources" : [(RT_MANIFEST, 1, manifest_template % dict(prog=NAME))],}],
+                    "other_resources" : [(RT_MANIFEST, 1, 
+                                          manifest_template % dict(prog=NAME))],
+                  }],
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
@@ -252,7 +268,7 @@ else:
         try:
             from setuptools import setup
         except ImportError:
-            pass
+            print "To build an egg setuptools must be installed"
 
     setup(
         name = NAME,

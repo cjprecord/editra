@@ -26,9 +26,8 @@
 # SUMMARY:                                                                    #
 # Lexer configuration module for Oracle SQL                                   #
 #                                                                             #
-# TODO:                                                                       #
-# Only Comment/Number highlight seems to work right now need to do more       #
-# investigating                                                               #
+# @todo: Only Comment/Number highlight seems to work right now                #
+#                                                                             #
 #-----------------------------------------------------------------------------#
 """
 
@@ -151,30 +150,30 @@ fld_sql_ob = ("fold.sql.only.begin", "0")
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(langId=0):
+def Keywords(lang_id=0):
     """Returns Specified Keywords List
-    @param langId: used to select specific subset of keywords
+    @param lang_id: used to select specific subset of keywords
 
     """
     return [sql_kw, sql_dbo, sql_pld, sql_plus, sql_ukw1, sql_ukw2]
 
-def SyntaxSpec(langId=0):
+def SyntaxSpec(lang_id=0):
     """Syntax Specifications
-    @param langId: used for selecting a specific subset of syntax specs
+    @param lang_id: used for selecting a specific subset of syntax specs
 
     """
     return syntax_items
 
-def Properties(langId=0):
+def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
-    @param langId: used to select a specific set of properties
+    @param lang_id: used to select a specific set of properties
 
     """
     return [fold]
 
-def CommentPattern(langId=0):
+def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
-    @param langId: used to select a specific subset of comment pattern(s)
+    @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
     return [u'--']

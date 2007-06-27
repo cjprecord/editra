@@ -609,9 +609,9 @@ class StyleEditor(wx.Dialog):
                     ID_FONT_SIZE  : syntax_data.GetSize()
                   }
         if u"#" not in val_map[ID_FORE_COLOR]:
-            val_map[ID_FORE_COLOR] = self.preview.GetDefaultForeColour(hex = True)
+            val_map[ID_FORE_COLOR] = self.preview.GetDefaultForeColour(as_hex=True)
         if u"#" not in val_map[ID_BACK_COLOR]:
-            val_map[ID_BACK_COLOR] = self.preview.GetDefaultBackColour(hex = True)
+            val_map[ID_BACK_COLOR] = self.preview.GetDefaultBackColour(as_hex=True)
 
         for sid in SETTINGS_IDS:
             ctrl = self.FindWindowById(sid)

@@ -21,7 +21,7 @@
 """
 #-----------------------------------------------------------------------------#
 # FILE: css.py                                                                #
-# AUTHOR: Cody Precord                                                        #
+# @author: Cody Precord                                                       #
 #                                                                             #
 # SUMMARY:                                                                    #
 # Lexer configuration file for Cascading Style Sheets.                        #
@@ -109,30 +109,30 @@ fold = ("fold", "1")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(langId=0):
+def Keywords(lang_id=0):
     """Returns Specified Keywords List
-    @param langId: used to select specific subset of keywords
+    @param lang_id: used to select specific subset of keywords
 
     """
     return [css1_keywords, css_psuedo_class, css2_keywords]
 
-def SyntaxSpec(langId=0):
+def SyntaxSpec(lang_id=0):
     """Syntax Specifications
-    @param langId: used for selecting a specific subset of syntax specs
+    @param lang_id: used for selecting a specific subset of syntax specs
 
     """
     return syntax_items
 
-def Properties(langId=0):
+def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
-    @param langId: used to select a specific set of properties
+    @param lang_id: used to select a specific set of properties
 
     """
     return [fold]
 
-def CommentPattern(langId=0):
+def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
-    @param langId: used to select a specific subset of comment pattern(s)
+    @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
     return [u'/*', u'*/']

@@ -64,9 +64,15 @@ STY_EX_ATTRIBUTES  = u"eol bold italic underline"
 #      Changing this is fairly easy in this class but it will require changes
 #      to the StyleMgr and Editor as well.
 class StyleItem(object):
-    """A storage class for holding styling information"""
-    def __init__(self, fore = wx.EmptyString, back = wx.EmptyString, 
-                    face = wx.EmptyString, size = wx.EmptyString):
+    """A storage class for holding styling information
+    @todo: The extra Attributes should be saved as a separate attribute in the
+           StyleItem. This currenlty causes problems when customizing values in 
+           the StyleEditor Changing this is fairly easy in this class but it 
+           will require changes to the StyleMgr and Editor as well.
+
+    """
+    def __init__(self, fore=wx.EmptyString, back=wx.EmptyString, 
+                    face=wx.EmptyString, size=wx.EmptyString):
         """Initiliazes the Style Object.
 
         @param fore: Specifies the forground color (hex string)
@@ -106,7 +112,10 @@ class StyleItem(object):
             return False
 
     def __str__(self):
-        """Converts StyleItem to a string"""
+        """Converts StyleItem to a string
+        @return: string representation of the StyleItem
+
+        """
         style_str = wx.EmptyString
         if hasattr(self, u'fore'):
             style_str = u"fore:%s," % self.fore
@@ -188,7 +197,7 @@ class StyleItem(object):
         else:
             return False
 
-    def SetBack(self, back, ex = wx.EmptyString):
+    def SetBack(self, back, ex=wx.EmptyString):
         """Sets the Background Value
         @param back: hex color string
         @keyword ex: extra attribute (i.e bold, italic, underline)
@@ -199,7 +208,7 @@ class StyleItem(object):
         else:
             self.back = u"%s,%s" % (back, ex)
 
-    def SetFace(self, face, ex = wx.EmptyString):
+    def SetFace(self, face, ex=wx.EmptyString):
         """Sets the Face Value
         @param back: font name string
         @keyword ex: extra attribute (i.e bold, italic, underline)
@@ -210,7 +219,7 @@ class StyleItem(object):
         else:
             self.face = u"%s,%s" % (face, ex)
 
-    def SetFore(self, fore, ex = wx.EmptyString):
+    def SetFore(self, fore, ex=wx.EmptyString):
         """Sets the Foreground Value
         @param back: hex color string
         @keyword ex: extra attribute (i.e bold, italic, underline)
@@ -221,7 +230,7 @@ class StyleItem(object):
         else:
             self.fore = u"%s,%s" % (fore, ex)
 
-    def SetSize(self, size, ex = wx.EmptyString):
+    def SetSize(self, size, ex=wx.EmptyString):
         """Sets the Font Size Value
         @param back: font point size
         @type back: string or int
@@ -233,7 +242,7 @@ class StyleItem(object):
         else:
             self.size = u"%s,%s" % (str(size), ex)
 
-    def SetExAttr(self, ex_attr, add = True):
+    def SetExAttr(self, ex_attr, add=True):
         """Adds an extra text attribute to a StyleItem. Currently
         (bold, eol, italic, underline) are supported. If the optional
         add value is set to False the attribute will be removed from
@@ -285,6 +294,9 @@ class StyleMgr(object):
     """Manages style definitions and provides them on request.
     Also provides functionality for loading custom style sheets and 
     modifying styles during run time.
+    @todo: possibly reimplement as a singleton to reduce the amout of duplicate
+           data that is stored for each control.
+    @todo: dont load style sheet for every newly created instance
 
     """
     FONT_TAG_TIMES     = u"times"
@@ -294,7 +306,7 @@ class StyleMgr(object):
     FONT_TAG_SIZE      = u"size"
     FONT_TAG_SIZE2     = u"size2"
 
-    def __init__(self, custom = wx.EmptyString):
+    def __init__(self, custom=wx.EmptyString):
         """Initializes the Style Manager
         @keyword custom: path to custom style sheet to use
 
@@ -303,13 +315,14 @@ class StyleMgr(object):
         # Attributes
         self.fonts = self.GetFontDictionary()
         self.style_set = custom
+        self.styles = dict()
         self.LOG = wx.GetApp().GetLog()
 
         # Get the Style Set
         if custom != wx.EmptyString and self.LoadStyleSheet(custom):
             self.LOG("[styles][init] Loaded custom style sheet %s" % custom)
         else:
-            self.LOG("[styles][init_err] Failed to import styles from %s" % custom)
+            self.LOG("[styles][err] Failed to import styles from %s" % custom)
 
     def DefaultStyleDictionary(self):
         """This is the default style values that are used for styling
@@ -376,7 +389,7 @@ class StyleMgr(object):
             sty_dict[key] = StyleItem(face = u"%(mono)s", size = "%(size)d")
         return sty_dict
 
-    def GetFontDictionary(self, default = True):
+    def GetFontDictionary(self, default=True):
         """Does a system lookup to build a default set of fonts using
         ten point fonts as the standards size.
         @keyword default: return default dictionary or custom
@@ -427,12 +440,12 @@ class StyleMgr(object):
             font = wx.FFont(self.fonts[self.FONT_TAG_SIZE], wx.MODERN)
         return font
 
-    def GetDefaultForeColour(self, hex = False):
+    def GetDefaultForeColour(self, as_hex=False):
         """Gets the foreground color of the default style and returns
         a Colour object. Otherwise returns Black if the default
         style is not found.
-        @keyword hex: return a hex string or colour object
-        @type hex: bool
+        @keyword as_hex: return a hex string or colour object
+        @type as_hex: bool
         @return: wx.Colour of default style foreground or hex value
         @rtype: wx.Colour or string
 
@@ -441,15 +454,15 @@ class StyleMgr(object):
             fore = self.styles[u'default_style'].GetFore()
             if fore == wx.EmptyString:
                 fore = u"#000000"
-            if not hex:
+            if not as_hex:
                 fore = wx.ColourRGB(int(fore[1:], 16))
         else:
             fore = u"#000000"
-            if not hex:
+            if not as_hex:
                 fore = wx.NamedColor("black")
         return fore
 
-    def GetDefaultBackColour(self, hex = False):
+    def GetDefaultBackColour(self, as_hex=False):
         """Gets the background color of the default style and returns
         a Colour object. Otherwise returns white if the default
         style is not found.
@@ -463,11 +476,11 @@ class StyleMgr(object):
             back = self.styles[u'default_style'].GetBack()
             if back == wx.EmptyString:
                 back = u"#FFFFFF"
-            if not hex:
+            if not as_hex:
                 back = wx.ColourRGB(int(back[1:], 16))
         else:
             back = u"#FFFFFF"
-            if not hex:
+            if not as_hex:
                 back = wx.NamedColor("white")
         return back
 
@@ -547,13 +560,15 @@ class StyleMgr(object):
         if os.path.exists(style_sheet):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
-                self.LOG("[styles][err] Failed to open style sheet: %s" % style_sheet)
+                self.LOG("[styles][err] Failed to open style sheet: %s" % \
+                                                                    style_sheet)
                 return False
             ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
             reader.close()
             return ret_val
         else:
-            self.LOG("[styles] The style sheet %s does not exists" % style_sheet)
+            self.LOG("[styles] The style sheet %s does not exists" % \
+                                                                    style_sheet)
             self.SetStyles(self.DefaultStyleDictionary())
             return False
 
@@ -607,7 +622,7 @@ class StyleMgr(object):
             pass
         return style_set
 
-    def ParseStyleData(self, style_data, strict = False):
+    def ParseStyleData(self, style_data, strict=False):
         """Parses a string style definitions read from an Editra
         Style Sheet. If the parameter 'strict' isnt set then any
         syntax errors are ignored and only good values are returned.
@@ -653,9 +668,11 @@ class StyleMgr(object):
         i = j = 0
         while i < len(style_tree):
             tmp = tmp2 = list()
-            tmp = style_tree[i][1].strip().split(u";") # Level 2 Break into attributes
+            # Level 2 Break into attributes
+            tmp = style_tree[i][1].strip().split(u";")
             while j < len(tmp):
-                tmp2.append(tmp[j].strip().split(u":")) # Level 3 Attribute to values
+                # Level 3 Attribute to values
+                tmp2.append(tmp[j].strip().split(u":"))
                 j += 1
             j = 0
             if len(tmp2) and tmp2[-1][0] == wx.EmptyString:
@@ -678,8 +695,8 @@ class StyleMgr(object):
                     if strict:
                         raise SyntaxError
                 elif leaf[0] not in STY_ATTRIBUTES:
-                    self.LOG(("[styles] [syntax_warning] Unknown style attribute: %s"
-                             ", In declaration of %s") + (leaf[0], tag))
+                    self.LOG(("[styles][syntax_warning] Unknown style attribute: %s"
+                             ", In declaration of %s") % (leaf[0], tag))
                     if strict:
                         raise SyntaxWarning
                 else:
@@ -728,8 +745,9 @@ class StyleMgr(object):
                         if match1.match(values[0]) or match2.match(values[0]):
                             v1ok = True
                         else:
-                            self.LOG("[styles] [syntax_warning] Bad value in " + \
-                                    attrib[0] + " the value %s is invalid." % values[0])
+                            self.LOG("[styles] [syntax_warning] Bad value in %s" 
+                                     " the value %s is invalid." % \
+                                     (attrib[0], values[0]))
 
                     if len(values) == 2 and values[1] in STY_EX_ATTRIBUTES:
                         v2ok = True
@@ -774,15 +792,15 @@ class StyleMgr(object):
         else:
             return False
 
-    def SetStyleFont(self, named_style, wxFont):
+    def SetStyleFont(self, named_style, wx_font):
         """Sets the font of a specific style
         @param named_style: style tag name to set value for
-        @param wxFont: font object to set styles font info from
+        @param wx_font: font object to set styles font info from
         @return: whether font was set or not
 
         """
         if self.HasNamedStyle(named_style):
-            self.styles[named_style].SetFont(wxFont.GetFaceName())
+            self.styles[named_style].SetFont(wx_font.GetFaceName())
             self.styles[named_style].SetSize(wx.Font.GetPointSize())
             return True
         else:
@@ -796,7 +814,7 @@ class StyleMgr(object):
         """
         self.styles[style_tag] = value
 
-    def SetStyles(self, style_dict, nomerge = False):
+    def SetStyles(self, style_dict, nomerge=False):
         """Sets the managers style data and returns True on success.
         @param style_dict: dictionary of style items to use as managers style
                            set.

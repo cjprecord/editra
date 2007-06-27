@@ -67,9 +67,9 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
         return 0
     elif mode == "log":
         logfile = os.environ.get('EDITRA_LOG')
-        if logfile == None or not os.path.exists(logfile):
+        if logfile is None or not os.path.exists(logfile):
             print u"EDITRA_LOG enviroment variable not set!!!"
-            print u"Outputting log information to default log \'editra_tmp.log\'"
+            print u"Outputting log information to default log editra_tmp.log"
             logfile = 'editra_tmp.log'
         file_handle = file(logfile, mode="ab")
         writer = codecs.lookup('utf-8')[3](file_handle)

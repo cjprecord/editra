@@ -79,20 +79,24 @@ _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
 class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
-    """Editras Main Window"""
-    def __init__(self, parent, id, wsize, title):
+    """Editras Main Window
+    @todo: modularize the event handling more (pubsub?)
+
+    """
+    def __init__(self, parent, id_, wsize, title):
         """Initialiaze the Frame and Event Handlers.
         @note: Automatically calls Show at the end of __init__
 
         """
-        wx.Frame.__init__(self, parent, id, title, size = wsize,
-                          style = wx.DEFAULT_FRAME_STYLE)
+        wx.Frame.__init__(self, parent, id_, title, size=wsize,
+                          style=wx.DEFAULT_FRAME_STYLE)
 
         self._mgr = wx.aui.AuiManager(flags=wx.aui.AUI_MGR_DEFAULT | \
                                       wx.aui.AUI_MGR_TRANSPARENT_DRAG | \
                                       wx.aui.AUI_MGR_TRANSPARENT_HINT)
         self._mgr.SetManagedWindow(self)
-        viewmgr.PerspectiveManager.__init__(self, self._mgr, CONFIG['CACHE_DIR'])
+        viewmgr.PerspectiveManager.__init__(self, self._mgr, \
+                                            CONFIG['CACHE_DIR'])
 
         self.SetTitle()
         self.LOG = wx.GetApp().GetLog()
@@ -128,7 +132,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                           CloseButton(False).MaximizeButton(False). \
                           CaptionVisible(False))
         #---- Setup Printer ----#
-        self.printer = ed_print.ED_Printer(self, self.nb.GetCurrentCtrl)
+        self.printer = ed_print.EdPrinter(self, self.nb.GetCurrentCtrl)
 
         #---- Command Bar ----#
         self._cmdbar = ed_cmdbar.CommandBar(self.edit_pane, ID_COMMAND_BAR)
@@ -151,12 +155,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.Bind(wx.EVT_TOOL, self.OnOpen, id = ID_OPEN)
         self.Bind(wx.EVT_TOOL, self.OnSave, id = ID_SAVE)
         self.Bind(wx.EVT_TOOL, self.OnPrint, id = ID_PRINT)
-        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id = ID_FIND)
-        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id = ID_FIND_REPLACE)
+        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
+        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, \
+                  id=ID_FIND_REPLACE)
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
-        menbar = ed_menu.ED_MenuBar()
+        menbar = ed_menu.EdMenuBar()
         self.filemenu = menbar.GetMenuByName("file")
         self.editmenu = menbar.GetMenuByName("edit")
         self.viewmenu = menbar.GetMenuByName("view")
@@ -187,8 +192,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.Bind(wx.EVT_MENU_OPEN, self.UpdateMenu)
         self.BindLangMenu()
         if wx.Platform == '__WXGTK__':
-            self.Bind(wx.EVT_MENU_HIGHLIGHT, self.OnMenuHighlight, id=ID_LEXER)
-            self.Bind(wx.EVT_MENU_HIGHLIGHT, self.OnMenuHighlight, id=ID_EOL_MODE)
+            self.Bind(wx.EVT_MENU_HIGHLIGHT, \
+                      self.OnMenuHighlight, id=ID_LEXER)
+            self.Bind(wx.EVT_MENU_HIGHLIGHT, \
+                      self.OnMenuHighlight, id=ID_EOL_MODE)
 
         # File Menu Events
         self.Bind(wx.EVT_MENU, self.OnNew, id=ID_NEW)
@@ -284,6 +291,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @param fname: can be optionally specified to open
                       a file without opening a FileDialog
         @type fname: string
+
         """
         result = wx.ID_CANCEL
         try:
@@ -373,22 +381,22 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wxMenuEvent
 
         """
-        fileNum = evt.GetId() - wx.ID_FILE1
-        file_handle = self.filehistory.GetHistoryFile(fileNum)
+        fnum = evt.GetId() - wx.ID_FILE1
+        file_h = self.filehistory.GetHistoryFile(fnum)
 
         # Check if file still exists
-        if not os.path.exists(file_handle):
+        if not os.path.exists(file_h):
             mdlg = wx.MessageDialog(self, _("%s could not be found\nPerhaps "
                                             "its been moved or deleted") % \
-                                    file_handle, _("File Not Found"),
+                                    file_h, _("File Not Found"),
                                     wx.OK | wx.ICON_WARNING)
             mdlg.CenterOnParent()
             mdlg.ShowModal()
             mdlg.Destroy()
             # Remove offending file from history
-            self.filehistory.RemoveFileFromHistory(fileNum)
+            self.filehistory.RemoveFileFromHistory(fnum)
         else:
-            self.DoOpen(evt, file_handle)
+            self.DoOpen(evt, file_h)
 
     def OnClosePage(self, evt):
         """Close a page
@@ -427,7 +435,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         for ctrl in ctrls:
             fname = ctrl[1].filename
             if fname != '':
-                result = ctrl[1].SaveFile(os.path.join(ctrl[1].dirname, ctrl[1].filename))
+                fpath = os.path.join(ctrl[1].dirname, ctrl[1].filename)
+                result = ctrl[1].SaveFile(fpath)
                 if result:
                     self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
                 else:
@@ -441,8 +450,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             else:
                 ret_val = self.OnSaveAs(ID_SAVEAS, ctrl[0], ctrl[1])
                 if ret_val:
-                    self.filehistory.AddFileToHistory(os.path.join(ctrl[1].dirname, 
-                                                                  ctrl[1].filename))
+                    fpath = os.path.join(ctrl[1].dirname, ctrl[1].filename)
+                    self.filehistory.AddFileToHistory(fpath)
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt, title=u'', page=None):
@@ -451,8 +460,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wxMenuEvent
 
         """
-        dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', title.lstrip(u"*"), 
-                            self.MenuFileTypes(), wx.SAVE|wx.OVERWRITE_PROMPT)
+        dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', 
+                            title.lstrip(u"*"), self.MenuFileTypes(), 
+                            wx.SAVE|wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
         if result == wx.ID_OK:
             path = dlg.GetPath()
@@ -471,8 +481,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
             else:
                 self.PushStatusText(_("Saved File As: %s") % fname, SB_INFO)
-                self.SetTitle(u"%s - file://%s%s%s" % (fname, ctrl.dirname, 
-                                                       util.GetPathChar(), fname))
+                self.SetTitle(u"%s - file://%s%s%s" % \
+                              (fname, ctrl.dirname, util.GetPathChar(), fname))
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.GetCurrentCtrl().FindLexer()
                 self.nb.UpdatePageImage()
@@ -487,8 +497,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         if evt.GetId() == ID_SAVE_PROFILE:
-            dlg = wx.FileDialog(self, _("Where to Save Profile?"), CONFIG['PROFILE_DIR'], 
-                                "default.pp", _("Profile") + " (*.pp)|*.pp", 
+            dlg = wx.FileDialog(self, _("Where to Save Profile?"), \
+                               CONFIG['PROFILE_DIR'], "default.pp", \
+                               _("Profile") + " (*.pp)|*.pp", 
                                 wx.SAVE | wx.OVERWRITE_PROMPT)
 
             result = dlg.ShowModal()
@@ -508,10 +519,12 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         the settings found in the profile file.
         @param evt: Event fired that called this handler
         @type evt: wxMenuEvent
+
         """
         if evt.GetId() == ID_LOAD_PROFILE:
-            dlg = wx.FileDialog(self, _("Load a Custom Profile"), CONFIG['PROFILE_DIR'], 
-                                "default.pp", _("Profile") + " (*.pp)|*.pp", wx.OPEN)
+            dlg = wx.FileDialog(self, _("Load a Custom Profile"), 
+                                CONFIG['PROFILE_DIR'], "default.pp", 
+                                _("Profile") + " (*.pp)|*.pp", wx.OPEN)
 
             result = dlg.ShowModal()
             if result == wx.ID_OK: 
@@ -586,7 +599,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.Bind(wx.EVT_CLOSE, self.OnExit)
                 return
         except UnboundLocalError:
-            self.LOG("[main_evt] [exit] [exception] Trapped UnboundLocalError OnExit")
+            self.LOG("[main][exit][err] Trapped UnboundLocalError OnExit")
 
         ### If we get to here there is no turning back so cleanup
         ### additional items and save the user settings
@@ -613,7 +626,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         try:
             del self.filehistory
         except AttributeError:
-            self.LOG("[main_evt] [exit] [exception] Trapped AttributeError OnExit")
+            self.LOG("[main][exit][err] Trapped AttributeError OnExit")
         self._cmdbar.Destroy()
 
         # Finally close the application
@@ -648,6 +661,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """Shows the Goto Line control
         @param evt: Event fired that called this handler
         @type evt: wxMenuEvent
+
         """
         e_id = evt.GetId()
         if e_id == ID_GOTO_LINE:
@@ -690,7 +704,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         if evt.GetId() == ID_FONT:
-            #TODO this is a quick stubin finish me later
             dlg = wx.FontDialog(self, wx.FontData())
             result = dlg.ShowModal()
             data = dlg.GetFontData()
@@ -698,7 +711,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             if result == wx.ID_OK:
                 font = data.GetChosenFont()
                 ctrl = self.nb.GetCurrentCtrl()
-                ctrl.SetGlobalFont(self.nb.control.FONT_TAG_MONO, font.GetFaceName())
+                ctrl.SetGlobalFont(self.nb.control.FONT_TAG_MONO, \
+                                   font.GetFaceName())
                 ctrl.UpdateAllStyles()
             dlg.Destroy()
         else:
@@ -847,7 +861,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
             # the events from the toolbar do not propagate to the control.
-            if e_obj.GetClassName() == "wxToolBar" or e_id in [ID_REDO, ID_UNDO] \
+            if e_obj.GetClassName() == "wxToolBar" or \
+               e_id in [ID_REDO, ID_UNDO] \
                or wx.Platform == '__WXMSW__':
                 ctrl.ControlDispatch(evt)
                 self.UpdateToolBar()
@@ -867,7 +882,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         line, column = self.nb.GetCurrentCtrl().GetPos(evt)
         if line >= 0 and column >= 0:
-            self.SetStatusText(_("Line: %d  Column: %d") % (line, column), SB_ROWCOL)
+            self.SetStatusText(_("Line: %d  Column: %d") % \
+                               (line, column), SB_ROWCOL)
             self.UpdateToolBar()
         evt.Skip()
 
@@ -923,7 +939,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if evt.GetClassName() == "wxMenuEvent":
             menu = evt.GetMenu()
             # HACK MSW GetMenu returns None on submenu open events
-            if menu == None:
+            if menu is None:
                 menu = self.languagemenu
                 menu2 = self.lineformat
         else:
@@ -943,8 +959,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             if menu2 != None:
                 self.LOG("[menu_evt] Updating EOL Mode Menu")
                 eol = ctrl.GetEOLModeId()
-                for menuId in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
-                    menu2.Check(menuId, eol == menuId)
+                for menu_id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
+                    menu2.Check(menu_id, eol == menu_id)
                 menu = self.vieweditmenu
         if menu == self.editmenu:
             self.LOG("[main_evt] Updating Edit Menu")
@@ -980,8 +996,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         elif menu == self.lineformat:
             self.LOG("[menu_evt] Updating EOL Mode Menu")
             eol = ctrl.GetEOLModeId()
-            for menuId in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
-                menu.Check(menuId, eol == menuId)
+            for menu_id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
+                menu.Check(menu_id, eol == menu_id)
         else:
             pass
         return 0
@@ -989,8 +1005,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     def UpdateToolBar(self):
         """Update Tool Status
         @status: Temporary fix for toolbar status updating
+
         """
-        if not hasattr(self, 'toolbar') or self.toolbar == None:
+        if not hasattr(self, 'toolbar') or self.toolbar is None:
             return -1
         ctrl = self.nb.GetCurrentCtrl()
         self.toolbar.EnableTool(ID_UNDO, ctrl.CanUndo())
@@ -1010,9 +1027,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             name = self.nb.GetCurrentCtrl().filename
 
         dlg = wx.MessageDialog(self, 
-                                _("The file: \"%s\" has been modified since the "
-                                  "last save point.\n Would you like to save "
-                                  "the changes?") % name, 
+                                _("The file: \"%s\" has been modified since "
+                                  "the last save point.\n Would you like to "
+                                  "save the changes?") % name, 
                                _("Save Changes?"), 
                                wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | \
                                wx.ICON_INFORMATION)
@@ -1041,9 +1058,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 # Plugin interface's to the MainWindow
 class MainWindowI(plugin.Interface):
     """Provides simple one method interface into adding extra
-    functionality to the main window. The method in this interface
-    called at the end of the window's internationalization.
-           
+    functionality to the main window. 
+    @note: The method in this interface called once at the end 
+           of the window's internationalization.
+
     """
     def PlugIt(self, window):
         """Do whatever is needed to integrate is plugin
@@ -1057,6 +1075,9 @@ class MainWindowAddOn(plugin.Plugin):
     """Plugin that Extends the L{MainWindowI}"""
     observers = plugin.ExtensionPoint(MainWindowI)
     def Init(self, window):
-        """Call all observers once to initialize"""
+        """Call all observers once to initialize
+        @param window: window that observers become children of
+
+        """
         for ob in self.observers:
             ob.PlugIt(window)
