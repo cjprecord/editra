@@ -167,7 +167,7 @@ class EditraArt(wx.ArtProvider):
     #     does it degrade the image quality so much. If no size is supplied
     #     and the image is scaled it looks fine, but if a size is supplied and
     #     the image is not scaled it will still look poor.
-    def CreateBitmap(self, artId, client, size):
+    def CreateBitmap(self, art_id, client, size):
         """Makes the bitmaps from the images
         @return: Requested image object if one exists
         @rtype: wx.Bitmap
@@ -175,26 +175,27 @@ class EditraArt(wx.ArtProvider):
         """
         # All art ids we can handle can be converted to int
         try:
-            artId = int(artId)
+            art_id = int(art_id)
         except ValueError:
             return wx.NullBitmap
 
         # If using default theme let the system provide the art when possible
-        if ed_glob.PROFILE['ICONS'].lower() == u'default' and DEFAULT.has_key(artId):
-            return wx.ArtProvider.GetBitmap(DEFAULT[artId], client, size)
+        if ed_glob.PROFILE['ICONS'].lower() == u'default' and \
+           DEFAULT.has_key(art_id):
+            return wx.ArtProvider.GetBitmap(DEFAULT[art_id], client, size)
         if CLIENTS.has_key(client) and \
-           (ART.has_key(artId) or \
-            OTHER_ART.has_key(artId) or \
-            MIME_ART.has_key(artId)):
+           (ART.has_key(art_id) or \
+            OTHER_ART.has_key(art_id) or \
+            MIME_ART.has_key(art_id)):
             resource_path = GetArtPath(client)
             if client == wx.ART_OTHER:
-                return OTHER_ART[artId].getBitmap()
+                return OTHER_ART[art_id].getBitmap()
             else:
-                if ART.has_key(artId):
-                    art_src = resource_path + ART[artId]
+                if ART.has_key(art_id):
+                    art_src = resource_path + ART[art_id]
                 else:
                     mime_path = GetArtPath(client, mime=True)
-                    art_src = mime_path + MIME_ART[artId]
+                    art_src = mime_path + MIME_ART[art_id]
 
             if os.path.exists(art_src):
                 img = wx.Image(art_src, wx.BITMAP_TYPE_PNG)
@@ -207,8 +208,8 @@ class EditraArt(wx.ArtProvider):
             if client == wx.ART_TOOLBAR:
                 size = ed_glob.PROFILE['ICON_SZ']
 
-            # Rescale image to specified size if need be but dont allow upscaling
-            # as it reduces quality.
+            # Rescale image to specified size if need be but dont allow
+            # upscaling as it reduces quality.
             if client != wx.ART_OTHER and size[0] < img_sz[0] and not \
                (client == wx.ART_TOOLBAR and wx.Platform == '__WXMAC__'):
                 img.Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH)

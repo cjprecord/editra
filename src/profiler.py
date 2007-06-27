@@ -122,11 +122,11 @@ def GetLoader():
                      "profiles" + util.GetPathChar() + ".loader")
 
     if os.path.exists(user_home + rel_prof_path):
-        LOADER = user_home + rel_prof_path
+        loader = user_home + rel_prof_path
     else:
-        LOADER = CONFIG['PROFILE_DIR'] + ".loader"
+        loader = CONFIG['PROFILE_DIR'] + ".loader"
 
-    return LOADER
+    return loader
 
 def GetProfileStr():
     """Reads the profile string from the loader and returns it.
@@ -134,8 +134,7 @@ def GetProfileStr():
     @return: path of profile used in last session
 
     """
-    LOADER = GetLoader()
-    reader = util.GetFileReader(LOADER)
+    reader = util.GetFileReader(GetLoader())
     if reader == -1:
         dev_tool.DEBUGP("[profiler] [exception] Failed to open profile loader")
         # So return the default
@@ -214,7 +213,8 @@ def ReadProfile(profile):
     if reader == -1:
         dev_tool.DEBUGP("[profiler] [exception] Loading Profile: " + profile +
                         "\n[prof_warn] Loaded Default Profile Settings")
-        PROFILE['MYPROFILE'] = os.path.join(os.path.split(profile)[0], u"default.pp")
+        PROFILE['MYPROFILE'] = os.path.join(os.path.split(profile)[0], 
+                                            u"default.pp")
         return 1
 
     if isinstance(reader, file):
@@ -280,9 +280,7 @@ def UpdateProfileLoader():
     @return: 0 if no error, non zero for error condition
 
     """
-
-    LOADER = GetLoader()
-    writer = util.GetFileWriter(LOADER)
+    writer = util.GetFileWriter(GetLoader())
     if writer == -1:
         dev_tool.DEBUGP("[profiler] [exception] Failed to open "
                         "profile loader for writting")
@@ -312,7 +310,7 @@ def WriteProfile(profile):
     else:
         conv = unicode
     header = u"# " + profile + u"\n# Editra " + version + u" Profile\n" \
-              + u"# You are welcome to edit this file but be aware that if it\n" \
+              + u"# You are can edit this file but be aware that if it\n" \
               + u"# is your active profile it will be overwritten the next\n" \
               + u"# time you close the editor.\n" \
               + u"#\n# Lable\t\t\tValue #" + \

@@ -217,7 +217,7 @@ PROFILE = {
            'AUTO_COMP'  : True,             # Use Auto-comp if available
            'AUTO_INDENT': True,             # Use Auto Indent
            'BRACKETHL'  : True,             # Use bracket highlighting
-           'CHECKMOD'   : True,             # Auto check file for file modifications
+           'CHECKMOD'   : True,             # Auto check file for file mod
            'CODE_FOLD'  : True,             # Use code folding
            'DEFAULT'    : False,            # No longer used I believe
            'DEFAULT_VIEW' : 'Default',      # Default Perspective

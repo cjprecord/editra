@@ -174,10 +174,11 @@ class ED_Pages(FNB.FlatNotebook):
         # Check if file is open already and ask if it should be opened again
         if self.HasFileOpen(path2file):
             mdlg = wx.MessageDialog(self,
-                                    _("File is already open in an existing page."
-                                      "\nDo you wish to open it again?"),
+                                    _("File is already open in an existing "
+                                      "page.\nDo you wish to open it again?"),
                                     _("Open File") + u"?", 
-                                    wx.YES_NO | wx.NO_DEFAULT | wx.ICON_INFORMATION)
+                                    wx.YES_NO | wx.NO_DEFAULT | \
+                                    wx.ICON_INFORMATION)
             result = mdlg.ShowModal()
             mdlg.Destroy()
             if result == wx.ID_NO:
@@ -203,7 +204,7 @@ class ED_Pages(FNB.FlatNotebook):
         if os.path.exists(path2file):
             try:
                 in_txt, enc = util.GetDecodedText(path2file)
-            except Exception, msg:
+            except (UnicodeDecodeError, IOError, OSError), msg:
                 self.LOG("[ed_pages][err] Failed to open file %s" % path2file)
                 self.LOG("[ed_pages][err] %s" % msg)
                 # File could not be opened/read give up
@@ -297,7 +298,8 @@ class ED_Pages(FNB.FlatNotebook):
         children = self.GetChildren()
         controls = list()
         for child in children:
-            if hasattr(child, '__name__') and child.__name__ == u"EditraTextCtrl":
+            if hasattr(child, '__name__') and \
+               child.__name__ == u"EditraTextCtrl":
                 controls.append(child)
         return controls
 
@@ -337,14 +339,16 @@ class ED_Pages(FNB.FlatNotebook):
                     dlg = wx.MessageDialog(self, _("There are no files that Editra"
                                                    " can open in %s") % fname,
                                            _("No Valid Files to Open"),
-                                           style=wx.OK | wx.CENTER | wx.ICON_INFORMATION)
+                                           style=wx.OK | wx.CENTER | \
+                                                 wx.ICON_INFORMATION)
                 else:
                     dlg = wx.MessageDialog(self, _("Do you wish to open all %d"
                                            " files in this directory?\n\nWarning opening"
                                            " many files at once may cause the"
                                            " editor to temporarly freeze.") % len(dcnt),
                                            _("Open Directory?"),
-                                           style = wx.YES | wx.NO | wx.ICON_INFORMATION)
+                                           style=wx.YES | wx.NO | \
+                                                 wx.ICON_INFORMATION)
                 result = dlg.ShowModal()
                 dlg.Destroy()
                 if result == wx.ID_YES:
@@ -358,7 +362,8 @@ class ED_Pages(FNB.FlatNotebook):
             pathname = util.GetPathName(fname)
             the_file = util.GetFileName(fname)
             self.OpenPage(pathname, the_file)
-            self.frame.PushStatusText(_("Opened file: %s") % fname, ed_glob.SB_INFO)
+            self.frame.PushStatusText(_("Opened file: %s") % fname, \
+                                      ed_glob.SB_INFO)
         return
 
     def OnIdle(self, evt):
@@ -401,7 +406,8 @@ class ED_Pages(FNB.FlatNotebook):
                     mdlg = wx.MessageDialog(self.frame, 
                                             _("%s has been modified by another "
                                               "application.\n\nWould you like to "
-                                              "Reload it?") % cfile, _("Reload File?"),
+                                              "Reload it?") % cfile, 
+                                              _("Reload File?"),
                                               wx.YES_NO | wx.ICON_INFORMATION)
                     mdlg.CenterOnParent()
                     result = mdlg.ShowModal()
@@ -421,7 +427,7 @@ class ED_Pages(FNB.FlatNotebook):
         @type evt: wx.MouseEvent
 
         """
-        cord, tabIdx = self._pages.HitTest(evt.GetPosition())
+        cord, tab_idx = self._pages.HitTest(evt.GetPosition())
         if cord == FNB.FNB_X:
             # Make sure that the button was pressed before
             if self._pages._nXButtonStatus != FNB.FNB_BTN_PRESSED:
@@ -474,8 +480,10 @@ class ED_Pages(FNB.FlatNotebook):
 
         self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
                  "[nb_info] It has file named: %s\n"
-                 "[nb_info] In DIR: %s") % (evt.GetOldSelection(), evt.GetSelection(), 
-                                            self.control.filename, self.control.dirname))
+                 "[nb_info] In DIR: %s") % (evt.GetOldSelection(), 
+                                            evt.GetSelection(), 
+                                            self.control.filename, 
+                                            self.control.dirname))
         self.frame.UpdateToolBar()
         evt.Skip()
 

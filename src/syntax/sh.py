@@ -95,22 +95,22 @@ fld_compact = ("fold.compact", "0")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(langId=0):
+def Keywords(lang_id=0):
     """Returns Specified Keywords List
-    @param langId: used to select specific subset of keywords
+    @param lang_id: used to select specific subset of keywords
 
     """
     keywords = list()
     keyw_str = [comm_keywords]
-    if langId == synglob.ID_LANG_CSH:
+    if lang_id == synglob.ID_LANG_CSH:
         keyw_str.append(csh_keywords)
     else:
-        if langId != synglob.ID_LANG_BOURNE:
+        if lang_id != synglob.ID_LANG_BOURNE:
             keyw_str.append(ext_keywords)
-        if langId == synglob.ID_LANG_BASH:
+        if lang_id == synglob.ID_LANG_BASH:
             keyw_str.append(bsh_keywords)
             keyw_str.append(bcmd_keywords)
-        elif langId == synglob.ID_LANG_KSH:
+        elif lang_id == synglob.ID_LANG_KSH:
             keyw_str.append(ksh_keywords)
             keyw_str.append(kcmd_keywords)
         else:
@@ -118,23 +118,23 @@ def Keywords(langId=0):
     keywords.append((0, " ".join(keyw_str)))
     return keywords
 
-def SyntaxSpec(langId=0):
+def SyntaxSpec(lang_id=0):
     """Syntax Specifications
-    @param langId: used for selecting a specific subset of syntax specs
+    @param lang_id: used for selecting a specific subset of syntax specs
 
     """
     return syntax_items
 
-def Properties(langId=0):
+def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
-    @param langId: used to select a specific set of properties
+    @param lang_id: used to select a specific set of properties
 
     """
     return [fld_comment, fld_compact]
 
-def CommentPattern(langId=0):
+def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
-    @param langId: used to select a specific subset of comment pattern(s)
+    @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
     return [u'#']

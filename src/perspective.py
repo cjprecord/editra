@@ -127,10 +127,10 @@ class PerspectiveManager(object):
         """
         if not len(name):
             return
-        perId = wx.NewId()
-        self._ids.append(perId)
-        self._menu.InsertAlpha(perId, name, _("Change view to \"%s\"") % name, 
-                               after = ID_DELETE_PERSPECTIVE)
+        per_id = wx.NewId()
+        self._ids.append(per_id)
+        self._menu.InsertAlpha(per_id, name, _("Change view to \"%s\"") % name, 
+                               after=ID_DELETE_PERSPECTIVE)
 
     def GetPerspectiveControls(self):
         """Returns the control menu for the manager
@@ -202,7 +202,8 @@ class PerspectiveManager(object):
         e_id = evt.GetId()
         if e_id in [ID_SAVE_PERSPECTIVE, ID_DELETE_PERSPECTIVE]:
             if e_id == ID_SAVE_PERSPECTIVE:
-                name = wx.GetTextFromUser(_("Perspective Name"), _("Save Perspective"))
+                name = wx.GetTextFromUser(_("Perspective Name"), \
+                                          _("Save Perspective"))
                 if name:
                     self.AddPerspective(name, p_data=None)
                     self.SavePerspectives()
@@ -228,9 +229,9 @@ class PerspectiveManager(object):
         """
         if self._viewset.has_key(name):
             del self._viewset[name]
-            remId = self._menu.RemoveItemByName(name)
-            if remId:
-                self._ids.remove(remId)
+            rem_id = self._menu.RemoveItemByName(name)
+            if rem_id:
+                self._ids.remove(rem_id)
 
     def SavePerspectives(self):
         """Writes the perspectives out to disk. Returns
@@ -270,7 +271,7 @@ class PerspectiveManager(object):
         else:
             return False
 
-    def SetPerspectiveById(self, perId):
+    def SetPerspectiveById(self, per_id):
         """Sets the perspective using the given control id
         @param perId: id of requested perspective
         @return: whether perspective was set or not
@@ -280,7 +281,7 @@ class PerspectiveManager(object):
         name = None
         for pos in range(self._menu.GetMenuItemCount()):
             item = self._menu.FindItemByPosition(pos)
-            if perId == item.GetId():
+            if per_id == item.GetId():
                 name = item.GetLabel()
                 break
         if name:

@@ -60,18 +60,29 @@ _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 class Editra(wx.App):
     """The Editra Application"""
+    def __init__(self, *args, **kargs):
+        """Initialize that main app and its attributes
+        @postcondition: application is created and ready to be run in mainloop"
+
+        """
+        wx.App.__init__(self, *args, **kargs)
+        
+        # Attributes
+        self._log = dev_tool.DEBUGP
+        self._lock = False
+        self._windows = dict()
+        self._pluginmgr = plugin.PluginManager()
+
     def OnInit(self):
         """Initialize the Editor
+        @note: this gets called before __init__
         @postcondition: custom artprovider and plugins are loaded
 
         """
-        wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log = dev_tool.DEBUGP
-        self._log("[app][info] Editra is Initializing")
-        self._lock = False
-        self._pluginmgr = plugin.PluginManager()
-        self._windows = dict()
         self._log("[app][info] Registering Editra's ArtProvider")
+        wx.ArtProvider.PushProvider(ed_art.EditraArt())
+        self._log("[app][info] Editra is Initializing")
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
@@ -160,15 +171,11 @@ class Editra(wx.App):
         """
         if evt.GetActive():
             self._log("[app][info] I'm Awake!!")
-         #   if self._frame.CanSetTransparent():
-         #       self._frame.SetTransparent(ed_glob.PROFILE['ALPHA'])
         else:
             self._log("[app][info] Going to sleep")
-          #  if self._frame.CanSetTransparent():
-          #      self._frame.SetTransparent(int(.85 * ed_glob.PROFILE['ALPHA']))
         evt.Skip()
 
-    def RegisterWindow(self, name, window, can_lock = False):
+    def RegisterWindow(self, name, window, can_lock=False):
         """Registers winows with the app. The name should be the
         repr of window. The can_lock parameter is a boolean stating
         whether the window can keep the main app running after the 
@@ -216,7 +223,7 @@ class Editra(wx.App):
                 found = False
                 for key in self._windows:
                     if self._windows[key][1]:
-                        self._log("[app][info] Promoting %s to top window" % key)
+                        self._log("[app][info] Promoting %s to top" % key)
                         self.SetTopWindow(self._windows[key][0])
                         found = True
                         break
@@ -240,7 +247,8 @@ class Editra(wx.App):
         if self._windows.has_key(winname):
             return self._windows[winname][1]
         else:
-            self._log("[app][warning] the window %s has not been registered" % winname)
+            self._log("[app][warning] the window %s has "
+                      "not been registered" % winname)
             return False
 
 #--------------------------------------------------------------------------#
@@ -252,7 +260,7 @@ def InitConfig():
     """
     ed_glob.CONFIG['PROFILE_DIR'] = util.ResolvConfigDir("profiles")
     import profiler
-    PROFILE_UPDATED = False
+    profile_updated = False
     if util.HasConfigDir():
         if profiler.ProfileIsCurrent():
             profiler.LoadProfile()
@@ -267,58 +275,26 @@ def InitConfig():
             for cfg in ["cache", "styles", "plugins", "profiles"]:
                 if not util.HasConfigDir(cfg):
                     util.MakeConfigDir(cfg)
-            PROFILE_UPDATED = True
+            profile_updated = True
     else:
         util.CreateConfigDir()
     ed_glob.CONFIG['CONFIG_DIR'] = util.ResolvConfigDir("")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
     ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
-    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "mime"), True)
+    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", \
+                                                                  "mime"), True)
     ed_glob.CONFIG['PLUGIN_DIR'] = util.ResolvConfigDir("plugins")
-    ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", "theme"))
+    ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", \
+                                                                    "theme"))
     ed_glob.CONFIG['LANG_DIR'] = util.ResolvConfigDir("locale", True)
     ed_glob.CONFIG['STYLES_DIR'] = util.ResolvConfigDir("styles")
     ed_glob.CONFIG['SYS_PLUGIN_DIR'] = util.ResolvConfigDir("plugins", True)
     ed_glob.CONFIG['SYS_STYLES_DIR'] = util.ResolvConfigDir("styles", True)
-    ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("test", True)
+    ed_glob.CONFIG['TEST_DIR'] = util.ResolvConfigDir("tests", True)
     if not util.HasConfigDir("cache"):
         util.MakeConfigDir("cache")
     ed_glob.CONFIG['CACHE_DIR'] = util.ResolvConfigDir("cache")
-    return PROFILE_UPDATED
-
-#--------------------------------------------------------------------------#
-def CheckVersions():
-    """Checks if the proper system libraries are available on the
-    system.
-
-    """
-    REQUIRED_WX = "2.8" # or higher
-    REQUIRED_PY = "2.4" # or higher
-    REQUIRED_ENC = "Unicode"
-    wxVer = "%d.%d" % (wx.MAJOR_VERSION, wx.MINOR_VERSION)
-    pyVer = "%d.%d" % (sys.version_info[0], sys.version_info[1])
-    wxEnc = wx.PlatformInfo[2].title()
-    if wxEnc != REQUIRED_ENC:
-        print ("\n!! It is suggested to use a Unicode build of wxPython "
-               "when running Editra. \n!! You are using a %s build of wxPython "
-               "and this may cause some runtime problems. \n!! Editra will try to "
-               "launch now but if you experience problems you should install "
-               "\n!! a Unicode build of wxPython and try again. \n") % wxEnc
-    if wxVer < REQUIRED_WX or pyVer < REQUIRED_PY:
-        msg = ("\nTo run properly Editra requires the following libraries to be "
-               "installed:\n"
-               "---------------------------------------\n"
-               "| REQUIRED\t\t|\tFOUND |\n"
-               "---------------------------------------\n"
-               "Python: %s or higher\t|\t%s\n"
-               "wxPython: %s or higher\t|\t%s\n\n"
-               "Would you like to try anyway? [y/n]: ") % \
-               (REQUIRED_PY, pyVer, REQUIRED_WX, wxVer)
-        ret = raw_input(msg)
-        if ret == 'n':
-            exit()
-        else:
-            pass
+    return profile_updated
 
 #--------------------------------------------------------------------------#
 
@@ -353,59 +329,64 @@ def Main():
                   ) % ed_glob.version
             exit(0)
         if True in [x[0] in ['-v', '--version'] for x in opts]:
-            print "%s - v%s - Developers Editor" % (ed_glob.prog_name, ed_glob.version)
+            print "%s - v%s - Developers Editor" % (ed_glob.prog_name, \
+                                                    ed_glob.version)
             exit(0)
 
     # We are ready to run so fire up the config and launch the app
-    PROFILE_UPDATED = InitConfig()
+    profile_updated = InitConfig()
 
     # 1. Create Application
     dev_tool.DEBUGP("[main_info] Initializing Application...")
     if ed_glob.PROFILE['MODE'] == u"GUI_DEBUG":
-        editraApp = Editra(True)
+        editra_app = Editra(True)
     else:
-        editraApp = Editra(False)
+        editra_app = Editra(False)
 
     # 2. Initialize the Language Settings
     langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
     the_locale = wx.Locale(langid)
     the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
     the_locale.AddCatalog(ed_glob.prog_name)
-    language = gettext.translation(ed_glob.prog_name, ed_glob.CONFIG['LANG_DIR'],
-                                    [the_locale.GetCanonicalName()], fallback=True)
+    language = gettext.translation(ed_glob.prog_name, 
+                                   ed_glob.CONFIG['LANG_DIR'],
+                                   [the_locale.GetCanonicalName()], 
+                                   fallback=True)
     language.install()
 
-    if PROFILE_UPDATED:
-        wx.MessageBox(_("Your profile has been updated to the latest version") + \
-                      u"\n" + \
-                      _("Please check the preferences dialog to reset you preferences"),
+    if profile_updated:
+        wx.MessageBox(_("Your profile has been updated to the latest "
+                        "version") + u"\n" + \
+                      _("Please check the preferences dialog to reset "
+                        "you preferences"),
                       _("Profile Updated"))
 
     # Splash a warning if version is not a final version
     if ed_glob.PROFILE['APPSPLASH'] and int(ed_glob.version[0]) < 1:
-        splash = wx.SplashScreen(wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
-                                                          wx.ART_OTHER), 
-                                 wx.SPLASH_CENTRE_ON_PARENT | wx.SPLASH_NO_TIMEOUT, 
-                                 0, None, wx.ID_ANY)
+        splash_img = wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
+                                              wx.ART_OTHER)
+        splash = wx.SplashScreen(splash_img, wx.SPLASH_CENTRE_ON_PARENT | \
+                                 wx.SPLASH_NO_TIMEOUT, 0, None, wx.ID_ANY)
         splash.Show()
         wx.FutureCall(3000, splash.Destroy)
 
     frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
                                     ed_glob.prog_name)
-    editraApp.RegisterWindow(repr(frame), frame, True)
-    editraApp.SetTopWindow(frame)
+    editra_app.RegisterWindow(repr(frame), frame, True)
+    editra_app.SetTopWindow(frame)
 
     for arg in args:
         try:
             if not os.path.isabs(arg):
                 arg = os.path.abspath(arg)
-            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, unicode(arg.decode('utf-8')))
+            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, \
+                         unicode(arg.decode('utf-8')))
         except IndexError:
-            dev_tool.DEBUGP("[main] [exception] Trapped Commandline IndexError on Init")
+            dev_tool.DEBUGP("[main][err] IndexError on commandline args")
 
     # 3. Start Applications Main Loop
     dev_tool.DEBUGP("[main_info] Starting MainLoop...")
-    editraApp.MainLoop()
+    editra_app.MainLoop()
 
 #-----------------------------------------------------------------------------#
 if __name__ == '__main__':

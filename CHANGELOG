@@ -18,11 +18,13 @@ NEW: [features/improvements]
 +Improved command line support
 +CssOptimizer plugin available via the plugin manager
 +File type detection is now configurable
++Lots of new documentation
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
 +Cursor/Selection is now set properly after a comment/uncomment action
 +Bracket highlighting can be toggled on/off properly
++Many bugs fixed in source package install
 
 
 #-----------------------------------------------------------------------------#

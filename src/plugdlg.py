@@ -72,8 +72,8 @@ class PluginDialog(wx.Frame):
     it does not interfere with usage of the editor.
 
     """
-    def __init__(self, parent, fid, title, pos = wx.DefaultPosition,
-                 size = wx.DefaultSize, style = wx.DEFAULT_DIALOG_STYLE):
+    def __init__(self, parent, fid, title, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE):
         """Creates the dialog, does not call Show()"""
         wx.Frame.__init__(self, parent, fid, title, pos, size, style)
         util.SetWindowIcon(self)
@@ -103,7 +103,8 @@ class PluginDialog(wx.Frame):
         busy = self._nb.IsBusy()
         if busy:
             dlg = wx.MessageDialog(self, busy, _("Do you wish to exit"), 
-                                   style = wx.YES_NO | wx.ICON_EXCLAMATION | wx.CENTER)
+                                   style = wx.YES_NO | wx.ICON_EXCLAMATION | \
+                                           wx.CENTER)
             result = dlg.ShowModal()
             if result == wx.YES:
                 return
@@ -127,8 +128,8 @@ class PluginPages(wx.Toolbook):
     One for installing, and one for configuration.
 
     """
-    def __init__(self, parent, tbid, pos = wx.DefaultPosition, 
-                 size = wx.DefaultSize, style = wx.TB_TOP):
+    def __init__(self, parent, tbid, pos=wx.DefaultPosition, 
+                 size=wx.DefaultSize, style=wx.TB_TOP):
         """Creates the Toolbook"""
         wx.Toolbook.__init__(self, parent, tbid, pos, size, style)
 
@@ -150,9 +151,12 @@ class PluginPages(wx.Toolbook):
         self.SetImageList(self._imglst)
 
         # Add Pages
-        self.AddPage(self._config, _("Configure"), imageId = self._imgind[CONFIG_PG])
-        self.AddPage(self._download, _("Download"), imageId = self._imgind[DOWNLOAD_PG])
-        self.AddPage(self._install, _("Install"), imageId = self._imgind[INSTALL_PG])
+        self.AddPage(self._config, _("Configure"), 
+                     imageId=self._imgind[CONFIG_PG])
+        self.AddPage(self._download, _("Download"), 
+                     imageId=self._imgind[DOWNLOAD_PG])
+        self.AddPage(self._install, _("Install"), 
+                     imageId=self._imgind[INSTALL_PG])
         self.SetSelection(CONFIG_PG)
 
         # Event handlers
@@ -180,11 +184,11 @@ class PluginPages(wx.Toolbook):
         """
         cur_pg = evt.GetSelection()
         parent = self.GetParent()
-        parent.SetTitle(parent._title + " | " + self.GetPageText(cur_pg))
+        parent.SetTitle(parent.GetTitle() + " | " + self.GetPageText(cur_pg))
         if cur_pg == CONFIG_PG:
             self._config.PopulateCtrl()
-            self.GetParent().SetStatusText(_("Changes will take affect once the "
-                                             "program has been resarted"), 0)
+            self.GetParent().SetStatusText(_("Changes will take affect once the"
+                                             " program has been resarted"), 0)
         elif cur_pg == DOWNLOAD_PG:
             self._download.PopulateList()
             self.GetParent().SetStatusText("", 0)
@@ -206,7 +210,7 @@ class ConfigPanel(wx.Panel):
         
         # Layout Panel
         self._sizer.Add(wx.StaticText(self, wx.ID_ANY, 
-                        _("To enable a plugin check the box next to its label")),
+                       _("To enable a plugin check the box next to its label")),
                         0, wx.ALIGN_CENTER_HORIZONTAL)
         self._sizer.Add(wx.Size(10, 10))
         self._sizer.Add(self._list, 1, wx.EXPAND)
@@ -226,8 +230,8 @@ class ConfigPanel(wx.Panel):
         """
         identifer = None
         if self.HasItem(name):
-            itemId = self._list.FindItem(0, name)
-            ver = self._list.GetItem(itemId, self._list.VERSION_COL)
+            item_id = self._list.FindItem(0, name)
+            ver = self._list.GetItem(item_id, self._list.VERSION_COL)
             identifer = name + ver.GetText()
         return identifer
 
@@ -311,8 +315,8 @@ class DownloadPanel(wx.Panel):
     """Creates a panel with controls for downloading plugins."""
     ID_DOWNLOAD = wx.NewId()
 
-    def __init__(self, parent, pid, pos = wx.DefaultPosition,
-                 size = wx.DefaultSize, style = wx.NO_BORDER):
+    def __init__(self, parent, pid, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=wx.NO_BORDER):
         """Initializes the panel"""
         wx.Panel.__init__(self, parent, pid, pos, size, style)
 
@@ -328,7 +332,7 @@ class DownloadPanel(wx.Panel):
 
         # Layout Panel
         self._sizer.Add(wx.StaticText(self, wx.ID_ANY,
-                        _("Select the desired plugins and then Click Download")),
+                       _("Select the desired plugins and then Click Download")),
                         0, wx.ALIGN_CENTER)
         self._sizer.Add(self._list, 1, wx.EXPAND)
         self._sizer.Add(wx.Size(5, 5))
@@ -343,10 +347,9 @@ class DownloadPanel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(ed_event.EVT_NOTIFY, self.OnNotify)
 
-    # XXX *args is really a string but for some reason when it passed
-    #     here from startWorker it gets broken into a list of chars
     def _DownloadPlugin(self, *args):
         """Downloads the plugin at the given url.
+        @note: *args is really a string that has been exploded
         @return: name, completed, egg data
         @rtype: tuple
 
@@ -366,7 +369,7 @@ class DownloadPanel(wx.Panel):
     # as follows. Each meta data item must be on a single line with
     # each set of meta data for different plugins separated by three
     # hash marks '###'.
-    def _GetPluginListData(self, url = PLUGIN_REPO):
+    def _GetPluginListData(self, url=PLUGIN_REPO):
         """Gets the list of plugins and their related meta data
         as a string and returns it.
         @return: list of data of available plugins from website
@@ -407,14 +410,14 @@ class DownloadPanel(wx.Panel):
         """
         return self._eggbasket
 
-    def GetPluginList(self, url = PLUGIN_REPO):
+    def GetPluginList(self, url=PLUGIN_REPO):
         """Gets the list of available plugins from the web and returns
         it as a dictionary of names mapped to metadata.
         @return: PluginData of all available plugins
         @rtype: dict
 
         """
-        plugins = self._GetPluginListData()
+        plugins = self._GetPluginListData(url)
         p_list = dict()
         if len(plugins) < 2:
             gp = self.GetGrandParent()
@@ -479,7 +482,8 @@ class DownloadPanel(wx.Panel):
             self._eggcount = len(urls)
             for egg in range(len(urls)):
                 self.GetGrandParent().SetStatusText(_("Downloading") + "...", 1)
-                delayedresult.startWorker(self._ResultCatcher, self._DownloadPlugin,
+                delayedresult.startWorker(self._ResultCatcher, 
+                                          self._DownloadPlugin,
                                           wargs = (urls[egg]), jobID = egg)
         else:
             evt.Skip()
@@ -535,15 +539,16 @@ class InstallPanel(wx.Panel):
     ID_SYS = wx.NewId()
     ID_REMOVE_ITEM = wx.NewId()
 
-    def __init__(self, parent, pid, pos = wx.DefaultPosition,
-                 size = wx.DefaultSize, style = wx.NO_BORDER):
+    def __init__(self, parent, pid, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=wx.NO_BORDER):
         """Initializes the panel"""
         wx.Panel.__init__(self, parent, pid, pos, size, style)
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         lbl = wx.StaticText(self, wx.ID_ANY,
-                            _("Click on Install to install the plugins in the list"))
+                            _("Click on Install to install the plugins "
+                              "in the list"))
         tt = wx.ToolTip(_("To add a new item drag and drop the plugin file "
                           "into the list.\n\nTo remove an item select it and "
                           "hit Delete or Backspace."))
@@ -627,7 +632,8 @@ class InstallPanel(wx.Panel):
             self.GetGrandParent().SetStatusText(_("Finished Installing Plugins"), 0)
             dlg = wx.MessageDialog(self, _("Go to configuration page?"),
                                    _("Finished Installing Plugins"), 
-                                   style = wx.YES_NO | wx.CENTER | wx.ICON_INFORMATION)
+                                   style=wx.YES_NO | wx.CENTER | \
+                                         wx.ICON_INFORMATION)
             result = dlg.ShowModal()
             dlg.Destroy()
             if result == wx.ID_YES:
@@ -740,10 +746,13 @@ class PluginListCtrl(wx.ListCtrl,
     VERSION_COL  = 3
 
     def __init__(self, parent):
-        """Initializes the Profile List Control"""
+        """Initializes the Profile List Control
+        @param parent: parent window of this control
+
+        """
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
                              wx.DefaultPosition, wx.DefaultSize, 
-                             style = wx.LC_REPORT | wx.LC_VRULES | wx.LC_HRULES)
+                             style=wx.LC_REPORT | wx.LC_VRULES | wx.LC_HRULES)
 
         self.InsertColumn(self.PLUGIN_COL, _("Plugin"))
         self.InsertColumn(self.DESCRIPT_COL, _("Description"))
@@ -773,11 +782,12 @@ class PluginListCtrl(wx.ListCtrl,
         @postcondition: checkbox is checked/unchecked and parent is notified
 
         """
-        evt = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, index, flag, self)
+        evt = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, 
+                                         index, flag, self)
         wx.PostEvent(self.GetParent(), evt)
         listmix.CheckListCtrlMixin.OnCheckItem(self, index, flag)
 
-    def InsertPluginItem(self, piData, check=False):
+    def InsertPluginItem(self, pi_data, check=False):
         """Does a smart add to the list that will insert the given
         a PluginData item alphabetically into the table based on
         the name value.
@@ -790,7 +800,7 @@ class PluginListCtrl(wx.ListCtrl,
             names.append(self.GetItem(item).GetText())
         before = u''
         for name in names:
-            if piData.GetName() > name:
+            if pi_data.GetName() > name:
                 before = name
                 break
         if before not in names:
@@ -799,10 +809,10 @@ class PluginListCtrl(wx.ListCtrl,
             index = names.index(before) - 1
         if index == -1:
             index = 0
-        self.InsertStringItem(index, piData.GetName())
-        self.SetStringItem(index, 1, piData.GetDescription())
-        self.SetStringItem(index, 2, piData.GetAuthor())
-        self.SetStringItem(index, 3, piData.GetVersion())
+        self.InsertStringItem(index, pi_data.GetName())
+        self.SetStringItem(index, 1, pi_data.GetDescription())
+        self.SetStringItem(index, 2, pi_data.GetAuthor())
+        self.SetStringItem(index, 3, pi_data.GetVersion())
         self.CheckItem(index, check)
 
 class PluginData(plugin.PluginData):
@@ -810,8 +820,8 @@ class PluginData(plugin.PluginData):
     about plugins and where to download them from
 
     """
-    def __init__(self, name = u'', descript = u'', author = u'', \
-                 ver = u'', url = u''):
+    def __init__(self, name=u'', descript=u'', author=u'', \
+                 ver=u'', url=u''):
         plugin.PluginData.__init__(self, name, descript, author, ver)
         self._url = url
 

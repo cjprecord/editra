@@ -47,19 +47,19 @@ edEVT_UPDATE_TEXT = wx.NewEventType()
 EVT_UPDATE_TEXT = wx.PyEventBinder(edEVT_UPDATE_TEXT, 1)
 class UpdateTextEvent(wx.PyCommandEvent):
     """Event to signal that text needs updating"""
-    def __init__(self, evtType, evtId, value = None):
+    def __init__(self, etype, eid, value=None):
         """Creates the event object"""
-        wx.PyCommandEvent.__init__(self, evtType, evtId)
-        self._evtType = evtType
-        self._id = evtId
+        wx.PyCommandEvent.__init__(self, etype, eid)
+        self._etype = etype
+        self._id = eid
         self._value = value
 
     def GetEvtType(self):
         """Returns the event type
-        @return: this events event type (ed_event.edEVT_XXX_XXX)
+        @return: this events event type (ed_event)
 
         """
-        return self._evtType
+        return self._etype
 
     def GetId(self):
         """Returns the event id
@@ -81,10 +81,10 @@ edEVT_NOTIFY = wx.NewEventType()
 EVT_NOTIFY = wx.PyEventBinder(edEVT_NOTIFY, 1)
 class NotificationEvent(wx.PyCommandEvent):
     """General notification event"""
-    def __init__(self, evtType, evtId, value = None, obj = None):
-        wx.PyCommandEvent.__init__(self, evtType, evtId)
-        self._evtType = evtType
-        self._id = evtId
+    def __init__(self, etype, eid, value=None, obj=None):
+        wx.PyCommandEvent.__init__(self, etype, eid)
+        self._etype = etype
+        self._id = eid
         self._value = value
         self._obj = obj
 
@@ -97,10 +97,10 @@ class NotificationEvent(wx.PyCommandEvent):
 
     def GetEvtType(self):
         """Returns the event type
-        @return: this events event type (ed_event.edEVT_XXX_XXX)
+        @return: this events event type (ed_event)
 
         """
-        return self._evtType
+        return self._etype
 
     def GetId(self):
         """Returns the event id

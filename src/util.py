@@ -91,7 +91,7 @@ class DropTargetFT(wx.PyDropTarget):
         """
         return dragResult
 
-    def OnDrop(self, x = 0, y = 0):
+    def OnDrop(self, x=0, y=0):
         """Gets the drop cords
         @keyword x: x cord of drop object
         @keyword y: y cord of drop object
@@ -186,7 +186,7 @@ def GetDecodedText(fname):
             dev_tool.DEBUGP("[txtdecoder] Decoded text as %s" % enc)
             return decoded, enc
         else:
-            dev_tool.DEBUGP("[txtdecoder] [err] Failed to decode text returning raw text")
+            dev_tool.DEBUGP("[txtdecoder][err] Decode Failed")
             return txt, enc
 
 def FilterFiles(file_list):
@@ -216,7 +216,7 @@ def FilterFiles(file_list):
                                                 'pyo', 'psd']:
                 continue
             # 3. Try to judge if we can open the file or not by sampling
-            #    some of the data, if 10% of the data is bad, filter out the file.
+            #    some of the data, if 10% of the data is bad, drop the file.
             else:
                 try:
                     fhandle = file(path, "rb")
@@ -256,7 +256,7 @@ def GetFileModTime(file_name):
         mod_time = 0
     return mod_time
 
-def GetFileReader(file_name, enc = 'utf-8'):
+def GetFileReader(file_name, enc='utf-8'):
     """Returns a file stream reader object for reading the
     supplied file name. It returns a utf-8 reader if the host
     system supports it other wise it will return an ascii reader.
@@ -278,7 +278,7 @@ def GetFileReader(file_name, enc = 'utf-8'):
         reader = file_h
     return reader
 
-def GetFileWriter(file_name, enc = 'utf-8'):
+def GetFileWriter(file_name, enc='utf-8'):
     """Returns a file stream writer object for reading the
     supplied file name. It returns a utf-8 reader if the host
     system supports it other wise it will return an ascii reader.
@@ -373,7 +373,7 @@ def ResolvAbsPath(rel_path):
 
     return apath + path_char + rpath
 
-def HasConfigDir(loc = ""):
+def HasConfigDir(loc=u""):
     """ Checks if the user has a config directory and returns True 
     if the config directory exists or False if it does not.
     @return: whether config dir in question exists on an expected path
@@ -436,7 +436,7 @@ def CreateConfigDir():
     from profiler import UpdateProfileLoader
     UpdateProfileLoader()
 
-def ResolvConfigDir(config_dir, sys_only = False):
+def ResolvConfigDir(config_dir, sys_only=False):
     """Checks for a user config directory and if it is not
     found it then resolves the absolute path of the executables 
     directory from the relative execution path. This is then used 
@@ -451,7 +451,8 @@ def ResolvConfigDir(config_dir, sys_only = False):
     if not sys_only:
         # Try to look for a user dir
         user_config = u"%s%s.%s%s%s" % (wx.GetHomeDir(), path_char,
-                                        ed_glob.prog_name, path_char, config_dir)
+                                        ed_glob.prog_name, path_char, 
+                                        config_dir)
         if os.path.exists(user_config):
             return user_config + path_char
 
@@ -527,7 +528,7 @@ def GetResources(resource):
     else:
         return -1
 
-def GetResourceFiles(resource, trim = True, get_all = False):
+def GetResourceFiles(resource, trim=True, get_all=False):
     """Gets a list of resource files from a directory and trims the
     file extentions from the names if trim is set to True (default).
     If the get_all parameter is set to True the function will return
@@ -561,7 +562,7 @@ def GetResourceFiles(resource, trim = True, get_all = False):
         return list(set(rec_list))
 
 # GUI helper functions
-def AdjustColour(color, percent, alpha = wx.ALPHA_OPAQUE):
+def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     """ Brighten/Darken input colour by percent and adjust alpha
     channel if needed. Returns the modified color.
     @param color: color object to adjust
@@ -572,16 +573,16 @@ def AdjustColour(color, percent, alpha = wx.ALPHA_OPAQUE):
 
     """ 
     end_color = wx.WHITE
-    rd = end_color.Red() - color.Red()
-    gd = end_color.Green() - color.Green()
-    bd = end_color.Blue() - color.Blue()
+    rdif = end_color.Red() - color.Red()
+    gdif = end_color.Green() - color.Green()
+    bdif = end_color.Blue() - color.Blue()
     high = 100
 
     # We take the percent way of the color from color -. white
-    r = color.Red() + ((percent*rd*100)/high)/100
-    g = color.Green() + ((percent*gd*100)/high)/100
-    b = color.Blue() + ((percent*bd*100)/high)/100
-    return wx.Colour(r, g, b, alpha)
+    red = color.Red() + ((percent * rdif * 100) / high) / 100
+    green = color.Green() + ((percent * gdif * 100) / high) / 100
+    blue = color.Blue() + ((percent * bdif * 100) / high) / 100
+    return wx.Colour(red, green, blue, alpha)
 
 def HexToRGB(hex_str):
     """Returns a list of red/green/blue values from a
@@ -649,15 +650,15 @@ def StrToTuple(tu_str):
 
 class IntValidator(wx.PyValidator):
     """A Generic integer validator"""
-    def __init__(self, min = 0, max = 0):
+    def __init__(self, min_=0, max_=0):
         """Initialize the validator
         @keyword min: min value to accept
         @keyword max: max value to accept
 
         """
         wx.PyValidator.__init__(self)
-        self._min = min
-        self._max = max
+        self._min = min_
+        self._max = max_
 
         # Event managment
         self.Bind(wx.EVT_CHAR, self.OnChar)

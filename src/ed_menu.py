@@ -39,7 +39,6 @@ __revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import os
 import wx
 import ed_glob
 
@@ -54,22 +53,26 @@ class ED_Menu(wx.Menu):
     customize and access items.
 
     """
-    def __init__(self, title = wx.EmptyString, style = 0):
-        """Initialize a Menu Object"""
+    def __init__(self, title=wx.EmptyString, style=0):
+        """Initialize a Menu Object
+        @param title: menu title string
+        @param style: type of menu to create
+
+        """
         wx.Menu.__init__(self, title, style)
 
-    def Append(self, id, text = u'', help = u'', \
-               kind = wx.ITEM_NORMAL, use_bmp = True):
+    def Append(self, id_, text=u'', helpstr=u'', \
+               kind=wx.ITEM_NORMAL, use_bmp=True):
         """Append a MenuItem
         @keyword use_bmp: try and set a bitmap if an appropriate one is 
                           available in the ArtProvider
 
         """
-        item = wx.MenuItem(self, id, text, help, kind)
-        self.AppendItem(item)
+        item = wx.MenuItem(self, id_, text, helpstr, kind)
+        self.AppendItem(item, use_bmp)
         return item
 
-    def AppendItem(self, item, use_bmp = True):
+    def AppendItem(self, item, use_bmp=True):
         """Appends a MenuItem to the menu and adds an associated
         bitmap if one is available, unless use_bmp is set to false.
         @keyword use_bmp: try and set a bitmap if an appropriate one is 
@@ -80,21 +83,21 @@ class ED_Menu(wx.Menu):
             self.SetItemBitmap(item)
         wx.Menu.AppendItem(self, item)
 
-    def Insert(self, pos, id, text = u'', help = u'', \
-               kind = wx.ITEM_NORMAL, use_bmp = True):
+    def Insert(self, pos, id_, text=u'', helpstr=u'', \
+               kind=wx.ITEM_NORMAL, use_bmp=True):
         """Insert an item at position and attach a bitmap
         if one is available.
         @keyword use_bmp: try and set a bitmap if an appropriate one is 
                           available in the ArtProvider
 
         """
-        item = wx.Menu.Insert(self, pos, id, text, help, kind)
+        item = wx.Menu.Insert(self, pos, id_, text, helpstr, kind)
         if use_bmp and kind == wx.ITEM_NORMAL:
             self.SetItemBitmap(item)
         return item
 
-    def InsertAfter(self, item_id, id, label = u'', help = u'', 
-                    kind = wx.ITEM_NORMAL, use_bmp = True):
+    def InsertAfter(self, item_id, id_, label=u'', helpstr=u'', 
+                    kind = wx.ITEM_NORMAL, use_bmp=True):
         """Inserts the given item after the specified item id in
         the menu. If the id cannot be found then the item will appended
         to the end of the menu.
@@ -103,18 +106,20 @@ class ED_Menu(wx.Menu):
         @return: the inserted menu item
 
         """
-        for pos in range(self.GetMenuItemCount()):
-            mitem = self.FindItemByPosition(pos)
+        pos = None
+        for item in xrange(self.GetMenuItemCount()):
+            mitem = self.FindItemByPosition(item)
             if mitem.GetId() == item_id:
+                pos = item
                 break
         if pos:
-            mitem = self.Insert(pos+1, id, label, help, kind, use_bmp)
+            mitem = self.Insert(pos + 1, id_, label, helpstr, kind, use_bmp)
         else:
-            mitem = self.Append(id, label, help, kind, use_bmp)
+            mitem = self.Append(id_, label, helpstr, kind, use_bmp)
         return mitem
 
-    def InsertBefore(self, item_id, id, label = u'', help = u'', 
-                    kind = wx.ITEM_NORMAL, use_bmp = True):
+    def InsertBefore(self, item_id, id_, label=u'', helpstr=u'', 
+                    kind=wx.ITEM_NORMAL, use_bmp=True):
         """Inserts the given item before the specified item id in
         the menu. If the id cannot be found then the item will appended
         to the end of the menu.
@@ -123,18 +128,20 @@ class ED_Menu(wx.Menu):
         @return: menu item that was inserted
 
         """
-        for pos in range(self.GetMenuItemCount()):
-            mitem = self.FindItemByPosition(pos)
+        pos = None
+        for item in xrange(self.GetMenuItemCount()):
+            mitem = self.FindItemByPosition(item)
             if mitem.GetId() == item_id:
+                pos = item
                 break
         if pos:
-            mitem = self.Insert(pos, id, label, help, kind, use_bmp)
+            mitem = self.Insert(pos, id_, label, helpstr, kind, use_bmp)
         else:
-            mitem = self.Append(id, label, help, kind, use_bmp)
+            mitem = self.Append(id_, label, helpstr, kind, use_bmp)
         return mitem
 
-    def InsertAlpha(self, id, label = u'', help = u'', 
-                    kind = wx.ITEM_NORMAL, after = 0, use_bmp = True):
+    def InsertAlpha(self, id_, label=u'', helpstr=u'', 
+                    kind=wx.ITEM_NORMAL, after=0, use_bmp=True):
         """Attempts to insert the new menuitem into the menu
         alphabetically. The optional parameter 'after' is used
         specify an item id to start the alphabetical lookup after.
@@ -149,8 +156,10 @@ class ED_Menu(wx.Menu):
             start = False
         else:
             start = True
-        for pos in range(self.GetMenuItemCount()):
-            mitem = self.FindItemByPosition(pos)
+        last_ind = self.GetMenuItemCount() - 1
+        pos = last_ind
+        for item in range(self.GetMenuItemCount()):
+            mitem = self.FindItemByPosition(item)
             if mitem.IsSeparator():
                 continue
             mlabel = mitem.GetLabel()
@@ -160,13 +169,14 @@ class ED_Menu(wx.Menu):
             if after and not start:
                 continue
             if label < mlabel:
+                pos = item
                 break
-        last_ind = self.GetMenuItemCount() - 1
+
         l_item = self.FindItemByPosition(last_ind)
         if pos == last_ind and (l_item.IsSeparator() or label > mlabel):
-            mitem = self.Append(id, label, help, kind, use_bmp)
+            mitem = self.Append(id_, label, helpstr, kind, use_bmp)
         else:
-            mitem = self.Insert(pos, id, label, help, kind, use_bmp)
+            mitem = self.Insert(pos, id_, label, helpstr, kind, use_bmp)
         return mitem
 
     def RemoveItemByName(self, name):
@@ -178,14 +188,14 @@ class ED_Menu(wx.Menu):
         @return: id of removed item or None if not found
 
         """
-        id = None
+        menu_id = None
         for pos in range(self.GetMenuItemCount()):
             item = self.FindItemByPosition(pos)
             if name == item.GetLabel():
-                id = item.GetId()
-                self.Remove(id)
+                menu_id = item.GetId()
+                self.Remove(menu_id)
                 break
-        return id
+        return menu_id
 
     def SetItemBitmap(self, item):
         """Sets the MenuItems bitmap by getting the id from the
@@ -200,12 +210,13 @@ class ED_Menu(wx.Menu):
         finally:
             pass
 
-class ED_MenuBar(wx.MenuBar):
+class EdMenuBar(wx.MenuBar):
     """Custom menubar to allow for easier access and updating
     of menu components.
+    @todo: this is currently a static object needs lots of refactoring
     
     """
-    def __init__(self, style = 0):
+    def __init__(self, style=0):
         """Initializes the Menubar
         @keyword style: style to set for menu bar
 
@@ -250,7 +261,8 @@ class ED_MenuBar(wx.MenuBar):
                         _("Save Current File"))
         filemenu.Append(ed_glob.ID_SAVEAS, _("Save As") + "\tCtrl+Shift+S", 
                         _("Save As"))
-        filemenu.Append(ed_glob.ID_SAVEALL, _("Save All"), _("Save all open pages")) 
+        filemenu.Append(ed_glob.ID_SAVEALL, _("Save All"), \
+                        _("Save all open pages")) 
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_SAVE_PROFILE, _("Save Profile"), 
                              _("Save Current Settings to a New Profile"))
@@ -311,7 +323,8 @@ class ED_MenuBar(wx.MenuBar):
         bookmenu = ED_Menu()
         bookmenu.Append(ed_glob.ID_ADD_BM, _("Add Bookmark") + u"\tCtrl+B",
                         _("Add a bookmark to the current line"))
-        bookmenu.Append(ed_glob.ID_DEL_BM, _("Remove Bookmark") + u"\tCtrl+Shift+B",
+        bookmenu.Append(ed_glob.ID_DEL_BM, _("Remove Bookmark") + \
+                        u"\tCtrl+Shift+B",
                         _("Remove bookmark from current line"))
         bookmenu.Append(ed_glob.ID_DEL_ALL_BM, _("Remove All Bookmarks"),
                         _("Remove all bookmarks from the current document"))
@@ -343,7 +356,8 @@ class ED_MenuBar(wx.MenuBar):
         viewmenu.Append(ed_glob.ID_ZOOM_NORMAL, _("Zoom Default") + "\tCtrl+0", 
                         _("Zoom Default"))
         viewmenu.AppendSeparator()
-        self._vieweditmenu.Append(ed_glob.ID_INDENT_GUIDES, _("Indentation Guides"), 
+        self._vieweditmenu.Append(ed_glob.ID_INDENT_GUIDES,
+                                  _("Indentation Guides"), 
                                   _("Show Indentation Guides"), wx.ITEM_CHECK)
         self._vieweditmenu.Append(ed_glob.ID_SHOW_EDGE, _("Show Edge Guide"),
                                   _("Show the edge column guide"), wx.ITEM_CHECK)
@@ -358,10 +372,10 @@ class ED_MenuBar(wx.MenuBar):
         viewmenu.AppendSeparator()
         viewmenu.Append(ed_glob.ID_GOTO_LINE, _("Goto Line") + u"\tCtrl+G",
                             _("Goto Line Number"))
-        viewmenu.Append(ed_glob.ID_NEXT_MARK, _("Next Bookmark") + u"\tCtrl+Right", 
-                            _("View Line of Next Bookmark"))
-        viewmenu.Append(ed_glob.ID_PRE_MARK, _("Previous Bookmark") + u"\tCtrl+Left", 
-                            _("View Line of Previous Bookmark"))
+        viewmenu.Append(ed_glob.ID_NEXT_MARK, _("Next Bookmark") + \
+                        u"\tCtrl+Right", _("View Line of Next Bookmark"))
+        viewmenu.Append(ed_glob.ID_PRE_MARK, _("Previous Bookmark") + \
+                        u"\tCtrl+Left", _("View Line of Previous Bookmark"))
         viewmenu.AppendSeparator()
         viewmenu.Append(ed_glob.ID_VIEW_TOOL, _("Toolbar"), 
                              _("Show Toolbar"), wx.ITEM_CHECK)
@@ -378,13 +392,13 @@ class ED_MenuBar(wx.MenuBar):
         formatmenu.AppendSeparator()
         formatmenu.Append(ed_glob.ID_COMMENT, _("Comment Lines") + u"\tCtrl+1", 
                                _("Comment the selected lines"))
-        formatmenu.Append(ed_glob.ID_UNCOMMENT, _("Uncomment Lines") + u"\tCtrl+2", 
-                               _("Uncomment the selected lines"))
+        formatmenu.Append(ed_glob.ID_UNCOMMENT, _("Uncomment Lines") + \
+                          u"\tCtrl+2", _("Uncomment the selected lines"))
         formatmenu.AppendSeparator()
         formatmenu.Append(ed_glob.ID_INDENT, _("Indent Lines"), 
                               _("Indent the selected lines"))
-        formatmenu.Append(ed_glob.ID_UNINDENT, _("Unindent Lines") + u"\tShift+Tab", 
-                              _("Unindent the selected lines"))
+        formatmenu.Append(ed_glob.ID_UNINDENT, _("Unindent Lines") + \
+                          u"\tShift+Tab", _("Unindent the selected lines"))
         formatmenu.AppendSeparator()
         formatmenu.Append(ed_glob.ID_WORD_WRAP, _("Word Wrap"), 
                                _("Wrap Text Horizontally"), wx.ITEM_CHECK)
@@ -440,7 +454,7 @@ class ED_MenuBar(wx.MenuBar):
 
         """
         toolsmenu = ED_Menu()
-        toolsmenu.Append(ed_glob.ID_KWHELPER,_("Keyword Helper") + u'\tCtrl+K', 
+        toolsmenu.Append(ed_glob.ID_KWHELPER, _("Keyword Helper") + u'\tCtrl+K', 
                          _("Provides a Contextual Help Menu Listing Standard "
                            "Keywords/Functions"))
         toolsmenu.Append(ed_glob.ID_PLUGMGR, _("Plugin Manager"),
@@ -462,7 +476,8 @@ class ED_MenuBar(wx.MenuBar):
 
         """
         helpmenu = ED_Menu()
-        helpmenu.Append(ed_glob.ID_ABOUT, _("&About") + u"...", _("About") + u"...")
+        helpmenu.Append(ed_glob.ID_ABOUT, _("&About") + u"...", \
+                        _("About") + u"...")
         helpmenu.Append(ed_glob.ID_HOMEPAGE, _("Project Homepage"), 
                             _("Visit the project homepage %s") % ed_glob.home_page)
         helpmenu.Append(ed_glob.ID_CONTACT, _("Feedback"),

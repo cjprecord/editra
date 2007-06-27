@@ -90,11 +90,12 @@ class SyntaxMgr(object):
     """Class Object for managing loaded syntax data. The manager
     is only created once as a singleton and shared amongst all
     editor windows
+    @status: initial implimentation
 
     """
     instance = None
     first = True
-    def __init__(self, config = None):
+    def __init__(self, config=None):
         """Initialize a syntax manager. If the optional
         value config is set the mapping of extensions to
         lexers will be loaded from a config file.
@@ -165,7 +166,8 @@ class SyntaxMgr(object):
             return False
         if not self.IsModLoaded(modname):
             try:
-                self._loaded[modname] = __import__(modname, globals(), locals(), [''])
+                self._loaded[modname] = __import__(modname, globals(), 
+                                                   locals(), [''])
             except ImportError:
                 return False
         return True
@@ -221,6 +223,7 @@ class ExtensionRegister(dict):
     """A data storage class for managing mappings of
     file types to file extentions. The register is created
     as a singleton.
+    @status: initial implimentation
 
     """
     instance = None
@@ -257,7 +260,7 @@ class ExtensionRegister(dict):
 
         """
         if not isinstance(y, list):
-            raise TypeError, "Extension Register Expects a List for setting values"
+            raise TypeError, "Extension Register Expects a List"
         for key, val in self.iteritems():
             for item in y:
                 if item in val:
@@ -332,8 +335,8 @@ class ExtensionRegister(dict):
 
         """
         ext = list()
-        for x in self.values():
-            ext.extend(x) 
+        for extension in self.values():
+            ext.extend(extension) 
         ext.sort()
         return ext
 
@@ -444,19 +447,19 @@ def SyntaxIds():
 
     """
     s_glob = dir(synglob)
-    synIds = list()
+    syn_ids = list()
     for item in s_glob:
         if item.startswith("ID_LANG"):
-            synIds.append(item)
+            syn_ids.append(item)
     
     # Fetch actual values
     ret_ids = list()
-    for synId in synIds:
-        ret_ids.append(getattr(synglob, synId))
+    for syn_id in syn_ids:
+        ret_ids.append(getattr(synglob, syn_id))
 
     return ret_ids
 
-def GetExtFromId(extId):
+def GetExtFromId(ext_id):
     """Takes a language ID and fetches an appropriate file extension string
     @param extId: language id to get extension for
     @return: file extension
@@ -464,5 +467,5 @@ def GetExtFromId(extId):
 
     """
     extreg = ExtensionRegister()
-    ftype = synglob.ID_MAP.get(extId, synglob.ID_MAP[synglob.ID_LANG_TXT])
+    ftype = synglob.ID_MAP.get(ext_id, synglob.ID_MAP[synglob.ID_LANG_TXT])
     return extreg[ftype][0]

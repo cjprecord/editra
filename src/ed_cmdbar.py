@@ -114,12 +114,12 @@ class CommandBar(wx.Panel):
     controls for the editor.
 
     """
-    def __init__(self, parent, id, size = (-1, 24), style = wx.TAB_TRAVERSAL):
+    def __init__(self, parent, id_, size=(-1, 24), style=wx.TAB_TRAVERSAL):
         """Initializes the bar and its default widgets
         @postcondition: commandbar is created
 
         """
-        wx.Panel.__init__(self, parent, id, size = size, style = style)
+        wx.Panel.__init__(self, parent, id_, size=size, style=style)
 
         # Attributes
         self._parent = parent
@@ -133,8 +133,8 @@ class CommandBar(wx.Panel):
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         self._h_sizer.Add((8, 8))
         self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, GetXBitmap(), \
-                                      size = (14, 14), style = wx.BU_AUTODRAW | \
-                                                               wx.BU_EXACTFIT)
+                                      size=(14, 14), style=wx.BU_AUTODRAW | \
+                                                           wx.BU_EXACTFIT)
         self._h_sizer.Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
         self._h_sizer.Add((12, 12))
         v_sizer.Add((2, 2))
@@ -144,7 +144,7 @@ class CommandBar(wx.Panel):
 
         # Bind Events
         self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_BUTTON, self.OnClose, id = ID_CLOSE_BUTTON)
+        self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
 
     def Hide(self):
@@ -159,15 +159,15 @@ class CommandBar(wx.Panel):
         # HACK fix later
         self._parent.nb.GetCurrentCtrl().SetFocus()
 
-    def InstallCtrl(self, ctrlId):
+    def InstallCtrl(self, id_):
         """Installs a control into the bar by ID
         @postcondition: control is installed
         @return: requested control or None
 
         """
-        if ctrlId == ID_SEARCH_CTRL:
+        if id_ == ID_SEARCH_CTRL:
             ctrl = self.InstallSearchCtrl()
-        elif ctrlId == ID_LINE_CTRL:
+        elif id_ == ID_LINE_CTRL:
             ctrl = self.InstallLineCtrl()
         else:
             ctrl = None
@@ -182,7 +182,7 @@ class CommandBar(wx.Panel):
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         v_sizer.Add((5, 5))
         linectrl = LineCtrl(self, ID_LINE_CTRL, self._parent.nb.GetCurrentCtrl,
-                            size=(100, 20), max = 65535)
+                            size=(100, 20))
         v_sizer.Add(linectrl, 0, wx.ALIGN_CENTER_VERTICAL)
         v_sizer.Add((4, 4))
         go_lbl = wx.StaticText(self, ID_GOTO_LBL, _("Goto Line") + ": ")
@@ -211,7 +211,7 @@ class CommandBar(wx.Panel):
         if wx.Platform == '__WXGTK__':
             ssize.SetHeight(24)
         search = ed_search.ED_SearchCtrl(self, ID_SEARCH_CTRL, 
-                                         menulen = 5, size = ssize)
+                                         menulen=5, size=ssize)
         v_sizer.Add(search)
         v_sizer.Add((4, 4))
         f_lbl = wx.StaticText(self, ID_FIND_LBL, _("Find") + u": ")
@@ -286,8 +286,9 @@ class CommandBar(wx.Panel):
         """
         dc = wx.PaintDC(self)
         gc = wx.GraphicsContext.Create(dc)
-        col1 = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE), -50)
-        col2 = util.AdjustColour(wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE), 50)
+        col1 = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
+        col2 = util.AdjustColour(col1, 50)
+        col1 = util.AdjustColour(col1, -50)
         grad = gc.CreateLinearGradientBrush(0, 1, 0, 29, col2, col1)
         rect = self.GetRect()
 
@@ -301,10 +302,10 @@ class CommandBar(wx.Panel):
 
         evt.Skip()
 
-    def Show(self, ctrlId=0):
+    def Show(self, id_=0):
         """Shows the control and installs it in the parents
         sizer if not installed already.
-        @param ctrlId: Id of control to show in bar
+        @param id_: Id of control to show in bar
 
         """
         # Install self in parent
@@ -317,10 +318,10 @@ class CommandBar(wx.Panel):
 
         # HACK YUCK, come back and try again when my brain is working
         # Show specified control
-        if ctrlId:
-            ctrl = self.FindWindowById(ctrlId)
-            if ctrl == None:
-                ctrl = self.InstallCtrl(ctrlId)
+        if id_:
+            ctrl = self.FindWindowById(id_)
+            if ctrl is None:
+                ctrl = self.InstallCtrl(id_)
 
             # First Hide everything
             for kid in self._search_sizer.GetChildren():
@@ -329,11 +330,11 @@ class CommandBar(wx.Panel):
             for kid in self._goto_sizer.GetChildren():
                 kid.Show(False)
 
-            if ctrlId == ID_SEARCH_CTRL:
+            if id_ == ID_SEARCH_CTRL:
                 for kid in self._search_sizer.GetChildren():
                     kid.Show(True)
                 self._search_sizer.Layout()
-            elif ctrlId == ID_LINE_CTRL:
+            elif id_ == ID_LINE_CTRL:
                 for kid in self._goto_sizer.GetChildren():
                     kid.Show(True)
 
@@ -354,13 +355,13 @@ class CommandBar(wx.Panel):
         self._parent.SendSizeEvent()
         self.Destroy()
 
-    def UninstallCtrl(self, obId):
+    def UninstallCtrl(self, id_):
         """Hides the sizer object holding the control with the passed in id
         @param obId: id of control to remove
         @postcondition: control is removed from bar
 
         """
-        ctrl = self.FindWindowById(obId)
+        ctrl = self.FindWindowById(id_)
         if ctrl != None:
             c_sizer = ctrl.GetContainingSizer()
             sizer = self.GetSizer()
@@ -375,9 +376,10 @@ class CommandExecuter(wx.SearchCtrl):
     @status: not implemented waiting for some fixes in wx
     
     """
-    def __init__(self, parent, id, pos = wx.DefaultPosition, size = wx.DefaultSize):
+    def __init__(self, parent, id_, pos=wx.DefaultPosition, \
+                size=wx.DefaultSize):
         """Initializes the CommandExecuter"""
-        wx.SearchCtrl.__init__(self, parent, id, "", pos, size, 
+        wx.SearchCtrl.__init__(self, parent, id_, "", pos, size, 
                                wx.TE_PROCESS_ENTER)
                                
         # Hide the search button and text
@@ -419,15 +421,14 @@ class LineCtrl(wx.SearchCtrl):
     the action is to take place in.
 
     """
-    def __init__(self, parent, id, get_doc, pos = wx.DefaultPosition, 
-               size=wx.DefaultSize, max = 0):
+    def __init__(self, parent, id_, get_doc, size=wx.DefaultSize):
         """Initializes the LineCtrl control and its attributes.
         @postcondition: gotoline control is initialized
 
         """
-        wx.SearchCtrl.__init__(self, parent, id, "", pos, size,
-                             wx.TE_PROCESS_ENTER,
-                             util.IntValidator(0, max))
+        wx.SearchCtrl.__init__(self, parent, id_, "", size=size,
+                             style=wx.TE_PROCESS_ENTER,
+                             validator=util.IntValidator(0, 65535))
 
         # Attributes
         self._last = 0

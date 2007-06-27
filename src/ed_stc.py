@@ -69,8 +69,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text in"""
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
     def __init__(self, parent, winId,
-                 pos = wx.DefaultPosition, size = wx.DefaultSize,
-                 style = 0, useDT = True):
+                 pos=wx.DefaultPosition, size=wx.DefaultSize,
+                 style=0, useDT=True):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
         @keyword useDT: wheter to use a drop target or not
@@ -214,7 +214,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.EndUndoAction()
 
     #---- Begin Function Definitions ----#
-    def AddLine(self, before = False):
+    def AddLine(self, before=False):
         """Add a new line to the document
         @param before: whether to add the line before current pos or not
         @postcondition: a new line is added to the document
@@ -256,7 +256,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.ToggleLineNumbers(ed_glob.PROFILE['SHOW_LN'])
         self.SetViewEdgeGuide(ed_glob.PROFILE['SHOW_EDGE'])
 
-    def Comment(self, uncomment = False):
+    def Comment(self, uncomment=False):
         """(Un)Comments a line or a selected block of text
         in a document.
         @param uncomment: uncomment selection
@@ -386,7 +386,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         return "".join([self.dirname, util.GetPathChar(), self.filename])
 
-    def GetStyleSheet(self, sheet_name = None):
+    def GetStyleSheet(self, sheet_name=None):
         """Finds the current style sheet and returns its path. The
         Lookup is done by first looking in the users config directory
         and if it is not found there it looks for one on the system
@@ -664,7 +664,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
             lineNum = lineNum + 1
 
-    def Expand(self, line, doExpand, force = False, visLevels = 0, level = -1):
+    def Expand(self, line, doExpand, force=False, visLevels=0, level=-1):
         """Open the Margin Folder
         @postcondition: the selected folder is expanded
 
@@ -698,7 +698,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 line = line + 1
         return line
 
-    def FindLexer(self, set_ext = 0):
+    def FindLexer(self, set_ext=0):
         """Sets Text Controls Lexer Based on File Extension
         @param set_ext: explicit extension to use in search
         @postcondition: lexer is configured for file
@@ -1035,12 +1035,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.SetEOLMode(wx.stc.STC_EOL_LF)
 
-    def SetViewEdgeGuide(self, switch = None):
+    def SetViewEdgeGuide(self, switch=None):
         """Toggles the visibility of the edge guide
         @keyword switch: force a particular setting
 
         """
-        if (switch == None and not self.GetEdgeMode()) or switch:
+        if (switch is None and not self.GetEdgeMode()) or switch:
             self.SetEdgeColumn(int(ed_glob.PROFILE.get("EDGE", 80)))
             self.SetEdgeMode(wx.stc.STC_EDGE_LINE)
         else:
@@ -1096,12 +1096,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.GotoPos(cpos)
         del txt
 
-    def FoldingOnOff(self, switch = None):
+    def FoldingOnOff(self, switch=None):
         """Turn code folding on and off
         @keyword switch: force a particular setting
 
         """
-        if (switch == None and not self.folding) or switch:
+        if (switch is None and not self.folding) or switch:
             self.LOG("[stc_evt] Code Folding Turned On")
             self.folding = True
             self.SetMarginWidth(FOLD_MARGIN, 12)
@@ -1110,12 +1110,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.folding = False
             self.SetMarginWidth(FOLD_MARGIN, 0)
 
-    def SyntaxOnOff(self, switch = None):
+    def SyntaxOnOff(self, switch=None):
         """Turn Syntax Highlighting on and off
         @keyword switch: force a particular setting
 
         """
-        if (switch == None and not self.highlight) or switch:
+        if (switch is None and not self.highlight) or switch:
             self.LOG("[stc_evt] Syntax Highlighting Turned On")
             self.highlight = True
             self.FindLexer()
@@ -1127,22 +1127,22 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.UpdateBaseStyles()
         return 0
 
-    def ToggleAutoIndent(self, switch = None):
+    def ToggleAutoIndent(self, switch=None):
         """Toggles Auto-indent On and Off
         @keyword switch: force a particular setting
 
         """
-        if (switch == None and not self._autoindent) or switch:
+        if (switch is None and not self._autoindent) or switch:
             self._autoindent = True
         else:
             self._autoindent = False
 
-    def ToggleBracketHL(self, switch = None):
+    def ToggleBracketHL(self, switch=None):
         """Toggle Bracket Highlighting On and Off
         @keyword switch: force a particular setting
 
         """
-        if (switch == None and not self.brackethl) or switch:
+        if (switch is None and not self.brackethl) or switch:
             self.LOG("[stc_evt] Bracket Highlighting Turned On")
             self.brackethl = True
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
@@ -1153,12 +1153,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
 
-    def ToggleLineNumbers(self, switch = None):
+    def ToggleLineNumbers(self, switch=None):
         """Toggles the visibility of the line number margin
         @keyword switch: force a particular setting
 
         """
-        if (switch == None and not self.GetMarginWidth(NUM_MARGIN)) or switch:
+        if (switch is None and not self.GetMarginWidth(NUM_MARGIN)) or switch:
             self.LOG("[stc_evt] Showing Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 30)
         else:
@@ -1224,7 +1224,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     # With utf-16 encoded text need to remove the BOM prior to setting
     # the text or there is alignment issues in the display of the first line 
     # of text. Potentially a BUG in scintilla or wxStyledTextCtrl
-    def SetText(self, txt, enc = u'utf-8'):
+    def SetText(self, txt, enc=u'utf-8'):
         """Sets the text of the control and the encoding to use for
         writting the file with.
         @keyword enc: encoding to use for decoding text
@@ -1454,7 +1454,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.DefineMarkers()
         self.Colourise(0, -1)
 
-    def UpdateAllStyles(self, spec_style = None):
+    def UpdateAllStyles(self, spec_style=None):
         """Refreshes all the styles and attributes of the control
         @param spec_style: style scheme name
         @postcondtion: style scheme is set to specified style

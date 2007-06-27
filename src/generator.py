@@ -522,16 +522,17 @@ class LaTeX(plugin.Plugin):
         tex = list()
         tmp_tex = wx.EmptyString
         parse_pos = 0
-        style_start = 0
         style_end = 0
         last_pos = self._stc.GetLineEndPosition(self._stc.GetLineCount())
 
         # Define the default style
-        self.RegisterStyleCmd('default_style', self._stc.GetItemByName('default_style'))
+        self.RegisterStyleCmd('default_style', \
+                              self._stc.GetItemByName('default_style'))
 
         # Get Document start point info
         last_id = self._stc.GetStyleAt(parse_pos)
-        tmp_tex = self.TransformText(self._stc.GetTextRange(parse_pos, parse_pos+1))
+        tmp_tex = self.TransformText(self._stc.GetTextRange(parse_pos, \
+                                                            parse_pos + 1))
         tag = self._stc.FindTagById(last_id)
         if tag != wx.EmptyString:
             self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
@@ -547,14 +548,16 @@ class LaTeX(plugin.Plugin):
             curr_id = GetStyleAt(parse_pos)
             style_end = parse_pos
             if parse_pos > 1:
-                tmp_tex += self.TransformText(GetTextRange((parse_pos - 1), parse_pos))
+                tmp_tex += self.TransformText(GetTextRange((parse_pos - 1), \
+                                                            parse_pos))
             if curr_id == 0 and GetStyleAt(parse_pos + 1) == last_id:
                 curr_id = last_id
 
             # If style region has changed close section
             if curr_id != last_id or tmp_tex[-1] == "\n":
                 if tag == "operator_style" or \
-                   (tag == "default_style" and tmp_tex.isspace() and len(tmp_tex) <= 2):
+                   (tag == "default_style" and \
+                    tmp_tex.isspace() and len(tmp_tex) <= 2):
                     tex.append(tmp_tex)
                 else:
                     if "\\\\*\n" in tmp_tex:
@@ -643,15 +646,15 @@ class LaTeX(plugin.Plugin):
         @param hex_str: hex string to convert to latex rgb format
         
         """
-        hex = hex_str
-        if hex[0] == u"#":
-            hex = hex[1:]
-        ldiff = 6 - len(hex)
-        hex += ldiff * u"0"
+        r_hex = hex_str
+        if r_hex[0] == u"#":
+            r_hex = r_hex[1:]
+        ldiff = 6 - len(r_hex)
+        r_hex += ldiff * u"0"
         # Convert hex values to integer
-        red = round(float(float(int(hex[0:2], 16)) / 255), 2)
-        green = round(float(float(int(hex[2:4], 16)) / 255), 2)
-        blue = round(float(float(int(hex[4:], 16)) / 255), 2)
+        red = round(float(float(int(r_hex[0:2], 16)) / 255), 2)
+        green = round(float(float(int(r_hex[2:4], 16)) / 255), 2)
+        blue = round(float(float(int(r_hex[4:], 16)) / 255), 2)
         return "%s,%s,%s" % (str(red), str(green), str(blue))
 
     def RegisterStyleCmd(self, cmd_name, s_item):
@@ -685,8 +688,8 @@ class LaTeX(plugin.Plugin):
         if face == wx.EmptyString:
             face = self._dface
         size = s_item.GetSize()
-        if face == wx.EmptyString:
-            face = self._dsize
+        if size == wx.EmptyString:
+            size = self._dsize
 
         back = back_tmp % self.HexToRGB(back.split(',')[0])
         fore = fore_tmp % (self.HexToRGB(fore.split(',')[0]), back)
@@ -754,9 +757,9 @@ class Rtf(plugin.Plugin):
         if not self._stc:
             return u''
         stc = self._stc
-        def_fore = stc.GetDefaultForeColour(hex=True)
+        def_fore = stc.GetDefaultForeColour(as_hex=True)
         self._colortbl.AddColor(def_fore)
-        def_back = stc.GetDefaultBackColour(hex=True)
+        def_back = stc.GetDefaultBackColour(as_hex=True)
         self._colortbl.AddColor(def_back)
         last_pos = stc.GetLineEndPosition(stc.GetLineCount())
         parse_pos = 0
@@ -772,10 +775,10 @@ class Rtf(plugin.Plugin):
         GetColorIndex = self._colortbl.GetColorIndex
         GetStyleAt = stc.GetStyleAt
         while parse_pos <= last_pos+1:
-            id = GetStyleAt(parse_pos)
+            sty_id = GetStyleAt(parse_pos)
             end = parse_pos
             # If style has changed build the previous section
-            if id != last_id:
+            if sty_id != last_id:
                 tag = stc.FindTagById(last_id)
                 s_item = stc.GetItemByName(tag)
                 AddColor(s_item.GetFore())
@@ -792,7 +795,7 @@ class Rtf(plugin.Plugin):
                 tmp_txt.append(tplate + " " + \
                                self.TransformText(stc.GetTextRange(start, end)))
                 start = end
-            last_id = id
+            last_id = sty_id
             parse_pos = parse_pos + 1
         head = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 %s;}}" % \
                 stc.GetDefaultFont().GetFaceName()
