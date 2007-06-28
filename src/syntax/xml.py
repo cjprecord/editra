@@ -77,7 +77,7 @@ def Properties(lang_id=0):
     @param lang_id: used to select a specific set of properties
 
     """
-    return [html.fold]
+    return [html.fold, html.fld_html]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
