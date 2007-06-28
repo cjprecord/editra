@@ -131,14 +131,14 @@ syntax_items = [ ('STC_PS_DEFAULT', 'default_style'),
                  ('STC_PS_DSC_COMMENT', 'comment_style'),
                  ('STC_PS_DSC_VALUE', 'comment_style'), # STYLE ME
                  ('STC_PS_HEXSTRING', 'number_style'),
-                 ('STC_PS_DSC_IMMEVAL', 'comment_style'), # STYLE ME
+                 ('STC_PS_IMMEVAL', 'comment_style'), # STYLE ME
                  ('STC_PS_KEYWORD', 'class_style'),
                  ('STC_PS_LITERAL', 'scalar2_style'),
                  ('STC_PS_NAME', 'keyword_style'),
                  ('STC_PS_NUMBER', 'number_style'),
                  ('STC_PS_PAREN_ARRAY', 'default_style'), # STYLE ME
                  ('STC_PS_PAREN_DICT', 'default_style'), # STYLE ME
-                 ('STC_OPS_PAREN_PROC', 'default_style'), # STYLE ME
+                 ('STC_PS_PAREN_PROC', 'default_style'), # STYLE ME
                  ('STC_PS_TEXT', 'default_style') ]
 
 #---- Extra Properties ----#
