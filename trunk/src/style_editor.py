@@ -590,6 +590,7 @@ class StyleEditor(wx.Dialog):
         self.preview.ClearAll()
         self.preview.LoadFile(fname)
         self.preview.FindLexer()
+        self.preview.EmptyUndoBuffer()
         return True
 
     def UpdateSettingsPane(self, syntax_data):

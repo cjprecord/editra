@@ -78,7 +78,7 @@ class FileBrowserPanel(plugin.Plugin):
             mw._mgr.Update()
 
             # Event Handlers
-            mw.Bind(wx.EVT_MENU, self.OnShowBrowser, id = ID_FILEBROWSE)
+            mw.Bind(wx.EVT_MENU, self.OnShowBrowser, id=ID_FILEBROWSE)
             mw.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
 
     def OnPaneClose(self, evt):

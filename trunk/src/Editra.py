@@ -83,6 +83,9 @@ class Editra(wx.App):
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log("[app][info] Editra is Initializing")
+        provider = wx.SimpleHelpProvider()
+        wx.HelpProvider_Set(provider)
+        self._log("[app][info] Set help provider")
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
