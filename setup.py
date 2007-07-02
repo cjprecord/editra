@@ -22,7 +22,7 @@
 """
  Editra Setup Script
 
- Used for building the editra distribution files.
+ @summary: Used for building the editra distribution files and installations
 
  USAGE:
  1) Windows:
