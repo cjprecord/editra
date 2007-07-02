@@ -151,10 +151,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # Toolbar Event Handlers
         # TODO move to toolbar module
         self.Bind(wx.EVT_TOOL, self.DispatchToControl)
-        self.Bind(wx.EVT_TOOL, self.OnNew, id = ID_NEW)
-        self.Bind(wx.EVT_TOOL, self.OnOpen, id = ID_OPEN)
-        self.Bind(wx.EVT_TOOL, self.OnSave, id = ID_SAVE)
-        self.Bind(wx.EVT_TOOL, self.OnPrint, id = ID_PRINT)
+        self.Bind(wx.EVT_TOOL, self.OnNew, id=ID_NEW)
+        self.Bind(wx.EVT_TOOL, self.OnOpen, id=ID_OPEN)
+        self.Bind(wx.EVT_TOOL, self.OnSave, id=ID_SAVE)
+        self.Bind(wx.EVT_TOOL, self.OnPrint, id=ID_PRINT)
         self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
         self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, \
                   id=ID_FIND_REPLACE)
@@ -648,10 +648,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # Import dialog if now since we need it
         if evt.GetId() == ID_PREF:
             import prefdlg
-            dlg = prefdlg.PrefDlg(self)
+#             dlg = prefdlg.PrefDlg(self)
+            dlg = prefdlg.NewPreferencesDialog(self, wx.ID_ANY, \
+                                               _("Preferences - Editra"))
             dlg.CenterOnParent()
-            dlg.ShowModal()
-            dlg.Destroy()
+            dlg.Show()
         else:
             evt.Skip()
     #---- End Edit Menu Functions ----#
