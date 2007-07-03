@@ -134,6 +134,18 @@ class Editra(wx.App):
         """
         return self._pluginmgr
 
+    def GetWindowInstance(self, wintype):
+        """Get an instance of an open window if one exists
+        @param wintype: Class type of window to look for
+        @precondition: Window must have called L{RegisterWindow}
+        @return: Instance of window or None
+
+        """
+        for win in self._windows:
+            if isinstance(self._windows[win][0], wintype):
+                return self._windows[win][0]
+        return None
+
     def IsLocked(self):
         """Returns whether the application is locked or not
         @return: whether a window has locked the app from closing or not
