@@ -645,12 +645,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wxMenuEvent
 
         """
-        # Import dialog if now since we need it
         if evt.GetId() == ID_PREF:
             import prefdlg
-#             dlg = prefdlg.PrefDlg(self)
-            dlg = prefdlg.NewPreferencesDialog(self, wx.ID_ANY, \
-                                               _("Preferences - Editra"))
+            win = wx.GetApp().GetWindowInstance(prefdlg.PreferencesDialog)
+            if win is not None:
+                win.Raise()
+                return
+            dlg = prefdlg.PreferencesDialog(None, wx.ID_ANY, \
+                                            _("Preferences - Editra"))
             dlg.CenterOnParent()
             dlg.Show()
         else:
@@ -745,16 +747,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         if evt.GetId() == ID_PLUGMGR:
             import plugdlg
-            windows = wx.GetApp().GetOpenWindows()
-            for win in windows:
-                if isinstance(windows[win][0], plugdlg.PluginDialog):
-                    windows[win][0].Raise()
-                    return
-                else:
-                    pass
+            win = wx.GetApp().GetWindowInstance(plugdlg.PluginDialog)
+            if win is not None:
+                win.Raise()
+                return
             dlg = plugdlg.PluginDialog(self, wx.ID_ANY, prog_name + " " \
                                         + _("Plugin Manager"), \
-                                        size = wx.Size(500, 350))
+                                        size=wx.Size(500, 350))
             dlg.CenterOnParent()
             dlg.Show()
         else:

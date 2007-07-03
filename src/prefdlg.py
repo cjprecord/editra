@@ -70,10 +70,6 @@ import updater
 import util
 import syntax.syntax as syntax
 
-# On mac use the native control as it looks much nicer
-# if wx.Platform == "__WXMAC__":
-#      wx.SystemOptions.SetOptionInt("mac.listctrl.always_use_generic", 0)
-
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 # Globals
@@ -252,13 +248,11 @@ class PrefPages(wx.Notebook):
         self.LOG = wx.GetApp().GetLog()
 
         # Events
-        self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdateText)
 
         # Initialize Preference Pages
-        self.UpdatePage()
         self.ProfilePage()
 
     #---- End Init ----#
@@ -279,16 +273,6 @@ class PrefPages(wx.Notebook):
         else:
             evt.Skip()
 
-    def GeneralPage(self):
-        """Creates the general preferences page"""
-        gen_panel = wx.Panel(self, wx.ID_ANY)
-
-        info_txt = ["Changes made in this dialog are saved in your current profile.",
-                    "Some Items such as Language require the program to be restarted ",
-                    "before taking affect."]
-
-        info = wx.StaticText(gen_panel, wx.ID_ANY, "\n".join(info_txt))
-
     def ProfilePage(self):
         """Creates the profile editor page"""
         prof_panel = wx.Panel(self, wx.ID_ANY)
@@ -299,157 +283,26 @@ class PrefPages(wx.Notebook):
         prof_panel.SetSizer(border)
         self.AddPage(prof_panel, _("Profile Viewer"))
 
-    def UpdatePage(self):
-        """Update Status page"""
-        upd_panel = wx.Panel(self, ID_UPDATE_PAGE)
-
-        info = self.SectionHead(upd_panel, _("Update Status") + u":")
-        cur_box = wx.StaticBox(upd_panel, ID_CURR_BOX, _("Installed Version"))
-        cur_sz = wx.StaticBoxSizer(cur_box, wx.HORIZONTAL)
-        cur_sz.SetMinSize(wx.Size(150, 40))
-        cur_ver = wx.StaticText(upd_panel, wx.ID_ANY,  ed_glob.version)
-        cur_sz.Add(cur_ver, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        e_update = updater.UpdateProgress(upd_panel, ed_glob.ID_PREF_UPDATE_BAR,
-                                          size=wx.Size(320, 18))
-        upd_box = wx.StaticBox(upd_panel, ID_LATE_BOX, _("Latest Version"))
-        upd_bsz = wx.StaticBoxSizer(upd_box, wx.HORIZONTAL)
-        upd_bsz.SetMinSize(wx.Size(150, 40))
-        upd_sta = wx.StaticText(upd_panel, ID_UPDATE_MSG, _(e_update.GetStatus()))
-        upd_bsz.Add(upd_sta, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        upd_bsz.Layout()
-
-        # Build Page Layout (from top to bottom)
-        border = wx.BoxSizer(wx.HORIZONTAL) # Main Outer H Sizer
-        v_stack = wx.BoxSizer(wx.VERTICAL)  # Main Inner V Sizer
-        v_stack.Add((15, 15))
-        v_stack.Add(info, 0, wx.ALIGN_CENTER) # page header
-        v_stack.Add((15, 15))
-
-        # Status Text
-        stat_sz = wx.BoxSizer(wx.HORIZONTAL)
-        stat_sz.Add(wx.Size(15, 15))
-        stat_sz.Add(cur_sz, 1, wx.ALIGN_LEFT)
-        stat_sz.Add(wx.Size(50, 50))
-        stat_sz.Add(upd_bsz, 1, wx.ALIGN_RIGHT)
-
-        # Progress Bar
-        p_barsz = wx.BoxSizer(wx.HORIZONTAL)
-        p_barsz.Add(wx.Size(15, 15))
-        p_barsz.Add(e_update, 0, wx.ALIGN_CENTER_VERTICAL)
-
-        # Progress bar control buttons
-        btn_sz = wx.BoxSizer(wx.HORIZONTAL)
-        btn_sz.Add(wx.Size(15, 15))
-        check_b = wx.Button(upd_panel, ID_CHECK_UPDATE, _("Check"))
-        btn_sz.Add(check_b, 0, wx.ALIGN_LEFT)
-        btn_sz.Add(wx.Size(30, 30))
-        dl_b    = wx.Button(upd_panel, ID_DOWNLOAD, _("Download"))
-        dl_b.Disable()
-        btn_sz.Add(dl_b, 0, wx.ALIGN_RIGHT)
-        btn_sz.Add(wx.Size(15, 15))
-
-        v_stack.Add(wx.Size(15, 15))
-        v_stack.Add(stat_sz, 0, wx.ALIGN_CENTER)
-        v_stack.Add(wx.Size(20, 20))
-        v_stack.Add(p_barsz, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        v_stack.Add(wx.Size(20, 20))
-        v_stack.Add(btn_sz, 0, wx.ALIGN_CENTER_HORIZONTAL)
-
-        border.Add(v_stack, 0, wx.ALIGN_LEFT)
-
-        upd_panel.SetSizer(border)
-
-        self.AddPage(upd_panel, _("Update"))
-
-    def SectionHead(self, parent, title):
-        """"Creates a section heading on a given page with a given
-        title as a sizer object.
-
-        """
-        # Create the return container
-        ret_obj = wx.BoxSizer(wx.HORIZONTAL)
-
-        # Build the objects
-        heading = wx.StaticText(parent, wx.ID_ANY, title)
-        h_width = (int(parent.GetParent().GetSize()[0] * .90) - heading.GetSize()[0])
-        divider = wx.StaticLine(parent, wx.ID_ANY, size=(h_width, 2))
-
-        # Build Heading
-        ret_obj.Add((15, 0))
-        ret_obj.Add(heading, 0, wx.ALIGN_TOP | wx.ALIGN_LEFT)
-        ret_obj.Add((10, 0))
-        l_sizer = wx.BoxSizer(wx.VERTICAL)
-        l_sizer.Add((0, 8))
-        l_sizer.Add(divider, 2, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER)
-        l_sizer.Add((0, 10))
-        ret_obj.Add(l_sizer)
-        return ret_obj
-
-    #---- Event Handlers ----#
-    def OnButton(self, evt):
-        """Event Handler for Buttons"""
-        e_id = evt.GetId()
-        e_obj = evt.GetEventObject()
-        if e_id == ID_CHECK_UPDATE:
-            self.LOG("[prefdlg_evt] Check Update Clicked")
-            e_obj.Disable()
-            prog_bar = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
-            # Note this function returns right away but its result is
-            # handled on a separate thread. This window is then notified
-            # via a custom event being posted by the control.
-            prog_bar.CheckForUpdates()
-        elif e_id == ID_DOWNLOAD:
-            self.LOG("[prefdlg_evt] Download Updates Clicked")
-            e_obj.Disable()
-            chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
-            chk_bt.Disable()
-            dl_dlg = updater.DownloadDialog(None, ed_glob.ID_DOWNLOAD_DLG,
-                                            _("Downloading Update"), 
-                                            size = wx.Size(350, 200))
-            dp_sz = wx.GetDisplaySize()
-            dl_dlg.SetPosition(wx.Point((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
-            dl_dlg.Show()
-        else:
-            evt.Skip()
-
-    def OnPageChanged(self, evt):
-        """Actions to do after a page change"""
-        curr = evt.GetSelection()
-        txt = self.GetPageText(curr)
-        self.LOG("[prefdlg_evt] Page Changed to " + txt)
-        evt.Skip()
-
-    def OnUpdateText(self, evt):
-        """Handles text update events"""
-        e_id = evt.GetId()
-        self.LOG("[prefdlg_evt] Updating version status text")
-        txt = self.FindWindowById(ID_UPDATE_MSG)
-        upd = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
-        if None not in [txt, upd]:
-            if e_id == upd.ID_CHECKING:
-                txt.SetLabel(upd.GetStatus())
-                u_pg = wx.FindWindowById(ID_UPDATE_PAGE)
-                dl_bt = chk_bt = None
-                if u_pg != None:
-                    dl_bt = u_pg.FindWindowById(ID_DOWNLOAD)
-                    chk_bt = u_pg.FindWindowById(ID_CHECK_UPDATE)
-                    u_pg.Layout()
-                if dl_bt != None and upd.GetUpdatesAvailable():
-                    dl_bt.Enable()
-                if chk_bt != None:
-                    chk_bt.Enable()
-
 #---- End Function Definitions ----#
 #----------------------------------------------------------------------------#
 
-class NewPreferencesDialog(wx.Frame):
+class PreferencesDialog(wx.Frame):
     """Preference dialog for configuring the editor"""
+    __name__ = u'PreferencesDialog'
+
     def __init__(self, parent, id, title, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE | wx.TAB_TRAVERSAL
-                     | wx.CLIP_CHILDREN
-                     | wx.FULL_REPAINT_ON_RESIZE):
-        """Initialises the dialog"""
-        wx.Frame.__init__(self, parent, id, title, pos=pos, size=size, style=style)
+                 size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE | 
+                                            wx.TAB_TRAVERSAL | 
+                                            wx.CLIP_CHILDREN | 
+                                            wx.FULL_REPAINT_ON_RESIZE):
+        """Initialises the dialog
+        @param parent: The parent window of this window
+        @param id: The id of this window
+        @param title: The title of the dialog
+
+        """
+        wx.Frame.__init__(self, parent, id, title, 
+                          pos=pos, size=size, style=style)
 
         # Extra Styles
         self.SetExtraStyle(wx.FRAME_EX_CONTEXTHELP)
@@ -460,12 +313,22 @@ class NewPreferencesDialog(wx.Frame):
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
 
         # Bind Events
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         # Layout
         sizer.Add(self._tbook, 1, wx.EXPAND)
         sizer.Add(hsizer, 0, wx.ALIGN_BOTTOM)
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
+        wx.GetApp().RegisterWindow(repr(self), self, True)
+
+    def OnClose(self, evt):
+        """Hanles the window closer event
+        @param evt: Event that called this handler
+
+        """
+        wx.GetApp().UnRegisterWindow(repr(self))
+        evt.Skip()
 
 class PrefTools(wx.Toolbook):
     """Main sections of the configuration pages
@@ -482,6 +345,8 @@ class PrefTools(wx.Toolbook):
 
         tb = self.GetToolBar()
         tb.SetWindowStyle(tb.GetWindowStyle() | wx.TB_NODIVIDER)
+        # Attributes
+        self.LOG = wx.GetApp().GetLog()
         self._imglst = wx.ImageList(32, 32)
         self._imgind = dict()
         self._imgind[self.GENERAL_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( \
@@ -494,6 +359,10 @@ class PrefTools(wx.Toolbook):
                      imageId=self._imgind[self.GENERAL_PG])
         self.AddPage(DocumentPanel(self), _("Document"), 
                      imageId=self._imgind[self.GENERAL_PG])
+        self.AddPage(UpdatePanel(self), _("Update"),
+                     imageId=self._imgind[self.GENERAL_PG])
+        self.AddPage(PrefPanelBase(self), _("Advanced"),
+                     imageId=self._imgind[self.GENERAL_PG])
 
         # Event Handlers
         self.Bind(wx.EVT_TOOLBOOK_PAGE_CHANGED, self.OnPageChanged)
@@ -504,6 +373,7 @@ class PrefTools(wx.Toolbook):
         @todo: animate the resizing so its smoother
 
         """
+        self.LOG("[prefdlg][toolbook][evt] page changed")
         page = evt.GetSelection()
         page = self.GetPage(page)
         page.SetInitialSize()
@@ -586,25 +456,43 @@ class GeneralPanel(PrefPanelBase):
         PrefPanelBase.__init__(self, parent)
         
         # Attributes
+        self.LOG = wx.GetApp().GetLog()
+        tt = wx.ToolTip("Changes made in this dialog are saved in your current "
+                        "profile. Some Items such as Language require the "
+                        "program to be restarted before taking affect.")
+        self.SetToolTip(tt)
         self._DoLayout()
+        
+        # Event Handlers
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+        self.Bind(wx.EVT_CHOICE, self.OnChoice)
 
     def _DoLayout(self):
         """Add the controls and do the layout"""
         # Startup Section
+        mode_lbl = wx.StaticText(self, label=_("Editor Mode") + u": ")
         mode_ch = ExChoice(self, ed_glob.ID_PREF_MODE,
                            choices=['CODE', 'DEBUG', 'GUI_DEBUG'],
                            default=ed_glob.PROFILE['MODE'])
+        msizer = wx.BoxSizer(wx.HORIZONTAL)
+        msizer.AddMany([(mode_lbl, 0), ((5, 5), 0), (mode_ch, 0)])
+        pmode_lbl = wx.StaticText(self, label=_("Printer Mode") + u": ")
         pmode_ch = ExChoice(self, ed_glob.ID_PRINT_MODE,
                             choices=['Black/White', 'Colour/White', 'Colour/Default',
                                      'Inverse', 'Normal'],
                             default=ed_glob.PROFILE['PRINT_MODE'])
+        psizer = wx.BoxSizer(wx.HORIZONTAL)
+        psizer.AddMany([(pmode_lbl, 0), ((5, 5), 0), (pmode_ch, 0)])
         splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, _("Show Splash Screen"))
         splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
 
         # File settings
+        fh_lbl = wx.StaticText(self, label=_("File History Length") + u": ")
         fh_ch = ExChoice(self, ed_glob.ID_PREF_FHIST,
                          choices=['1','2','3','4','5','6','7','8','9'],
                          default=str(ed_glob.PROFILE['FHIST_LVL']))
+        fhsizer = wx.BoxSizer(wx.HORIZONTAL)
+        fhsizer.AddMany([(fh_lbl, 0), ((5, 5), 0), (fh_ch, 0)])
         pos_cb = wx.CheckBox(self, ed_glob.ID_PREF_SPOS, 
                              _("Remember File Position"))
         pos_cb.SetValue(ed_glob.PROFILE['SAVE_POS'])
@@ -614,26 +502,59 @@ class GeneralPanel(PrefPanelBase):
         chkmod_cb.SetValue(ed_glob.PROFILE['CHECKMOD'])
 
         # Locale
+        lsizer = wx.BoxSizer(wx.HORIZONTAL)
+        lang_lbl = wx.StaticText(self, label=_("Language") + u": ")
         lang_c = ed_i18n.LangListCombo(self, ed_glob.ID_PREF_LANG, 
                                        ed_glob.PROFILE['LANG'])
+        lsizer.AddMany([(lang_lbl, 0), ((5, 5), 0), (lang_c, 0)])
 
         # Layout items
         sizer = wx.GridBagSizer(5, 5)
         sizer.AddMany([((5, 5), (0, 0)),
                        (wx.StaticText(self, label=_("Startup Settings") + u": "), (1, 1)),
-                       (wx.StaticText(self, label=_("Editor Mode") + u": "), (1, 2)),
-                       (mode_ch, (1, 3)),
-                       (wx.StaticText(self, label=_("Printer Mode") + u": "), (2, 2)),
-                       (pmode_ch, (2, 3), wx.GBSpan(1, 2)),
-                       (splash_cb, (3, 2), wx.GBSpan(1, 2))])
+                       (msizer, (1, 2), (1, 2)),
+                       (psizer, (2, 2), (1, 2)),
+                       (splash_cb, (3, 2), (1, 2))])
         sizer.AddMany([(wx.StaticText(self, label=_("File Settings") + u": "), (5, 1)),
-                       (wx.StaticText(self, label=_("File History Length") + u": "), (5, 2)),
-                       (fh_ch, (5, 3)), (pos_cb, (6, 2), (1, 2)),
+                       (fhsizer, (5, 2), (1, 2)), (pos_cb, (6, 2), (1, 3)),
                        (chkmod_cb, (7, 2), (1, 2))])
         sizer.AddMany([(wx.StaticText(self, label=_("Locale Settings") + u": "), (9, 1)),
-                       (wx.StaticText(self, label=_("Language") + u": "), (9, 2)),
-                       (lang_c, (9, 3), wx.GBSpan(1, 3), wx.ALIGN_CENTER_VERTICAL)])
+                       (lsizer, (9, 2), (1, 3))])
         self.SetSizer(sizer)
+
+    def OnCheck(self, evt):
+        """Handles events from the check boxes
+        @param evt: event that called this handler
+
+        """
+        self.LOG("[prefdlg][gen][evt] Check box clicked")
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id == ed_glob.ID_APP_SPLASH:
+            pass
+        elif e_id == ed_glob.ID_PREF_SPOS:
+            pass
+        elif e_id == ed_glob.ID_PREF_CHKMOD:
+            pass
+        evt.Skip()
+
+    def OnChoice(self, evt):
+        """Handles events from the choice controls
+        @param evt: event that called this handler
+
+        """
+        self.LOG("[prefldg][gen][evt] Choice event caught")
+        e_id = evt.GetId()
+        evt_obj = evt.GetEventObject()
+        if e_id == ed_glob.ID_PREF_MODE:
+            pass
+        elif e_id == ed_glob.ID_PRINT_MODE:
+            pass
+        elif e_id == ed_glob.ID_PREF_FHIST:
+            pass
+        else:
+            evt.Skip()
+        
 
 class DocumentPanel(PrefPanelBase):
     """Creates a panel with controls for Editra's editing settings"""
@@ -686,8 +607,6 @@ class DocGenPanel(wx.Panel):
                           choices = [_("Macintosh (\\r)"), _("Unix (\\n)"), 
                                    _("Windows (\\r\\n)")],
                           default = ed_glob.PROFILE['EOL'])
-        ww_cb = wx.CheckBox(self, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
-        ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
 
         # View Options
         aa_cb = wx.CheckBox(self, ed_glob.ID_PREF_AALIAS, _("AntiAliasing"))
@@ -698,6 +617,8 @@ class DocGenPanel(wx.Panel):
         sln_cb.SetValue(ed_glob.PROFILE['SHOW_LN'])
         sws_cb = wx.CheckBox(self, ed_glob.ID_SHOW_WS, _("Show Whitespace"))
         sws_cb.SetValue(ed_glob.PROFILE['SHOW_WS'])
+        ww_cb = wx.CheckBox(self, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
+        ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
 
         # Layout
         sizer = wx.GridBagSizer(5, 5)
@@ -708,10 +629,10 @@ class DocGenPanel(wx.Panel):
                        (tw_ch, (2, 3), wx.GBSpan(1, 3)),
                        (wx.StaticText(self, label=_("Default EOL Mode") + u": "), (3, 2)),
                        (eol_ch, (3, 3), wx.GBSpan(1, 2)),
-                       (ww_cb, (4, 2)), ((5, 5), (6, 0)),
-                       (wx.StaticText(self, label=_("View Options") + u": "), (6, 1)),
-                       (aa_cb, (6, 2)), (seol_cb, (7, 2)), (sln_cb, (8, 2)),
-                       (sws_cb, (9, 2))
+                       ((5, 5), (5, 0)),
+                       (wx.StaticText(self, label=_("View Options") + u": "), (5, 1)),
+                       (aa_cb, (5, 2)), (seol_cb, (6, 2)), (sln_cb, (7, 2)),
+                       (sws_cb, (8, 2)), (ww_cb, (9, 2))
                        ])
         self.SetSizer(sizer)
 
@@ -771,9 +692,16 @@ class DocSyntaxPanel(wx.Panel):
 
         """
         wx.Panel.__init__(self, parent)
-        
+
+        # Attributes
+        self._elist = ExtListCtrl(self)
+        self._elist.LoadList()
+
         # Layout page
         self._DoLayout()
+        
+        # Event Handlers
+        self.Bind(wx.EVT_BUTTON, self.OnButton)
 
     def _DoLayout(self):
         """Layout all the controls"""
@@ -783,8 +711,6 @@ class DocSyntaxPanel(wx.Panel):
         syntheme = ExChoice(self, ed_glob.ID_PREF_SYNTHEME,
                             choices=util.GetResourceFiles(u'styles', get_all=True),
                             default=str(ed_glob.PROFILE['SYNTHEME']))
-        elist = ExtListCtrl(self)
-        elist.LoadList()
 
         # Layout the controls
         sizer = wx.GridBagSizer()
@@ -793,12 +719,28 @@ class DocSyntaxPanel(wx.Panel):
         hsizer.AddMany([(syn_cb, 0, wx.ALIGN_LEFT), ((5, 5), 1, wx.EXPAND),
                         (wx.StaticText(self, label=_("Color Scheme") + u": "), 0, wx.ALIGN_LEFT),
                         (syntheme, 0, wx.ALIGN_LEFT)])
-        sizer.AddMany([(hsizer, (1, 1), (1, 4), wx.EXPAND), ((5, 5), (1, 5), (1, 3), wx.EXPAND),
+        sizer.AddMany([(hsizer, (1, 1), (1, 4), wx.EXPAND), 
+                       ((5, 5), (1, 5), (1, 3), wx.EXPAND),
                        (wx.StaticLine(self), (2, 1), (1, 4), wx.EXPAND),
                        (wx.StaticText(self, label=_("Filetype Associations") + u": "), (4, 1))])
-        sizer.Add(elist, (5, 1), (12, 4), wx.EXPAND)
-        sizer.Add((5, 5), (17, 1))
+        sizer.Add(self._elist, (5, 1), (12, 4), wx.EXPAND)
+        sizer.Add((1, 1), (17, 1))
+        sizer.Add(wx.Button(self, wx.ID_DEFAULT, 
+                  _("Revert to Default")), (18, 1))
+        sizer.Add((2, 2), (19, 1))
         self.SetSizer(sizer)
+
+    def OnButton(self, evt):
+        """Reset button handler
+        @param evt: Event that called this handler
+
+        """
+        e_id = evt.GetId()
+        if e_id == wx.ID_DEFAULT:
+            syntax.ExtensionRegister().LoadDefault()
+            self._elist.UpdateExtensions()
+        else:
+            evt.Skip()
 
 class AppearancePanel(PrefPanelBase):
     """Creates a panel with controls for Editra's appearance settings"""
@@ -848,7 +790,11 @@ class AppearancePanel(PrefPanelBase):
         trans_lbl = wx.StaticText(self, wx.ID_ANY, _("Transparency") + u": ")
         trans = wx.Slider(self, ed_glob.ID_TRANSPARENCY, 
                           ed_glob.PROFILE['ALPHA'], 100, 255, 
-                          style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+                          style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | 
+                                wx.SL_LABELS)
+        tsizer = wx.BoxSizer(wx.HORIZONTAL)
+        tsizer.AddMany([(trans_lbl, 0), ((5, 5), 0), (trans, 0)])
+
         # Activate Metal Style Windows for OSX
         if wx.Platform == '__WXMAC__':
             m_cb = wx.CheckBox(self, ed_glob.ID_PREF_METAL, \
@@ -859,21 +805,20 @@ class AppearancePanel(PrefPanelBase):
 
         # Layout
         sizer = wx.GridBagSizer(5, 4)
-        sizer.Add((5, 5), (0, 1))
-        sizer.Add(wx.StaticText(self, label=_("Icons") + u": "), (1, 1))
-        sizer.Add(tb_icont, (1, 2))
-        sizer.Add(tb_icon, (1, 3))
-        sizer.Add(tb_isz_lbl, (2, 2))
-        sizer.Add(tb_isz_ch, (2, 3))
-        sizer.Add((5, 5), (4, 0))
-        sizer.Add(wx.StaticText(self, label=_("Layout") + u": "), (4, 1))
+        sizer.AddMany([((5, 5), (0, 1)),
+                       (wx.StaticText(self, label=_("Icons") + u": "), (1, 1)),
+                       (tb_icont, (1, 2)), (tb_icon, (1, 3)),
+                       (tb_isz_lbl, (2, 2)), (tb_isz_ch, (2, 3)),
+                       ((5, 5), (4, 0)),
+                       (wx.StaticText(self, label=_("Layout") + u": "), (4, 1))
+                      ])
         sizer.AddMany([(perspect_lbl, (4, 2)),
                        (perspect_ch, (4, 3), wx.GBSpan(1, 2)),
                        (ws_cb, (5, 2), wx.GBSpan(1, 2)), 
                        (wp_cb, (6, 2), wx.GBSpan(1, 2))])
         sizer.Add((5, 5), (8, 0))
         sizer.Add(wx.StaticText(self, label=_("Misc") + u": "), (8, 1))
-        sizer.AddMany([(trans_lbl, (8, 2)), (trans, (8, 3), wx.GBSpan(1, 3)),
+        sizer.AddMany([(tsizer, (8, 2), (1, 2)),
                        (m_cb, (9, 2), wx.GBSpan(1, 2))])
         self.SetSizer(sizer)
 
@@ -892,42 +837,123 @@ class AppearancePanel(PrefPanelBase):
             greatgrandpa.SetTransparent(value)
             ed_glob.PROFILE['ALPHA'] = value
 
-# Utilities
-def SectionHead(window, title):
-    """"Creates a section heading for a panel. The heading consists
-    of a title on the left and a horzontal line that fills from the
-    edge of the text to the edge of the window.
-    @param window: window that the section heading will belong to
-    @param title: text to label the section with
-    @return: sizer item containing the heading
+class UpdatePanel(PrefPanelBase):
+    """Creates a panel with controls for updating Editra"""
+    def __init__(self, parent):
+        """Create the panel
+        @param parent: Parent window of this panel
 
-    """
-    # Create the return container
-    ret_obj = wx.BoxSizer(wx.HORIZONTAL)
+        """
+        PrefPanelBase.__init__(self, parent)
+        
+        # Attributes
+        self.LOG = wx.GetApp().GetLog()
+        self._DoLayout()
+        
+        # Event Handlers
+        self.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdateText)
 
-    # Build the objects
-    heading = wx.StaticText(window, wx.ID_ANY, title)
-    h_width = (int(window.GetParent().GetSize()[0] * .90) - heading.GetSize()[0])
-    divider = wx.StaticLine(window, wx.ID_ANY, size=(h_width, 2))
+    def _DoLayout(self):
+        """Do the layout of the panel"""
+        # Status text and bar
+        cur_box = wx.StaticBox(self, ID_CURR_BOX, _("Installed Version"))
+        cur_sz = wx.StaticBoxSizer(cur_box, wx.HORIZONTAL)
+        cur_sz.SetMinSize(wx.Size(150, 40))
+        cur_ver = wx.StaticText(self, wx.ID_ANY,  ed_glob.version)
+        cur_sz.Add(cur_ver, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        e_update = updater.UpdateProgress(self, ed_glob.ID_PREF_UPDATE_BAR)
+        upd_box = wx.StaticBox(self, ID_LATE_BOX, _("Latest Version"))
+        upd_bsz = wx.StaticBoxSizer(upd_box, wx.HORIZONTAL)
+        upd_bsz.SetMinSize(wx.Size(150, 40))
+        upd_sta = wx.StaticText(self, ID_UPDATE_MSG, _(e_update.GetStatus()))
+        upd_bsz.Add(upd_sta, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        upd_bsz.Layout()
 
-    # Build Heading
-    ret_obj.Add((15, 0))
-    ret_obj.Add(heading, 0, wx.ALIGN_TOP | wx.ALIGN_LEFT)
-    ret_obj.Add((10, 0))
-    l_sizer = wx.BoxSizer(wx.VERTICAL)
-    l_sizer.Add((0, 8))
-    l_sizer.Add(divider, 2, wx.ALIGN_BOTTOM | wx.ALIGN_CENTER)
-    l_sizer.Add((0, 10))
-    ret_obj.Add(l_sizer)
-    return ret_obj
+        # Control buttons
+        check_b = wx.Button(self, ID_CHECK_UPDATE, _("Check"))
+        dl_b = wx.Button(self, ID_DOWNLOAD, _("Download"))
+        dl_b.Disable()
+
+        # Layout Controls
+        sizer = wx.GridBagSizer()
+        sizer.Add((5, 5), (0, 0))
+        sizer.AddMany([(cur_sz, (1, 2), (1, 3), wx.ALIGN_RIGHT),
+                       (upd_bsz, (1, 6), (1, 3)),
+                       (e_update, (3, 3), (1, 5), wx.EXPAND),
+                       ((5, 5), (4, 0)),
+                       (check_b, (5, 4)), (dl_b, (5, 6)),
+                       ((5, 5), (6, 0))])
+        self.SetSizer(sizer)
+
+    def OnButton(self, evt):
+        """Handles events generated by the panels buttons
+        @param evt: event that called this handler
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id == ID_CHECK_UPDATE:
+            self.LOG("[prefdlg_evt] Check Update Clicked")
+            e_obj.Disable()
+            prog_bar = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
+            # Note this function returns right away but its result is
+            # handled on a separate thread. This window is then notified
+            # via a custom event being posted by the control.
+            prog_bar.CheckForUpdates()
+        elif e_id == ID_DOWNLOAD:
+            self.LOG("[prefdlg_evt] Download Updates Clicked")
+            e_obj.Disable()
+            chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
+            chk_bt.Disable()
+            dl_dlg = updater.DownloadDialog(None, ed_glob.ID_DOWNLOAD_DLG,
+                                            _("Downloading Update"), 
+                                            size=wx.Size(350, 200))
+            dp_sz = wx.GetDisplaySize()
+            dl_dlg.SetPosition(wx.Point((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
+            dl_dlg.Show()
+        else:
+            evt.Skip()
+
+    def OnUpdateText(self, evt):
+        """Handles text update events"""
+        e_id = evt.GetId()
+        self.LOG("[prefdlg_evt] Updating version status text")
+        txt = self.FindWindowById(ID_UPDATE_MSG)
+        upd = self.FindWindowById(ed_glob.ID_PREF_UPDATE_BAR)
+        if None not in [txt, upd]:
+            if e_id == upd.ID_CHECKING:
+                txt.SetLabel(upd.GetStatus())
+                u_pg = wx.FindWindowById(ID_UPDATE_PAGE)
+                dl_bt = chk_bt = None
+                if u_pg != None:
+                    dl_bt = u_pg.FindWindowById(ID_DOWNLOAD)
+                    chk_bt = u_pg.FindWindowById(ID_CHECK_UPDATE)
+                    u_pg.Layout()
+                if dl_bt != None and upd.GetUpdatesAvailable():
+                    dl_bt.Enable()
+                if chk_bt != None:
+                    chk_bt.Enable()
+        self.Layout()
+        curr_pg = self.GetParent().GetSelection()
+        nbevt = wx.NotebookEvent(wx.wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED, 0, curr_pg, curr_pg)
+        wx.PostEvent(self.GetParent(), nbevt)
 
 #----------------------------------------------------------------------------#
+# Custom controls for the Preference dialog
 
 class ProfileListCtrl(wx.ListCtrl, 
                       listmix.ListCtrlAutoWidthMixin):
-    """Class to manage the profile editor"""
+    """Displays the contents of the current users profile in
+    a list control.
+    @note: uses ListCtrlAutoWidthMixin
+
+    """
     def __init__(self, parent):
-        """Initializes the Profile List Control"""
+        """Initializes the Profile List Control
+        @param parent: The parent window of this control
+
+        """
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
                              wx.DefaultPosition, wx.DefaultSize, 
                              style = wx.LC_REPORT | wx.LC_SORT_ASCENDING |
@@ -936,7 +962,11 @@ class ProfileListCtrl(wx.ListCtrl,
         self.PopulateProfileView()
 
     def PopulateProfileView(self):
-        """Populates the profile view with the profile info"""
+        """Populates the profile view with the profile info
+        @postcondition: The control is populated with all data found in
+                        the users running profile
+
+        """
         self.InsertColumn(0, _("Item"))
         self.InsertColumn(1, _("Value"))
 
@@ -958,30 +988,41 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
     FILE_COL = 0
     EXT_COL = 1
     def __init__(self, parent):
-        """Initializes the Profile List Control"""
+        """Initializes the Profile List Control
+        @param parent: The parent window of this control
+
+        """
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
-                             wx.DefaultPosition,wx.DefaultSize, 
-                             style = wx.LC_REPORT | wx.LC_SORT_ASCENDING | wx.LC_VRULES)
+                             wx.DefaultPosition, wx.DefaultSize, 
+                             style=wx.LC_REPORT | \
+                                   wx.LC_SORT_ASCENDING | \
+                                   wx.LC_VRULES)
 
         listmix.ListCtrlAutoWidthMixin.__init__(self)
         listmix.TextEditMixin.__init__(self)
         self.InsertColumn(self.FILE_COL, _("Lexer"))
-        self.InsertColumn(self.EXT_COL, _("Extensions (space separated, no dots)"))
+        self.InsertColumn(self.EXT_COL, \
+                          _("Extensions (space separated, no dots)"))
         self._extreg = syntax.ExtensionRegister()
         self._editing = None
 
     def CloseEditor(self, evt=None):
         """Update list and extension register after edit window
         closes.
+        @keyword evt: Action that triggered this function
 
         """
         listmix.TextEditMixin.CloseEditor(self, evt)
         def UpdateRegister(itempos):
-            """Update teh ExtensionRegister"""
+            """Update the ExtensionRegister
+            @param itempos: position of the item to base updates on
+
+            """
             vals = self.GetItem(itempos[1], itempos[0]).GetText()
             ftype = self.GetItem(itempos[1], self.FILE_COL).GetText()
             self._editing = None
             self._extreg.SetAssociation(ftype, vals)
+
         if self._editing != None:
             wx.CallAfter(UpdateRegister, self._editing)
         wx.CallAfter(self.UpdateExtensions)
@@ -989,6 +1030,9 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
     def LoadList(self):
         """Loads the list of filetypes to file extension mappings into the
         list control.
+        @postcondition: The running configuration data that is kept by the
+                        syntax manager that relates to file associations is
+                        loaded into the list control in alphabetical order
 
         """
         keys = self._extreg.keys()
@@ -996,7 +1040,8 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
         for key in keys:
             index = self.InsertStringItem(sys.maxint, key)
             self.SetStringItem(index, self.FILE_COL, key)
-            self.SetStringItem(index, self.EXT_COL, u'  ' + u' '.join(self._extreg[key]))
+            self.SetStringItem(index, self.EXT_COL, \
+                               u'  %s' % u' '.join(self._extreg[key]))
             if not index % 2:
                 syscolor = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DLIGHT)
                 color = util.AdjustColour(syscolor, 75)
@@ -1006,7 +1051,11 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
         self.SetColumnWidth(self.EXT_COL, wx.LIST_AUTOSIZE)
 
     def OpenEditor(self, col, row):
-        """Disable the editor for the first column"""
+        """Disable the editor for the first column
+        @param col: Column to edit
+        @param row: Row to edit
+
+        """
         if col == self.FILE_COL:
             return
         else:
@@ -1016,11 +1065,15 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
     def UpdateExtensions(self):
         """Updates the values in the EXT_COL to reflect changes
         in the ExtensionRegister.
+        @postcondition: Any configuration changes made in the control are
+                        set in the Extension register.
+        @see: L{syntax.syntax.ExtensionRegister}
 
         """
         for row in xrange(self.GetItemCount()):
             ftype = self.GetItem(row, self.FILE_COL).GetText()
-            self.SetStringItem(row, self.EXT_COL, u'  ' + u' '.join(self._extreg[ftype]))
+            self.SetStringItem(row, self.EXT_COL, \
+                               u'  ' + u' '.join(self._extreg[ftype]))
 
 #----------------------------------------------------------------------------#
 class ExChoice(wx.Choice):
@@ -1030,9 +1083,12 @@ class ExChoice(wx.Choice):
     wx.Choice to have a default selected value on init.
 
     """
-    def __init__(self, parent, cid, pos = (-1, -1), \
-                 size = (-1, -1), choices = [''], default = None):
-        """Constructs a Choice Control"""
+    def __init__(self, parent, cid=wx.ID_ANY, pos=(-1, -1), \
+                 size=(-1, -1), choices=[''], default=None):
+        """Constructs a Choice Control
+        @param parent: The parent window of this control
+
+        """
         if len(choices) and isinstance(choices[0], int):
             for ind in range(len(choices)):
                 choices[ind] = str(choices[ind])
@@ -1041,7 +1097,11 @@ class ExChoice(wx.Choice):
             self.SetStringSelection(default)
 
     def GetValue(self):
-        """Gets the Selected Value"""
+        """Gets the Selected Value
+        @return: the value of the currently selected item
+        @rtype: string
+
+        """
         val = self.GetStringSelection()
         if val.isalpha():
             val.lower()
