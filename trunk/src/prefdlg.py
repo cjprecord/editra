@@ -27,30 +27,6 @@
 #     The classes and functions contained in this file are used for creating
 #     the preference dialog.
 #
-#----------------------------------
-# CLASS: PrefDlg
-#
-# METHODS:
-#     - __init__ : Initializes the preference dialog
-#     - OnSize: 
-#
-#----------------------------------
-# CLASS: PrefPages
-#
-# METHODS:
-#    - __init__ :
-#    - GeneralPage :
-#    - ProfilePage :
-#    - StylePage :
-#    - UpdatePage :
-#
-#----------------------------------
-# CLASS: ProfileListCtrl
-#
-# METHODS:
-#    - __init__ :
-#    - PopulateProfileView : 
-#
 #----------------------------------------------------------------------------#
 """
 
@@ -70,7 +46,6 @@ import updater
 import util
 import syntax.syntax as syntax
 
-_ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 # Globals
 ID_CHECK_UPDATE = wx.NewId()
@@ -80,235 +55,50 @@ ID_UPDATE_PAGE  = wx.NewId()
 ID_CURR_BOX     = wx.NewId()
 ID_LATE_BOX     = wx.NewId()
 
-# ID's For Validator
-ID_VALS = [ ed_glob.ID_PREF_AALIAS, ed_glob.ID_PREF_LANG, ed_glob.ID_BRACKETHL, 
-            ed_glob.ID_SYNTAX, ed_glob.ID_INDENT_GUIDES,
-            ed_glob.ID_WORD_WRAP, ed_glob.ID_PREF_TABS, ed_glob.ID_PREF_TABW,
-            ed_glob.ID_SHOW_WS, ed_glob.ID_PREF_METAL, ed_glob.ID_PREF_FHIST,
-            ed_glob.ID_PREF_WSIZE, ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_ICON,
-            ed_glob.ID_PREF_MODE, ed_glob.ID_SHOW_EOL, ed_glob.ID_PREF_SYNTHEME,
-            ed_glob.ID_PREF_ICONSZ, ed_glob.ID_EOL_MODE, ed_glob.ID_PRINT_MODE,
-            ed_glob.ID_FOLDING, ed_glob.ID_AUTOCOMP, ed_glob.ID_SHOW_LN,
-            ed_glob.ID_PREF_SPOS, ed_glob.ID_AUTOINDENT, ed_glob.ID_APP_SPLASH,
-            ed_glob.ID_PREF_CHKMOD, ed_glob.ID_PREF_EDGE, ed_glob.ID_SHOW_EDGE,
-            ed_glob.ID_PERSPECTIVES]
-
-#----------------------------------------------------------------------------#
-
-class PrefDlg(wx.Dialog):
-    """Preference Dialog Class"""
-    def __init__(self, parent):
-        """Initialize the Preference Dialog"""
-        pre = wx.PreDialog()
-
-        if wx.Platform == '__WXMAC__' and ed_glob.PROFILE.has_key('METAL'):
-            if ed_glob.PROFILE['METAL']:
-                pre.SetExtraStyle(wx.DIALOG_EX_METAL)
-
-        pre.Create(parent, -1, _('Preferences'))
-        self.PostCreate(pre)
-
-        # Attributes
-        self.LOG = wx.GetApp().GetLog()
-        self.act_ids = []
-        self.act_objs = []
-
-        self.LOG("[prefdlg_info] Preference Dialog Initializing...")
-        # Create Notebook
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        self.ntb = PrefPages(self, wx.ID_ANY)
-        sizer.Add(self.ntb, 0, wx.EXPAND)
-
-        # Create the buttons
-        b_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        cancel_b = wx.Button(self, wx.ID_CANCEL, _("Cancel"))
-        apply_b = wx.Button(self, wx.ID_APPLY, _("Apply"))
-        ok_b = wx.Button(self, wx.ID_OK, _("Ok"))
-        ok_b.SetDefault()
-        b_sizer.Add(cancel_b, 0, wx.ALIGN_CENTRE | wx.ALL, 5)
-        b_sizer.Add(apply_b, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        b_sizer.Add(ok_b, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        sizer.Add(b_sizer, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
-
-        sizer.Fit(self)
-        self.SetSizer(sizer)
-        self.SetAutoLayout(True)
-
-        # Styling
-        if ed_glob.PROFILE.has_key('ALPHA'):
-            self.SetTransparent(ed_glob.PROFILE['ALPHA'])
-
-        # Event Handlers
-        self.Bind(wx.EVT_BUTTON, self.OnOk, ok_b)
-        self.Bind(wx.EVT_BUTTON, self.OnApply, apply_b)
-        self.LOG("[prefdlg_info] Preference Dialog Created")
-
-    #---- End Init ----#
-
-    #---- Function Definitions ----#
-    def OnOk(self, evt):
-        """Checks all pages for changes and applys them"""
-        self.LOG("[pref_evt] Clicked Ok, Applying Changes")
-        pages = self.ntb.GetChildren()
-        # Gather all values that are valid
-        for page in pages:
-            objects = page.GetChildren()
-            items = util.GetIds(objects)
-            self.ValidateItems(items, objects)
-        if len(self.act_ids) > 0:     
-            self.UpdateProfile()
-            self.LOG("[pref_info] All changes have been applied")
-        parent = self.GetParent()
-        parent.nb.UpdateTextControls()
-        toolbar = parent.GetToolBar()
-        if toolbar != None and (toolbar.GetToolTheme() != ed_glob.PROFILE['ICONS'] \
-           or toolbar.GetToolSize() != ed_glob.PROFILE['ICON_SZ']):
-            parent.GetToolBar().ReInit()
-        evt.Skip()
-
-    def OnApply(self, evt):
-        """Applys preference changes"""
-        self.LOG("[pref_evt] Clicked Apply, Applying changes on selected page.")
-        page = self.ntb.GetSelection()
-        page = self.ntb.GetPage(page)
-        objects = page.GetChildren()
-        items = util.GetIds(objects)
-        self.ValidateItems(items, objects)
-        if len(self.act_ids) > 0:
-            self.UpdateProfile()
-            self.GetParent().nb.UpdateTextControls()
-            toolbar = self.GetParent().GetToolBar()
-            if toolbar != None and \
-               (toolbar.GetToolTheme() != ed_glob.PROFILE['ICONS'] \
-               or toolbar.GetToolSize() != ed_glob.PROFILE['ICON_SZ']):
-                toolbar.ReInit()
-            self.LOG("[pref_info] Changes Applied")
-        evt.Skip()
-
-    def ValidateItems(self, item_lst, obj_lst):
-        """Checks list of Ids for ones that need to be
-        checked for value changes. Then maps the Ids to
-        object values and sets the prefrence dialogs attributes
-        to hold these two values.
-
-        """
-        id_to_save = []  # Ids to save
-        obj_to_save = []    # objs to save
-
-        # Find Items to save
-        for item in item_lst:
-            if item in ID_VALS:
-                id_to_save.append(item)
-                obj_to_save.append(obj_lst[item_lst.index(item)])
-        
-        self.act_ids.extend(id_to_save)
-        self.act_objs.extend(obj_to_save)
-        return
-
-    def UpdateProfile(self):
-        """Updates the global PROFILE dictionary to reflect
-        the changes made in this dialog.
-
-        """
-        for obj in self.act_objs:
-            value = obj.GetValue()
-            ob_id = obj.GetId()
-            # TODO This is does not do any value validation
-            # If a string value as been set to an empty string ignore it and
-            # keep the old value.
-            if value == "":
-                continue
-            if ob_id == ed_glob.ID_PREF_ICONSZ:
-                value = (int(value), int(value))
-            prof_key = ed_glob.ID_2_PROF[self.act_ids[self.act_objs.index(obj)]]
-            ed_glob.PROFILE[prof_key] = value
-            if prof_key == 'METAL':
-                if ed_glob.PROFILE['METAL']:
-                    self.SetExtraStyle(wx.DIALOG_EX_METAL)
-                    self.GetParent().SetExtraStyle(wx.FRAME_EX_METAL)
-                else:
-                    self.SetExtraStyle(wx.DEFAULT_DIALOG_STYLE)
-                    self.GetParent().SetExtraStyle(10)
-        return 0
-    #---- End Function Definitions ----#
-
+_ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 # Class Globals
-PREF_WIDTH = 550
-PREF_HEIGHT = 350
+# def ProfilePage(self):
+#     """Creates the profile editor page"""
+#     prof_panel = wx.Panel(self, wx.ID_ANY)
+#     border = wx.BoxSizer(wx.VERTICAL)
+#     # Add Profile Viewer to Panel
+#     plist = ProfileListCtrl(prof_panel)
+#     border.Add(plist, 1, wx.EXPAND)
+#     prof_panel.SetSizer(border)
 
-class PrefPages(wx.Notebook):
-    """Notebook to hold pages for Preference Dialog"""
-    def __init__(self, parent, id_num):
-        """Initializes the notebook"""
-        wx.Notebook.__init__(self, parent, id_num, size = (PREF_WIDTH, PREF_HEIGHT),
-                             style = wx.NB_TOP
-                            )
-        # Attributes
-        self.LOG = wx.GetApp().GetLog()
-
-        # Events
-        self.Bind(wx.EVT_CHOICE, self.OnChoice)
-        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-        self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdateText)
-
-        # Initialize Preference Pages
-        self.ProfilePage()
-
-    #---- End Init ----#
-
-    #---- Function Definitions ----#
-    def OnChoice(self, evt):
-        """Handles Choice Control Actions"""
-        evt_id = evt.GetId()
-        evt_obj = evt.GetEventObject()
-        if evt_id == ed_glob.ID_PREF_SYNTHEME:
-            main_win = self.GetGrandParent()
-            ed_glob.PROFILE['SYNTHEME'] = evt_obj.GetValue()
-            main_win.nb.UpdateTextControls()
-        elif evt_id == ed_glob.ID_PERSPECTIVES:
-            main_win = self.GetGrandParent()
-            ed_glob.PROFILE['DEFAULT_VIEW'] = evt_obj.GetValue()
-            main_win.SetPerspective(ed_glob.PROFILE['DEFAULT_VIEW'])
-        else:
-            evt.Skip()
-
-    def ProfilePage(self):
-        """Creates the profile editor page"""
-        prof_panel = wx.Panel(self, wx.ID_ANY)
-        border = wx.BoxSizer(wx.VERTICAL)
-        # Add Profile Viewer to Panel
-        plist = ProfileListCtrl(prof_panel)
-        border.Add(plist, 1, wx.EXPAND)
-        prof_panel.SetSizer(border)
-        self.AddPage(prof_panel, _("Profile Viewer"))
-
-#---- End Function Definitions ----#
 #----------------------------------------------------------------------------#
 
 class PreferencesDialog(wx.Frame):
-    """Preference dialog for configuring the editor"""
+    """Preference dialog for configuring the editor
+    @summary: Provides an interface into configuring profile settings
+
+    """
     __name__ = u'PreferencesDialog'
 
-    def __init__(self, parent, id, title, pos=wx.DefaultPosition,
+    def __init__(self, parent, id_, title, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE | 
                                             wx.TAB_TRAVERSAL | 
                                             wx.CLIP_CHILDREN | 
                                             wx.FULL_REPAINT_ON_RESIZE):
-        """Initialises the dialog
+        """Initialises the preference dialog
         @param parent: The parent window of this window
-        @param id: The id of this window
+        @param id_: The id of this window
         @param title: The title of the dialog
 
         """
-        wx.Frame.__init__(self, parent, id, title, 
+        wx.Frame.__init__(self, parent, id_, title, 
                           pos=pos, size=size, style=style)
 
         # Extra Styles
         self.SetExtraStyle(wx.FRAME_EX_CONTEXTHELP)
+        self.SetTransparent(ed_glob.PROFILE.get('ALPHA', 255))
+        if wx.Platform == '__WXMAC__' and ed_glob.PROFILE.has_key('METAL'):
+            if ed_glob.PROFILE['METAL']:
+                self.SetExtraStyle(wx.DIALOG_EX_METAL)
 
         # Attributes
-        self._tbook = PrefTools(self, wx.ID_ANY)
+        self._tbook = PrefTools(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -336,15 +126,15 @@ class PrefTools(wx.Toolbook):
 
     """
     GENERAL_PG = 0
-    def __init__(self, parent, tbid, pos=wx.DefaultPosition,
+    def __init__(self, parent, tbid=wx.ID_ANY, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=wx.BK_DEFAULT | wx.TB_TEXT | 
                                             wx.TB_TOP):
         """Initializes the main book control of the preferences dialog"""
         wx.Toolbook.__init__(self, parent, tbid, pos=pos, \
                              size=size, style=style)
 
-        tb = self.GetToolBar()
-        tb.SetWindowStyle(tb.GetWindowStyle() | wx.TB_NODIVIDER)
+        toolb = self.GetToolBar()
+        toolb.SetWindowStyle(toolb.GetWindowStyle() | wx.TB_NODIVIDER)
         # Attributes
         self.LOG = wx.GetApp().GetLog()
         self._imglst = wx.ImageList(32, 32)
@@ -419,7 +209,8 @@ class PrefPanelBase(wx.Panel):
         @param parent: The panels parent
 
         """
-        wx.Panel.__init__(self, parent, style=wx.TAB_TRAVERSAL | wx.SUNKEN_BORDER)
+        wx.Panel.__init__(self, parent, style=wx.TAB_TRAVERSAL | \
+                                              wx.SUNKEN_BORDER)
 
         # Event Handlers
         self.Bind(wx.EVT_PAINT, self.OnPaint)
@@ -466,9 +257,13 @@ class GeneralPanel(PrefPanelBase):
         # Event Handlers
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
+        self.Bind(wx.EVT_COMBOBOX, self.OnChoice)
 
     def _DoLayout(self):
-        """Add the controls and do the layout"""
+        """Add the controls and do the layout
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         # Startup Section
         mode_lbl = wx.StaticText(self, label=_("Editor Mode") + u": ")
         mode_ch = ExChoice(self, ed_glob.ID_PREF_MODE,
@@ -478,12 +273,13 @@ class GeneralPanel(PrefPanelBase):
         msizer.AddMany([(mode_lbl, 0), ((5, 5), 0), (mode_ch, 0)])
         pmode_lbl = wx.StaticText(self, label=_("Printer Mode") + u": ")
         pmode_ch = ExChoice(self, ed_glob.ID_PRINT_MODE,
-                            choices=['Black/White', 'Colour/White', 'Colour/Default',
-                                     'Inverse', 'Normal'],
+                            choices=['Black/White', 'Colour/White', 
+                                     'Colour/Default', 'Inverse', 'Normal'],
                             default=ed_glob.PROFILE['PRINT_MODE'])
         psizer = wx.BoxSizer(wx.HORIZONTAL)
         psizer.AddMany([(pmode_lbl, 0), ((5, 5), 0), (pmode_ch, 0)])
-        splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, _("Show Splash Screen"))
+        splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, 
+                                _("Show Splash Screen"))
         splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
 
         # File settings
@@ -530,31 +326,25 @@ class GeneralPanel(PrefPanelBase):
         self.LOG("[prefdlg][gen][evt] Check box clicked")
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
-        if e_id == ed_glob.ID_APP_SPLASH:
-            pass
-        elif e_id == ed_glob.ID_PREF_SPOS:
-            pass
-        elif e_id == ed_glob.ID_PREF_CHKMOD:
-            pass
+        if e_id is [ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
+                    ed_glob.ID_PREF_CHKMOD]:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
         evt.Skip()
 
     def OnChoice(self, evt):
         """Handles events from the choice controls
         @param evt: event that called this handler
+        @note: Also handles the Language ComboBox
 
         """
         self.LOG("[prefldg][gen][evt] Choice event caught")
         e_id = evt.GetId()
-        evt_obj = evt.GetEventObject()
-        if e_id == ed_glob.ID_PREF_MODE:
-            pass
-        elif e_id == ed_glob.ID_PRINT_MODE:
-            pass
-        elif e_id == ed_glob.ID_PREF_FHIST:
-            pass
+        e_obj = evt.GetEventObject()
+        if e_id in [ed_glob.ID_PREF_MODE, ed_glob.ID_PRINT_MODE,
+                    ed_glob.ID_PREF_FHIST, ed_glob.ID_PREF_LANG]:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
         else:
             evt.Skip()
-        
 
 class DocumentPanel(PrefPanelBase):
     """Creates a panel with controls for Editra's editing settings"""
@@ -571,7 +361,10 @@ class DocumentPanel(PrefPanelBase):
         self.SetAutoLayout(True)
 
     def _DoLayout(self):
-        """Do the layout of the panel"""
+        """Do the layout of the panel
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         sizer = wx.GridBagSizer()
         self._nb.AddPage(DocGenPanel(self._nb), _("General"))
         self._nb.AddPage(DocCodePanel(self._nb), _("Code"))
@@ -593,9 +386,16 @@ class DocGenPanel(wx.Panel):
         
         # Layout
         self._DoLayout()
+        
+        # Event Handlers
+        self.Bind(wx.EVT_CHECKBOX, self.OnUpdateEditor)
+        self.Bind(wx.EVT_CHOICE, self.OnUpdateEditor)
 
     def _DoLayout(self):
-        """Layout the controls"""
+        """Layout the controls
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         # Format Section
         tw_ch = ExChoice(self, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
@@ -636,8 +436,31 @@ class DocGenPanel(wx.Panel):
                        ])
         self.SetSizer(sizer)
 
+    def OnUpdateEditor(self, evt):
+        """Update any open text controls to reflect the changes made in this
+        panel from the checkboxes and choice controls.
+        @param evt: Event that called this handler
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id in [ed_glob.ID_PREF_TABS, ed_glob.ID_PREF_TABW,
+                    ed_glob.ID_EOL_MODE, ed_glob.ID_PREF_AALIAS,
+                    ed_glob.ID_SHOW_EOL, ed_glob.ID_SHOW_LN,
+                    ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP]:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            mainw = wx.GetApp().GetMainWindow()
+            if mainw is not None:
+                mainw.nb.UpdateTextControls()
+        else:
+            evt.Skip()
+
 class DocCodePanel(wx.Panel):
-    """Panel used for programming settings"""
+    """Panel used for programming settings
+    @summary: Houses many of the controls for configuring the editors features 
+              that are related to programming.
+
+    """
     def __init__(self, parent):
         """Create the panel
         @param parent: Parent window of this panel
@@ -647,9 +470,16 @@ class DocCodePanel(wx.Panel):
         
         # Layout
         self._DoLayout()
+        
+        # Event Handlers
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+        self.Bind(wx.EVT_CHOICE, self.OnCheck)
 
     def _DoLayout(self):
-        """Layout the page"""
+        """Layout the page
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         # Visual Helpers Section
         br_cb = wx.CheckBox(self, ed_glob.ID_BRACKETHL, 
                             _("Bracket Highlighting"))
@@ -684,8 +514,32 @@ class DocCodePanel(wx.Panel):
         sizer.AddMany([(comp_cb, (6, 2)), (ai_cb, (7, 2))])
         self.SetSizer(sizer)
 
+    def OnCheck(self, evt):
+        """Handles the events from this panels check boxes
+        @param evt: Event that called this handler
+        @note: also handles the one choice control event
+               in this panel.
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id in [ed_glob.ID_BRACKETHL, ed_glob.ID_SHOW_EDGE,
+                    ed_glob.ID_INDENT_GUIDES, ed_glob.ID_FOLDING,
+                    ed_glob.ID_AUTOCOMP, ed_glob.ID_AUTOINDENT,
+                    ed_glob.ID_PREF_EDGE]:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            mainw = wx.GetApp().GetMainWindow()
+            if mainw is not None:
+                mainw.nb.UpdateTextControls()
+        else:
+            evt.Skip()
+
 class DocSyntaxPanel(wx.Panel):
-    """Document syntax config panel"""
+    """Document syntax config panel
+    @summary: Manages the configuration of the syntax highlighting
+              of the documents in the editor.
+
+    """
     def __init__(self, parent):
         """Inialize the config panel
         @param parent: parent window of this panel
@@ -702,14 +556,20 @@ class DocSyntaxPanel(wx.Panel):
         
         # Event Handlers
         self.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.Bind(wx.EVT_CHECKBOX, self.OnSynChange)
+        self.Bind(wx.EVT_CHOICE, self.OnSynChange)
 
     def _DoLayout(self):
-        """Layout all the controls"""
+        """Layout all the controls
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         # Syntax Settings
         syn_cb = wx.CheckBox(self, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
         syn_cb.SetValue(ed_glob.PROFILE['SYNTAX'])
         syntheme = ExChoice(self, ed_glob.ID_PREF_SYNTHEME,
-                            choices=util.GetResourceFiles(u'styles', get_all=True),
+                            choices=util.GetResourceFiles(u'styles', 
+                                                          get_all=True),
                             default=str(ed_glob.PROFILE['SYNTHEME']))
 
         # Layout the controls
@@ -742,8 +602,29 @@ class DocSyntaxPanel(wx.Panel):
         else:
             evt.Skip()
 
+    def OnSynChange(self, evt):
+        """Handles the events from checkbox and choice control for this panel
+        @param evt: event that called this handler
+        @postcondition: all text controls are updated to reflect the changes
+                        made in these controls.
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id in [ed_glob.ID_SYNTAX, ed_glob.ID_PREF_SYNTHEME]:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            mainw = wx.GetApp().GetMainWindow()
+            if mainw is not None:
+                mainw.nb.UpdateTextControls()
+        else:
+            evt.Skip()
+
 class AppearancePanel(PrefPanelBase):
-    """Creates a panel with controls for Editra's appearance settings"""
+    """Creates a panel with controls for Editra's appearance settings
+    @summary: contains all the controls for configuring the appearance
+              related settings in Editra.
+
+    """
     def __init__(self, parent):
         """Create the panel
         @param parent: Parent window of this panel
@@ -755,11 +636,16 @@ class AppearancePanel(PrefPanelBase):
         self._DoLayout()
         
         # Event Handlers
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+        self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.Bind(wx.EVT_SLIDER, self.OnSetTransparent, \
                   id=ed_glob.ID_TRANSPARENCY)
 
     def _DoLayout(self):
-        """Add and layout the widgets"""
+        """Add and layout the widgets
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         # Icons Section
         tb_icont = wx.StaticText(self, wx.ID_ANY, _("Icon Theme") + u": ")
         tb_icon = ExChoice(self, ed_glob.ID_PREF_ICON,
@@ -776,8 +662,13 @@ class AppearancePanel(PrefPanelBase):
         # Layout Section
         perspect_lbl = wx.StaticText(self, wx.ID_ANY, \
                                      _("Default Perspective") + u": ")
+        mainw = wx.GetApp().GetMainWindow()
+        if mainw is not None:
+            pchoices = mainw.GetPerspectiveList()
+        else:
+            pchoices = list()
         perspect_ch = ExChoice(self, ed_glob.ID_PERSPECTIVES,
-                               choices=wx.GetApp().GetMainWindow().GetPerspectiveList(),
+                               choices=pchoices,
                                default=ed_glob.PROFILE['DEFAULT_VIEW'])
         ws_cb = wx.CheckBox(self, ed_glob.ID_PREF_WSIZE, \
                             _("Remember Window Size on Exit"))
@@ -795,7 +686,7 @@ class AppearancePanel(PrefPanelBase):
         tsizer = wx.BoxSizer(wx.HORIZONTAL)
         tsizer.AddMany([(trans_lbl, 0), ((5, 5), 0), (trans, 0)])
 
-        # Activate Metal Style Windows for OSX
+        # Activate Metal Style for OSX
         if wx.Platform == '__WXMAC__':
             m_cb = wx.CheckBox(self, ed_glob.ID_PREF_METAL, \
                                _("Use Metal Style (OS X Only)"))
@@ -813,14 +704,72 @@ class AppearancePanel(PrefPanelBase):
                        (wx.StaticText(self, label=_("Layout") + u": "), (4, 1))
                       ])
         sizer.AddMany([(perspect_lbl, (4, 2)),
-                       (perspect_ch, (4, 3), wx.GBSpan(1, 2)),
-                       (ws_cb, (5, 2), wx.GBSpan(1, 2)), 
-                       (wp_cb, (6, 2), wx.GBSpan(1, 2))])
+                       (perspect_ch, (4, 3), (1, 2)),
+                       (ws_cb, (5, 2), (1, 2)), 
+                       (wp_cb, (6, 2), (1, 2))])
         sizer.Add((5, 5), (8, 0))
         sizer.Add(wx.StaticText(self, label=_("Misc") + u": "), (8, 1))
         sizer.AddMany([(tsizer, (8, 2), (1, 2)),
-                       (m_cb, (9, 2), wx.GBSpan(1, 2))])
+                       (m_cb, (9, 2), (1, 2))])
         self.SetSizer(sizer)
+
+    def OnCheck(self, evt):
+        """Updates profile based on checkbox actions
+        @param evt: Event that called this handler
+
+        """
+        e_id = evt.GetId()
+        val = evt.GetEventObject().GetValue()
+        if e_id in [ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_WSIZE]:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+        elif e_id == ed_glob.ID_PREF_METAL:
+            windows = wx.GetApp().GetOpenWindows()
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            for window in windows.values():
+                sty = None
+                if isinstance(window[0], wx.Frame):
+                    if not val:
+                        sty = ~wx.FRAME_EX_METAL
+                    else:
+                        sty = wx.FRAME_EX_METAL
+                elif isinstance(window[0], wx.Dialog):
+                    if not val:
+                        sty = ~wx.DIALOG_EX_METAL
+                    else:
+                        sty = wx.DIALOG_EX_METAL
+                else:
+                    pass
+                if sty is not None:
+                    window[0].SetExtraStyle(sty)
+                    window[0].Refresh()
+                    window[0].Update()
+        else:
+            evt.Skip()
+
+    def OnChoice(self, evt):
+        """Handles selection events from the choice controls
+        @param evt: Event that called this handler
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        val = e_obj.GetValue()
+        if e_id in [ed_glob.ID_PREF_ICON, ed_glob.ID_PREF_ICONSZ]:
+            if e_id == ed_glob.ID_PREF_ICONSZ:
+                val = (int(val), int(val))
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            toolbar = wx.GetApp().GetMainWindow().GetToolBar()
+            if toolbar is not None and \
+               (toolbar.GetToolTheme() != ed_glob.PROFILE['ICONS'] \
+               or toolbar.GetToolSize() != ed_glob.PROFILE['ICON_SZ']):
+                toolbar.ReInit()
+        elif e_id == ed_glob.ID_PERSPECTIVES:
+            ed_glob.PROFILE['DEFAULT_VIEW'] = e_obj.GetValue()
+            main_win = wx.GetApp().GetMainWindow()
+            if main_win is not None:
+                main_win.SetPerspective(ed_glob.PROFILE['DEFAULT_VIEW'])
+        else:
+            evt.Skip()
 
     def OnSetTransparent(self, evt):
         """Sets the transparency of the editor while the slider
@@ -829,13 +778,15 @@ class AppearancePanel(PrefPanelBase):
 
         """
         if evt.GetId() == ed_glob.ID_TRANSPARENCY:
-            grandpa = self.GetGrandParent() # Main Window
-            greatgrandpa = grandpa.GetParent()
             trans = evt.GetEventObject()
             value = trans.GetValue()
-            grandpa.SetTransparent(value)
-            greatgrandpa.SetTransparent(value)
+            for window in wx.GetApp().GetOpenWindows().values():
+                win = window[0]
+                if hasattr(win, 'SetTransparent'):
+                    win.SetTransparent(value)
             ed_glob.PROFILE['ALPHA'] = value
+        else:
+            evt.Skip()
 
 class UpdatePanel(PrefPanelBase):
     """Creates a panel with controls for updating Editra"""
@@ -855,7 +806,10 @@ class UpdatePanel(PrefPanelBase):
         self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdateText)
 
     def _DoLayout(self):
-        """Do the layout of the panel"""
+        """Do the layout of the panel
+        @note: Controls are layed out using L{wx.GridBagSizer}
+
+        """
         # Status text and bar
         cur_box = wx.StaticBox(self, ID_CURR_BOX, _("Installed Version"))
         cur_sz = wx.StaticBoxSizer(cur_box, wx.HORIZONTAL)
@@ -908,9 +862,9 @@ class UpdatePanel(PrefPanelBase):
             chk_bt.Disable()
             dl_dlg = updater.DownloadDialog(None, ed_glob.ID_DOWNLOAD_DLG,
                                             _("Downloading Update"), 
-                                            size=wx.Size(350, 200))
+                                            size=(350, 200))
             dp_sz = wx.GetDisplaySize()
-            dl_dlg.SetPosition(wx.Point((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
+            dl_dlg.SetPosition(((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
             dl_dlg.Show()
         else:
             evt.Skip()
@@ -926,17 +880,18 @@ class UpdatePanel(PrefPanelBase):
                 txt.SetLabel(upd.GetStatus())
                 u_pg = wx.FindWindowById(ID_UPDATE_PAGE)
                 dl_bt = chk_bt = None
-                if u_pg != None:
+                if u_pg is not None:
                     dl_bt = u_pg.FindWindowById(ID_DOWNLOAD)
                     chk_bt = u_pg.FindWindowById(ID_CHECK_UPDATE)
                     u_pg.Layout()
-                if dl_bt != None and upd.GetUpdatesAvailable():
+                if dl_bt is not None and upd.GetUpdatesAvailable():
                     dl_bt.Enable()
-                if chk_bt != None:
+                if chk_bt is not None:
                     chk_bt.Enable()
         self.Layout()
         curr_pg = self.GetParent().GetSelection()
-        nbevt = wx.NotebookEvent(wx.wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED, 0, curr_pg, curr_pg)
+        nbevt = wx.NotebookEvent(wx.wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED, 
+                                 0, curr_pg, curr_pg)
         wx.PostEvent(self.GetParent(), nbevt)
 
 #----------------------------------------------------------------------------#
@@ -944,9 +899,8 @@ class UpdatePanel(PrefPanelBase):
 
 class ProfileListCtrl(wx.ListCtrl, 
                       listmix.ListCtrlAutoWidthMixin):
-    """Displays the contents of the current users profile in
-    a list control.
-    @note: uses ListCtrlAutoWidthMixin
+    """Displays the contents of the current users profile in a list control.
+    @note: uses L{wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin}
 
     """
     def __init__(self, parent):
@@ -983,8 +937,15 @@ class ProfileListCtrl(wx.ListCtrl,
         self.SetColumnWidth(1, wx.LIST_AUTOSIZE)
 
     #---- End Function Definitions ----#
-class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditMixin):
-    """Class to manage the profile editor"""
+class ExtListCtrl(wx.ListCtrl, 
+                  listmix.ListCtrlAutoWidthMixin, 
+                  listmix.TextEditMixin):
+    """Class to manage the profile editor
+    @summary: Creates a list control for showing file type to file extension
+              associations as well as providing an interface to editing these
+              associations
+
+    """
     FILE_COL = 0
     EXT_COL = 1
     def __init__(self, parent):
@@ -994,8 +955,7 @@ class ExtListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.TextEditM
         """
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
                              wx.DefaultPosition, wx.DefaultSize, 
-                             style=wx.LC_REPORT | \
-                                   wx.LC_SORT_ASCENDING | \
+                             style=wx.LC_REPORT | wx.LC_SORT_ASCENDING | \
                                    wx.LC_VRULES)
 
         listmix.ListCtrlAutoWidthMixin.__init__(self)
@@ -1084,7 +1044,7 @@ class ExChoice(wx.Choice):
 
     """
     def __init__(self, parent, cid=wx.ID_ANY, pos=(-1, -1), \
-                 size=(-1, -1), choices=[''], default=None):
+                 size=(-1, -1), choices=list(), default=None):
         """Constructs a Choice Control
         @param parent: The parent window of this control
 
@@ -1106,5 +1066,3 @@ class ExChoice(wx.Choice):
         if val.isalpha():
             val.lower()
         return val
-
-#----------------------------------------------------------------------------#
