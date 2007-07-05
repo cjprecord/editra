@@ -200,6 +200,11 @@ ID_PLUGIN_CFG        = wx.NewId()
 ID_PLUGIN_DL         = wx.NewId()
 ID_PLUGIN_INST       = wx.NewId()
 ID_USB               = wx.NewId()
+ID_PREF_ADVANCED     = wx.NewId()
+ID_PREF_APPEARANCE   = wx.NewId()
+ID_PREF_DOCUMENT     = wx.NewId()
+ID_PREF_GENERAL      = wx.NewId()
+ID_PREF_UPDATE       = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0

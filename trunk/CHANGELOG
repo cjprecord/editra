@@ -15,16 +15,20 @@ NEWS:
 
 NEW: [features/improvements]
 +Support for utf-7, uft-16 encoded files
++New Preferences Dialog
 +Improved command line support
 +CssOptimizer plugin available via the plugin manager
 +File type detection is now configurable
 +Lots of new documentation
++Editra can be packaged as an Egg
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
 +Cursor/Selection is now set properly after a comment/uncomment action
 +Bracket highlighting can be toggled on/off properly
 +Many bugs fixed in source package install
++Folding now works for xml files
++Fixed some styling errors for postscript files
 
 
 #-----------------------------------------------------------------------------#

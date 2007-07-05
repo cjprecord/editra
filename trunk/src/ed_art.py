@@ -116,7 +116,13 @@ OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
               ed_glob.ID_APP_SPLASH : catalog['splashwarn'],
               ed_glob.ID_PLUGIN_CFG : catalog['plugin_cfg'],
               ed_glob.ID_PLUGIN_DL : catalog['plugin_dl'],
-              ed_glob.ID_PLUGIN_INST : catalog['plugin_install']}
+              ed_glob.ID_PLUGIN_INST : catalog['plugin_install'],
+              ed_glob.ID_PREF_ADVANCED : catalog['advanced'],
+              ed_glob.ID_PREF_APPEARANCE : catalog['appearance'],
+              ed_glob.ID_PREF_DOCUMENT : catalog['document'],
+              ed_glob.ID_PREF_GENERAL : catalog['general'],
+              ed_glob.ID_PREF_UPDATE : catalog['update']
+            }
 
 # Map for default system/wx provided graphic resources.
 DEFAULT = { 
