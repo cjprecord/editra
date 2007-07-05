@@ -126,33 +126,43 @@ class PrefTools(wx.Toolbook):
 
     """
     GENERAL_PG = 0
+    APPEAR_PG  = 1
+    DOC_PG     = 2
+    UPDATE_PG  = 3
+    ADV_PG     = 4
+
     def __init__(self, parent, tbid=wx.ID_ANY, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.BK_DEFAULT | wx.TB_TEXT | 
-                                            wx.TB_TOP):
+                 size=wx.DefaultSize, style=wx.BK_BUTTONBAR):
         """Initializes the main book control of the preferences dialog"""
         wx.Toolbook.__init__(self, parent, tbid, pos=pos, \
                              size=size, style=style)
 
-        toolb = self.GetToolBar()
-        toolb.SetWindowStyle(toolb.GetWindowStyle() | wx.TB_NODIVIDER)
+#         toolb = self.GetToolBar()
+#         toolb.SetWindowStyle(toolb.GetWindowStyle() | wx.TB_NODIVIDER)
         # Attributes
         self.LOG = wx.GetApp().GetLog()
         self._imglst = wx.ImageList(32, 32)
-        self._imgind = dict()
-        self._imgind[self.GENERAL_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( \
-                                                   str(ed_glob.ID_PLUGIN_CFG), \
+        self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_GENERAL), 
                                                        wx.ART_OTHER))
+        self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_APPEARANCE),
+                                                       wx.ART_OTHER))
+        self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_DOCUMENT),
+                                                       wx.ART_OTHER))
+        self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_UPDATE),
+                                                       wx.ART_OTHER))
+#         self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_ADVANCED),
+#                                                        wx.ART_OTHER))
         self.SetImageList(self._imglst)
         self.AddPage(GeneralPanel(self), _("General"), 
-                     imageId=self._imgind[self.GENERAL_PG])
+                     imageId=self.GENERAL_PG)
         self.AddPage(AppearancePanel(self), _("Appearance"), 
-                     imageId=self._imgind[self.GENERAL_PG])
+                     imageId=self.APPEAR_PG)
         self.AddPage(DocumentPanel(self), _("Document"), 
-                     imageId=self._imgind[self.GENERAL_PG])
+                     imageId=self.DOC_PG)
         self.AddPage(UpdatePanel(self), _("Update"),
-                     imageId=self._imgind[self.GENERAL_PG])
-        self.AddPage(PrefPanelBase(self), _("Advanced"),
-                     imageId=self._imgind[self.GENERAL_PG])
+                     imageId=self.UPDATE_PG)
+#         self.AddPage(PrefPanelBase(self), _("Advanced"),
+#                      imageId=self.ADV_PG)
 
         # Event Handlers
         self.Bind(wx.EVT_TOOLBOOK_PAGE_CHANGED, self.OnPageChanged)
@@ -183,20 +193,28 @@ class PrefTools(wx.Toolbook):
         dc = wx.PaintDC(self)
         gc = wx.GraphicsContext.Create(dc)
         col1 = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
-#         col2 = util.AdjustColour(col1, 20)
-        col1 = util.AdjustColour(col1, -20)
+        col2 = util.AdjustColour(col1, -20)
+#         col1 = util.AdjustColour(col1, -20)
         rect = self.GetToolBar().GetRect()
 
         # Create the background path
         path = gc.CreatePath()
-        path.AddRectangle(0, 0, rect.width, rect.height + 3)
+        path.AddRectangle(0, 0, rect.width, (rect.height + 3))
 
         gc.SetPen(wx.Pen(col1, 1))
-#         grad = gc.CreateLinearGradientBrush(0, 0, 0, rect.height, col1, col2)
-        grad = gc.CreateBrush(wx.Brush(col1))
+        grad = gc.CreateLinearGradientBrush(0, 0, 0, rect.height, col1, col2)
+#         grad = gc.CreateBrush(wx.Brush(col1))
         gc.SetBrush(grad)
         gc.DrawPath(path)
 
+#         path = gc.CreatePath()
+#         gc.SetPen(wx.Pen(col1, 1, wx.TRANSPARENT))
+#         path.AddRectangle(0, rect.height/2, rect.width, 
+#                           int((rect.height + 3)/2))
+#         grad = gc.CreateLinearGradientBrush(0, rect.height, 0, 
+#                                             int(rect.height/2), col1, col2)
+#         gc.SetBrush(grad)
+#         gc.DrawPath(path)
         evt.Skip()
 
 class PrefPanelBase(wx.Panel):
