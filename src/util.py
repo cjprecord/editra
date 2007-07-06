@@ -65,7 +65,7 @@ class DropTargetFT(wx.PyDropTarget):
     """Drop target capable of accepting dropped files and text"""
     def __init__(self, window):
         """Initializes the Drop target
-        @param window: window to recieve drop events from
+        @param window: window to recieve drop objects
 
         """
         wx.PyDropTarget.__init__(self)
