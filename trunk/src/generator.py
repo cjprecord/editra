@@ -835,7 +835,7 @@ class Rtf(plugin.Plugin):
         @param text: text to transform
         @return: text with all special characters transformed
         """
-        chmap = { "\t" : "\\tab", "{" : "\\{", "}" : "\\}",
+        chmap = { "\t" : "\\tab ", "{" : "\\{", "}" : "\\}",
                   "\\" : "\\\\", "\n" : "\\par\n", "\r" : "\\par\n"}
         text = text.replace('\r\n', '\n')
         tmp = u''
