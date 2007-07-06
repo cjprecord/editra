@@ -78,9 +78,7 @@ class PreferencesDialog(wx.Frame):
 
     def __init__(self, parent, id_, title, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE | 
-                                            wx.TAB_TRAVERSAL | 
-                                            wx.CLIP_CHILDREN | 
-                                            wx.FULL_REPAINT_ON_RESIZE):
+                                            wx.TAB_TRAVERSAL):
         """Initialises the preference dialog
         @param parent: The parent window of this window
         @param id_: The id of this window
@@ -89,6 +87,7 @@ class PreferencesDialog(wx.Frame):
         """
         wx.Frame.__init__(self, parent, id_, title, 
                           pos=pos, size=size, style=style)
+        util.SetWindowIcon(self)
 
         # Extra Styles
         self.SetExtraStyle(wx.FRAME_EX_CONTEXTHELP)
@@ -589,6 +588,9 @@ class DocSyntaxPanel(wx.Panel):
                             choices=util.GetResourceFiles(u'styles', 
                                                           get_all=True),
                             default=str(ed_glob.PROFILE['SYNTHEME']))
+        line = wx.StaticLine(self, size=(-1, 2))
+        lsizer = wx.BoxSizer(wx.VERTICAL)
+        lsizer.Add(line, 0, wx.EXPAND)
 
         # Layout the controls
         sizer = wx.GridBagSizer()
@@ -596,16 +598,19 @@ class DocSyntaxPanel(wx.Panel):
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.AddMany([(syn_cb, 0, wx.ALIGN_LEFT), ((5, 5), 1, wx.EXPAND),
                         (wx.StaticText(self, label=_("Color Scheme") + u": "), 0, wx.ALIGN_LEFT),
-                        (syntheme, 0, wx.ALIGN_LEFT)])
+                        (syntheme, 0)])
         sizer.AddMany([(hsizer, (1, 1), (1, 4), wx.EXPAND), 
-                       ((5, 5), (1, 5), (1, 3), wx.EXPAND),
-                       (wx.StaticLine(self), (2, 1), (1, 4), wx.EXPAND),
+                       (line, (3, 1), (1, 4), wx.EXPAND),
                        (wx.StaticText(self, label=_("Filetype Associations") + u": "), (4, 1))])
-        sizer.Add(self._elist, (5, 1), (12, 4), wx.EXPAND)
-        sizer.Add((1, 1), (17, 1))
+        if wx.Platform == '__WXMAC__':
+            # For some reason the list control flows out of bounds if this is 
+            # not added on OS X
+            sizer.Add((5, 5), (1, 5), (1, 3), wx.EXPAND)
+        sizer.Add(self._elist, (5, 1), (10, 4), wx.EXPAND)
+        sizer.Add((1, 1), (15, 1))
         sizer.Add(wx.Button(self, wx.ID_DEFAULT, 
-                  _("Revert to Default")), (18, 1))
-        sizer.Add((2, 2), (19, 1))
+                  _("Revert to Default")), (16, 1))
+        sizer.Add((2, 2), (17, 1))
         self.SetSizer(sizer)
 
     def OnButton(self, evt):
