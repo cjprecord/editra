@@ -79,13 +79,12 @@ class Editra(wx.App):
         @postcondition: custom artprovider and plugins are loaded
 
         """
+        self.SetAppName(ed_glob.prog_name)
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log("[app][info] Editra is Initializing")
-        provider = wx.SimpleHelpProvider()
-        wx.HelpProvider_Set(provider)
-        self._log("[app][info] Set help provider")
+        sys.excepthook = dev_tool.ExceptionHook
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
@@ -94,7 +93,8 @@ class Editra(wx.App):
 
     def Exit(self):
         """Exit the program
-        @postcondition: program is closed
+        @postcondition: If no toplevel windows are precent program will exit.
+        @postcondition: Program may remain open if an open window is locking.
 
         """
         self._pluginmgr.WritePluginConfig()
