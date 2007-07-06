@@ -17,6 +17,7 @@ NEW: [features/improvements]
 +Support for utf-7, uft-16 encoded files
 +New Preferences Dialog
 +Improved command line support
++Better Error handling and notification
 +CssOptimizer plugin available via the plugin manager
 +File type detection is now configurable
 +Lots of new documentation
@@ -29,7 +30,6 @@ BUG FIXES:
 +Many bugs fixed in source package install
 +Folding now works for xml files
 +Fixed some styling errors for postscript files
-
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.28
