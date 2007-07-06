@@ -235,14 +235,14 @@ class ExtensionRegister(dict):
             self.first = False
             self.LoadDefault()
 
-    def __new__(self, *args, **kargs):
+    def __new__(cls, *args, **kargs):
         """Maintain only a single instance of this object
         @return: instance of this class
 
         """
-        if not self.instance:
-            self.instance = dict.__new__(self, *args, **kargs)
-        return self.instance
+        if not cls.instance:
+            cls.instance = dict.__new__(cls, *args, **kargs)
+        return cls.instance
 
     def __missing__(self, key):
         """Return the default value if an item is not found
