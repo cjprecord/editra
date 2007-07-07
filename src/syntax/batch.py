@@ -26,6 +26,7 @@
 # SUMMARY:                                                                    #
 # Lexer configuration file for dos/windows batch scripts.                     #
 #                                                                             #
+# @todo: incorportate winbat keywords                                         #
 #-----------------------------------------------------------------------------#
 """
 
@@ -35,18 +36,18 @@ __revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 
-dosbat_keywords = (0, "goto call exit if else for EQU NEQ LSS LEQ GTR GEQ "
+DOSBAT_KEYWORDS = (0, "goto call exit if else for EQU NEQ LSS LEQ GTR GEQ "
                       "append assoc at attrib break cacls cd chcp chdir chkdsk "
-                      "chkntfs cls cmd color comp compact convert copy date del "
-                      "dir diskcomp diskcopy doskey echo endlocal erase fc find "
-                      "findstr format ftype graftabl help keyb label md mkdir "
-                      "mode more move path pause popd print prompt pushd rd "
-                      "rem ren rename replace restore rmdir set setlocal shift "
-                      "sort start subst time title tree type ver verify vol "
-                      "xcopy")
+                      "chkntfs cls cmd color comp compact convert copy date "
+                      "del dir diskcomp diskcopy doskey echo endlocal erase fc "
+                      "find findstr format ftype graftabl help keyb label md "
+                      "mkdir mode more move path pause popd print prompt pushd "
+                      "rd rem ren rename replace restore rmdir set setlocal "
+                      "shift sort start subst time title tree type ver verify "
+                      "vol xcopy")
 
-# WinBatch Keywords (TODO still incomplete)
-winbat_keywords = (0, "if then else endif break end return exit next while for "
+# WinBatch Keywords
+WINBAT_KEYWORDS = (0, "if then else endif break end return exit next while for "
                       "gosub goto switch select to case endselect endwhile "
                       "endswitch aboveicons acc_attrib acc_chng_nt acc_control "
                       "acc_create acc_delete acc_full_95 acc_full_nt acc_list "
@@ -57,41 +58,42 @@ winbat_keywords = (0, "if then else endif break end return exit next while for "
                       "attr_p attr_p attr_ri attr_ri attr_ro attr_ro attr_sh " 
                       "attr_sh attr_sy attr_sy attr_t attr_t attr_x attr_x "
                       "avogadro backscan boltzmann cancel capslock check "
-                      "columnscommonformat cr crlf ctrl default default deg2rad "
-                      "descending disable drive electric enable eulers false "
-                      "faraday float8 fwdscan gftsec globalgroup gmtsec "
+                      "columnscommonformat cr crlf ctrl default default "
+                      "deg2rad descending disable drive electric enable eulers "
+                      "false faraday float8 fwdscan gftsec globalgroup gmtsec "
                       "goldenratio gravitation hidden icon lbutton lclick "
                       "ldblclick lf lightmps lightmtps localgroup magfield "
                       "major mbokcancel mbutton mbyesno mclick mdblclick minor "
-                      "msformat multiple ncsaformat no none none noresize normal "
-                      "notify nowait numlock off on open parsec parseonly pi "
-                      "planckergs planckjoules printer rad2deg rbutton rclick "
-                      "rdblclick regclasses regcurrent regmachine regroot "
-                      "regusers rows save scrolllock server shift single sorted "
-                      "stack string tab tile true uncheck unsorted wait "
-                      "wholesection word1 word2 word4 yes zoomed about abs "
-                      "acos addextender appexist appwaitclose asin askfilename "
-                      "askfiletext askitemlist askline askpassword askyesno atan "
-                      "average beep binaryalloc binarycopy binaryeodget "
-                      "binaryeodset binaryfree binaryhashrec binaryincr "
-                      "binaryincr2 binaryincr4 binaryincrflt binaryindex "
-                      "binaryindexnc binaryoletype binarypeek binarypeek2 "
-                      "binarypeek4 binarypeekflt binarypeekstr binarypoke "
-                      "binarypoke2 binarypoke4 binarypokeflt binarypokestr "
-                      "binaryread binarysort binarystrcnt binarywrite "
-                      "boxbuttondraw boxbuttonkill boxbuttonstat boxbuttonwait "
-                      "boxcaption boxcolor boxdataclear boxdatatag boxdestroy "
-                      "boxdrawcircle boxdrawline boxdrawrect boxdrawtext boxesup "
-                      "boxmapmode boxnew boxopen boxpen boxshut boxtext "
-                      "boxtextcolor boxtextfont boxtitle boxupdates break "
-                      "buttonnames by call callext ceiling char2num clipappend "
-                      "clipget clipput continue cos cosh datetime ddeexecute "
-                      "ddeinitiate ddepoke dderequest ddeterminate ddetimeout "
-                      "debug debugdata decimals delay dialog dialogbox dirattrget "
-                      "dirattrset dirchange direxist")
+                      "msformat multiple ncsaformat no none none noresize "
+                      "normal notify nowait numlock off on open parsec "
+                      "parseonly pi planckergs planckjoules printer rad2deg "
+                      "rbutton rclick rdblclick regclasses regcurrent "
+                      "regmachine regroot regusers rows save scrolllock server "
+                      "shift single sorted stack string tab tile true uncheck "
+                      "unsorted wait wholesection word1 word2 word4 yes zoomed "
+                      "about abs acos addextender appexist appwaitclose asin "
+                      "askfilename askfiletext askitemlist askline askpassword "
+                      "askyesno atan average beep binaryalloc binarycopy "
+                      "binaryeodget binaryeodset binaryfree binaryhashrec "
+                      "binaryincr binaryincr2 binaryincr4 binaryincrflt "
+                      "binaryindex binaryindexnc binaryoletype binarypeek "
+                      "binarypeek2 binarypeek4 binarypeekflt binarypeekstr "
+                      "binarypoke binarypoke2 binarypoke4 binarypokeflt "
+                      "binarypokestr binaryread binarysort binarystrcnt "
+                      "binarywrite boxbuttondraw boxbuttonkill boxbuttonstat "
+                      "boxbuttonwait boxcaption boxcolor boxdataclear "
+                      "boxdatatag boxdestroy boxdrawcircle boxdrawline "
+                      "boxdrawrect boxdrawtext boxesup boxmapmode boxnew "
+                      "boxopen boxpen boxshut boxtext boxtextcolor boxtextfont "
+                      "boxtitle boxupdates break buttonnames by call callext "
+                      "ceiling char2num clipappend clipget clipput continue "
+                      "cos cosh datetime ddeexecute ddeinitiate ddepoke "
+                      "dderequest ddeterminate ddetimeout debug debugdata "
+                      "decimals delay dialog dialogbox dirattrget dirattrset "
+                      "dirchange direxist")
 
 #---- Language Styling Specs ----#
-syntax_items = [ ('STC_BAT_DEFAULT', "default_style"),
+SYNTAX_ITEMS = [ ('STC_BAT_DEFAULT', "default_style"),
                  ('STC_BAT_COMMAND', "class_style"),
                  ('STC_BAT_COMMENT', "comment_style"),
                  ('STC_BAT_HIDE', "string_style"),
@@ -101,7 +103,7 @@ syntax_items = [ ('STC_BAT_DEFAULT', "default_style"),
                  ('STC_BAT_WORD', "keyword_style") ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
+FOLD = ("fold", "1")
 
 #-----------------------------------------------------------------------------#
 
@@ -111,28 +113,28 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [dosbat_keywords]
+    return [DOSBAT_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold]
+    return [FOLD]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
     @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return [ u'rem' ]
+    return [u'rem']
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

@@ -39,31 +39,31 @@ __revision__ = "$Revision$"
 #---- Keyword Specifications ----#
 
 # Pascal Keywords
-pas_keywords = (0, "and array asm begin case cdecl class const constructor "
+PAS_KEYWORDS = (0, "and array asm begin case cdecl class const constructor "
                    "default destructor div do downto else end end. except exit "
-                   "exports external far file finalization finally for function "
-                   "goto if implementation in index inherited initialization "
-                   "inline interface label library message mod near nil not "
-                   "object of on or out overload override packed pascal private "
-                   "procedure program property protected public published raise "
-                   "read record register repeat resourcestring safecall set shl "
-                   "shr stdcall stored string then threadvar to try type unit "
-                   "until uses var virtual while with write xor")
+                   "exports external far file finalization finally for "
+                   "function goto if implementation in index inherited "
+                   "initialization inline interface label library message mod "
+                   "near nil not object of on or out overload override packed "
+                   "pascal private procedure program property protected public "
+                   "published raise read record register repeat resourcestring "
+                   "safecall set shl shr stdcall stored string then threadvar "
+                   "to try type unit until uses var virtual while with write "
+                   "xor")
 
 # Pascal Classwords (Types)
-pas_classwords = (1, "array boolean char integer file pointer real set string "
+PAS_CLASSWORDS = (1, "array boolean char integer file pointer real set string "
                     "text variant write read default public protected private "
                     "property published stored")
 
 # Pascal Std Functions
-pas_funct = ("pack unpack Dispose New Abs Arctan Cos Exp Ln Sin Sqr Sqrt Eof "
+PAS_FUNCT = ("pack unpack Dispose New Abs Arctan Cos Exp Ln Sin Sqr Sqrt Eof "
              "Eoln Write Writeln Input Output Get Page Put Odd Pred Succ Chr "
              "Ord Round Trunc")
 
 #---- Syntax Style Specs ----#
 # Pascal Lexer Uses C values, but need to adjust styles accordingly
-# TODO test these styles the are probably a bit off
-syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_COMMENT', 'comment_style'),
                  ('STC_C_COMMENTDOC', 'comment_style'),
                  ('STC_C_COMMENTDOCKEYWORD', 'dockey_style'),
@@ -85,7 +85,7 @@ syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_WORD2', 'keyword2_style') ]
 
 #---- Extra Properties ----#
-fld_comment = ("fold.comment", "1")
+FLD_COMMENT = ("fold.comment", "1")
 
 #-----------------------------------------------------------------------------#
 
@@ -95,21 +95,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [pas_keywords, pas_classwords]
+    return [PAS_KEYWORDS, PAS_CLASSWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fld_comment]
+    return [FLD_COMMENT]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
@@ -128,5 +128,3 @@ def KeywordString(option=0):
     return None
 
 #---- End Syntax Modules Internal Functions ----#
-
-#-----------------------------------------------------------------------------#

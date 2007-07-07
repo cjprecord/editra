@@ -35,35 +35,36 @@ __revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependencies
-import synglob
 
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Specifications ----#
 
 # Java Keywords
-java_keywords = (0, "import native package goto const if else switch while for "
-                     "do true false null this super new instanceof return throw "
-                     "try catch finally assert synchronized throws extends "
-                     "implements interface break continue ")
+JAVA_KEYWORDS = (0, "import native package goto const if else switch while for "
+                     "do true false null this super new instanceof return "
+                     "throw try catch finally assert synchronized throws "
+                     "extends implements interface break continue ")
 
 # Java Types/Structures/Storage Classes
-java_types = (1, "boolean char byte short int long float double void static "
+JAVA_TYPES = (1, "boolean char byte short int long float double void static "
                   "synchronized transient volatile final strictfp serializable "
                   "class public protected private abstract")
 
 # Documentation Keywords (Doxygen keywords/ect)
-doc_keywords = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph \\category " 
-                   "\\class \\code \\date \\def \\depreciated \\dir \\dot \\dotfile "
-                   "\\else \\elseif \\em \\endcode \\enddot \\endif \\endverbatim " 
-                   "\\example \\exception \\file \\if \\ifnot \\image \\include \\link " 
-                   "\\mainpage \\name \\namespace \\page \\par \\paragraph \\param "
-                   "\\return \\retval \\section \\struct \\subpage \\subsection " 
-                   "\\subsubsection \\test \\todo \\typedef \\union \\var \\verbatim "
-                   "\\version \\warning \\$ \\@ \\~ \\< \\> \\# \\% HACK")
+DOC_KEYWORDS = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph "
+                   "\\category \\class \\code \\date \\def \\depreciated \\dir "
+                   "\\dot \\dotfile \\else \\elseif \\em \\endcode \\enddot "
+                   "\\endif \\endverbatim \\example \\exception \\file \\if "
+                   "\\ifnot \\image \\include \\link \\mainpage \\name "
+                   "\\namespace \\page \\par \\paragraph \\param \\return "
+                   "\\retval \\section \\struct \\subpage \\subsection " 
+                   "\\subsubsection \\test \\todo \\typedef \\union \\var "
+                   "\\verbatim \\version \\warning \\$ \\@ \\~ \\< \\> \\# \\% "
+                   "HACK")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_COMMENT', 'comment_style'),
                  ('STC_C_COMMENTDOC', 'comment_style'),
                  ('STC_C_COMMENTDOCKEYWORD', 'dockey_style'),
@@ -85,11 +86,11 @@ syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_WORD2', 'keyword2_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-fold_pre = ("styling.within.preprocessor", "0")
-fold_com = ("fold.comment", "1")
-fold_comp = ("fold.compact", "1")
-fold_else = ("fold.at.else", "0")
+FOLD = ("fold", "1")
+FOLD_PRE = ("styling.within.preprocessor", "0")
+FOLD_COM = ("fold.comment", "1")
+FOLD_COMP = ("fold.compact", "1")
+FOLD_ELSE = ("fold.at.else", "0")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -98,21 +99,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [java_keywords, java_types, doc_keywords]
+    return [JAVA_KEYWORDS, JAVA_TYPES, DOC_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold, fold_pre]
+    return [FOLD, FOLD_PRE]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code

@@ -40,7 +40,7 @@ import cpp
 #---- Keyword Specifications ----#
 
 # JavaScript Keywords # set to 1 for embeded
-js_keywords = (0, "if else while for break continue switch case default new in "
+JS_KEYWORDS = (0, "if else while for break continue switch case default new in "
                   "this var const return with function true false abstract and "
                   "array as catch class char debugger delete declare double "
                   "else enum export extend final finally float goto implements "
@@ -49,7 +49,7 @@ js_keywords = (0, "if else while for break continue switch case default new in "
                   "throw throws transient try typeof void while")
 
 #---- Syntax Style Spec ----#
-syntax_items = [ ('STC_HJ_COMMENT', 'comment_style'),
+SYNTAX_ITEMS = [ ('STC_HJ_COMMENT', 'comment_style'),
                  ('STC_HJ_COMMENTDOC', 'dockey_style'),
                  ('STC_HJ_COMMENTLINE', 'comment_style'),
                  ('STC_HJ_DEFAULT', 'default_style'),
@@ -84,7 +84,7 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [js_keywords]
+    return [JS_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
@@ -92,9 +92,9 @@ def SyntaxSpec(lang_id=0):
 
     """
     if lang_id == synglob.ID_LANG_HTML:
-        return syntax_items
+        return SYNTAX_ITEMS
     else:
-        return cpp.syntax_items
+        return cpp.SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
@@ -108,7 +108,7 @@ def CommentPattern(lang_id=0):
     @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return [ u'//' ]
+    return [u'//']
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
@@ -117,7 +117,7 @@ def KeywordString(option=0):
     @param option: specific subset of keywords to get
 
     """
-    return js_keywords[1]
+    return JS_KEYWORDS[1]
 
 #---- End Syntax Modules Internal Functions ----#
 

@@ -23,8 +23,7 @@
 # FILE: perl.py                                                               #
 # AUTHOR: Cody Precord                                                        #
 #                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration module for Perl.                                        #
+# @summary: Lexer configuration module for Perl.                              #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -38,7 +37,7 @@ __revision__ = "$Revision$"
 #---- Keyword Specifications ----#
 
 # Perl Keywords
-perl_kw = (0, "if elseif unless else switch eq ne gt lt ge le cmp not and or "
+PERL_KW = (0, "if elseif unless else switch eq ne gt lt ge le cmp not and or "
               "xor while for foreach do until continue defined undef and or "
               "not bless ref BEGIN END my local our goto return last next redo "
               "chomp chop chr crypt index lc lcfirst length org pack reverse "
@@ -51,7 +50,7 @@ perl_kw = (0, "if elseif unless else switch eq ne gt lt ge le cmp not and or "
               "stat tell telldir write fcntl flock ioctl open opendir read "
               "seek seekdir sysopen sysread sysseek syswrite truncate pack vec "
               "chdir chmod chown chroot glob link mkdir readlink rename rmdir "
-              "symlink umask ulink utime caller dump eval exit wanarray require "
+              "symlink umask ulink utime caller dump eval exit wanarray "
               "import alarm exec fork getpgrp getppid getpriority kill pipe "
               "setpgrp setpriority sleep system times wait waitpid accept "
               "bind connect getpeername getsockname getsockopt listen recv "
@@ -59,16 +58,17 @@ perl_kw = (0, "if elseif unless else switch eq ne gt lt ge le cmp not and or "
               "msgsnd semctl semget semop shmctl shmget shmread shmwrite "
               "endhostent endnetent endprooent endservent gethostbyaddr "
               "gethostbyname gethostent getnetbyaddr getnetbyname getnetent "
-              "getprotobyname getprotobynumber getprotoent getervbyname "
+              "getprotobyname getprotobynumber getprotoent getervbyname time "
               "getservbyport getservent sethostent setnetent setprotoent "
-              "setservent getpwuid getpwnam getpwent setpwent endpwent getgrent "
-              "getgrgid getlogin getgrnam setgrent endgrent gtime localtime time "
+              "setservent getpwuid getpwnam getpwent setpwent endpwent "
+              "getgrgid getlogin getgrnam setgrent endgrent gtime localtime "
               "times warn formline reset scalar delete prototype lock new "
               "NULL __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ AUTOLOAD "
-              "BEGIN CORE DESTROY END EQ GE GT INIT LE LT NE CHECK use sub elsif")
+              "BEGIN CORE DESTROY END EQ GE GT INIT LE LT NE CHECK use sub "
+              "elsif require getgrent ")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_PL_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_PL_DEFAULT', 'default_style'),
                  ('STC_PL_ARRAY', 'array_style'),
                  ('STC_PL_BACKTICKS', 'btick_style'),
                  ('STC_PL_CHARACTER', 'char_style'),
@@ -100,11 +100,11 @@ syntax_items = [ ('STC_PL_DEFAULT', 'default_style'),
                  ('STC_PL_WORD', 'keyword_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-fld_compact = ("fold.compact", "1")
-fld_comment = ("fold.comment", "1")
-fld_pod = ("fold.perl.pod", "1")
-fld_pkg = ("fold.perl.package", "1")
+FOLD = ("fold", "1")
+FLD_COMPACT = ("fold.compact", "1")
+FLD_COMMENT = ("fold.comment", "1")
+FLD_POD = ("fold.perl.pod", "1")
+FLD_PKG = ("fold.perl.package", "1")
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -113,21 +113,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [perl_kw]
+    return [PERL_KW]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold]
+    return [FOLD]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
@@ -144,7 +144,7 @@ def KeywordString(option=0):
     @note: not used by most modules
 
     """
-    return perl_kw[1]
+    return PERL_KW[1]
 
 #---- End Syntax Modules Internal Functions ----#
 

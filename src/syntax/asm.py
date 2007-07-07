@@ -37,20 +37,20 @@ __revision__ = "$Revision$"
 #-----------------------------------------------------------------------------#
 
 # GNU Assembly CPU Instructions/Storage Types
-asm_cpu_inst = (0, ".long .ascii .asciz .byte .double .float .hword .int .octa "
+ASM_CPU_INST = (0, ".long .ascii .asciz .byte .double .float .hword .int .octa "
                    ".quad .short .single .space .string .word")
 
 # GNU FPU Instructions
-asm_math_inst = (1, "")
+ASM_MATH_INST = (1, "")
 
 # GNU Registers
-asm_register = (2, "")
+ASM_REGISTER = (2, "")
 
 # GNU Assembly Directives/Special statements/Macros
-asm_directives = (3, ".include .macro .endm")
+ASM_DIRECTIVES = (3, ".include .macro .endm")
 
 #---- Language Styling Specs ----#
-syntax_items = [ ('STC_ASM_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_ASM_DEFAULT', 'default_style'),
                  ('STC_ASM_CHARACTER', 'char_style'),
                  ('STC_ASM_COMMENT', 'comment_style'),
                  ('STC_ASM_COMMENTBLOCK', 'comment_style'),
@@ -73,28 +73,28 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [asm_cpu_inst, asm_directives]
+    return [ASM_CPU_INST, ASM_DIRECTIVES]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return []
+    return list()
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
     @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return [ u';' ]
+    return [u';']
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#

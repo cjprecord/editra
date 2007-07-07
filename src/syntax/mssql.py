@@ -42,20 +42,20 @@ __revision__ = "$Revision$"
 #---- Keyword Specifications ----#
 
 # Data Types
-mssql_dat = (0, "")
+MSSQL_DAT = (0, "")
 # System Tables
-mssql_sys = (1, "")
+MSSQL_SYS = (1, "")
 # Global Variables
-mssql_glob = (2, "")
+MSSQL_GLOB = (2, "")
 # Functions
-mssql_func = (3, "")
+MSSQL_FUNC = (3, "")
 # System Stored Procedures
-mssql_sysp = (4, "")
+MSSQL_SYSP = (4, "")
 # Operators
-mssql_ops = (5, "")
+MSSQL_OPS = (5, "")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_MSSQL_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_MSSQL_DEFAULT', 'default_style'),
                  ('STC_MSSQL_COMMENT', 'comment_style'),
                  ('STC_MSSQL_COLUMN_NAME', 'keyword_style'),
                  ('STC_MSSQL_COLUMN_NAME_2', 'keyword_style'),
@@ -74,7 +74,7 @@ syntax_items = [ ('STC_MSSQL_DEFAULT', 'default_style'),
                  ('STC_MSSQL_VARIABLE', 'scalar_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
+FOLD = ("fold", "1")
 
 #-----------------------------------------------------------------------------#
 
@@ -84,21 +84,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return lis()
+    return list()
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold]
+    return [FOLD]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
@@ -117,5 +117,3 @@ def KeywordString():
     return None
 
 #---- End Syntax Modules Internal Functions ----#
-
-#-----------------------------------------------------------------------------#

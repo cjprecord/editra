@@ -23,8 +23,7 @@
 # FILE: python.py                                                             #
 # AUTHOR: Cody Precord                                                        #
 #                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration module for Python.                                      #
+# @summary: Lexer configuration module for Python.                            #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -42,15 +41,15 @@ import keyword
 #---- Keyword Specifications ----#
 
 # Python Keywords
-kw = keyword.kwlist
-kw.extend(['True', 'False', 'None', 'self'])
-py_kw = (0, " ".join(kw))
+KEYWORDS = keyword.kwlist
+KEYWORDS.extend(['True', 'False', 'None', 'self'])
+PY_KW = (0, " ".join(KEYWORDS))
 
 # Highlighted Identifiers
-py_id = (1, "")
+PY_ID = (1, "")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_P_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_P_DEFAULT', 'default_style'),
                  ('STC_P_CHARACTER', 'char_style'),
                  ('STC_P_CLASSNAME', 'class_style'),
                  ('STC_P_COMMENTBLOCK', 'comment_style'),
@@ -68,8 +67,8 @@ syntax_items = [ ('STC_P_DEFAULT', 'default_style'),
                  ('STC_P_WORD2', 'default_style')]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-timmy = ("tab.timmy.whinge.level", "1") # Mark Inconsistant indentation
+FOLD = ("fold", "1")
+TIMMY = ("tab.timmy.whinge.level", "1") # Mark Inconsistant indentation
 
 #-----------------------------------------------------------------------------#
 
@@ -79,21 +78,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [py_kw]
+    return [PY_KW]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold, timmy]
+    return [FOLD, TIMMY]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
@@ -110,7 +109,7 @@ def KeywordString():
     @note: not used by most modules
 
     """
-    return py_kw[1]
+    return PY_KW[1]
 
 #---- End Syntax Modules Internal Functions ----#
 

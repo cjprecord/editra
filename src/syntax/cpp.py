@@ -42,11 +42,11 @@ import synglob
 #---- Keyword Specifications ----#
 
 # C Keywords
-c_keywords = ("goto break return continue asm case default if else switch "
+C_KEYWORDS = ("goto break return continue asm case default if else switch "
               "while for do sizeof typeof ")
 
 # C Types/Structures/Storage Classes
-c_types = ("int long short char void signed unsigned float double "
+C_TYPES = ("int long short char void signed unsigned float double "
            "size_t ssize_t wchar_t ptrdiff_t sig_atomic_t fpos_t "
            "clock_t time_t va_list jmp_buf FILE DIR div_t ldiv_t "
            "mbstate_t wctrans_t wint_t wctype_t bool complex int8_t "
@@ -58,27 +58,29 @@ c_types = ("int long short char void signed unsigned float double "
            "volatile extern const inline __attribute__ ")
 
 # C/CPP Documentation Keywords (includes Doxygen keywords)
-doc_keywords = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph \\category " 
-                   "\\class \\code \\date \\def \\depreciated \\dir \\dot \\dotfile "
-                   "\\else \\elseif \\em \\endcode \\enddot \\endif \\endverbatim " 
-                   "\\example \\exception \\file \\if \\ifnot \\image \\include \\link " 
-                   "\\mainpage \\name \\namespace \\page \\par \\paragraph \\param "
-                   "\\return \\retval \\section \\struct \\subpage \\subsection " 
-                   "\\subsubsection \\test \\todo \\typedef \\union \\var \\verbatim "
-                   "\\version \\warning \\$ \\@ \\~ \\< \\> \\# \\% HACK ")
+DOC_KEYWORDS = (2, "TODO FIXME XXX \\author \\brief \\bug \\callgraph "
+                   "\\category \\class \\code \\date \\def \\depreciated \\dir "
+                   "\\dot \\dotfile \\else \\elseif \\em \\endcode \\enddot "
+                   "\\endif \\endverbatim \\example \\exception \\file \\if "
+                   "\\ifnot \\image \\include \\link \\mainpage \\name "
+                   "\\namespace \\page \\par \\paragraph \\param \\return "
+                   "\\retval \\section \\struct \\subpage \\subsection " 
+                   "\\subsubsection \\test \\todo \\typedef \\union \\var "
+                   "\\verbatim \\version \\warning \\$ \\@ \\~ \\< \\> \\# \\% "
+                   "HACK ")
 
 # CPP Keyword Extensions
-cpp_keywords = ("new delete this friend using throw try catch opperator "
+CPP_KEYWORDS = ("new delete this friend using throw try catch opperator "
                 "typeid and bitor or xor compl bitand and_eq or_eq xor_eq "
                 "not not_eq const_cast static_cast dynamic_cast "
                 "reinterpret_cast true false ")
 
 # CPP Type/Structure/Storage Class Extensions
-cpp_types = ("public protected private inline virtual explicit export bool "
+CPP_TYPES = ("public protected private inline virtual explicit export bool "
              "wchar_t mutable class typename template namespace ")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_COMMENT', 'comment_style'),
                  ('STC_C_COMMENTLINE', 'comment_style'),
                  ('STC_C_COMMENTDOC', 'comment_style'),
@@ -101,11 +103,11 @@ syntax_items = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_WORD2', 'keyword2_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-fold_pre = ("styling.within.preprocessor", "0")
-fold_com = ("fold.comment", "1")
-fold_comp = ("fold.compact", "1")
-fold_else = ("fold.at.else", "0")
+FOLD = ("fold", "1")
+FOLD_PRE = ("styling.within.preprocessor", "0")
+FOLD_COM = ("fold.comment", "1")
+FOLD_COMP = ("fold.compact", "1")
+FOLD_ELSE = ("fold.at.else", "0")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -114,15 +116,15 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    keywords= list()
-    kw1_str = [c_keywords]
-    kw2_str = [c_types]
+    keywords = list()
+    kw1_str = [C_KEYWORDS]
+    kw2_str = [C_TYPES]
     if lang_id == synglob.ID_LANG_CPP:
-        kw1_str.append(cpp_keywords)
-        kw2_str.append(cpp_types)
+        kw1_str.append(CPP_KEYWORDS)
+        kw2_str.append(CPP_TYPES)
     keywords.append((0, " ".join(kw1_str)))
     keywords.append((1, " ".join(kw2_str)))
-    keywords.append(doc_keywords)
+    keywords.append(DOC_KEYWORDS)
     return keywords
 
 def SyntaxSpec(lang_id=0):
@@ -130,14 +132,14 @@ def SyntaxSpec(lang_id=0):
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold, fold_pre]
+    return [FOLD, FOLD_PRE]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
@@ -145,9 +147,9 @@ def CommentPattern(lang_id=0):
 
     """
     if type == synglob.ID_LANG_CPP:
-        return [ u'//' ]
+        return [u'//']
     else:
-        return [ u'/*', u'*/' ]
+        return [u'/*', u'*/']
 
 #---- End Required Functions ----#
 

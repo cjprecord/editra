@@ -39,7 +39,7 @@ __revision__ = "$Revision$"
 
 #---- Keyword Definitions ----#
 # Special Selectors
-st_keywords = (0, "ifTrue: ifFalse: whileTrue: whileFalse: ifNil: ifNotNil: "
+ST_KEYWORDS = (0, "ifTrue: ifFalse: whileTrue: whileFalse: ifNil: ifNotNil: "
                   "whileTrue repeat isNil put to at notNil super self "
                   "true false new not isNil inspect out nil do add for "
                   "methods methodsFor instanceVariableNames classVariableNames "
@@ -47,7 +47,7 @@ st_keywords = (0, "ifTrue: ifFalse: whileTrue: whileFalse: ifNil: ifNotNil: "
 #---- End Keyword Definitions ----#
 
 #---- Syntax Style Specs ----#
-syntax_items = [('STC_ST_ASSIGN', 'operator_style'),
+SYNTAX_ITEMS = [('STC_ST_ASSIGN', 'operator_style'),
                 ('STC_ST_BINARY', 'operator_style'),
                 ('STC_ST_BOOL', 'keyword_style'),
                 ('STC_ST_CHARACTER', 'char_style'),
@@ -75,14 +75,14 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [st_keywords]
+    return [ST_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
@@ -105,6 +105,6 @@ def KeywordString():
     @note: not used by most modules
 
     """
-    return st_keywords[1]
+    return ST_KEYWORDS[1]
 
 #---- End Syntax Modules Internal Functions ----#

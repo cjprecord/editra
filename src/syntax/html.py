@@ -44,42 +44,44 @@ import synglob
 #---- Keyword Specifications ----#
 
 # HTML Tags (HTML4)
-html_tags = (0, "address applet area a base basefont big blockquote br caption "
+HTML_TAGS = (0, "address applet area a base basefont big blockquote br caption "
                 "center cite code dd dfn dir div dl dt font form hr html img "
                 "input isindex kbd li link map menu meta ol option param pre p "
                 "samp span select small strike sub sup table td textarea th tr "
                 "script noscript "
-                "tt ul var xmp b i u h1 h2 h3 h4 h5 h6 em strong head body title "
+                "tt ul var xmp b i u h1 h2 h3 h4 h5 h6 em strong head body "
+                "title "
                 # HTML 4.0 Tags
-                "abbr acronym bdo button col label colgroup del fieldset iframe "
-                "ins legend object optgroup q s tbody tfoot thead "
+                "abbr acronym bdo button col label colgroup del fieldset "
+                "iframe ins legend object optgroup q s tbody tfoot thead "
                 # Tag Attributes / Arguments
                 "action align alink alt archive background bgcolor border "
                 "bordercolor cellpadding cellspacing checked class clear code "
-                "codebase color cols colspan content coords enctype face gutter "
-                "height hspace id link lowsrc marginheight marginwidth maxlength "
-                "method name prompt rel rev rows rowspan scrolling selected "
-                "shape size src start target text type url usemap ismap valign "
-                "value vlink vspace width wrap href title http-equiv "
+                "codebase color cols colspan content coords enctype face "
+                "gutter height hspace id link lowsrc marginheight marginwidth "
+                "maxlength method name prompt rel rev rows rowspan scrolling "
+                "selected shape size src start target text type url usemap "
+                "ismap valign value vlink vspace width wrap href title "
+                "http-equiv "
                 # HTML 4 Tag Attributes /Arguments
-                "accept accesskey axis char charoff charset cite classid codetype "
-                "compact data datetime declare defer dir disabled for frame "
-                "headers hreflang lang language longdesc multiple nohref nowrap "
-                "profile readonly rules scheme scope standby style summary "
-                "tabindex valuetype version "
+                "accept accesskey axis char charoff charset cite classid "
+                "codetype compact data datetime declare defer dir disabled for "
+                "frame headers hreflang lang language longdesc multiple nohref "
+                "nowrap profile readonly rules scheme scope standby style "
+                "summary tabindex valuetype version "
                 # DHTML Support
                 "dtml-var dtml-if dtml-unless dtml-in dtml-with dtml-let "
                 "dtml-call dtml-raise dtml-try dtml-comment dtml-tree")
 
 # JavaScript Keywords (see javascript.py)
 import javascript
-js_keywords = (1, javascript.KeywordString())
+JS_KEYWORDS = (1, javascript.KeywordString())
 
 # VBScript Keywords (currently unsupported)
-vbs_keywords = (2, "")
+VBS_KEYWORDS = (2, "")
 
 # Python Keywords (see python.py)
-py_keywords = (3, "")
+PY_KEYWORDS = (3, "")
 
 # PHP Keywords (see php.py)
 # This module is loaded for files with a .html/htm extension so it is assumed
@@ -92,13 +94,13 @@ py_keywords = (3, "")
 # embedded xml highlighting it is currently not being used.
 
 # SGML Keywords
-sgml_keywords = (6, "#CURRENT #IMPLIED #REQUIRED ATTLIST CDATA DOCTYPE ELEMENT "
+SGML_KEYWORDS = (6, "#CURRENT #IMPLIED #REQUIRED ATTLIST CDATA DOCTYPE ELEMENT "
                     "ENTITY IDREF INCLUDE IGNORE NMTOKEN NUMBER RCDATA TEMP")
 # SGML Block Keywords
-sgml_block = (7, "")
+SGML_BLOCK = (7, "")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_H_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_H_DEFAULT', 'default_style'),
                  ('STC_H_ASP', 'array_style'),
                  ('STC_H_ASPAT', 'array_style'),
                  ('STC_H_ATTRIBUTE', 'keyword2_style'),
@@ -159,8 +161,8 @@ syntax_items = [ ('STC_H_DEFAULT', 'default_style'),
                  ('STC_HJA_WORD', 'default_style')  ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-fld_html = ("fold.html", "1")
+FOLD = ("fold", "1")
+FLD_HTML = ("fold.html", "1")
 
 #------------------------------------------------------------------------------#
 
@@ -170,28 +172,28 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [html_tags, sgml_keywords]
+    return [HTML_TAGS, SGML_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items + javascript.syntax_items
+    return SYNTAX_ITEMS + javascript.SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold, fld_html]
+    return [FOLD, FLD_HTML]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
     @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return [ u'<!--', u'-->' ]
+    return [u'<!--', u'-->']
 #---- End Required Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
@@ -201,8 +203,8 @@ def KeywordString(option=0):
 
     """
     if option == synglob.ID_LANG_SGML:
-        return sgml_keywords[1]
+        return SGML_KEYWORDS[1]
     else:
-        return html_tags[1]
+        return HTML_TAGS[1]
 
 #---- End Syntax Modules Internal Functions ----#
