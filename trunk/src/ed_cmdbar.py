@@ -436,7 +436,14 @@ class LineCtrl(wx.SearchCtrl):
 
         # Hide the search button and text
         self.ShowSearchButton(False)
+        self.ShowCancelButton(False)
         self.SetDescriptiveText(wx.EmptyString)
+
+        # MSW HACK
+        if wx.Platform == '__WXMSW__':
+            for child in self.GetChildren():
+                if isinstance(child, wx.TextCtrl):
+                    child.SetValidator(util.IntValidator(0, 65535))
 
         # Event management
         self.Bind(wx.EVT_TEXT_ENTER, self.OnInput)
