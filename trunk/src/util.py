@@ -56,13 +56,15 @@ import dev_tool
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-# XXX has some issues with the clipboard on windows under certain
-#     conditions. They arent fatal but need fixing.
 # Found this while playing around with the PyPe source code finally
 # solved the problem of allowing drag n drop text at the same time as
 # drag and drop files.
 class DropTargetFT(wx.PyDropTarget):
-    """Drop target capable of accepting dropped files and text"""
+    """Drop target capable of accepting dropped files and text
+    @todo: has some issues with the clipboard on windows under certain
+           conditions. They arent fatal but need fixing.
+
+    """
     def __init__(self, window):
         """Initializes the Drop target
         @param window: window to recieve drop objects
@@ -70,28 +72,31 @@ class DropTargetFT(wx.PyDropTarget):
         """
         wx.PyDropTarget.__init__(self)
         self.window = window
-        self.initObjects()
+        self.data = None
+        self.file_data_obj = None
+        self.text_data_obj = None
+        self.InitObjects()
 
-    def initObjects(self):
+    def InitObjects(self):
         """Initializes the text and file data objects
         @postcondition: all data objects are initialized
 
         """
         self.data = wx.DataObjectComposite()
-        self.textDataObject = wx.TextDataObject()
-        self.fileDataObject = wx.FileDataObject()
-        self.data.Add(self.textDataObject, True)
-        self.data.Add(self.fileDataObject, False)
+        self.text_data_obj = wx.TextDataObject()
+        self.file_data_obj = wx.FileDataObject()
+        self.data.Add(self.text_data_obj, True)
+        self.data.Add(self.file_data_obj, False)
         self.SetDataObject(self.data)
 
-    def OnEnter(self, x, y, dragResult):
+    def OnEnter(self, x_cord, y_cord, drag_result):
         """Handles the window enter event
         @return: result of drop object entering window
 
         """
-        return dragResult
+        return drag_result
 
-    def OnDrop(self, x=0, y=0):
+    def OnDrop(self, x_cord=0, y_cord=0):
         """Gets the drop cords
         @keyword x: x cord of drop object
         @keyword y: y cord of drop object
@@ -99,21 +104,22 @@ class DropTargetFT(wx.PyDropTarget):
         """
         return True
 
-    def OnDragOver(self, x, y, dragResult):
+    def OnDragOver(self, x_cord, y_cord, drag_result):
         """Gets the drag results/cords
         @return: result of drag over
+        @todo: if it is text move the carrat
 
         """
-        return dragResult
+        return drag_result
 
-    def OnData(self, x, y, dragResult):
+    def OnData(self, x_cord, y_cord, drag_result):
         """Gets and processes the dropped data
         @postcondition: dropped data is processed
 
         """
         if self.GetData():
-            files = self.fileDataObject.GetFilenames()
-            text = self.textDataObject.GetText()
+            files = self.file_data_obj.GetFilenames()
+            text = self.text_data_obj.GetText()
             
             if len(files) > 0:
                 self.window.OnDrop(files)
@@ -121,12 +127,14 @@ class DropTargetFT(wx.PyDropTarget):
                 if SetClipboardText(text):
                     win = self.window.GetCurrentCtrl()
                     if True:
-                        p = win.PositionFromPointClose(x, y)
-                        win.SetSelection(p, p)
+                        pos = win.PositionFromPointClose(x_cord, y_cord)
+                        win.SetSelection(pos, pos)
                         win.Paste()
             else:
                 self.window.SetStatusText("Can't read this dropped data")
-        self.initObjects()
+        self.InitObjects()
+        return drag_result
+
 #---- End FileDropTarget ----#
 
 #---- Misc Common Function Library ----#
@@ -135,10 +143,10 @@ def SetClipboardText(txt):
     @param txt: text to put in clipboard
 
     """
-    do = wx.TextDataObject()
-    do.SetText(txt)
+    data_o = wx.TextDataObject()
+    data_o.SetText(txt)
     if wx.TheClipboard.Open():
-        wx.TheClipboard.SetData(do)
+        wx.TheClipboard.SetData(data_o)
         wx.TheClipboard.Close()
         return 1
     return 0
@@ -193,6 +201,7 @@ def FilterFiles(file_list):
     """Filters a list of paths and returns a list of paths
     that are valid, not directories, and not seemingly not binary.
     @param file_list: list of files/folders to filter for good files in
+    @todo: find a better way to check for files that can be opened
 
     """
     good = list()
@@ -201,8 +210,6 @@ def FilterFiles(file_list):
             continue
         else:
             # Check for binary files
-            # XXX If there is a better way to deal with this I would
-            #     like to hear about it.
             # 1. Keep all files types we know about and all that have a mime
             #    type of text.
             mime = mimetypes.guess_type(path)
@@ -225,9 +232,9 @@ def FilterFiles(file_list):
                 except IOError:
                     continue
                 bad = 0
-                for bit in range(len(tmp)):
-                    a = ord(tmp[bit])
-                    if (a < 8) or (a > 13 and a < 32) or (a > 255):
+                for bit in xrange(len(tmp)):
+                    val = ord(tmp[bit])
+                    if (val < 8) or (val > 13 and val < 32) or (val > 255):
                         bad = bad + 1
                 if not len(tmp) or (float(bad)/float(len(tmp))) < 0.1:
                     good.append(path)

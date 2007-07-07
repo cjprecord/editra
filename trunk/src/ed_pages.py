@@ -30,7 +30,7 @@
 # editra controls for the MainWindow.                                      #
 #                                                                          #
 # METHODS:                                                                 #
-# - ED_Pages: Main instance of class. tracks page numbers                  #
+# - EdPages: Main instance of class. tracks page numbers                   #
 # - NewPage: Creates a new empty page w/text control                       #
 # - OpenPage: Opens a new page with an existing file                       #
 # - GoCurrentPage: Sets focus to currentyl selected page                   #
@@ -72,7 +72,7 @@ if hasattr(FNB, 'FNB_FF2'):
 else:
     TAB_STYLE = FNB.FNB_FANCY_TABS
 #--------------------------------------------------------------------------#
-class ED_Pages(FNB.FlatNotebook):
+class EdPages(FNB.FlatNotebook):
     """Editras Notebook"""
     def __init__(self, parent, id_num):
         """Initialize a notebook with a blank text control in it
@@ -101,10 +101,10 @@ class ED_Pages(FNB.FlatNotebook):
         self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
 
         # Setup the ImageList and the default image
-        il = wx.ImageList(16, 16)
+        imgl = wx.ImageList(16, 16)
         txtbmp = wx.ArtProvider.GetBitmap(str(synglob.ID_LANG_TXT), wx.ART_MENU)
-        self._index[synglob.ID_LANG_TXT] = il.Add(txtbmp)
-        self.SetImageList(il)
+        self._index[synglob.ID_LANG_TXT] = imgl.Add(txtbmp)
+        self.SetImageList(imgl)
 
         # Notebook Events
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
@@ -205,10 +205,11 @@ class ED_Pages(FNB.FlatNotebook):
             try:
                 in_txt, enc = util.GetDecodedText(path2file)
             except (UnicodeDecodeError, IOError, OSError), msg:
-                self.LOG("[ed_pages][err] Failed to open file %s" % path2file)
-                self.LOG("[ed_pages][err] %s" % msg)
+                self.LOG(("[ed_pages][err] Failed to open file %s\n"
+                          "[ed_pages][err] %s") % (path2file, msg))
                 # File could not be opened/read give up
-                err = wx.MessageDialog(self, _("Editra could not properly open %s\n") \
+                err = wx.MessageDialog(self, _("Editra could not properly "
+                                               "open %s\n") \
                                        % path2file, _("Error Opening File"),
                                        style=wx.OK | wx.CENTER | wx.ICON_ERROR)
                 err.ShowModal()
@@ -224,38 +225,29 @@ class ED_Pages(FNB.FlatNotebook):
             self.control = control
         self.control.SetText(in_txt, enc)
         # Pass directory and file name info to control object to save reference
-        self.control.dirname = path
-        self.control.filename = filename
+        self.control.dirname, self.control.filename = path, filename
         self.frame.filehistory.AddFileToHistory(path2file)
         self.control.modtime = util.GetFileModTime(path2file)
         if new_pg:
             self.AddPage(self.control, self.control.filename)
-            self.SetPageText(self.GetSelection(), self.control.filename)
         else:
-            self.SetPageText(self.GetSelection(), self.control.filename)
             self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
                                                         self.control.dirname, 
                                                         util.GetPathChar(), 
                                                         self.control.filename))
+        self.SetPageText(self.GetSelection(), self.control.filename)
         self.LOG("[nb_evt] Opened Page: ID = %d" % self.GetSelection())
 
-        # Set style
+        # Setup Document
         self.control.FindLexer()
-
-        # Check EOL characters
         self.control.CheckEOL()
-
-        # Clear Undo Buffer of this control
         self.control.EmptyUndoBuffer()
 
         if ed_glob.PROFILE['SAVE_POS']:
             self.control.GotoPos(self.DocMgr.GetPos(self.control.GetFileName()))
 
         # Set tab image
-        ftype = self.control.filename.split(".")
-        ftype = ftype[-1].upper()
-        pg_num = self.GetSelection()
-        self.SetPageImage(pg_num, str(self.control.GetLangId()))
+        self.SetPageImage(self.GetSelection(), str(self.control.GetLangId()))
 
         # Refocus on selected page
         self.GoCurrentPage()
@@ -336,16 +328,19 @@ class ED_Pages(FNB.FlatNotebook):
                 dcnt = glob.glob(os.path.join(fname, '*'))
                 dcnt = util.FilterFiles(dcnt)
                 if not len(dcnt):
-                    dlg = wx.MessageDialog(self, _("There are no files that Editra"
-                                                   " can open in %s") % fname,
+                    dlg = wx.MessageDialog(self, 
+                                           _("There are no files that Editra"
+                                             " can open in %s") % fname,
                                            _("No Valid Files to Open"),
                                            style=wx.OK | wx.CENTER | \
                                                  wx.ICON_INFORMATION)
                 else:
-                    dlg = wx.MessageDialog(self, _("Do you wish to open all %d"
-                                           " files in this directory?\n\nWarning opening"
-                                           " many files at once may cause the"
-                                           " editor to temporarly freeze.") % len(dcnt),
+                    dlg = wx.MessageDialog(self, 
+                                           _("Do you wish to open all %d files"
+                                             " in this directory?\n\nWarning"
+                                             " opening many files at once may"
+                                             " cause the editor to temporarly "
+                                             " freeze.") % len(dcnt),
                                            _("Open Directory?"),
                                            style=wx.YES | wx.NO | \
                                                  wx.ICON_INFORMATION)
@@ -405,8 +400,8 @@ class ED_Pages(FNB.FlatNotebook):
                     """
                     mdlg = wx.MessageDialog(self.frame, 
                                             _("%s has been modified by another "
-                                              "application.\n\nWould you like to "
-                                              "Reload it?") % cfile, 
+                                              "application.\n\nWould you like "
+                                              "to Reload it?") % cfile, 
                                               _("Reload File?"),
                                               wx.YES_NO | wx.ICON_INFORMATION)
                     mdlg.CenterOnParent()
@@ -427,7 +422,7 @@ class ED_Pages(FNB.FlatNotebook):
         @type evt: wx.MouseEvent
 
         """
-        cord, tab_idx = self._pages.HitTest(evt.GetPosition())
+        cord = self._pages.HitTest(evt.GetPosition())[0]
         if cord == FNB.FNB_X:
             # Make sure that the button was pressed before
             if self._pages._nXButtonStatus != FNB.FNB_BTN_PRESSED:
@@ -494,9 +489,9 @@ class ED_Pages(FNB.FlatNotebook):
 
         """
         self.LOG("[nb_evt] Closing Page: #%d" % self.GetSelection())
-        pg = self.GetCurrentPage()
-        if len(pg.GetFileName()) > 1:
-            self.DocMgr.AddRecord([pg.GetFileName(), pg.GetCurrentPos()])
+        page = self.GetCurrentPage()
+        if len(page.GetFileName()) > 1:
+            self.DocMgr.AddRecord([page.GetFileName(), page.GetCurrentPos()])
         evt.Skip()
 
     def OnPageClosed(self, evt):
@@ -523,6 +518,7 @@ class ED_Pages(FNB.FlatNotebook):
         for page in range(self.GetPageCount()):
             result = self.ClosePage()
             if result == wx.ID_CANCEL:
+                self.LOG("[nb][closeall] Canceled on page %d" % page)
                 break
             
     def ClosePage(self):
@@ -550,7 +546,8 @@ class ED_Pages(FNB.FlatNotebook):
             self.GoCurrentPage()
 
         # TODO this causes some flashing
-        if not self.GetPageCount() and not wx.GetApp().GetMainWindow().IsExiting():
+        if not self.GetPageCount() and \
+           not wx.GetApp().GetMainWindow().IsExiting():
             self.NewPage()
         return result
 
@@ -563,13 +560,15 @@ class ED_Pages(FNB.FlatNotebook):
         @param lang_id: language id of file type to get mime image for
 
         """
-        il = self.GetImageList()
+        imglst = self.GetImageList()
         if not self._index.has_key(lang_id):
             bmp = wx.ArtProvider.GetBitmap(lang_id, wx.ART_MENU)
             if bmp.IsNull():
-                self._index.setdefault(lang_id, self._index[synglob.ID_LANG_TXT])
+                self._index.setdefault(lang_id, \
+                                       self._index[synglob.ID_LANG_TXT])
             else:
-                self._index[lang_id] = il.Add(wx.ArtProvider.GetBitmap(lang_id, wx.ART_MENU))
+                self._index[lang_id] = imglst.Add(wx.ArtProvider.\
+                                              GetBitmap(lang_id, wx.ART_MENU))
         FNB.FlatNotebook.SetPageImage(self, pg_num, self._index[lang_id])
 
     def UpdatePageImage(self):

@@ -82,7 +82,7 @@ class PluginDialog(wx.Frame):
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self.CreateStatusBar(2)
         self.SetStatusWidths([-1, 155])
-        self._nb = PluginPages(self, wx.ID_ANY)
+        self._nb = PluginPages(self)
         
         # Layout Dialog
         self._sizer.Add(self._nb, 1, wx.EXPAND)
@@ -128,10 +128,9 @@ class PluginPages(wx.Toolbook):
     One for installing, and one for configuration.
 
     """
-    def __init__(self, parent, tbid, pos=wx.DefaultPosition, 
-                 size=wx.DefaultSize, style=wx.TB_TOP):
+    def __init__(self, parent, id_=wx.ID_ANY, style=wx.TB_TOP):
         """Creates the Toolbook"""
-        wx.Toolbook.__init__(self, parent, tbid, pos, size, style)
+        wx.Toolbook.__init__(self, parent, id=id_, style=style)
 
         # Create Pages
         self._imglst = wx.ImageList(32, 32)
@@ -145,9 +144,9 @@ class PluginPages(wx.Toolbook):
         self._imgind[INSTALL_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( 
                                                   str(ed_glob.ID_PLUGIN_INST), \
                                                       wx.ART_OTHER))
-        self._config = ConfigPanel(self, wx.ID_ANY)
-        self._download = DownloadPanel(self, wx.ID_ANY)
-        self._install = InstallPanel(self, wx.ID_ANY)
+        self._config = ConfigPanel(self)
+        self._download = DownloadPanel(self)
+        self._install = InstallPanel(self)
         self.SetImageList(self._imglst)
 
         # Add Pages
@@ -202,10 +201,9 @@ class PluginPages(wx.Toolbook):
 
 class ConfigPanel(wx.Panel):
     """Creates a panel for configuring plugins."""
-    def __init__(self, parent, pid, pos = wx.DefaultPosition,
-                 size = wx.DefaultSize, style = wx.NO_BORDER):
+    def __init__(self, parent, id_=wx.ID_ANY, style=wx.NO_BORDER):
         """Build config panel"""
-        wx.Panel.__init__(self, parent, pid, pos, size, style)
+        wx.Panel.__init__(self, parent, id_, style=style)
         self._list = PluginListCtrl(self)
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         
@@ -316,10 +314,9 @@ class DownloadPanel(wx.Panel):
     """Creates a panel with controls for downloading plugins."""
     ID_DOWNLOAD = wx.NewId()
 
-    def __init__(self, parent, pid, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.NO_BORDER):
+    def __init__(self, parent, pid=wx.ID_ANY, style=wx.NO_BORDER):
         """Initializes the panel"""
-        wx.Panel.__init__(self, parent, pid, pos, size, style)
+        wx.Panel.__init__(self, parent, pid, style=style)
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
@@ -364,8 +361,6 @@ class DownloadPanel(wx.Panel):
         finally:
             return (url.split("/")[-1], True, egg)
 
-    # TODO possibly process this on a separate thread to keep the 
-    #      gui responsive when switching to this panel.
     # The obtained meta data must be served as a file that is formated
     # as follows. Each meta data item must be on a single line with
     # each set of meta data for different plugins separated by three
@@ -374,6 +369,8 @@ class DownloadPanel(wx.Panel):
         """Gets the list of plugins and their related meta data
         as a string and returns it.
         @return: list of data of available plugins from website
+        @todo: possibly process this on a separate thread to keep the 
+               gui responsive when switching to this panel.
         
         """
         text = u''
@@ -421,8 +418,8 @@ class DownloadPanel(wx.Panel):
         plugins = self._GetPluginListData(url)
         p_list = dict()
         if len(plugins) < 2:
-            gp = self.GetGrandParent()
-            gp.SetStatusText(_("Unable to retrieve available downloads"), 0)
+            grandp = self.GetGrandParent()
+            grandp.SetStatusText(_("Unable to retrieve available downloads"), 0)
             return p_list
         for meta in plugins:
             data = meta.split("\n")
@@ -540,32 +537,31 @@ class InstallPanel(wx.Panel):
     ID_SYS = wx.NewId()
     ID_REMOVE_ITEM = wx.NewId()
 
-    def __init__(self, parent, pid, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.NO_BORDER):
+    def __init__(self, parent, id_=wx.ID_ANY, style=wx.NO_BORDER):
         """Initializes the panel"""
-        wx.Panel.__init__(self, parent, pid, pos, size, style)
+        wx.Panel.__init__(self, parent, id_, style=style)
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         lbl = wx.StaticText(self, wx.ID_ANY,
                             _("Click on Install to install the plugins "
                               "in the list"))
-        tt = wx.ToolTip(_("To add a new item drag and drop the plugin file "
-                          "into the list.\n\nTo remove an item select it and "
-                          "hit Delete or Backspace."))
-        self._install = wx.ListBox(self, wx.ID_ANY, style = wx.LB_SORT)
-        self._install.SetToolTip(tt)
+        toolt = wx.ToolTip(_("To add a new item drag and drop the plugin file "
+                             "into the list.\n\nTo remove an item select it "
+                             "and hit Delete or Backspace."))
+        self._install = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SORT)
+        self._install.SetToolTip(toolt)
         self._install.SetDropTarget(util.DropTargetFT(self))
         self._instb = wx.Button(self, self.ID_INSTALL, _("Install"))
         self._instb.Disable()
         self._usercb = wx.CheckBox(self, self.ID_USER, _("User Directory"))
         self._usercb.SetValue(True)
-        tt = wx.ToolTip(_("Install the plugins only for the current user"))
-        self._usercb.SetToolTip(tt)
+        toolt = wx.ToolTip(_("Install the plugins only for the current user"))
+        self._usercb.SetToolTip(toolt)
         self._syscb = wx.CheckBox(self, self.ID_SYS, _("System Directory"))
-        tt = wx.ToolTip(_("Install the plugins for all users\n"
-                           " **requires administrative privileges**"))
-        self._syscb.SetToolTip(tt)
+        toolt = wx.ToolTip(_("Install the plugins for all users\n"
+                             " **requires administrative privileges**"))
+        self._syscb.SetToolTip(toolt)
         if not util.CanWrite(ed_glob.CONFIG['SYS_PLUGIN_DIR']):
             self._syscb.Disable()
         
@@ -597,10 +593,10 @@ class InstallPanel(wx.Panel):
 
         """
         items = self._install.GetItems()
+        inst_loc = ed_glob.CONFIG['PLUGIN_DIR']
         if self._syscb.GetValue():
             inst_loc = ed_glob.CONFIG['SYS_PLUGIN_DIR']
-        else:
-            inst_loc = ed_glob.CONFIG['PLUGIN_DIR']
+
         for item in items:
             egg_name = item.split("/")[-1]
             if os.path.isabs(item):
@@ -630,7 +626,8 @@ class InstallPanel(wx.Panel):
 
         if not len(self._install.GetItems()):
             # All plugins installed correctly
-            self.GetGrandParent().SetStatusText(_("Finished Installing Plugins"), 0)
+            grand_p = self.GetGrandParent()
+            grand_p.SetStatusText(_("Finished Installing Plugins"), 0)
             dlg = wx.MessageDialog(self, _("Go to configuration page?"),
                                    _("Finished Installing Plugins"), 
                                    style=wx.YES_NO | wx.CENTER | \
@@ -639,8 +636,6 @@ class InstallPanel(wx.Panel):
             dlg.Destroy()
             if result == wx.ID_YES:
                 self.GetParent().SetSelection(CONFIG_PG)
-            else:
-                pass
             self._instb.Disable()
         else:
             self.GetGrandParent().SetStatusText(_("Error"), 1)
@@ -819,6 +814,7 @@ class PluginListCtrl(wx.ListCtrl,
 class PluginData(plugin.PluginData):
     """Plugin Metadata storage class used to store data
     about plugins and where to download them from
+    @see: plugin.PluginData
 
     """
     def __init__(self, name=u'', descript=u'', author=u'', \

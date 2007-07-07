@@ -58,15 +58,10 @@ STY_ATTRIBUTES     = u"face fore back size"
 STY_EX_ATTRIBUTES  = u"eol bold italic underline"
 #--------------------------------------------------------------------------#
 
-# TODO The extra Attributes should be saved as a separate attribute in the
-#      StyleItem, in order to facilitate easier setting and modification
-#      This currenlty causes problems when customizing values in the StyleEditor
-#      Changing this is fairly easy in this class but it will require changes
-#      to the StyleMgr and Editor as well.
 class StyleItem(object):
     """A storage class for holding styling information
     @todo: The extra Attributes should be saved as a separate attribute in the
-           StyleItem. This currenlty causes problems when customizing values in 
+           StyleItem. This currenlty causes problems when customizing values in
            the StyleEditor Changing this is fairly easy in this class but it 
            will require changes to the StyleMgr and Editor as well.
 
@@ -695,7 +690,7 @@ class StyleMgr(object):
                     if strict:
                         raise SyntaxError
                 elif leaf[0] not in STY_ATTRIBUTES:
-                    self.LOG(("[styles][syntax_warning] Unknown style attribute: %s"
+                    self.LOG(("[styles][warning] Unknown style attribute: %s"
                              ", In declaration of %s") % (leaf[0], tag))
                     if strict:
                         raise SyntaxWarning
@@ -745,7 +740,7 @@ class StyleMgr(object):
                         if match1.match(values[0]) or match2.match(values[0]):
                             v1ok = True
                         else:
-                            self.LOG("[styles] [syntax_warning] Bad value in %s" 
+                            self.LOG("[styles] [syntax_warning] Bad value in %s"
                                      " the value %s is invalid." % \
                                      (attrib[0], values[0]))
 

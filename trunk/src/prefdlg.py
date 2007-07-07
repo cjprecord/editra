@@ -76,17 +76,15 @@ class PreferencesDialog(wx.Frame):
     """
     __name__ = u'PreferencesDialog'
 
-    def __init__(self, parent, id_, title, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.DEFAULT_DIALOG_STYLE | 
-                                            wx.TAB_TRAVERSAL):
+    def __init__(self, parent, id_=wx.ID_ANY, title=u'',
+                 style=wx.DEFAULT_DIALOG_STYLE | wx.TAB_TRAVERSAL):
         """Initialises the preference dialog
         @param parent: The parent window of this window
         @param id_: The id of this window
         @param title: The title of the dialog
 
         """
-        wx.Frame.__init__(self, parent, id_, title, 
-                          pos=pos, size=size, style=style)
+        wx.Frame.__init__(self, parent, id_, title, style=style)
         util.SetWindowIcon(self)
 
         # Extra Styles
@@ -130,11 +128,9 @@ class PrefTools(wx.Toolbook):
     UPDATE_PG  = 3
     ADV_PG     = 4
 
-    def __init__(self, parent, tbid=wx.ID_ANY, pos=wx.DefaultPosition,
-                 size=wx.DefaultSize, style=wx.BK_BUTTONBAR):
+    def __init__(self, parent, tbid=wx.ID_ANY, style=wx.BK_BUTTONBAR):
         """Initializes the main book control of the preferences dialog"""
-        wx.Toolbook.__init__(self, parent, tbid, pos=pos, \
-                             size=size, style=style)
+        wx.Toolbook.__init__(self, parent, tbid, style=style)
 
 #         toolb = self.GetToolBar()
 #         toolb.SetWindowStyle(toolb.GetWindowStyle() | wx.TB_NODIVIDER)
@@ -143,13 +139,14 @@ class PrefTools(wx.Toolbook):
         self._imglst = wx.ImageList(32, 32)
         self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_GENERAL), 
                                                        wx.ART_OTHER))
-        self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_APPEARANCE),
+        self._imglst.Add(wx.ArtProvider.\
+                            GetBitmap(str(ed_glob.ID_PREF_APPEARANCE),
                                                        wx.ART_OTHER))
         self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_DOCUMENT),
                                                        wx.ART_OTHER))
         self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_UPDATE),
                                                        wx.ART_OTHER))
-#         self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_ADVANCED),
+#      self._imglst.Add(wx.ArtProvider.GetBitmap(str(ed_glob.ID_PREF_ADVANCED),
 #                                                        wx.ART_OTHER))
         self.SetImageList(self._imglst)
         self.AddPage(GeneralPanel(self), _("General"), 
@@ -265,10 +262,11 @@ class GeneralPanel(PrefPanelBase):
         
         # Attributes
         self.LOG = wx.GetApp().GetLog()
-        tt = wx.ToolTip("Changes made in this dialog are saved in your current "
-                        "profile. Some Items such as Language require the "
-                        "program to be restarted before taking affect.")
-        self.SetToolTip(tt)
+        toolt = wx.ToolTip("Changes made in this dialog are saved in your "
+                           "current profile. Some Items such as Language "
+                           "require the program to be restarted before taking "
+                           "affect.")
+        self.SetToolTip(toolt)
         self._DoLayout()
         
         # Event Handlers
@@ -282,6 +280,7 @@ class GeneralPanel(PrefPanelBase):
 
         """
         # Startup Section
+        start_lbl = wx.StaticText(self, label=_("Startup Settings") + u": ")
         mode_lbl = wx.StaticText(self, label=_("Editor Mode") + u": ")
         mode_ch = ExChoice(self, ed_glob.ID_PREF_MODE,
                            choices=['CODE', 'DEBUG', 'GUI_DEBUG'],
@@ -300,6 +299,7 @@ class GeneralPanel(PrefPanelBase):
         splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
 
         # File settings
+        file_lbl = wx.StaticText(self, label=_("File Settings") + u": ")
         fh_lbl = wx.StaticText(self, label=_("File History Length") + u": ")
         fh_ch = ExChoice(self, ed_glob.ID_PREF_FHIST,
                          choices=['1','2','3','4','5','6','7','8','9'],
@@ -315,6 +315,7 @@ class GeneralPanel(PrefPanelBase):
         chkmod_cb.SetValue(ed_glob.PROFILE['CHECKMOD'])
 
         # Locale
+        locale = wx.StaticText(self, label=_("Locale Settings") + u": ")
         lsizer = wx.BoxSizer(wx.HORIZONTAL)
         lang_lbl = wx.StaticText(self, label=_("Language") + u": ")
         lang_c = ed_i18n.LangListCombo(self, ed_glob.ID_PREF_LANG, 
@@ -324,14 +325,14 @@ class GeneralPanel(PrefPanelBase):
         # Layout items
         sizer = wx.GridBagSizer(5, 5)
         sizer.AddMany([((5, 5), (0, 0)),
-                       (wx.StaticText(self, label=_("Startup Settings") + u": "), (1, 1)),
+                       (start_lbl, (1, 1)),
                        (msizer, (1, 2), (1, 2)),
                        (psizer, (2, 2), (1, 2)),
                        (splash_cb, (3, 2), (1, 2))])
-        sizer.AddMany([(wx.StaticText(self, label=_("File Settings") + u": "), (5, 1)),
+        sizer.AddMany([(file_lbl, (5, 1)),
                        (fhsizer, (5, 2), (1, 2)), (pos_cb, (6, 2), (1, 3)),
                        (chkmod_cb, (7, 2), (1, 2))])
-        sizer.AddMany([(wx.StaticText(self, label=_("Locale Settings") + u": "), (9, 1)),
+        sizer.AddMany([(locale, (9, 1)),
                        (lsizer, (9, 2), (1, 3))])
         self.SetSizer(sizer)
 
@@ -414,18 +415,21 @@ class DocGenPanel(wx.Panel):
 
         """
         # Format Section
+        tabw_lbl = wx.StaticText(self, label=_("Tab Width") + u": ")
         tw_ch = ExChoice(self, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
                           default=str(ed_glob.PROFILE['TABWIDTH']))
         ut_cb = wx.CheckBox(self, ed_glob.ID_PREF_TABS, 
                             _("Use Tabs Instead of Whitespaces"))
         ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
+        eol_lbl = wx.StaticText(self, label=_("Default EOL Mode") + u": ")
         eol_ch = ExChoice(self, ed_glob.ID_EOL_MODE,
                           choices = [_("Macintosh (\\r)"), _("Unix (\\n)"), 
                                    _("Windows (\\r\\n)")],
                           default = ed_glob.PROFILE['EOL'])
 
         # View Options
+        view_lbl = wx.StaticText(self, label=_("View Options") + u": ")
         aa_cb = wx.CheckBox(self, ed_glob.ID_PREF_AALIAS, _("AntiAliasing"))
         aa_cb.SetValue(ed_glob.PROFILE['AALIASING'])
         seol_cb = wx.CheckBox(self, ed_glob.ID_SHOW_EOL, _("Show EOL Markers"))
@@ -442,12 +446,9 @@ class DocGenPanel(wx.Panel):
         sizer.Add((5, 5), (1, 0))
         sizer.Add(wx.StaticText(self, label=_("Format") + u": "), (1, 1))
         sizer.AddMany([(ut_cb, (1, 2), wx.GBSpan(1, 2)),
-                       (wx.StaticText(self, label=_("Tab Width") + u": "), (2, 2)),
-                       (tw_ch, (2, 3), wx.GBSpan(1, 3)),
-                       (wx.StaticText(self, label=_("Default EOL Mode") + u": "), (3, 2)),
-                       (eol_ch, (3, 3), wx.GBSpan(1, 2)),
-                       ((5, 5), (5, 0)),
-                       (wx.StaticText(self, label=_("View Options") + u": "), (5, 1)),
+                       (tabw_lbl, (2, 2)), (tw_ch, (2, 3), wx.GBSpan(1, 3)),
+                       (eol_lbl, (3, 2)), (eol_ch, (3, 3), wx.GBSpan(1, 2)),
+                       ((5, 5), (5, 0)), (view_lbl, (5, 1)),
                        (aa_cb, (5, 2)), (seol_cb, (6, 2)), (sln_cb, (7, 2)),
                        (sws_cb, (8, 2)), (ww_cb, (9, 2))
                        ])
@@ -498,6 +499,7 @@ class DocCodePanel(wx.Panel):
 
         """
         # Visual Helpers Section
+        vis_lbl = wx.StaticText(self, label=_("Visual Helpers") + u": ")
         br_cb = wx.CheckBox(self, ed_glob.ID_BRACKETHL, 
                             _("Bracket Highlighting"))
         br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
@@ -522,7 +524,7 @@ class DocCodePanel(wx.Panel):
         # Layout the controls
         sizer = wx.GridBagSizer(5, 5)
         sizer.Add((5, 5), (1, 0))
-        sizer.Add(wx.StaticText(self, label=_("Visual Helpers") + u": "), (1, 1))
+        sizer.Add(vis_lbl, (1, 1))
         sizer.AddMany([(br_cb, (1, 2)), (fold_cb, (2, 2)),
                        (edge_cb, (3, 2)),
                        (wx.StaticText(self, label=_("Column") + u": "), (3, 3)),
@@ -591,17 +593,19 @@ class DocSyntaxPanel(wx.Panel):
         line = wx.StaticLine(self, size=(-1, 2))
         lsizer = wx.BoxSizer(wx.VERTICAL)
         lsizer.Add(line, 0, wx.EXPAND)
+        lst_lbl = wx.StaticText(self, label=_("Filetype Associations") + u": ")
 
         # Layout the controls
         sizer = wx.GridBagSizer()
         sizer.Add((5, 5), (0, 0))
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.AddMany([(syn_cb, 0, wx.ALIGN_LEFT), ((5, 5), 1, wx.EXPAND),
-                        (wx.StaticText(self, label=_("Color Scheme") + u": "), 0, wx.ALIGN_LEFT),
+                        (wx.StaticText(self, label=_("Color Scheme") + u": "), \
+                        0, wx.ALIGN_LEFT),
                         (syntheme, 1, wx.EXPAND)])
         sizer.AddMany([(hsizer, (1, 1), (1, 4), wx.EXPAND), 
                        (lsizer, (3, 1), (1, 4), wx.EXPAND),
-                       (wx.StaticText(self, label=_("Filetype Associations") + u": "), (4, 1))])
+                       (lst_lbl, (4, 1))])
         if wx.Platform == '__WXMAC__':
             # For some reason the list control flows out of bounds if this is 
             # not added on OS X
@@ -884,8 +888,7 @@ class UpdatePanel(PrefPanelBase):
             chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
             chk_bt.Disable()
             dl_dlg = updater.DownloadDialog(None, ed_glob.ID_DOWNLOAD_DLG,
-                                            _("Downloading Update"), 
-                                            size=(350, 200))
+                                            _("Downloading Update"))
             dp_sz = wx.GetDisplaySize()
             dl_dlg.SetPosition(((dp_sz[0] - (dl_dlg.GetSize()[0] + 5)), 25))
             dl_dlg.Show()
@@ -901,12 +904,9 @@ class UpdatePanel(PrefPanelBase):
         if None not in [txt, upd]:
             if e_id == upd.ID_CHECKING:
                 txt.SetLabel(upd.GetStatus())
-                u_pg = wx.FindWindowById(ID_UPDATE_PAGE)
                 dl_bt = chk_bt = None
-                if u_pg is not None:
-                    dl_bt = u_pg.FindWindowById(ID_DOWNLOAD)
-                    chk_bt = u_pg.FindWindowById(ID_CHECK_UPDATE)
-                    u_pg.Layout()
+                dl_bt = self.FindWindowById(ID_DOWNLOAD)
+                chk_bt = self.FindWindowById(ID_CHECK_UPDATE)
                 if dl_bt is not None and upd.GetUpdatesAvailable():
                     dl_bt.Enable()
                 if chk_bt is not None:

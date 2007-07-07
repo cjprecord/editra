@@ -106,10 +106,10 @@ class Generator(plugin.Plugin):
 
         """
         menu_items = list()
-        for ob in self.observers:
-            mi = ob.GetMenuEntry(menu)
-            if mi:
-                menu_items.append((mi.GetLabel(), mi))
+        for observer in self.observers:
+            menu_i = observer.GetMenuEntry(menu)
+            if menu_i:
+                menu_items.append((menu_i.GetLabel(), menu_i))
         menu_items.sort()
         genmenu = ed_menu.ED_Menu()
         for item in menu_items:
@@ -128,9 +128,9 @@ class Generator(plugin.Plugin):
         
         """
         gentext = None
-        for ob in self.observers:
-            if ob.GetId() == e_id:
-                gentext = ob.Generate(txt_ctrl)
+        for observer in self.observers:
+            if observer.GetId() == e_id:
+                gentext = observer.Generate(txt_ctrl)
         return gentext
 
 #--------------------------------------------------------------------------#
@@ -194,7 +194,8 @@ class Html(plugin.Plugin):
         """
         return "<head>\n<title>%s</title>\n" \
                "<meta name=\"Generator\" content=\"Editra/%s\">\n" \
-               "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">" \
+               "<meta http-equiv=\"content-type\" content=\"text/html; " \
+               "charset=utf-8\">" \
                "\n</head>" % (self.stc.filename, ed_glob.version)
 
     def GenerateBody(self):
@@ -256,7 +257,8 @@ class Html(plugin.Plugin):
             html.append(self.TransformText(stc.GetText()))
         else:
             self.OptimizeCss()
-        return "<body class=\"default\">\n<pre>\n%s\n</pre>\n</body>" % "".join(html)
+        return "<body class=\"default\">\n<pre>\n%s\n</pre>\n</body>" % \
+                                                                   "".join(html)
 
     def GetId(self):
         """Returns the menu identifier for the HTML generator
@@ -271,7 +273,8 @@ class Html(plugin.Plugin):
 
         """
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"HTML",
-                           _("Generate a %s version of the current document") % u"HTML")
+                           _("Generate a %s version of the " \
+                             "current document") % u"HTML")
 
     def OptimizeCss(self):
         """Optimizes the CSS Set
@@ -476,11 +479,15 @@ class CssItem(object):
 class LaTeX(plugin.Plugin):
     """Creates a LaTeX document object from the contents of the
     supplied document reference.
+    @todo: performance improvements and wordwrap in generated document
     
     """
     plugin.Implements(GeneratorI)
     def __init__(self, plgmgr):
-        """Initializes the LaTeX object"""
+        """Initializes the LaTeX object
+        @param plgmgr: pluginmanger for this object
+
+        """
         self._stc = None
         self._id = ed_glob.ID_TEX_GEN
         self._dback = wx.EmptyString
@@ -507,11 +514,11 @@ class LaTeX(plugin.Plugin):
         name = name.replace('_', '')
         tmp = list()
         alpha = "ABCDEFGHIJ"
-        for ch in name:
-            if ch.isdigit():
-                tmp.append(alpha[int(ch)])
+        for char in name:
+            if char.isdigit():
+                tmp.append(alpha[int(char)])
             else:
-                tmp.append(ch)
+                tmp.append(char)
         return "".join(tmp)
 
     def GenDoc(self):
@@ -522,7 +529,6 @@ class LaTeX(plugin.Plugin):
         tex = list()
         tmp_tex = wx.EmptyString
         parse_pos = 0
-        style_end = 0
         last_pos = self._stc.GetLineEndPosition(self._stc.GetLineCount())
 
         # Define the default style
@@ -572,7 +578,6 @@ class LaTeX(plugin.Plugin):
                     tex.append(tmp2 % (cmd, tmp_tex))
 
                 last_id = curr_id
-                style_start = style_end
                 tag = stc.FindTagById(last_id)
                 if tag not in [None, wx.EmptyString]:
                     self.RegisterStyleCmd(tag, stc.GetItemByName(tag))
@@ -638,7 +643,8 @@ class LaTeX(plugin.Plugin):
 
         """
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"LaTeX",
-                           _("Generate an %s version of the current document") % u"LaTeX")
+                           _("Generate an %s version of the " \
+                             "current document") % u"LaTeX")
 
     def HexToRGB(self, hex_str):
         """Returns a comma separated rgb string representation
@@ -723,16 +729,17 @@ class LaTeX(plugin.Plugin):
 
 #-----------------------------------------------------------------------------#
 
-# TODO add support for bold/italic/underline and multiple fonts
 class Rtf(plugin.Plugin):
     """Generates a fully styled RTF document from the given text 
     controls contents.
+    @todo: add support for bold/italic/underline and multiple fonts
     
     """
     plugin.Implements(GeneratorI)
     def __init__(self, mgr):
         """Initializes and declares the attribute values for
         this generator.
+        @param mgr: plugin manager of this object
 
         """
         self._stc = None
@@ -828,7 +835,8 @@ class Rtf(plugin.Plugin):
 
         """
         return wx.MenuItem(menu, self._id, _("Generate %s") % u"RTF", 
-                           _("Generate a %s version of the current document") % u"RTF")
+                           _("Generate a %s version of the " \
+                             "current document") % u"RTF")
 
     def TransformText(self, text):
         """Transforms the given text by converting it to RTF format
@@ -839,17 +847,21 @@ class Rtf(plugin.Plugin):
                   "\\" : "\\\\", "\n" : "\\par\n", "\r" : "\\par\n"}
         text = text.replace('\r\n', '\n')
         tmp = u''
-        for x in text:
-            tmp = tmp + chmap.get(x, x)
+        for char in text:
+            tmp = tmp + chmap.get(char, char)
         return tmp
 
 class RtfColorTbl(object):
     """A storage class to help with generating the color table for
     the Rtf Generator Class.
+    @see: Rtf
 
     """
     def __init__(self):
-        """Initialize the color table"""
+        """Initialize the color table
+        @summary: creates an object for managing an rtf documents color table
+
+        """
         object.__init__(self)
         
         # Attributes

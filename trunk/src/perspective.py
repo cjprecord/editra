@@ -78,25 +78,19 @@ class PerspectiveManager(object):
         self._base = os.path.join(base, DATA_FILE)  # Path to config
         self._viewset = dict()                      # Set of Views
         self.LoadPerspectives()
-        self._menu = self._MakeMenu()               # Control menu
+        self._menu = ed_menu.ED_Menu()               # Control menu
+        self._currview = None                       # Currently used view
+
+        # Setup Menu
+        self._menu.Append(ID_SAVE_PERSPECTIVE, _("Save Current View"),
+                    _("Save the current window layout"))
+        self._menu.Append(ID_DELETE_PERSPECTIVE, _("Delete Saved View"))
+        self._menu.AppendSeparator()
         for name in self._viewset:
             self.AddPerspectiveMenuEntry(name)
-        self._currview = None                       # Currently used view
 
         # Event Handlers
         self._window.Bind(wx.EVT_MENU, self.OnPerspectiveMenu)
-
-    def _MakeMenu(self):
-        """Creates the menu with the base controls for the manager
-        @return: MenuItem for this manager
-
-        """
-        menu = ed_menu.ED_Menu()
-        menu.Append(ID_SAVE_PERSPECTIVE, _("Save Current View"),
-                    _("Save the current window layout"))
-        menu.Append(ID_DELETE_PERSPECTIVE, _("Delete Saved View"))
-        menu.AppendSeparator()
-        return menu
 
     def AddPerspective(self, name, p_data = None):
         """Add a perspective to the view set. If the p_data parameter

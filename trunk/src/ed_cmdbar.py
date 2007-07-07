@@ -156,8 +156,8 @@ class CommandBar(wx.Panel):
         if self._psizer != None:
             self._psizer.Layout()
         self._parent.SendSizeEvent()
-        # HACK fix later
         self._parent.nb.GetCurrentCtrl().SetFocus()
+        return True
 
     def InstallCtrl(self, id_):
         """Installs a control into the bar by ID
@@ -210,7 +210,7 @@ class CommandBar(wx.Panel):
         ssize = wx.Size(180, 20)
         if wx.Platform == '__WXGTK__':
             ssize.SetHeight(24)
-        search = ed_search.ED_SearchCtrl(self, ID_SEARCH_CTRL, 
+        search = ed_search.EdSearchCtrl(self, ID_SEARCH_CTRL, 
                                          menulen=5, size=ssize)
         v_sizer.Add(search)
         v_sizer.Add((4, 4))
@@ -464,3 +464,4 @@ class LineCtrl(wx.SearchCtrl):
             val = lines
         doc.GotoLine(val)
         doc.SetFocus()
+        evt.Skip()

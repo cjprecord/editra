@@ -55,9 +55,11 @@ TOOLS = { ed_glob.ID_NEW :  (_("New"), _("Start a New File")),
           ed_glob.ID_REDO : (_("Redo"), _("Redo Last Undo")),
           ed_glob.ID_COPY : (_("Copy"), _("Copy Selected Text to Clipboard")),
           ed_glob.ID_CUT :  (_("Cut"), _("Cut Selected Text from File")),
-          ed_glob.ID_PASTE :(_("Paste"), _("Paste Text from Clipboard to File")),
+          ed_glob.ID_PASTE :(_("Paste"), 
+                             _("Paste Text from Clipboard to File")),
           ed_glob.ID_FIND : (_("Find"), _("Find Text")),
-          ed_glob.ID_FIND_REPLACE : (_("Find/Replace"), _("Find and Replace Text"))
+          ed_glob.ID_FIND_REPLACE : (_("Find/Replace"), 
+                                     _("Find and Replace Text"))
         }
 ID_TLBL  = 0
 ID_THELP = 1
@@ -68,9 +70,12 @@ TOOL_ID = [ ed_glob.ID_NEW, ed_glob.ID_OPEN, ed_glob.ID_SAVE, ed_glob.ID_PRINT,
 
 #--------------------------------------------------------------------------#
 
-class ED_ToolBar(wx.ToolBar):
-    """Toolbar wrapper class"""
-    def __init__(self, parent, toolId):
+class EdToolBar(wx.ToolBar):
+    """Toolbar wrapper class
+    @todo: make it more dynamic/configurable
+
+    """
+    def __init__(self, parent, id_):
         """Initializes the toolbar
         @param parent: parent window of this toolbar
         @param toolId: toolbar id
@@ -79,7 +84,7 @@ class ED_ToolBar(wx.ToolBar):
         sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT
         if wx.Platform == '__WXGTK__':
             sstyle = sstyle | wx.TB_DOCKABLE
-        wx.ToolBar.__init__(self, parent, toolId, style = sstyle)
+        wx.ToolBar.__init__(self, parent, id_, style = sstyle)
 
         # Attributes
         self._theme = ed_glob.PROFILE['ICONS']
@@ -94,16 +99,16 @@ class ED_ToolBar(wx.ToolBar):
     #---- End Init ----#
 
     #---- Function Definitions----#
-    def AddSimpleTool(self, toolId):
+    def AddSimpleTool(self, tool_id):
         """Overides the default function to allow for easier tool
         generation/placement.
         @param toolId: Id of tool to add
         
         """
-        tool_bmp = wx.ArtProvider.GetBitmap(str(toolId), wx.ART_TOOLBAR)
-        lbl = TOOLS[toolId][ID_TLBL]
-        helpstr = TOOLS[toolId][ID_THELP]
-        wx.ToolBar.AddSimpleTool(self, toolId, tool_bmp, _(lbl), _(helpstr))
+        tool_bmp = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
+        lbl = TOOLS[tool_id][ID_TLBL]
+        helpstr = TOOLS[tool_id][ID_THELP]
+        wx.ToolBar.AddSimpleTool(self, tool_id, tool_bmp, _(lbl), _(helpstr))
 
     def GetToolSize(self):
         """Returns the size of the tools in the toolbar
@@ -119,17 +124,17 @@ class ED_ToolBar(wx.ToolBar):
         """
         return self._theme
 
-    def InsertSimpleTool(self, pos, toolId):
+    def InsertSimpleTool(self, pos, tool_id):
         """Overides the default function to allow for easier tool
         generation/placement.
         @param pos: position to insert tool at
-        @param toolId: id of tool to add
+        @param tool_id: id of tool to add
         
         """
-        tool_bmp = wx.ArtProvider.GetBitmap(str(toolId), wx.ART_TOOLBAR)
-        lbl = TOOLS[toolId][ID_TLBL]
-        helpstr = TOOLS[toolId][ID_THELP]
-        wx.ToolBar.InsertSimpleTool(self, pos, toolId, tool_bmp, \
+        tool_bmp = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
+        lbl = TOOLS[tool_id][ID_TLBL]
+        helpstr = TOOLS[tool_id][ID_THELP]
+        wx.ToolBar.InsertSimpleTool(self, pos, tool_id, tool_bmp, \
                                     _(lbl), _(helpstr))
 
     def PopulateTools(self):
@@ -154,10 +159,10 @@ class ED_ToolBar(wx.ToolBar):
         self.AddSimpleTool(ed_glob.ID_FIND_REPLACE)
         self.AddSeparator()
 
-    # TODO Flickers too much, try and find a way to reduce it if possible
     def ReInit(self):
         """Re-Initializes the tools in the toolbar
         @postcondtion: all tool icons are recreated
+        @todo: flickers too much try to reduce if possible
 
         """
         # Remove Current Tools
@@ -171,19 +176,19 @@ class ED_ToolBar(wx.ToolBar):
         self.SetToolBitmapSize(self.tool_size)
         self.GetParent().Freeze()
         self.Freeze()
-        for toolId in TOOL_ID:
+        for tool_id in TOOL_ID:
             pos = pos + 1
-            if lastpos != self.GetToolPos(toolId):
+            if lastpos != self.GetToolPos(tool_id):
                 pos = pos + 1
-            lastpos = self.GetToolPos(toolId)
-            self.RemoveTool(toolId)
+            lastpos = self.GetToolPos(tool_id)
+            self.RemoveTool(tool_id)
 
             if pos > total:
                 pos = pos - 1
-            tools.append((toolId, pos))
+            tools.append((tool_id, pos))
 
-        for toolId, pos in tools:
-            self.InsertSimpleTool(pos, toolId)
+        for tool_id, pos in tools:
+            self.InsertSimpleTool(pos, tool_id)
         self.Realize()
         self.GetParent().Thaw()
         self.Thaw()

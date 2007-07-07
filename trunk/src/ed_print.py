@@ -54,9 +54,11 @@ COLOURMODES = { 'black_white'    : wx.stc.STC_PRINT_BLACKONWHITE,
                 'inverse'        : wx.stc.STC_PRINT_INVERTLIGHT,
                 'normal'         : wx.stc.STC_PRINT_NORMAL }
 #--------------------------------------------------------------------------#
-# XXX current minimum print font is set to 12 point
 class EdPrinter:
-    """Printer Class for the editor"""
+    """Printer Class for the editor
+    @note: current font size is fixed at 12 point for printing
+
+    """
     def __init__(self, parent, stc_callable, mode='normal'):
         """Initializes the Printer, the stc_callable parameter
         must be a callable function that returns an STC instance object
@@ -117,15 +119,15 @@ class EdPrinter:
             self.print_data = wx.PrintData(dlg_data.GetPrintData())
         printout.Destroy()
         
-    def SetColourMode(self, modeStr):
+    def SetColourMode(self, mode_str):
         """Sets the color mode that the text is to be rendered with
-        @param modeStr: mode to set the printer to use
+        @param mode_str: mode to set the printer to use
         @return: whether mode was set or not
         @rtype: boolean
 
         """
-        if COLOURMODES.has_key(modeStr):
-            self.print_mode = modeStr
+        if COLOURMODES.has_key(mode_str):
+            self.print_mode = mode_str
             ret = True
         else:
             ret = False
@@ -134,7 +136,7 @@ class EdPrinter:
 #-----------------------------------------------------------------------------#
 class EdPrintout(wx.Printout):
     """Creates an printout from a STC"""
-    def __init__(self, stc_src, colour, title = wx.EmptyString):
+    def __init__(self, stc_src, colour, title=wx.EmptyString):
         """Initializes the printout object
         @param title: title of document
 
@@ -164,7 +166,7 @@ class EdPrintout(wx.Printout):
 
     def OnPrintPage(self, page):
         """Scales and Renders the page to a DC and prints it
-        @param page: number of page to print
+        @param page: page number to print
 
         """
         line_height = self.stc.TextHeight(0)
@@ -175,7 +177,7 @@ class EdPrintout(wx.Printout):
 
         margin_w = self.margin * dw
         margin_h = self.margin * dh
-        text_area_w = dw - margin_w * 2
+#         text_area_w = dw - margin_w * 2
         text_area_h = dh - margin_h * 2
 
         scale = float(text_area_h) / (line_height * self.lines_pp)
@@ -214,5 +216,5 @@ class EdPrintout(wx.Printout):
                                                 line_height * self.lines_pp))
 
         if end_point < end_pos:
-            dev_tool.DEBUGP("[ed_printout][err] Rendering Error, page %s" % page)
+            dev_tool.DEBUGP("[printout][err] Rendering Error, page %s" % page)
         return True

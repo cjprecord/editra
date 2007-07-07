@@ -42,13 +42,6 @@ import imp
 from wx.py import introspect
 
 #--------------------------------------------------------------------------#
-# XXX This approach is fairly fast, but suffers from a number of other
-#     draw backs. May need to look into writing a parser or even better
-#     a static lexer. But brain is tired so think about it and come back.
-#
-# TODO this file was hacked together in a rather fast manner need to do
-#      a code cleanup in the near future.
-#
 # BUGS: While trying to balance performance and uselfullness its left me
 #       with a bit to think about. Currently if any imports in the source
 #       buffer fail the autocomplete will fail as well.
@@ -59,13 +52,19 @@ from wx.py import introspect
 #
 #       Autocompletion pops up when inside of comment blocks. This probably
 #       should be the case.
-
-# XXX currently supports autocompletion only for imported libraries and their
-#     decendants. The code is in place but currently dissabled to allow for
-#     the autcompletion of local objects, due to some troublesome bugs that
-#     come up in certain cases.
 class Completer(object):
-    """Code completer provider"""
+    """Code completer provider
+    @todo: This file was hacked together in a rather fast manner need to do
+           a code cleanup in the near future.
+    @note: This approach is fairly fast, but suffers from a number of other
+           draw backs. May need to look into writing a parser or even better
+           a static lexer. But brain is tired so think about it and come back.
+    @todo: Currently supports autocompletion only for imported libraries and 
+           their decendants. The code is in place but currently dissabled to 
+           allow for the autcompletion of local objects, due to some 
+           troublesome bugs that come up in certain cases.
+
+    """
     def __init__(self, stc_buffer):
         """Initiliazes the completer
         @param stc_buffer: buffer that contains code
@@ -77,12 +76,13 @@ class Completer(object):
         self._autocomp_stop = ' .,;:([)]}\'"\\<>%^&+-=*/|`'
         self._calltip_keys = [ord('(')]
         self._case_sensitive = False
-        self._collector = list() #dict()    # Collects important atoms from the document
-        self._namespaces = dict()   # Collection of namespace dictionaries
+        self._collector = list()   # Collects important atoms from the document
+        self._namespaces = dict()  # Collection of namespace dictionaries
         self._locals = dict()
         self._modules = sys.modules.keys()
         self._syspath = sys.path[:]
-        self._syspath.insert(0, self._buffer.dirname) # Adjust working path to documents path
+        # Adjust working path to documents path
+        self._syspath.insert(0, self._buffer.dirname)
         while True:
             try:
                 self._syspath.remove('')
@@ -130,7 +130,7 @@ class Completer(object):
         else:
             return list()
 
-    def GetAutoCompList(self, command, namespace = None):
+    def GetAutoCompList(self, command, namespace=None):
         """Returns the list of possible completions for a 
         command string. If namespace is not specified the lookup
         is based on the locals namespace
@@ -155,7 +155,7 @@ class Completer(object):
         else:
             return u''
 
-    def GetCallTip(self, command, namespace = None):
+    def GetCallTip(self, command, namespace=None):
         """Returns the formated calltip string for the command.
         If the namespace command is unset the locals namespace is used.
         @param command: command to get calltip for
@@ -196,12 +196,12 @@ class Completer(object):
 
         """
         if isinstance(value, bool):
-            self._case_sensitve = value
+            self._case_sensitive = value
             return True
         else:
             return False
 
-    def UpdateNamespace(self, imports_only = False):
+    def UpdateNamespace(self, imports_only=False):
         """Updates the namespace to search for autocompletion lists
         and calltips in.
         @keyword imports_only: build namespace from import statements only
@@ -230,13 +230,11 @@ class Completer(object):
         try:
             try:
                 code = compile(text, name, 'exec')
-            except:
-                #raise
+            except SyntaxError:
                 return False
             try:
                 exec code in newspace
-            except:
-                #raise
+            except (ImportError, RuntimeError, SyntaxError):
                 return False
             else:
                 # No problems, so update the namespace.
@@ -246,7 +244,7 @@ class Completer(object):
         finally:
             del module # Free tmp module
             sys.path = syspath
-            for m in sys.modules.keys():
-                if m not in self._modules:
-                    del sys.modules[m]
+            for mod in sys.modules.keys():
+                if mod not in self._modules:
+                    del sys.modules[mod]
 #-----------------------------------------------------------------------------#

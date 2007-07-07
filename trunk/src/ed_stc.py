@@ -68,15 +68,15 @@ FOLD_MARGIN = 2
 class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text in"""
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
-    def __init__(self, parent, winId,
+    def __init__(self, parent, id_,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,
-                 style=0, useDT=True):
+                 style=0, use_dt=True):
         """Initializes a control and sets the default objects for
         Tracking events that occur in the control.
-        @keyword useDT: wheter to use a drop target or not
+        @keyword use_dt: wheter to use a drop target or not
 
         """
-        wx.stc.StyledTextCtrl.__init__(self, parent, winId, pos, size, style)
+        wx.stc.StyledTextCtrl.__init__(self, parent, id_, pos, size, style)
         ed_style.StyleMgr.__init__(self, self.GetStyleSheet())
 
         self.SetModEventMask(wx.stc.STC_PERFORMED_UNDO | \
@@ -90,7 +90,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.CmdKeyAssign(ord('+'), wx.stc.STC_SCMOD_CTRL | \
                           wx.stc.STC_SCMOD_SHIFT, wx.stc.STC_CMD_ZOOMIN)
         #---- Drop Target ----#
-        if useDT:
+        if use_dt:
             self.fdt = util.DropTargetFT(parent)
             self.SetDropTarget(self.fdt)
 
@@ -277,9 +277,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 nchars = 0
                 lines = range(start, end+1)
                 lines.reverse()
-                for lineNumber in lines:
-                    lstart = self.PositionFromLine(lineNumber)
-                    lend = self.GetLineEndPosition(lineNumber)
+                for line_num in lines:
+                    lstart = self.PositionFromLine(line_num)
+                    lend = self.GetLineEndPosition(line_num)
                     text = self.GetTextRange(lstart, lend)
                     if len(text.strip()):
                         if not uncomment:
@@ -360,15 +360,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetFoldMarginHiColour(True, fore)
         self.SetFoldMarginColour(True, fore)
 
-    def FindTagById(self, styleId):
+    def FindTagById(self, style_id):
         """Find the style tag that is associated with the given
         Id. If not found it returns an empty string.
-        @param styleId: id of tag to look for
+        @param style_id: id of tag to look for
         @return: style tag string
 
         """
         for data in self.syntax_set:
-            if styleId == getattr(wx.stc, data[0]):
+            if style_id == getattr(wx.stc, data[0]):
                 return data[1]
         return 'default_style'
 
@@ -434,19 +434,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             indent = self.GetLineIndentation(line)
             i_space = indent / self.GetTabWidth()
             ndent = self.GetEOLChar() + self.GetIndentChar() * i_space
-            self.AddText(ndent + ((indent - (self.GetTabWidth() * i_space)) * u' '))
+            self.AddText(ndent + \
+                         ((indent - (self.GetTabWidth() * i_space)) * u' '))
             self.EnsureCaretVisible()
         else:
             evt.Skip()
 
-    #TODO autocomp and calltip lookup can be very cpu/time expensive
-    #     when active the lookup should be done on a separate thread
-    #     to help from slowing the input into the buffer
     def OnChar(self, evt):
         """Handles Char events that arent caught by the
         KEY_DOWN event.
         @param evt: event that called this handler
         @type evt: wx.EVT_CHAR
+        @todo: autocomp/calltip lookup can be very cpu intesive it may
+               be better to try and process it on a separate thread to
+               prevent a slow down in the input of text into the buffer
 
         """
         if not self._use_autocomp:
@@ -560,7 +561,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @type evt: wx.stc.StyledTextEvent
 
         """
-        mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, self.GetId())
+        mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, \
+                                        self.GetId())
         wx.PostEvent(self.GetParent(), mevt)
 
     def OnUpdateUI(self, evt):
@@ -569,31 +571,31 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @type evt: wx.stc.StyledTextEvent
 
         """
-        braceAtCaret = -1
-        braceOpposite = -1
-        charBefore = None
-        caretPos = self.GetCurrentPos()
+        brace_at_caret = -1
+        brace_opposite = -1
+        char_before = None
+        caret_pos = self.GetCurrentPos()
 
-        if caretPos > 0:
-            charBefore = self.GetCharAt(caretPos - 1)
+        if caret_pos > 0:
+            char_before = self.GetCharAt(caret_pos - 1)
 
         # check before
-        if charBefore and chr(charBefore) in "[]{}()<>": 
-            braceAtCaret = caretPos - 1
+        if char_before and chr(char_before) in "[]{}()<>": 
+            brace_at_caret = caret_pos - 1
 
         # check after
-        if braceAtCaret < 0:
-            charAfter = self.GetCharAt(caretPos)
-            if charAfter and chr(charAfter) in "[]{}()<>":
-                braceAtCaret = caretPos
+        if brace_at_caret < 0:
+            char_after = self.GetCharAt(caret_pos)
+            if char_after and chr(char_after) in "[]{}()<>":
+                brace_at_caret = caret_pos
 
-        if braceAtCaret >= 0:
-            braceOpposite = self.BraceMatch(braceAtCaret)
+        if brace_at_caret >= 0:
+            brace_opposite = self.BraceMatch(brace_at_caret)
 
-        if braceAtCaret != -1  and braceOpposite == -1:
-            self.BraceBadLight(braceAtCaret)
+        if brace_at_caret != -1  and brace_opposite == -1:
+            self.BraceBadLight(brace_at_caret)
         else:
-            self.BraceHighlight(braceAtCaret, braceOpposite)
+            self.BraceHighlight(brace_at_caret, brace_opposite)
         evt.Skip()
 
     def OnMarginClick(self, evt):
@@ -606,80 +608,75 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if evt.GetShift() and evt.GetControl():
                 self.FoldAll()
             else:
-                lineClicked = self.LineFromPosition(evt.GetPosition())
-                if self.GetFoldLevel(lineClicked) & \
+                line_clicked = self.LineFromPosition(evt.GetPosition())
+                if self.GetFoldLevel(line_clicked) & \
                    wx.stc.STC_FOLDLEVELHEADERFLAG:
                     if evt.GetShift():
-                        self.SetFoldExpanded(lineClicked, True)
-                        self.Expand(lineClicked, True, True, 1)
+                        self.SetFoldExpanded(line_clicked, True)
+                        self.Expand(line_clicked, True, True, 1)
                     elif evt.GetControl():
-                        if self.GetFoldExpanded(lineClicked):
-                            self.SetFoldExpanded(lineClicked, False)
-                            self.Expand(lineClicked, False, True, 0)
+                        if self.GetFoldExpanded(line_clicked):
+                            self.SetFoldExpanded(line_clicked, False)
+                            self.Expand(line_clicked, False, True, 0)
                         else:
-                            self.SetFoldExpanded(lineClicked, True)
-                            self.Expand(lineClicked, True, True, 100)
+                            self.SetFoldExpanded(line_clicked, True)
+                            self.Expand(line_clicked, True, True, 100)
                     else:
-                        self.ToggleFold(lineClicked)
+                        self.ToggleFold(line_clicked)
         elif evt.GetMargin() == MARK_MARGIN:
-            lineClicked = self.LineFromPosition(evt.GetPosition())
-            if self.MarkerGet(lineClicked):
-                self.MarkerDelete(lineClicked, MARK_MARGIN)
+            line_clicked = self.LineFromPosition(evt.GetPosition())
+            if self.MarkerGet(line_clicked):
+                self.MarkerDelete(line_clicked, MARK_MARGIN)
             else:
-                self.MarkerAdd(lineClicked, MARK_MARGIN)
+                self.MarkerAdd(line_clicked, MARK_MARGIN)
 
     def FoldAll(self):
         """Fold Tree In or Out
         @postcondition: code tree is folded open or closed
 
         """
-        lineCount = self.GetLineCount()
+        line_count = self.GetLineCount()
         expanding = True
 
         # find out if we are folding or unfolding
-        for lineNum in range(lineCount):
-            if self.GetFoldLevel(lineNum) & wx.stc.STC_FOLDLEVELHEADERFLAG:
-                expanding = not self.GetFoldExpanded(lineNum)
+        for line_num in xrange(line_count):
+            if self.GetFoldLevel(line_num) & wx.stc.STC_FOLDLEVELHEADERFLAG:
+                expanding = not self.GetFoldExpanded(line_num)
                 break
+        line_num = 0
 
-        lineNum = 0
-
-        while lineNum < lineCount:
-            level = self.GetFoldLevel(lineNum)
+        while line_num < line_count:
+            level = self.GetFoldLevel(line_num)
 
             if level & wx.stc.STC_FOLDLEVELHEADERFLAG and \
                (level & wx.stc.STC_FOLDLEVELNUMBERMASK) == \
                wx.stc.STC_FOLDLEVELBASE:
 
                 if expanding:
-                    self.SetFoldExpanded(lineNum, True)
-                    lineNum = self.Expand(lineNum, True)
-                    lineNum = lineNum - 1
+                    self.SetFoldExpanded(line_num, True)
+                    line_num = self.Expand(line_num, True)
+                    line_num = line_num - 1
             else:
-                lastChild = self.GetLastChild(lineNum, -1)
-                self.SetFoldExpanded(lineNum, False)
+                last_child = self.GetLastChild(line_num, -1)
+                self.SetFoldExpanded(line_num, False)
 
-                if lastChild > lineNum:
-                    self.HideLines(lineNum+1, lastChild)
+                if last_child > line_num:
+                    self.HideLines(line_num + 1, last_child)
+            line_num = line_num + 1
 
-            lineNum = lineNum + 1
-
-    def Expand(self, line, doExpand, force=False, visLevels=0, level=-1):
+    def Expand(self, line, do_expand, force=False, vis_levels=0, level=-1):
         """Open the Margin Folder
         @postcondition: the selected folder is expanded
 
         """
-        lastChild = self.GetLastChild(line, level)
+        last_child = self.GetLastChild(line, level)
         line = line + 1
 
-        while line <= lastChild:
-            if force:
-                if visLevels > 0:
-                    self.ShowLines(line, line)
-                else:
-                    self.HideLines(line, line)
+        while line <= last_child:
+            if force and not (vis_levels > 0):
+                self.HideLines(line, line)
             else:
-                if doExpand:
+                if do_expand or vis_levels > 0:
                     self.ShowLines(line, line)
 
             if level == -1:
@@ -687,18 +684,18 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
             if level & wx.stc.STC_FOLDLEVELHEADERFLAG:
                 if force:
-                    self.SetFoldExpanded(line, visLevels > 1)
-                    line = self.Expand(line, doExpand, force, visLevels-1)
+                    self.SetFoldExpanded(line, vis_levels > 1)
+                    line = self.Expand(line, do_expand, force, vis_levels - 1)
                 else:
-                    if doExpand and self.GetFoldExpanded(line):
-                        line = self.Expand(line, True, force, visLevels-1)
+                    if do_expand and self.GetFoldExpanded(line):
+                        line = self.Expand(line, True, force, vis_levels - 1)
                     else:
-                        line = self.Expand(line, False, force, visLevels-1)
+                        line = self.Expand(line, False, force, vis_levels - 1)
             else:
                 line = line + 1
         return line
 
-    def FindLexer(self, set_ext=0):
+    def FindLexer(self, set_ext=u''):
         """Sets Text Controls Lexer Based on File Extension
         @param set_ext: explicit extension to use in search
         @postcondition: lexer is configured for file
@@ -707,7 +704,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if not self.highlight:
             return 2
 
-        if not isinstance(set_ext, int):
+        if set_ext != u'':
             ext = set_ext.lower()
         else:
             ext = util.GetExtension(self.filename).lower()
@@ -792,24 +789,24 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         elif e_id in [ ed_glob.ID_NEXT_MARK, ed_glob.ID_PRE_MARK, \
                        ed_glob.ID_ADD_BM, ed_glob.ID_DEL_BM, \
                        ed_glob.ID_DEL_ALL_BM]:
-            n = self.GetCurrentLine()
+            lnum = self.GetCurrentLine()
             mark = -1
             if e_id == ed_glob.ID_ADD_BM:
-                self.MarkerAdd(n, MARK_MARGIN)
+                self.MarkerAdd(lnum, MARK_MARGIN)
             elif e_id == ed_glob.ID_DEL_BM:
-                self.MarkerDelete(n, MARK_MARGIN)
+                self.MarkerDelete(lnum, MARK_MARGIN)
             elif e_id == ed_glob.ID_DEL_ALL_BM:
                 self.MarkerDeleteAll(MARK_MARGIN)
             elif e_id == ed_glob.ID_NEXT_MARK:
-                if self.MarkerGet(n):
-                    n += 1
-                mark = self.MarkerNext(n, 1)
+                if self.MarkerGet(lnum):
+                    lnum += 1
+                mark = self.MarkerNext(lnum, 1)
                 if mark == -1:
                     mark = self.MarkerNext(0, 1)
             elif e_id == ed_glob.ID_PRE_MARK:
-                if self.MarkerGet(n):
-                    n -= 1
-                mark = self.MarkerPrevious(n, 1)
+                if self.MarkerGet(lnum):
+                    lnum -= 1
+                mark = self.MarkerPrevious(lnum, 1)
                 if mark == -1:
                     mark = self.MarkerPrevious(self.GetLineCount(), 1)
             if mark != -1:
@@ -821,7 +818,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.LinesJoin()
         elif e_id == ed_glob.ID_INDENT_GUIDES:
             self.SetIndentationGuides(not bool(self.GetIndentationGuides()))
-        elif e_id in [ed_glob.ID_EOL_MAC, ed_glob.ID_EOL_UNIX, ed_glob.ID_EOL_WIN]:
+        elif e_id in [ed_glob.ID_EOL_MAC, 
+                      ed_glob.ID_EOL_UNIX, 
+                      ed_glob.ID_EOL_WIN]:
             self.ConvertLineMode(e_id)
         elif e_id in syntax.SyntaxIds():
             f_ext = syntax.GetExtFromId(e_id)
@@ -838,9 +837,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             evt.Skip()
 
-    # XXX Whats the best way to warn, dialog, show eol char...,
-    #     will have to do some experimenting for now will just
-    #     make EOL visible.
     def CheckEOL(self):
         """Checks the EOL mode of the opened document. If the mode
         that the document was saved in is different than the editors
@@ -848,6 +844,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         type of the file, if the eol chars are mixed then the editor
         will toggle on eol visibility.
         @postcondition: eol mode is configured to best match file
+        @todo: Is showing line endings the best way to show mixed?
 
         """
         mixed = diff = False
@@ -899,28 +896,28 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         if mode_id not in (ed_glob.ID_TAB_TO_SPACE, ed_glob.ID_SPACE_TO_TAB):
             return
-        tw = self.GetIndent()
+        tabw = self.GetIndent()
         pos = self.GetCurrentPos()
         sel = self.GetSelectedText()
         if mode_id == ed_glob.ID_TAB_TO_SPACE:
-            cmd = (u"\t", u" "*tw)
+            cmd = (u"\t", u" " * tabw)
             tabs = False
         else:
-            cmd = (" "*tw, u"\t")
+            cmd = (" " * tabw, u"\t")
             tabs = True
 
         if sel != wx.EmptyString:
             self.ReplaceSelection(sel.replace(cmd[0], cmd[1]))
         else:
             self.BeginUndoAction()
-            p1 = self.GetTextRange(0, pos).replace(cmd[0], cmd[1])
+            part1 = self.GetTextRange(0, pos).replace(cmd[0], cmd[1])
             tmptxt = self.GetTextRange(pos, self.GetLength()).replace(cmd[0], \
                                                                       cmd[1])
-            self.SetText(p1 + tmptxt)
-            self.GotoPos(len(p1))
+            self.SetText(part1 + tmptxt)
+            self.GotoPos(len(part1))
             self.SetUseTabs(tabs)
             self.EndUndoAction()
-            del p1
+            del part1
 
     def GetEOLChar(self):
         """Gets the eol character used in document
@@ -1140,6 +1137,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def ToggleBracketHL(self, switch=None):
         """Toggle Bracket Highlighting On and Off
         @keyword switch: force a particular setting
+        @todo: Why must the UI event be unbound twice
 
         """
         if (switch is None and not self.brackethl) or switch:
@@ -1149,7 +1147,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.LOG("[stc_evt] Bracket Highlighting Turned Off")
             self.brackethl = False
-            # XXX Why must I call Unbind twice here???
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
 
@@ -1183,7 +1180,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.modtime = util.GetFileModTime(cfile)
                 self.EndUndoAction()
                 self.SetSavePoint()
-            except Exception:
+            except (OSError, IOError):
                 self.LOG("[stc][err] Failed to Reload %s" % cfile)
                 return False
             else:
@@ -1344,17 +1341,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # Parse Keyword Settings List simply ignoring bad values and badly
         # formed lists
         self.keywords = ""
-        for kw in kw_lst:
-            if len(kw) != 2:
+        for keyw in kw_lst:
+            if len(keyw) != 2:
                 continue
             else:
-                if not isinstance(kw[0], int):
+                if not isinstance(keyw[0], int):
                     continue
-                elif not isinstance(kw[1], basestring):
+                elif not isinstance(keyw[1], basestring):
                     continue
                 else:
-                    self.keywords += kw[1]
-                    wx.stc.StyledTextCtrl.SetKeyWords(self, kw[0], kw[1])
+                    self.keywords += keyw[1]
+                    wx.stc.StyledTextCtrl.SetKeyWords(self, keyw[0], keyw[1])
 
         kwlist = self.keywords.split()      # Split into a list of words
         kwlist = list(set(kwlist))          # Uniqueify the list
@@ -1377,10 +1374,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             else:
                 if not isinstance(syn[0], basestring) or \
                    not hasattr(wx.stc, syn[0]):
-                    self.LOG("[ed_stc][warn] Unknown syntax region: %s" % str(syn[0]))
+                    self.LOG("[ed_stc][warn] Unknown syntax region: %s" % \
+                             str(syn[0]))
                     continue
                 elif not isinstance(syn[1], basestring):
-                    self.LOG("[ed_stc][warn] Poorly formated styletag: %s" % str(syn[1]))
+                    self.LOG("[ed_stc][warn] Poorly formated styletag: %s" % \
+                             str(syn[1]))
                     continue
                 else:
                     self.StyleSetSpec(getattr(wx.stc, syn[0]), \
@@ -1442,11 +1441,16 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetMargins(0, 0)
         # Global default styles for all languages
         self.StyleSetSpec(0, self.GetStyleByName('default_style'))
-        self.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, self.GetStyleByName('default_style'))
-        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, self.GetStyleByName('line_num'))
-        self.StyleSetSpec(wx.stc.STC_STYLE_CONTROLCHAR, self.GetStyleByName('ctrl_char'))
-        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, self.GetStyleByName('brace_good'))
-        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, self.GetStyleByName('brace_bad'))
+        self.StyleSetSpec(wx.stc.STC_STYLE_DEFAULT, \
+                          self.GetStyleByName('default_style'))
+        self.StyleSetSpec(wx.stc.STC_STYLE_LINENUMBER, \
+                          self.GetStyleByName('line_num'))
+        self.StyleSetSpec(wx.stc.STC_STYLE_CONTROLCHAR, \
+                          self.GetStyleByName('ctrl_char'))
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACELIGHT, \
+                          self.GetStyleByName('brace_good'))
+        self.StyleSetSpec(wx.stc.STC_STYLE_BRACEBAD, \
+                          self.GetStyleByName('brace_bad'))
         calltip = self.GetItemByName('calltip')
         self.CallTipSetBackground(calltip.GetBack())
         self.CallTipSetForeground(calltip.GetFore())

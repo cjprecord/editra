@@ -100,20 +100,20 @@ def CalcVersionValue(ver_str="0.0.0"):
     """Calculates a version value from the provided dot-formated string
 
     1) SPECIFICATION: Version value calculation AA.BBB.CCC
-         - C values: < 1     (i.e 0.0.85 = 0.850)
-         - B values: 1 - 999 (i.e 0.1.85 = 1.850)
-         - A values: >= 1000 (i.e 1.1.85 = 1001.850)
+         - major values: < 1     (i.e 0.0.85 = 0.850)
+         - minor values: 1 - 999 (i.e 0.1.85 = 1.850)
+         - micro values: >= 1000 (i.e 1.1.85 = 1001.850)
 
     """
     ver_lvl = ver_str.split(u".")
     if len(ver_lvl) < 3:
         return 0
-    A = int(ver_lvl[0]) * 1000
-    B = int(ver_lvl[1])
+    major = int(ver_lvl[0]) * 1000
+    minor = int(ver_lvl[1])
     if len(ver_lvl[2]) <= 2:
         ver_lvl[2] += u'0'
-    C = float(ver_lvl[2]) / 1000
-    return float(A) + float(B) + C
+    micro = float(ver_lvl[2]) / 1000
+    return float(major) + float(minor) + micro
 
 def GetLoader():
     """Finds the loader to use"""
@@ -207,6 +207,8 @@ def ReadProfile(profile):
     profile dictionary.
     @postcondition: profile is loaded into memory from disk
     @see: ed_glob.PROFILE
+    @todo: Should do value validation and default to ed_glob on invalid
+           values, to prevent errors from improperly editted profiles.
 
     """
     reader = util.GetFileReader(profile)
@@ -217,10 +219,9 @@ def ReadProfile(profile):
                                             u"default.pp")
         return 1
 
+    conv = unicode
     if isinstance(reader, file):
         conv = str
-    else:
-        conv = unicode
 
     lable = ""
     val = ""
@@ -228,15 +229,12 @@ def ReadProfile(profile):
     invalid_line = 0
 
     # Parse File
-    while 1:
-        line = reader.readline()
-
+    lines = reader.readlines()
+    for line in lines:
         if line != "" and line[0] != "#":
             values = line.split()
 
             # Populate Profile Dictionary
-            #TODO should do value validation and default to ed_glob on invalid
-            #     values, to prevent errors from improperly editted profiles.
             if len(values) >= 2:
                 lable = values[0]
                 val = " ".join(values[1:])
@@ -259,14 +257,6 @@ def ReadProfile(profile):
                 PROFILE[lable] = val
         else:
             invalid_line += 1
-      
-        # Check end of file condition
-        if len(values) > 0 and values[0] == "EOF":
-            break
-        elif invalid_line > 100:  # Bail after 100 bad lines
-            break
-        else:
-            pass
 
     # Save this profile as my profile
     PROFILE['MYPROFILE'] = profile

@@ -40,7 +40,6 @@ __revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import re
 import wx
 import ed_glob
 import dev_tool
@@ -91,7 +90,9 @@ class TextFinder(object):
         # Map of search flags
         flag_map = {  wx.FR_MATCHCASE : wx.stc.STC_FIND_MATCHCASE, 
                       wx.FR_WHOLEWORD : wx.stc.STC_FIND_WHOLEWORD,
-                      wx.FR_MATCHCASE | wx.FR_WHOLEWORD : wx.stc.STC_FIND_MATCHCASE | wx.stc.STC_FIND_WHOLEWORD,
+                      wx.FR_MATCHCASE | wx.FR_WHOLEWORD : \
+                                        wx.stc.STC_FIND_MATCHCASE | \
+                                        wx.stc.STC_FIND_WHOLEWORD,
                       0               : 0
         }
 
@@ -104,7 +105,7 @@ class TextFinder(object):
         pool = self.FetchPool()
         query = self._data.GetFindString()
         if search_id in [wx.wxEVT_COMMAND_FIND, wx.wxEVT_COMMAND_FIND_NEXT]:
-            if search_id == wx.wxEVT_COMMAND_FIND_NEXT: # or wx.FR_DOWN & s_flags:
+            if search_id == wx.wxEVT_COMMAND_FIND_NEXT:#or wx.FR_DOWN & s_flags:
                 if self._last_found < 0:
                     pool.SetCurrentPos(0) # Start at top again
                 else:
@@ -130,7 +131,7 @@ class TextFinder(object):
                 pool.SearchAnchor()
                 found = pool.SearchNext(s_flags | wx.stc.STC_FIND_REGEXP, query)
             if found < 0:
-                # We couldnt find it anywhere so set screen back to start position
+                # Couldnt find it anywhere so set screen back to start position
                 pool.ScrollToLine(self._scroll)
                 pool.SetCurrentPos(self._start)
                 pool.SetSelection(self._start, self._start)
@@ -166,7 +167,8 @@ class TextFinder(object):
             pool.SetSelection(self._start, self._start)
             dlg = wx.MessageDialog(self._parent, 
                                    _("Replace All Finished\n"
-                                     "A Total of %d matches were replaced") % replaced, 
+                                     "A Total of %d matches were replaced") % \
+                                     replaced, 
                                     _("All Done"), 
                                     wx.OK | wx.ICON_INFORMATION)
             dlg.CenterOnParent()
@@ -175,6 +177,16 @@ class TextFinder(object):
         else:
             evt.Skip()
 
+    def GetLastFound(self):
+        """Returns the position value of the last found search item
+        if the last search resulted in nothing being found then the
+        return value will -1.
+        @return: position of last search opperation
+        @rtype: int
+
+        """
+        return self._last_found
+
     def OnFindClose(self, evt):
         """Destroy Find Dialog After Cancel is clicked in it
         @param evt: event that called this handler
@@ -182,6 +194,7 @@ class TextFinder(object):
         """
         self._find_dlg.Destroy()
         self._find_dlg = None
+        evt.Skip()
 
     def OnShowFindDlg(self, evt):
         """Catches the Find events and organizes the data
@@ -244,10 +257,9 @@ class TextFinder(object):
 
 #-----------------------------------------------------------------------------#
 from wx import ImageFromStream, BitmapFromImage
-from wx import EmptyIcon
 import cStringIO, zlib
 
-def getsearchData():
+def get_search_data():
     """Get raw image data for search image
     @return: raw search image data
 
@@ -288,22 +300,22 @@ M\x14\n\x05Q\xadV\xd9\x87c\xf4lB\xc7wr\x07\x9e0\xbas/\x015{\xe0\xd6\x8d\x8f+\
 \x18\x86\x0c\x00Z\x00\x80\xff\xf4c\xef\x8f\x90\xb7-\x03_o1\xf8aa5z\xedo\x934\
 z\x98\xc4#\x8c\t\x00\x00\x00\x00IEND\xaeB`\x82>\xaa\x97\xf1' )
 
-def getsearchBitmap():
+def get_search_bitmap():
     """Convert search image data to bitmap format
     @return: bitmap version of search image
 
     """
-    return BitmapFromImage(getsearchImage())
+    return BitmapFromImage(get_search_image())
 
-def getsearchImage():
+def get_search_image():
     """Get an wxImage version of the raw image data
     @return: image version of search image
 
     """
-    stream = cStringIO.StringIO(getsearchData())
+    stream = cStringIO.StringIO(get_search_data())
     return ImageFromStream(stream)
 
-def getsearchcloseData():
+def get_search_close_data():
     """Search close button raw data
     @return: raw cancel button image data
 
@@ -328,34 +340,34 @@ def getsearchcloseData():
 \xd2\x13\xfcS\x15\xbef\xe5\xaf\xc6\xcb\xbf\xf1/p\x8b\xfb\xa1\xbb\xf8z\x0e\
 \x00\x00\x00\x00IEND\xaeB`\x82\xb1E\xc6:' )
 
-def getsearchcloseBitmap():
+def get_search_close_bitmap():
     """Get a bitmap of the close button
     @return: bitmap of cancel button
 
     """
-    return BitmapFromImage(getsearchcloseImage())
+    return BitmapFromImage(get_search_close_image())
 
-def getsearchcloseImage():
+def get_search_close_image():
     """Get a wxImage version of the close button
     @return: image of cancel button
 
     """
-    stream = cStringIO.StringIO(getsearchcloseData())
+    stream = cStringIO.StringIO(get_search_close_data())
     return ImageFromStream(stream)
 
-class ED_SearchCtrl(wx.SearchCtrl):
+class EdSearchCtrl(wx.SearchCtrl):
     """Creates a quick search control for use in the toolbar
     or a statusbar and the such.
 
     """
-    def __init__(self, parent, id, value = "", menulen = 0, \
-                 pos = wx.DefaultPosition, size = wx.DefaultSize, \
-                 style = wx.TE_PROCESS_ENTER | wx.TE_RICH2):
+    def __init__(self, parent, id_, value="", menulen=0, \
+                 pos=wx.DefaultPosition, size=wx.DefaultSize, \
+                 style=wx.TE_PROCESS_ENTER | wx.TE_RICH2):
         """Initializes the Search Control
         @param menulen: max length of history menu
 
         """
-        wx.SearchCtrl.__init__(self, parent, id, value, pos, size, style)
+        wx.SearchCtrl.__init__(self, parent, id_, value, pos, size, style)
         
         # Attributes
         self._parent     = parent
@@ -364,15 +376,18 @@ class ED_SearchCtrl(wx.SearchCtrl):
         self._flags      = wx.FR_DOWN
         self._recent     = list()             # The History List
         self._last       = None
-        self.rmenu       = self.MakeMenu()     # Menu to display search history
+        self.rmenu       = wx.Menu()
         self.max_menu    = menulen            # Max length of history menu
 
         # Make it look a little nicer on gtk
         if wx.Platform == '__WXGTK__':
-            self.SetSearchBitmap(getsearchBitmap())
-            self.SetCancelBitmap(getsearchcloseBitmap())
+            self.SetSearchBitmap(get_search_bitmap())
+            self.SetCancelBitmap(get_search_close_bitmap())
 
-        # Recent Search Menu
+        # Setup Recent Search Menu
+        lbl = self.rmenu.Append(wx.ID_ANY, _("Recent Searches"))
+        lbl.Enable(False)
+        self.rmenu.AppendSeparator()
         self.SetMenu(self.rmenu)
 
         # Bind Events
@@ -471,17 +486,6 @@ class ED_SearchCtrl(wx.SearchCtrl):
                 return True
         return False
 
-    def MakeMenu(self):
-        """Initializes the Search History Menu
-        @return: the history menu
-
-        """
-        menu = wx.Menu()
-        lbl = menu.Append(wx.ID_ANY, _("Recent Searches"))
-        lbl.Enable(False)
-        menu.AppendSeparator()
-        return menu
-
     def SetHistory(self, hist_list):
         """Populates the history list from a list of
         string values.
@@ -509,7 +513,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
         """
         e_type = evt.GetEventType()
         if e_type == wx.wxEVT_COMMAND_TEXT_ENTER:
-            dev_tool.DEBUGP("[search_evt] Search Text Entered %s" % self.GetValue())
+            dev_tool.DEBUGP("[search_evt] Search Entered: %s" % self.GetValue())
             self.InsertHistoryItem(self.GetValue())
             self.FindService.SetQueryString(self.GetValue())
             self.FindService.SetSearchFlags(self._flags)
@@ -523,9 +527,10 @@ class ED_SearchCtrl(wx.SearchCtrl):
             e_key = evt.GetKeyCode()
             tmp = self.GetValue()
             # Dont do search 
-            if tmp == wx.EmptyString or evt.CmdDown() or e_key == wx.WXK_COMMAND:
+            if tmp == wx.EmptyString or \
+               evt.CmdDown() or e_key == wx.WXK_COMMAND:
                 return
-            if len(self.GetValue()) > 0:
+            if wx.Platform == '__WXMAC__' and len(self.GetValue()) > 0:
                 self.ShowCancelButton(True)
             else:
                 self.ShowCancelButton(False)
@@ -537,7 +542,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
             return
 
         # Give feedback on whether text was found or not
-        if self.FindService._last_found < 0 and len(self.GetValue()) > 0:
+        if self.FindService.GetLastFound() < 0 and len(self.GetValue()) > 0:
             chgd = self.SetForegroundColour(wx.RED)
             if chgd:
                 wx.Bell() # Beep on the first not found char
@@ -557,6 +562,7 @@ class ED_SearchCtrl(wx.SearchCtrl):
         """
         self.SetValue(u"")
         self.ShowCancelButton(False)
+        evt.Skip()
 
     def OnHistMenu(self, evt):
         """Sets the search controls value to the selected menu item
