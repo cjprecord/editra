@@ -439,8 +439,8 @@ class LineCtrl(wx.SearchCtrl):
         self.ShowCancelButton(False)
         self.SetDescriptiveText(wx.EmptyString)
 
-        # MSW HACK
-        if wx.Platform == '__WXMSW__':
+        # MSW/GTK HACK
+        if wx.Platform in ['__WXGTK__', '__WXMSW__']:
             for child in self.GetChildren():
                 if isinstance(child, wx.TextCtrl):
                     child.SetValidator(util.IntValidator(0, 65535))
