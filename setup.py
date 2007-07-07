@@ -146,7 +146,7 @@ URL = "http://editra.org"
 
 VERSION = ed_glob.__version__
 
-manifest_template = '''
+MANIFEST_TEMPLATE = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
 <assemblyIdentity
@@ -194,7 +194,7 @@ if __platform__ == "win32" and 'py2exe' in sys.argv:
         windows = [{"script": "src/Editra.py",
                     "icon_resources": [(1, ICON['Win'])], 
                     "other_resources" : [(RT_MANIFEST, 1, 
-                                          manifest_template % dict(prog=NAME))],
+                                          MANIFEST_TEMPLATE % dict(prog=NAME))],
                   }],
         description = DESCRIPTION,
         author = AUTHOR,
@@ -228,17 +228,16 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
              NSHumanReadableCopyright = u"Copyright %s 2005-%d" % (AUTHOR, YEAR)
              )
  
-    py2app_options = dict(
-                          iconfile = ICON['Mac'], 
-                          argv_emulation = True,
-                          optimize = True,
-                          includes = INCLUDES,
-                          plist = PLIST)
+    PY2APP_OPTS = dict(iconfile = ICON['Mac'], 
+                       argv_emulation = True,
+                       optimize = True,
+                       includes = INCLUDES,
+                       plist = PLIST)
 
     setup(
         app = APP,
         version = VERSION, 
-        options = dict( py2app = py2app_options),
+        options = dict( py2app = PY2APP_OPTS),
         description = DESCRIPTION,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
@@ -252,14 +251,6 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
 
 #---- Other Platform(s)/Source module install ----#
 else:
-    from distutils.core import setup
-    try:
-        import distutils.command.register
-    except ImportError:
-        kwds = {}
-    else:
-        kwds = {"classifiers" : CLASSIFIERS}
-
     # Force optimization
     if 'install' in sys.argv and ('O1' not in sys.argv or '02' not in sys.argv):
         sys.argv.append('-O2')
@@ -269,6 +260,8 @@ else:
             from setuptools import setup
         except ImportError:
             print "To build an egg setuptools must be installed"
+    else:
+        from distutils.core import setup
 
     setup(
         name = NAME,

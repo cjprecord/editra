@@ -58,21 +58,22 @@ except ImportError:
 #     script. (import src.plugin) as apposed to (import plugin), but visa versa
 #     is required for the other main script. This is further complicated by the
 #     fact that the location of this script is never guaranteed. If there is 
-#     anyone that has a more clever way to deal with this I would like to listen.
+#     anyone that has a more clever way to deal with this I would like to 
+#     listen.
 #
 # XXX Note for this to work the version of python on the path must be the one
 #     that has all of Editra's dependancies installed on.
 if __name__ == '__main__':
-    src_dir = os.path.dirname(esrc.__file__)
-    cwd = os.getcwd()
+    SRC_DIR = os.path.dirname(esrc.__file__)
+    CWD = os.getcwd()
     try:
-        os.chdir(src_dir)
+        os.chdir(SRC_DIR)
     except OSError:
         print ("There was a problem finding the main script,"
               " try running Editra.py in the src dir")
     else:
-        args = u''
+        ARGS = u''
         if len(sys.argv) > 1:
-            args = " ".join(sys.argv[1:])
-        res = os.system("python Editra.py --oldPath=" + cwd + " " + args)
-        exit(res)
+            ARGS = " ".join(sys.argv[1:])
+        RES = os.system("python Editra.py --oldPath=\"" + CWD + "\" " + ARGS)
+        exit(RES)

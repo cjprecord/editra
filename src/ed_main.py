@@ -120,7 +120,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Notebook to hold editor windows ----#
         self.edit_pane = wx.Panel(self, wx.ID_ANY)
-        self.nb = ed_pages.ED_Pages(self.edit_pane, wx.ID_ANY)
+        self.nb = ed_pages.EdPages(self.edit_pane, wx.ID_ANY)
         self.edit_pane.nb = self.nb
         self.sizer.Add(self.nb, 1, wx.EXPAND)
         self.sizer.Layout()
@@ -145,7 +145,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Create a toolbar ----#
         if PROFILE['TOOLBAR']:
-            self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY)
+            self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
             self.SetToolBar(self.toolbar)
 
         # Toolbar Event Handlers
@@ -651,8 +651,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             if win is not None:
                 win.Raise()
                 return
-            dlg = prefdlg.PreferencesDialog(None, wx.ID_ANY, \
-                                            _("Preferences - Editra"))
+            dlg = prefdlg.PreferencesDialog(None, 
+                                            title=_("Preferences - Editra"))
             dlg.CenterOnParent()
             dlg.Show()
         else:
@@ -688,7 +688,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 del self.toolbar
                 PROFILE['TOOLBAR'] = False
             else:
-                self.toolbar = ed_toolbar.ED_ToolBar(self, wx.ID_ANY)
+                self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
                 self.SetToolBar(self.toolbar)
                 PROFILE['TOOLBAR'] = True
                 self.UpdateToolBar()

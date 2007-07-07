@@ -192,7 +192,10 @@ class Plugin(object):
         return self
 
 class PluginData(object):
-    """A storage class for representing data about a L{Plugin}"""
+    """A storage class for representing data about a Plugin
+    @see: L{Plugin}
+
+    """
     def __init__(self, name=u'', descript=u'', author=u'', ver=u''):
         """Create the plugin data object
         @param name: Name of the plugin
@@ -281,14 +284,14 @@ def Implements(*interfaces):
 
 #--------------------------------------------------------------------------#
 
-# TODO complete functions for allowing dynamic loading and unloading of
-#      of plugins. As well as allowing loaded but inactive plugins to be
-#      initiated without needing to restart the editor. 
 class PluginManager(object):
     """The PluginManger keeps track of the active plugins. It
     also provides an interface into loading and unloading plugins.
     @status: Allows for dynamic loading of plugins but they can not
              be called/used until the editor has been restarted.
+    @todo: complete functions for allowing dynamic loading and unloading of
+           of plugins. As well as allowing loaded but inactive plugins to be
+           initiated without needing to restart the editor.
 
     """
     def __init__(self):
@@ -432,10 +435,8 @@ class PluginManager(object):
             for name in egg.get_entry_map(ENTRYPOINT):
                 try:
                     entry_point = egg.get_entry_info(ENTRYPOINT, name)
-                    cls = entry_point.load() # Loaded entry points call Impliments
+                    cls = entry_point.load()
                 except ImportError, msg:
-                    self.LOG("[pluginmgr][err] Failed to load plugin %s from %s" % \
-                             (name, egg.location))
                     self.LOG("[pluginmgr][err] %s" % str(msg))
                 else:
                     try:
@@ -471,7 +472,7 @@ class PluginManager(object):
         reader = util.GetFileReader(os.path.join(ed_glob.CONFIG['CONFIG_DIR'],
                                                  PLUGIN_CONFIG))
         if reader == -1:
-            self.LOG("[plugin_mgr][exception] Failed to read plugin config file")
+            self.LOG("[plugin_mgr][err] Failed to read plugin config file")
             return config
 
         reading = True
@@ -503,8 +504,8 @@ class PluginManager(object):
 
         """
         plugins = list()
-        for pi in self._plugins:
-            plugins.append(pi.__module__)
+        for plugin in self._plugins:
+            plugins.append(plugin.__module__)
         config = dict()
         for item in self._config:
             if item in plugins:
@@ -546,12 +547,12 @@ class PluginManager(object):
                         on the configuration data.
 
         """
-        for pi in self._plugins:
-            if self._config.get(self._plugins[pi].__module__):
-                self._enabled[pi] = True
+        for plugin in self._plugins:
+            if self._config.get(self._plugins[plugin].__module__):
+                self._enabled[plugin] = True
             else:
-                self._config[self._plugins[pi].__module__] = False
-                self._enabled[pi] = False
+                self._config[self._plugins[plugin].__module__] = False
+                self._enabled[plugin] = False
 
     def WritePluginConfig(self):
         """Writes out the plugin config.

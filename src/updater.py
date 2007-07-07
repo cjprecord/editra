@@ -172,7 +172,7 @@ class UpdateService(object):
         """
         return self._progress
 
-    def GetUpdateFiles(self, dl_to = wx.GetHomeDir()):
+    def GetUpdateFiles(self, dl_to=wx.GetHomeDir()):
         """Gets the requested version of the program from the website
         if possible. It will download the current files for the host system to
         location (dl_to). On success it returns True, otherwise it returns
@@ -233,11 +233,10 @@ class UpdateProgress(wx.Gauge, UpdateService):
     ID_DOWNLOADING = wx.NewId()
     ID_TIMER = wx.NewId()
 
-    def __init__(self, parent, id, range = 100, 
-                 pos = wx.DefaultPosition, size = wx.DefaultSize, 
-                 style = wx.GA_HORIZONTAL | wx.GA_PROGRESSBAR):
+    def __init__(self, parent, id_, range_=100, 
+                 style=wx.GA_HORIZONTAL | wx.GA_PROGRESSBAR):
         """Initiliazes the bar in a disabled state."""
-        wx.Gauge.__init__(self, parent, id, range, pos, size, style)
+        wx.Gauge.__init__(self, parent, id_, range_, style=style)
         UpdateService.__init__(self)
 
         #---- Attributes ----#
@@ -246,10 +245,8 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self._downloading = False
         self._dl_result = False
         self._mode = 0
-        self._parent = parent
-        self._range = range
         self._status = _("Status Unknown")
-        self._timer = wx.Timer(self, id = self.ID_TIMER)
+        self._timer = wx.Timer(self, id=self.ID_TIMER)
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_TIMER, self.OnUpdate, id = self.ID_TIMER)
@@ -292,10 +289,11 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self.SetValue(0)
         self.Start(10)
         self._checking = True
-        delayedresult.startWorker(self._ResultNotifier, self._UpdatesCheckThread,
-                                  jobID = self.ID_CHECKING)
+        delayedresult.startWorker(self._ResultNotifier, 
+                                  self._UpdatesCheckThread,
+                                  jobID=self.ID_CHECKING)
 
-    def DownloadUpdates(self, dl_loc = wx.EmptyString):
+    def DownloadUpdates(self, dl_loc=wx.EmptyString):
         """Downloads available updates and configures the bar.
         Returns True if the update was successfull or False if
         it was not. The updates will be downloaded to the 
@@ -314,7 +312,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self.Start(50)   #XXX Try this for starters
         self._downloading = True # Mark the work status as busy
         delayedresult.startWorker(self._ResultNotifier, self._DownloadThread, 
-                                  wargs=(dl_loc), jobID = self.ID_DOWNLOADING)
+                                  wargs=dl_loc, jobID=self.ID_DOWNLOADING)
 
     def GetDownloadResult(self):
         """Returns the status of the last download action. Either
@@ -380,21 +378,21 @@ class UpdateProgress(wx.Gauge, UpdateService):
         """
         mode = self.GetMode()
         progress = self.GetProgress()
-        range = self.GetRange()
+        prange = self.GetRange()
         if mode == self.ID_CHECKING:
             # Simulate updates
-            if progress[0] < range:
+            if progress[0] < prange:
                 self.UpdaterHook(progress[0] + 1, 1, 90)
                 progress = self.GetProgress()
-            if not self._checking and progress[0] >= range:
+            if not self._checking and progress[0] >= prange:
                 self.Stop()
 
         if mode == self.ID_DOWNLOADING:
-            if not self._downloading and progress[0] >= range:
+            if not self._downloading and progress[0] >= prange:
                 self.Stop()
 
         # Update Range if need be
-        if range != progress[1]:
+        if prange != progress[1]:
             self.SetRange(progress[1])
 
         # Update Progress
@@ -405,7 +403,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         else:
             pass
 
-    def Start(self, msec = 100):
+    def Start(self, msec=100):
         """Starts the progress bar and timer if not already active
         @keyword msec: pulse time for clock in milliseconds
 
@@ -432,15 +430,15 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self.Disable()
 
     #--- Protected Member Functions ---#
-    def _DownloadThread(self, loc):
+    def _DownloadThread(self, *args):
         """Processes the download and checks that the file has been downloaded
         properly. Then returns either True if the download was succesfull or
         False if it failed in some way.
-        @param loc: where to download file from
+        @param *args: where to download file from
         @return: success status of download
         
         """
-        dl_ok = self.GetUpdateFiles(loc)
+        dl_ok = self.GetUpdateFiles("".join(args))
         return dl_ok
 
     def _ResultNotifier(self, delayedResult):
@@ -450,21 +448,21 @@ class UpdateProgress(wx.Gauge, UpdateService):
         
         """
         jid = delayedResult.getJobID()
-        self.LOG("[updateprog][info] Worker thread has finished its work. ID = %d" % jid)
+        self.LOG("[updateprog][info] Worker thread exited. ID = %d" % jid)
         self._checking = self._downloading = False # Work has finished
         try:
             result = delayedResult.get()
             if jid == self.ID_CHECKING:
                 mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, \
                                                 self.ID_CHECKING)
-                wx.PostEvent(self._parent, mevt)
+                wx.PostEvent(self.GetParent(), mevt)
             elif jid == self.ID_DOWNLOADING:
                 self._dl_result = result
             else:
                 pass
-        except Exception, msg:
-            self.LOG("[updateprog][exception] Error on thread exit")
-            print msg
+        except (OSError, IOError), msg:
+            self.LOG("[updateprog][err] Error on thread exit")
+            self.LOG("[updateprog][err] %s" % str(msg))
 
     def _UpdatesCheckThread(self):
         """Sets internal status value to the return value from calling
@@ -480,8 +478,9 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self._checking = True
         ret = self.GetCurrentVersionStr()
         self._status = ret
-        self.LOG("[updateprog][evt] Finished Checking for updates: result = " + ret)
-        if ret[0].isdigit() and CalcVersionValue(ret) > CalcVersionValue(ed_glob.version):
+        self.LOG("[updateprog][evt] Update Check Finished: result = " + ret)
+        if ret[0].isdigit() and \
+           CalcVersionValue(ret) > CalcVersionValue(ed_glob.version):
             ret = True
         else:
             ret = False
@@ -489,85 +488,70 @@ class UpdateProgress(wx.Gauge, UpdateService):
 
 #-----------------------------------------------------------------------------#
 
-#XXX Status bar is sometimes not wide enough to display all data.
 class DownloadDialog(wx.Frame):
-    """Creates a standalone download window"""
+    """Creates a standalone download window
+    @todo: Status bar is sometimes not wide enough to display all data.
+    """
     ID_PROGRESS_BAR = wx.NewId()
     ID_TIMER        = wx.NewId()
     SB_DOWNLOADED   = 0
     SB_INFO         = 1
     
-    def __init__(self, parent, id, title, pos = wx.DefaultPosition, 
-                 size = wx.DefaultSize, 
-                 style = wx.DEFAULT_DIALOG_STYLE | wx.MINIMIZE_BOX):
+    def __init__(self, parent, id_, title,
+                 style=wx.DEFAULT_DIALOG_STYLE | wx.MINIMIZE_BOX):
         """Creates a standalone window that is used for downloading
         updates for the editor.
+        @param parent: Parent Window of the dialog
+        @param title: Title of dialog
         
         """
-        wx.Frame.__init__(self, parent, id, title, pos, size, style)
+        wx.Frame.__init__(self, parent, id_, title, style=style)
         util.SetWindowIcon(self)
 
         #---- Attributes/Objects ----#
         self.LOG = wx.GetApp().GetLog()
-        self._parent = parent
-        self._panel = wx.Panel(self, wx.ID_ANY)
-        self._progress = UpdateProgress(self._panel, self.ID_PROGRESS_BAR)
+        panel = wx.Panel(self)
+        self._progress = UpdateProgress(panel, self.ID_PROGRESS_BAR)
         fname = self._progress.GetCurrFileName()
         floc = self._progress.GetDownloadLocation()
-        dl_file = wx.StaticText(self._panel, wx.ID_ANY, _("Downloading: %s") % fname)
-        dl_loc = wx.StaticText(self._panel, wx.ID_ANY, 
+        dl_file = wx.StaticText(panel, label=_("Downloading: %s") % fname)
+        dl_loc = wx.StaticText(panel, wx.ID_ANY, 
                                _("Downloading To: %s") % floc)
-        self._cancel_bt = wx.Button(self._panel, wx.ID_CANCEL)
-        self._timer = wx.Timer(self, id = self.ID_TIMER)
+        self._cancel_bt = wx.Button(panel, wx.ID_CANCEL)
+        self._timer = wx.Timer(self, id=self.ID_TIMER)
         self._proghist = list()
 
         #---- Layout ----#
         self.CreateStatusBar(2)
-        self._sizer = wx.BoxSizer(wx.VERTICAL)
-        self._sizer.Add(wx.Size(15, 15))
-
-        hdr = wx.BoxSizer(wx.HORIZONTAL)
-        hdr.Add(wx.Size(5, 5))
-        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWNLOAD_DLG), wx.ART_OTHER)
-        bmp = wx.StaticBitmap(self._panel, wx.ID_ANY, bmp)
-        hdr.Add(bmp, 0, wx.ALIGN_LEFT)
-        hdr.Add(wx.Size(5, 5))
-        shdr = wx.BoxSizer(wx.VERTICAL)
-        df_sz = wx.BoxSizer(wx.HORIZONTAL)
-        df_sz.Add(dl_file, 0, wx.ALIGN_LEFT)
-        df_sz.Add(wx.Size(5, 5))
-        shdr.Add(df_sz, 0, wx.ALIGN_LEFT)
-        shdr.Add(wx.Size(5, 5))
-        dl_sz = wx.BoxSizer(wx.HORIZONTAL)
-        dl_sz.Add(dl_loc, 0, wx.ALIGN_LEFT)
-        dl_sz.Add(wx.Size(5, 5))
-        shdr.Add(dl_sz, 0, wx.ALIGN_LEFT)
-        hdr.Add(shdr, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._sizer.Add(hdr, 0, wx.ALIGN_LEFT)
-        self._sizer.Add(wx.Size(20, 20))
-        self._sizer.Add(self._progress, 0, wx.ALIGN_CENTER)
-        self._sizer.Add(wx.Size(15, 15))
-        self._sizer.Add(self._cancel_bt, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._sizer.Add(wx.Size(15, 15))
-        self._panel.SetSizer(self._sizer)
+        self._sizer = wx.GridBagSizer()
+        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWNLOAD_DLG), 
+                                       wx.ART_OTHER)
+        bmp = wx.StaticBitmap(panel, wx.ID_ANY, bmp)
+        self._sizer.AddMany([((10, 10), (0, 0)), (bmp, (1, 1), (3, 2)),
+                             ((5, 5), (1, 3)),
+                             (dl_file, (1, 4), (1, 4)),
+                             ((5, 5), (1, 9)), 
+                             (dl_loc, (2, 4), (1, 4)), 
+                             ((20, 20), (4, 1), (1, 2)),
+                             (self._progress, (5, 2), (1, 6), 
+                              wx.EXPAND | wx.ALIGN_CENTER_HORIZONTAL),
+                             (self._cancel_bt, (6, 2), (1, 6), wx.ALIGN_CENTER),
+                             ((5, 5), (7, 1))])
+        panel.SetSizer(self._sizer)
         mwsz = wx.BoxSizer(wx.VERTICAL)
-        mwsz.Add(self._panel, 0, wx.EXPAND)
+        mwsz.Add(panel, 1, wx.EXPAND)
         self.SetSizer(mwsz)
-        self._panel.SetAutoLayout(True)
-        self.SetAutoLayout(True)
-        self._panel.SendSizeEvent()
-        self.SendSizeEvent()
         self.SetInitialSize()
 
         # Adjust progress bar and status widths
-        sz = self.GetSize()
+        size = self.GetSize()
         if wx.Platform == '__WXMSW__':
-            wd = sz.GetWidth()
-            if wd < 375:
-                wd = 375
-            self.SetSize(wx.Size(wd, sz.GetHeight()))
+            width = size.GetWidth()
+            if width < 375:
+                width = 375
+            self.SetSize(wx.Size(width, size.GetHeight()))
             self.SendSizeEvent()
-        self._progress.SetSize(wx.Size(int(sz[0]*.80), 18))
+        self._progress.SetSize(wx.Size(int(size[0] * .80), 15))
         self.SetStatusWidths([-1, 100])
         self.SetStatusText(_("Downloading..."), self.SB_INFO)
 
@@ -607,7 +591,7 @@ class DownloadDialog(wx.Frame):
         """
         e_id = evt.GetId()
         if e_id == wx.ID_CANCEL:
-            self.LOG("[download-dlg] [evt] Cancel was pressed, aborting download")
+            self.LOG("[downloaddlg][evt] Cancel pressed, aborting download")
             self._progress.Abort()
             self._cancel_bt.Disable()
             self.SetStatusText(_("Canceled"), self.SB_INFO)
@@ -640,7 +624,8 @@ class DownloadDialog(wx.Frame):
             if self._progress.IsDownloading():
                 self.SetStatusText(_("Downloaded: ") + str(prog[0]) + \
                                     u"/" + str(prog[1]) + u" | " + \
-                                    _("Rate: %.2f Kb/s") % speed, self.SB_DOWNLOADED)
+                                    _("Rate: %.2f Kb/s") % speed, 
+                                    self.SB_DOWNLOADED)
             else:
                 self.LOG("[download-dlg][evt] Download finished")
                 self.SetStatusText(_("Downloaded: ") + str(prog[0]) + \
@@ -661,10 +646,11 @@ class DownloadDialog(wx.Frame):
     def Show(self):
         """Shows the Dialog and starts downloading the updates
         @postcondtion: window is registered with mainloop and shown on screen
+        @todo: Allow setting of download location to be set when shown
 
         """
         # Tell the main loop we are busy
         wx.GetApp().RegisterWindow(repr(self), self, True)
         self._timer.Start(1000) # One pulse every second
-        self._progress.DownloadUpdates()  #TODO Allow setting of download location
+        self._progress.DownloadUpdates()  
         wx.Frame.Show(self)
