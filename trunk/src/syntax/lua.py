@@ -38,11 +38,11 @@ __revision__ = "$Revision$"
 
 #---- Keyword Definitions ----#
 # Keywords
-lua_keywords = (0, "and break do else elseif end false for function if "
+LUA_KEYWORDS = (0, "and break do else elseif end false for function if "
                    "in local nil not or repeat return then true until while")
 
 # Basic Functions
-lua_funct = (1, "_VERSION assert collectgarbage dofile error gcinfo loadfile "
+LUA_FUNCT = (1, "_VERSION assert collectgarbage dofile error gcinfo loadfile "
                 "loadstring print rawget rawset require tonumber tostring type "
                 "unpack "
                 # Lua5 Basic functions
@@ -51,7 +51,7 @@ lua_funct = (1, "_VERSION assert collectgarbage dofile error gcinfo loadfile "
                 "coroutine io os debug \load module select")
 
 # String, (table) & math functions Lua5
-lua_str = (2, "string.byte string.char string.dump string.find string.len "
+LUA_STR = (2, "string.byte string.char string.dump string.find string.len "
               "string.lower string.rep string.sub string.upper string.format "
               "string.gfind string.gsub table.concat table.foreach "
               "table.foreachi table.getn table.sort table.insert table.remove "
@@ -64,30 +64,30 @@ lua_str = (2, "string.byte string.char string.dump string.find string.len "
               "math.huge")
 
 # (coroutines), I/O & system facilities
-lua_co = (3, "coroutine.create coroutine.resume coroutine.status coroutine.wrap "
-             "coroutine.yield io.close io.flush io.input io.lines io.open "
+LUA_CO = (3, "coroutine.create coroutine.resume coroutine.status coroutine."
+             "wrap coroutine.yield io.close io.flush io.input io.lines io.open "
              "io.output io.read io.tmpfile io.type io.write io.stdin io.stdout "
-             "io.stderr os.clock os.date os.difftime os.execute os.exit os.getenv "
-             "os.remove os.rename os.setlocale os.time os.tmpname "
+             "io.stderr os.clock os.date os.difftime os.execute os.exit "
+             "os.getenv os.remove os.rename os.setlocale os.time os.tmpname "
              "coroutine.running package.cpath package.loaded package.loadlib "
              "package.path package.preload package.seeall io.popen")
 
 # user1
-lua_u1 = (4, "")
+LUA_U1 = (4, "")
 
 # user2
-lua_u2 = (5, "")
+LUA_U2 = (5, "")
 
 # user3
-lua_u3 = (6, "")
+LUA_U3 = (6, "")
 
 # user4
-lua_u4 = (7, "")
+LUA_U4 = (7, "")
 
 #---- End Keyword Definitions ----#
 
 #---- Syntax Style Specs ----#
-syntax_items = [('STC_LUA_CHARACTER', 'char_style'),
+SYNTAX_ITEMS = [('STC_LUA_CHARACTER', 'char_style'),
                 ('STC_LUA_COMMENT', 'comment_style'),
                 ('STC_LUA_COMMENTDOC', 'dockey_style'),
                 ('STC_LUA_COMMENTLINE', 'comment_style'),
@@ -110,8 +110,8 @@ syntax_items = [('STC_LUA_CHARACTER', 'char_style'),
                ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-fold_comp = ("fold.compact", "1")
+FOLD = ("fold", "1")
+FOLD_COMP = ("fold.compact", "1")
 
 #-----------------------------------------------------------------------------#
 
@@ -121,21 +121,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [lua_keywords, lua_funct, lua_str, lua_co]
+    return [LUA_KEYWORDS, LUA_FUNCT, LUA_STR, LUA_CO]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold, fold_comp]
+    return [FOLD, FOLD_COMP]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code

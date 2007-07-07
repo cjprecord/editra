@@ -42,13 +42,13 @@ __revision__ = "$Revision$"
 #---- Keyword Specifications ----#
 
 # Ruby Keywords
-ruby_kw = (0, "__FILE__ and def end in or self unless __LINE__ begin defined? "
+RUBY_KW = (0, "__FILE__ and def end in or self unless __LINE__ begin defined? "
               "ensure module redo super until BEGIN break do false next rescue "
-              "then when END case else for nil retry true while alias class elsif "
-              "if not return undef yieldr puts")
+              "then when END case else for nil retry true while alias class "
+              "elsif if not return undef yieldr puts")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_RB_BACKTICKS', 'scalar_style'),
+SYNTAX_ITEMS = [ ('STC_RB_BACKTICKS', 'scalar_style'),
                  ('STC_RB_CHARACTER', 'char_style'),
                  ('STC_RB_CLASSNAME', 'class_style'),
                  ('STC_RB_CLASS_VAR', 'default_style'), # STYLE ME
@@ -83,8 +83,8 @@ syntax_items = [ ('STC_RB_BACKTICKS', 'scalar_style'),
                  ('STC_RB_WORD_DEMOTED', 'keyword2_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
-timmy = ("fold.timmy.whinge.level", "1")
+FOLD = ("fold", "1")
+TIMMY = ("fold.timmy.whinge.level", "1")
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -93,28 +93,28 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [ruby_kw]
+    return [RUBY_KW]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold, timmy]
+    return [FOLD, TIMMY]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
     @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return [ u'#' ]
+    return [u'#']
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
@@ -123,8 +123,6 @@ def KeywordString(option=0):
     @note: not used by most modules
 
     """
-    return ruby_kw[1]
+    return RUBY_KW[1]
 
 #---- End Syntax Modules Internal Functions ----#
-
-#-----------------------------------------------------------------------------#

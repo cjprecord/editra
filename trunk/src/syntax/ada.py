@@ -38,25 +38,25 @@ __revision__ = "$Revision$"
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Definitions ----#
-ada_keywords = (0, "abort abstract accept access aliased all array at begin "
+ADA_KEYWORDS = (0, "abort abstract accept access aliased all array at begin "
                     "body case constant declare delay delta digits do else "
                     "elsif end entry exception exit for function generic goto "
-                    "if in is limited loop new null of others out package pragma "
-                    "private procedure protected raise range record renames "
-                    "requeue return reverse select separate subtype tagged task "
-                    "terminate then type until use when while with")
+                    "if in is limited loop new null of others out package "
+                    "pragma private procedure protected raise range record "
+                    "renames requeue return reverse select separate subtype "
+                    "tagged task terminate then type until use when while with")
 
 #---- End Keyword Definitions ----#
 
 #---- Syntax Style Specs ----#
-syntax_items = [('STC_ADA_CHARACTER', 'char_style'),
+SYNTAX_ITEMS = [('STC_ADA_CHARACTER', 'char_style'),
                  ('STC_ADA_CHARACTEREOL', 'stringeol_style'),
                  ('STC_ADA_COMMENTLINE', 'comment_style'),
                  ('STC_ADA_DEFAULT', 'default_style'),
                  ('STC_ADA_DELIMITER', 'operator_style'),
                  ('STC_ADA_IDENTIFIER', 'default_style'),
                  ('STC_ADA_ILLEGAL', 'error_style'),
-                 ('STC_ADA_LABEL', 'keyword2_style'),   #TODO
+                 ('STC_ADA_LABEL', 'keyword2_style'),   # Style This
                  ('STC_ADA_NUMBER', 'number_style'),
                  ('STC_ADA_STRING', 'string_style'),
                  ('STC_ADA_STRINGEOL', 'stringeol_style'),
@@ -72,21 +72,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [ada_keywords]
+    return [ADA_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return []
+    return list()
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code

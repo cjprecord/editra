@@ -43,15 +43,15 @@ import synglob
 #---- Keyword Specifications ----#
 
 # Xml Keywords
-xml_keywords = ("rss atom pubDate channel version title link description "
+XML_KEYWORDS = ("rss atom pubDate channel version title link description "
                 "language generator item")
 
 # SGML Keywords
 import html
-sgml_keywords = html.KeywordString(synglob.ID_LANG_SGML)
+SGML_KEYWORDS = html.KeywordString(synglob.ID_LANG_SGML)
 
 #---- Syntax Style Specs ----#
-syntax_items = html.syntax_items
+SYNTAX_ITEMS = html.SYNTAX_ITEMS
 
 #---- Extra Properties ----#
 # See html.py
@@ -63,21 +63,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [(5, xml_keywords), (6, sgml_keywords)]
+    return [(5, XML_KEYWORDS), (6, SGML_KEYWORDS)]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [html.fold, html.fld_html]
+    return [html.FOLD, html.FLD_HTML]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
@@ -97,5 +97,3 @@ def KeywordString(option=0):
     return None
 
 #---- End Syntax Modules Internal Functions ----#
-
-#-----------------------------------------------------------------------------#

@@ -43,27 +43,27 @@ import synglob
 #---- Keyword Specifications ----#
 
 # Tex Keywords
-tex_kw = (0, "Downarrow backslash lceil rceil Uparrow downarrow lfloor rfloor "
+TEX_KW = (0, "Downarrow backslash lceil rceil Uparrow downarrow lfloor rfloor "
              "Updownarrow langle rangle Vert")
 # ConTeXt Dutch
-dutch = (1, "")
+DUTCH = (1, "")
 # ConTeXt English
-eng = (2, "")
+ENG = (2, "")
 # ConTeXt German
-german = (3, "")
+GERMAN = (3, "")
 # ConTeXt Czech
-czech = (4, "")
+CZECH = (4, "")
 # ConTeXt Italian
-italian = (5, "")
+ITALIAN = (5, "")
 # ConTeXt Romanian
-romanian = (6, "")
+ROMAINIAN = (6, "")
 
 # LaTeXt
 # There are no keyword settings available for LaTeX
 
 #---- Syntax Style Specs ----#
 # TeX
-syntax_items1 = [ ('STC_TEX_DEFAULT', 'default_style'),
+SYNTAX_ITEMS1 = [ ('STC_TEX_DEFAULT', 'default_style'),
                  ('STC_TEX_COMMAND', 'keyword_style'),
                  ('STC_TEX_GROUP', 'scalar_style'),
                  ('STC_TEX_SPECIAL', 'operator_style'),
@@ -71,7 +71,7 @@ syntax_items1 = [ ('STC_TEX_DEFAULT', 'default_style'),
                  ('STC_TEX_TEXT', 'default_style') ]
 
 # LaTeX
-syntax_items2 = [ ('STC_L_DEFAULT', 'default_style'),
+SYNTAX_ITEMS2 = [ ('STC_L_DEFAULT', 'default_style'),
                  ('STC_L_COMMAND', 'pre_style'),
                  ('STC_L_COMMENT', 'comment_style'),
                  ('STC_L_MATH', 'operator_style'),
@@ -88,7 +88,7 @@ def Keywords(lang_id=0):
 
     """
     if lang_id == synglob.ID_LANG_TEX:
-        return [tex_kw]
+        return [TEX_KW]
     else:
         return list()
 
@@ -98,16 +98,16 @@ def SyntaxSpec(lang_id=0):
 
     """
     if lang_id == synglob.ID_LANG_TEX:
-        return syntax_items1
+        return SYNTAX_ITEMS1
     else:
-        return syntax_items2
+        return SYNTAX_ITEMS2
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return []
+    return list()
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code

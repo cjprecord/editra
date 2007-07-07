@@ -23,8 +23,8 @@
 # FILE: editra_ss.py                                                          #
 # AUTHOR: Cody Precord                                                        #
 #                                                                             #
-# SUMMARY:                                                                    #
-# Lexer configuration file for Editra Syntax Highlighter Style Sheets.        #
+# @summary: Lexer configuration file for Editra Syntax Highlighter Style      #
+#           Sheets.                                                           #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -38,11 +38,11 @@ __revision__ = "$Revision$"
 #---- Keyword Specifications ----#
 
 # Editra Style Sheet Keywords
-ess_keywords = (0, "fore back face size eol bold italic")
+ESS_KEYWORDS = (0, "fore back face size eol bold italic")
 
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_CSS_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_CSS_DEFAULT', 'default_style'),
                  ('STC_CSS_CLASS', 'global_style'),
                  ('STC_CSS_COMMENT', 'comment_style'),
                  ('STC_CSS_DIRECTIVE', 'directive_style'),
@@ -60,7 +60,7 @@ syntax_items = [ ('STC_CSS_DEFAULT', 'default_style'),
                  ('STC_CSS_VALUE', 'char_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
+FOLD = ("fold", "1")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -69,21 +69,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [ess_keywords]
+    return [ESS_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold]
+    return [FOLD]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code

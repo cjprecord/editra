@@ -40,7 +40,7 @@ __revision__ = "$Revision$"
 # No keywords
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_MAKE_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_MAKE_DEFAULT', 'default_style'),
                  ('STC_MAKE_COMMENT', 'comment_style'),
                  ('STC_MAKE_IDENTIFIER', "scalar_style"),
                  ('STC_MAKE_IDEOL', 'ideol_style'),
@@ -65,7 +65,7 @@ def SyntaxSpec(lang_id=0):
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set

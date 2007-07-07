@@ -38,55 +38,58 @@ __revision__ = "$Revision$"
 #---- Keyword Specifications ----#
 
 # CSS1 Keywords (Idenifiers)
-css1_keywords = (0, "font-family font-style font-variant font-weight font-size "
-                    "font color background-color background-image background-repeat "
-                    "background-position background word-spacing letter-spacing"
-                    "text-decoration vertical-align text-transform text-align "
-                    "text-indent line-height margin-top margin-right margin-left "
-                    "margin padding-top padding-right padding-bottom padding-left "
-                    "padding border-top-width border-right-width border-bottom-width "
-                    "border-left-width border-width border-color border-style "
-                    "border-top border-right border-bottom border-left border "
-                    "width height float clear display white-space list-style-type "
-                    "list-style-image list-style-position list-style margin-bottom "
+CSS1_KEYWORDS = (0, "font-family font-style font-variant font-weight font-size "
+                    "font color background-color background-image "
+                    "background-repeat background-position background "
+                    "word-spacing letter-spacing text-decoration "
+                    "vertical-align text-transform text-align text-indent "
+                    "line-height margin-top margin-right margin-left margin "
+                    "padding-top padding-right padding-bottom padding-left "
+                    "padding border-top-width border-right-width "
+                    "border-bottom-width border-left-width border-width "
+                    "border-color border-style border-top border-right "
+                    "border-bottom border-left border width height float clear "
+                    "display white-space list-style-type list-style-image "
+                    "list-style-position list-style margin-bottom "
                     "text-decoration min-width min-height")
 
 # CSS Psuedo Classes
-css_psuedo_class = (1, "link visited active hover focus before after left right "
-                       "lang first-letter first-line first-child")
+CSS_PSUEDO_CLASS = (1, "link visited active hover focus before after left "
+                       "right lang first-letter first-line first-child")
 
 # CSS2 Keywords (Identifers2)
 # This is meant for css2 specific keywords, but in order to get a better
 # coloring effect this will contain special css properties as well.
-css2_keywords = (2, "src stemv stemh slope ascent descent widths bbox baseline "
+CSS2_KEYWORDS = (2, "src stemv stemh slope ascent descent widths bbox baseline "
                     "centerline mathline topline all aqua black blue fuchsia "
                     "gray green lime maroon navy olive purple red silver teal "
                     "yellow ActiveBorder ActiveCaption AppWorkspace ButtonFace "
                     "ButtonHighlight ButtonShadow ButtonText CaptionText "
                     "GrayText Highlight HighlightText InactiveBorder "
-                    "InactiveCaption InactiveCaptionText InfoBackground InfoText "
-                    "Menu MenuText Scrollbar ThreeDDarkShadow ThreeDFace "
-                    "ThreeDHighlight ThreeDLightShadow ThreeDShadow Window "
-                    "WindowFrame WindowText Background auto none inherit top "
-                    "bottom medium normal cursive fantasy monospace italic "
-                    "oblique bold bolder lighter larger smaller icon menu "
-                    "narrower wider color center scroll fixed underline overline "
-                    "blink sub super middle capitalize uppercase lowercase "
-                    "center justify baseline width height float clear overflow "
-                    "clip visibility thin thick both dotted dashed solid double "
-                    "groove ridge inset outset hidden visible scroll collapse "
-                    "content quotes disc circle square hebrew armenian georgian "
-                    "inside outside size marks inside orphans widows landscape "
-                    "portrait crop cross always avoid cursor default crosshair "
-                    "pointer move wait help invert position below level above "
-                    "higher block inline compact static relative absolute fixed "
-                    "ltr rtl embed bidi-override pre nowrap volume during "
-                    "azimuth elevation stress richness silent non mix leftwards "
+                    "InactiveCaption InactiveCaptionText InfoBackground "
+                    "InfoText Menu MenuText Scrollbar ThreeDDarkShadow "
+                    "ThreeDFace ThreeDHighlight ThreeDLightShadow ThreeDShadow "
+                    "Window WindowFrame WindowText Background auto none "
+                    "inherit top bottom medium normal cursive fantasy "
+                    "monospace italic oblique bold bolder lighter larger "
+                    "smaller icon menu narrower wider color center scroll "
+                    "fixed underline overline blink sub super middle "
+                    "capitalize uppercase lowercase center justify baseline "
+                    "width height float clear overflow clip visibility thin "
+                    "thick both dotted dashed solid double groove ridge inset "
+                    "outset hidden visible scroll collapse content quotes disc "
+                    "circle square hebrew armenian georgian inside outside "
+                    "size marks inside orphans widows landscape portrait crop "
+                    "cross always avoid cursor default crosshair pointer move "
+                    "wait help invert position below level above higher block "
+                    "inline compact static relative absolute fixed ltr rtl "
+                    "embed bidi-override pre nowrap volume during azimuth "
+                    "elevation stress richness silent non mix leftwards "
                     "rightwards behind faster slower male female child code "
                     "digits continuous separate show hide once ")
 
 #---- Syntax Style Specs ----#
-syntax_items = [ ('STC_CSS_DEFAULT', 'default_style'),
+SYNTAX_ITEMS = [ ('STC_CSS_DEFAULT', 'default_style'),
                  ('STC_CSS_ATTRIBUTE', 'funct_style'),
                  ('STC_CSS_CLASS', 'global_style'),
                  ('STC_CSS_COMMENT', 'comment_style'),
@@ -105,7 +108,7 @@ syntax_items = [ ('STC_CSS_DEFAULT', 'default_style'),
                  ('STC_CSS_VALUE', 'char_style') ]
 
 #---- Extra Properties ----#
-fold = ("fold", "1")
+FOLD = ("fold", "1")
 #------------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
@@ -114,21 +117,21 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [css1_keywords, css_psuedo_class, css2_keywords]
+    return [CSS1_KEYWORDS , CSS_PSUEDO_CLASS, CSS2_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    return SYNTAX_ITEMS
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [fold]
+    return [FOLD]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
