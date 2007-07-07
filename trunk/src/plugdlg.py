@@ -184,7 +184,8 @@ class PluginPages(wx.Toolbook):
         """
         cur_pg = evt.GetSelection()
         parent = self.GetParent()
-        parent.SetTitle(parent.GetTitle() + " | " + self.GetPageText(cur_pg))
+        parent.SetTitle(parent.GetTitle().split(" | ")[0] + \
+                        " | " + self.GetPageText(cur_pg))
         if cur_pg == CONFIG_PG:
             self._config.PopulateCtrl()
             self.GetParent().SetStatusText(_("Changes will take affect once the"
