@@ -598,9 +598,9 @@ class DocSyntaxPanel(wx.Panel):
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.AddMany([(syn_cb, 0, wx.ALIGN_LEFT), ((5, 5), 1, wx.EXPAND),
                         (wx.StaticText(self, label=_("Color Scheme") + u": "), 0, wx.ALIGN_LEFT),
-                        (syntheme, 0)])
+                        (syntheme, 1, wx.EXPAND)])
         sizer.AddMany([(hsizer, (1, 1), (1, 4), wx.EXPAND), 
-                       (line, (3, 1), (1, 4), wx.EXPAND),
+                       (lsizer, (3, 1), (1, 4), wx.EXPAND),
                        (wx.StaticText(self, label=_("Filetype Associations") + u": "), (4, 1))])
         if wx.Platform == '__WXMAC__':
             # For some reason the list control flows out of bounds if this is 
