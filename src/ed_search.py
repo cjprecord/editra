@@ -48,7 +48,7 @@ import dev_tool
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-class TextFinder:
+class TextFinder(object):
     """Provides an object to manage finding text in documents
     through various different methods, plain text, regex, ect...
     the Finder must be initialized with the variable callable set
@@ -63,6 +63,7 @@ class TextFinder:
         @param getstc: callable function that will return an stc
 
         """
+        object.__init__(self)
         self._parent      = parent
         self._replace_dlg = None
         self._find_dlg    = None
@@ -375,6 +376,12 @@ class ED_SearchCtrl(wx.SearchCtrl):
         self.SetMenu(self.rmenu)
 
         # Bind Events
+        if wx.Platform == '__WXMSW__':
+            self.ShowCancelButton(False)
+            for child in self.GetChildren():
+                if isinstance(child, wx.TextCtrl):
+                    child.Bind(wx.EVT_KEY_UP, self.ProcessEvent)
+                    break
         self.Bind(wx.EVT_TEXT_ENTER, self.ProcessEvent)
         self.Bind(wx.EVT_KEY_UP, self.ProcessEvent)
         self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
