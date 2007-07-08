@@ -112,6 +112,10 @@ ID_LANG_SGML = wx.NewId()
 ID_LANG_LISP = wx.NewId()
 LANG_LISP = u'Lisp'
 
+# Use LEX_LOUT
+ID_LANG_LOUT = wx.NewId()
+LANG_LOUT = u'Lout'
+
 # Use LEX_LUA
 ID_LANG_LUA = wx.NewId()
 LANG_LUA = u'Lua'
@@ -197,6 +201,7 @@ EXT_MAP = {
            'htm html shtm shtml xhtml' : LANG_HTML,
            'aux tex sty'        : LANG_LATEX,
            'cl lisp lsp'        : LANG_LISP,
+           'lt'                 : LANG_LOUT,
            'lua'                : LANG_LUA,
            'mak makefile'       : LANG_MAKE,
            'masm'               : LANG_MASM,
@@ -236,6 +241,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_KSH    : (ID_LANG_KSH,    stc.STC_LEX_BASH,     'sh'),
             LANG_LATEX  : (ID_LANG_LATEX,  stc.STC_LEX_LATEX,    'latex'),
             LANG_LISP   : (ID_LANG_LISP,   stc.STC_LEX_LISP,     'lisp'),
+            LANG_LOUT   : (ID_LANG_LOUT,   stc.STC_LEX_LOUT,     'lout'),
             LANG_LUA    : (ID_LANG_LUA,    stc.STC_LEX_LUA,      'lua'),
             LANG_MAKE   : (ID_LANG_MAKE,   stc.STC_LEX_MAKEFILE, 'make'),
             LANG_MASM   : (ID_LANG_MASM,   stc.STC_LEX_ASM,      'masm'),
@@ -268,16 +274,16 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_HTML   : LANG_HTML,   ID_LANG_JAVA  : LANG_JAVA, 
           ID_LANG_JS     : LANG_JS,     ID_LANG_KSH   : LANG_KSH,
           ID_LANG_LATEX  : LANG_LATEX,  ID_LANG_LISP  : LANG_LISP, 
-          ID_LANG_LUA    : LANG_LUA,    ID_LANG_MAKE  : LANG_MAKE, 
-          ID_LANG_MASM   : LANG_MASM,   ID_LANG_MSSQL : LANG_MSSQL, 
-          ID_LANG_NASM   : LANG_MASM,   ID_LANG_NSIS  : LANG_NSIS, 
-          ID_LANG_PASCAL : LANG_PASCAL, ID_LANG_PERL  : LANG_PERL, 
-          ID_LANG_PHP    : LANG_PHP,    ID_LANG_PS    : LANG_PS, 
-          ID_LANG_PYTHON : LANG_PYTHON, ID_LANG_RUBY  : LANG_RUBY, 
-          ID_LANG_SQL    : LANG_SQL,    ID_LANG_ST    : LANG_ST, 
-          ID_LANG_VB     : LANG_VB,     ID_LANG_VHDL  : LANG_VHDL, 
-          ID_LANG_TCL    : LANG_TCL,    ID_LANG_TXT   : LANG_TXT, 
-          ID_LANG_XML    : LANG_XML
+          ID_LANG_LOUT   : LANG_LOUT,   ID_LANG_LUA   : LANG_LUA,
+          ID_LANG_MAKE   : LANG_MAKE,   ID_LANG_MASM  : LANG_MASM,
+          ID_LANG_MSSQL  : LANG_MSSQL,  ID_LANG_NASM  : LANG_MASM,
+          ID_LANG_NSIS   : LANG_NSIS,   ID_LANG_PASCAL : LANG_PASCAL, 
+          ID_LANG_PERL   : LANG_PERL,   ID_LANG_PHP    : LANG_PHP,
+          ID_LANG_PS     : LANG_PS,     ID_LANG_PYTHON : LANG_PYTHON,
+          ID_LANG_RUBY   : LANG_RUBY,   ID_LANG_SQL    : LANG_SQL,
+          ID_LANG_ST     : LANG_ST,     ID_LANG_VB     : LANG_VB,
+          ID_LANG_VHDL   : LANG_VHDL,   ID_LANG_TCL    : LANG_TCL,
+          ID_LANG_TXT    : LANG_TXT,    ID_LANG_XML    : LANG_XML
 }
 
 # Maps file types to Lexer values
@@ -292,8 +298,9 @@ FILE_LEXERS = { LANG_ADA    : stc.STC_LEX_ADA,
                 LANG_HTML   : stc.STC_LEX_HTML,
                 LANG_PHP    : stc.STC_LEX_HTML,
                 LANG_LATEX  : stc.STC_LEX_LATEX,
-                LANG_LUA    : stc.STC_LEX_LUA,
                 LANG_LISP   : stc.STC_LEX_LISP,
+                LANG_LOUT   : stc.STC_LEX_LOUT,
+                LANG_LUA    : stc.STC_LEX_LUA,
                 LANG_MAKE   : stc.STC_LEX_MAKEFILE,
                 LANG_MSSQL  : stc.STC_LEX_MSSQL,
                 LANG_NSIS   : stc.STC_LEX_NSIS,
