@@ -12,6 +12,10 @@ DATE 0x/xx/2007
 3rd Alpha Release
 
 NEWS:
+This release is mostly a bug fix and refactoring release. To help with further
+removing bugs and errors there is now an error reporter built into the editor
+that will open when an error condition is raised. Please help to improve Editra
+by clicking on "Report Error" when this dialog is shown.
 
 NEW: [features/improvements]
 +Support for utf-7, uft-16 encoded files
@@ -22,6 +26,7 @@ NEW: [features/improvements]
 +File type detection is now configurable
 +Lots of new documentation
 +Editra can be packaged as an Egg
++Support for Lout syntax highlighting
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
@@ -30,6 +35,10 @@ BUG FIXES:
 +Many bugs fixed in source package install
 +Folding now works for xml files
 +Fixed some styling errors for postscript files
++Fixed generated rtf documents display issue
++Incremental search works on Windows
++Goto line control now properly rejects non integer input (msw/gtk)
++Fixed cursor postioning bug when inserting lines via (Cmd+L) when CRLF is used
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.28
