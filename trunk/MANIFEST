@@ -152,6 +152,7 @@ src/syntax/java.py
 src/syntax/javascript.py
 src/syntax/latex.py
 src/syntax/lisp.py
+src/syntax/lout.py
 src/syntax/lua.py
 src/syntax/make.py
 src/syntax/masm.py
@@ -192,6 +193,7 @@ tests/java.java
 tests/javascript.js
 tests/korn_shell_script.ksh
 tests/lisp.lisp
+tests/lout.lt
 tests/lua.lua
 tests/makefile
 tests/masm.masm

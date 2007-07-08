@@ -168,6 +168,7 @@ Section "MainSection" SEC01
   File "tests\korn_shell_script.ksh"
   File "tests\latex.tex"
   File "tests\lisp.lisp"
+  File "tests\lout.lt"
   File "tests\lua.lua"
   File "tests\makefile"
   File "tests\masm.masm"
@@ -240,7 +241,8 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"  Delete "$INSTDIR\AUTHORS"
+  Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\AUTHORS"
   Delete "$INSTDIR\CHANGELOG"
   Delete "$INSTDIR\COPYING"
   Delete "$INSTDIR\FAQ"
@@ -354,6 +356,7 @@ Section Uninstall
   Delete "$INSTDIR\tests\korn_shell_script.ksh"
   Delete "$INSTDIR\tests\latex.tex"
   Delete "$INSTDIR\tests\lua.lua"
+  Delete "$INSTDIR\tests\lout.lt"
   Delete "$INSTDIR\tests\lisp.lisp"
   Delete "$INSTDIR\tests\makefile"
   Delete "$INSTDIR\tests\masm.masm"
