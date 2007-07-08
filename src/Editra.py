@@ -30,6 +30,8 @@
 # for running Editra.                                                      #
 #                                                                          #
 # METHODS:                                                                 #
+#   L{Editra} Application core object                                      #
+#   L{Main} Main runtime procedure                                         #
 #                                                                          #
 #--------------------------------------------------------------------------#
 """
@@ -59,7 +61,10 @@ import plugin
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 class Editra(wx.App):
-    """The Editra Application"""
+    """The Editra Application Object
+    @see: L{wx.App}
+
+    """
     def __init__(self, *args, **kargs):
         """Initialize that main app and its attributes
         @postcondition: application is created and ready to be run in mainloop"
@@ -314,7 +319,11 @@ def InitConfig():
 #--------------------------------------------------------------------------#
 
 def Main():
-    """Configures and Runs an instance of Editra"""
+    """Configures and Runs an instance of Editra
+    @summary: Parses command line options, loads the user profile, creates
+              an instance of Editra and starts the main loop.
+
+    """
     shortopts = "hv"
     longopts = ['help', 'oldPath=', 'version']
     try:

@@ -26,7 +26,8 @@
 # SUMMARY:                                                                 #
 # Provides a printer class can render the text from an stc into MemoryDC   #
 # that is used for printing. Much of the code for scaling in this file is  #
-# inspired a python module STCPrinting written by Riaan Booysen.           #
+# derived from a python module called STCPrinting written by               #
+# Riaan Booysen.                                                           #
 #                                                                          #
 # METHODS:                                                                 #
 # EdPrinter: Class for managing printing and providing print dialogs       #
@@ -135,7 +136,13 @@ class EdPrinter:
 
 #-----------------------------------------------------------------------------#
 class EdPrintout(wx.Printout):
-    """Creates an printout from a STC"""
+    """Creates an printout from a STC
+    @todo: allow for page numbers/titles to be turned on/off
+           Also the printing should use the font sizes that the
+           displayed document is using instead of the fixed 12 point
+           font that is set now for printing.
+
+    """
     def __init__(self, stc_src, colour, title=wx.EmptyString):
         """Initializes the printout object
         @param title: title of document

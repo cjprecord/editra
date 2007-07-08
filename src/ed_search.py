@@ -53,6 +53,8 @@ class TextFinder(object):
     the Finder must be initialized with the variable callable set
     to a method that fetches the stc control that the search is to take
     place in.
+    @todo: possibly reimplement as a singleton so that it can be used
+           without having to go through the notebook each time its needed.
 
     """
     def __init__(self, parent, getstc):
@@ -356,8 +358,10 @@ def get_search_close_image():
     return ImageFromStream(stream)
 
 class EdSearchCtrl(wx.SearchCtrl):
-    """Creates a quick search control for use in the toolbar
-    or a statusbar and the such.
+    """Creates a simple search control for use in the toolbar
+    or a statusbar and the such. Supports incremental search,
+    and uses L{FindService} to do the actual searching of the
+    document.
 
     """
     def __init__(self, parent, id_, value="", menulen=0, \
