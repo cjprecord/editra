@@ -26,7 +26,7 @@
 # SUMMARY:                                                                    #
 # Lexer configuration module for                                              #
 #                                                                             #
-# TODO:                                                                       #
+# @todo:                                                                      #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -42,40 +42,52 @@ __revision__ = "$Revision:  $"
 #---- End Keyword Definitions ----#
 
 #---- Syntax Style Specs ----#
-syntax_items = []
+SYNTAX_ITEMS = []
 
 #---- Extra Properties ----#
 
 #-----------------------------------------------------------------------------#
 
 #---- Required Module Functions ----#
-def Keywords(langId=0):
+def Keywords(lang_id=0):
     """Returns Specified Keywords List
-    @param langId: used to select specific subset of keywords
+    @keyword lang_id: used to select specific subset of keywords
 
     """
-    return list()
+    if lang_id == synglob.XXXXX:
+        return list()
+    else:
+        return list()
 
-def SyntaxSpec(langId=0):
+def SyntaxSpec(lang_id=0):
     """Syntax Specifications
-    @param langId: used for selecting a specific subset of syntax specs
+    @keyword lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return syntax_items
+    if lang_id == synglob.XXXXX:
+        return SYNTAX_ITEMS
+    else:
+        return list()
 
-def Properties(langId=0):
+def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
-    @param langId: used to select a specific set of properties
+    @keyword lang_id: used to select a specific set of properties
 
     """
-    return list()
+    if lang_id == synglob.XXXXX:
+        return list()
+    else:
+        return list()
 
-def CommentPattern(langId=0):
+def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
-    @param langId: used to select a specific subset of comment pattern(s)
+    @keyword lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return list()
+    if lang_id == synglob.XXXXX:
+        return list()
+    else:
+        return list()
 
 #---- End Required Module Functions ----#
 
