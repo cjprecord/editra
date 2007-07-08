@@ -232,7 +232,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 line = 0
         if line or not before:
             pos = self.GetLineEndPosition(line)
-            curr = 1
+            curr = len(self.GetEOLChar())
         else:
             pos = 0
             curr = 0
