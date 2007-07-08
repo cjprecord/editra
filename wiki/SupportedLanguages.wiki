@@ -23,9 +23,10 @@ This page lists all of the programming languages supported by Editra and what co
 ||Java         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||JavaScript   ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Korn Shell   ||Yes           ||Yes             ||Yes           ||Yes             ||
-||Lua          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||LaTeX        ||Yes           ||Yes             ||No            ||Yes             ||
 ||Lisp         ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Lout        ||Yes           ||Yes             ||Yes           ||Yes            ||
+||Lua          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Masm         ||Yes           ||Yes             ||No            ||Yes             ||
 ||Makefile     ||Yes           ||Yes             ||No            ||No              ||
 ||MSQL         ||Yes           ||Yes             ||Yes           ||Yes             ||
@@ -43,4 +44,3 @@ This page lists all of the programming languages supported by Editra and what co
 ||VHDL         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Visual Basic ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Xml          ||Yes           ||Yes             ||Yes           ||Yes             ||
-
