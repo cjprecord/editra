@@ -120,6 +120,9 @@ class PreferencesDialog(wx.Frame):
 class PrefTools(wx.Toolbook):
     """Main sections of the configuration pages
     @note: implements the top level book control for the prefdlg
+    @todo: when using BK_BUTTONBAR style so that the icons have text
+           under them the icons get scaled to larger size on the Mac
+           causing them to look poor.
 
     """
     GENERAL_PG = 0
@@ -129,7 +132,11 @@ class PrefTools(wx.Toolbook):
     ADV_PG     = 4
 
     def __init__(self, parent, tbid=wx.ID_ANY, style=wx.BK_BUTTONBAR):
-        """Initializes the main book control of the preferences dialog"""
+        """Initializes the main book control of the preferences dialog
+        @summary: creates the top level notebook control for the prefdlg
+                  a toolbar is used for changing pages.
+
+        """
         wx.Toolbook.__init__(self, parent, tbid, style=style)
 
 #         toolb = self.GetToolBar()
@@ -252,7 +259,11 @@ class PrefPanelBase(wx.Panel):
         evt.Skip()
 
 class GeneralPanel(PrefPanelBase):
-    """Creates a panel with controls for Editra's general settings"""
+    """Creates a panel with controls for Editra's general settings
+    @summary: Panel with a number of controls that affect the users
+              global profile setting for how Editra should operate.
+
+    """
     def __init__(self, parent):
         """Create the panel
         @param parent: Parent window of this panel
@@ -365,7 +376,12 @@ class GeneralPanel(PrefPanelBase):
             evt.Skip()
 
 class DocumentPanel(PrefPanelBase):
-    """Creates a panel with controls for Editra's editing settings"""
+    """Creates a panel with controls for Editra's editing settings
+    @summary: Conatains a L{wx.Notebook} that contains a number of pages
+              with setting controls for how documents are handled by the
+              L{ed_stc.EDSTC} text control.
+
+    """
     def __init__(self, parent):
         """Create the panel
         @param parent: Parent window of this panel
@@ -393,6 +409,8 @@ class DocumentPanel(PrefPanelBase):
 class DocGenPanel(wx.Panel):
     """Panel used for general document settings in the DocumentPanel's
     notebook.
+    @summary: Panel with controls for setting the general attributes of
+              how a document is managed.
 
     """
     def __init__(self, parent):
@@ -816,7 +834,11 @@ class AppearancePanel(PrefPanelBase):
             evt.Skip()
 
 class UpdatePanel(PrefPanelBase):
-    """Creates a panel with controls for updating Editra"""
+    """Creates a panel with controls for updating Editra
+    @summary: Panel with three controls, L{updater.UpdateProgress} bar,
+              and two L{wx.Button} for checking and downloading updates.
+
+    """
     def __init__(self, parent):
         """Create the panel
         @param parent: Parent window of this panel

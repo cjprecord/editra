@@ -66,7 +66,12 @@ NUM_MARGIN  = 1
 FOLD_MARGIN = 2
 #-------------------------------------------------------------------------#
 class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
-    """Defines a styled text control for editing text in"""
+    """Defines a styled text control for editing text in
+    @summary: Custom subclass of L{wx.stc.StyledTextCtrl} and
+              L{ed_style.StyleMgr}. Manages the documents display
+              and input.
+
+              """
     ED_STC_MASK_MARKERS = ~wx.stc.STC_MASK_FOLDERS
     def __init__(self, parent, id_,
                  pos=wx.DefaultPosition, size=wx.DefaultSize,

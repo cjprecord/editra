@@ -73,7 +73,10 @@ else:
     TAB_STYLE = FNB.FNB_FANCY_TABS
 #--------------------------------------------------------------------------#
 class EdPages(FNB.FlatNotebook):
-    """Editras Notebook"""
+    """Editras Notebook
+    @todo: allow for tab styles to be configurable (maybe)
+
+    """
     def __init__(self, parent, id_num):
         """Initialize a notebook with a blank text control in it
         @param parent: parent window of the notebook
