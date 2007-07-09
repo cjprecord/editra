@@ -143,6 +143,7 @@ src/syntax/ada.py
 src/syntax/asm.py
 src/syntax/asm68k.py
 src/syntax/batch.py
+src/syntax/caml.py
 src/syntax/cpp.py
 src/syntax/css.py
 src/syntax/editra_ss.py
@@ -174,6 +175,7 @@ src/syntax/tcl.py
 src/syntax/vhdl.py
 src/syntax/visualbasic.py
 src/syntax/xml.py
+src/syntax/yaml.py
 styles/default.ess
 styles/midnight.ess
 tests/68k_assembly.asm
@@ -182,6 +184,7 @@ tests/ada.adb
 tests/bash_shell_script.sh
 tests/c.c
 tests/c_shell.csh
+tests/caml.ml
 tests/cascading_style_sheet.css
 tests/cpp.cpp
 tests/dos_batch_script.bat
@@ -216,3 +219,4 @@ tests/unicode_text.txt
 tests/vhdl.vhdl
 tests/visual_basic.vb
 tests/xml.xml
+tests/yaml.yaml
