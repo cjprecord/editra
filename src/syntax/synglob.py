@@ -73,6 +73,10 @@ LANG_CSH = u'C-Shell Script'
 ID_LANG_KSH    = wx.NewId()
 LANG_KSH = u'Korn Shell Script'
 
+# Use LEX_CAML
+ID_LANG_CAML = wx.NewId()
+LANG_CAML = u'Caml'
+
 # Use LEX_CPP
 ID_LANG_C    = wx.NewId()
 LANG_C = u'C'
@@ -180,6 +184,10 @@ LANG_BATCH = u'DOS Batch Script'
 ID_LANG_MAKE  = wx.NewId()
 LANG_MAKE = u'Makefile'
 
+# Use LEX_YAML
+ID_LANG_YAML = wx.NewId()
+LANG_YAML = u'YAML'
+
 #---- End Language Identifier Keys ----#
 
 # Default extensions to file type map
@@ -189,6 +197,7 @@ EXT_MAP = {
            'bsh sh configure'   : LANG_BASH,
            'bat cmd'            : LANG_BATCH,
            'c h'                : LANG_C,
+           'ml mli'             : LANG_CAML,
            'cc c++ cpp cxx hh h++ hpp hxx' : LANG_CPP,
            'csh'                : LANG_CSH,
            'css'                : LANG_CSS,
@@ -220,7 +229,8 @@ EXT_MAP = {
            'txt'                : LANG_TXT,
            'bas cls ctl frm vb' : LANG_VB,
            'vh vhdl'            : LANG_VHDL,
-           'axl dtd plist rdf svg xml xrc xsd xsl xslt xul' : LANG_XML
+           'axl dtd plist rdf svg xml xrc xsd xsl xslt xul' : LANG_XML,
+           'yaml yml'           : LANG_YAML
           }
 
 # Maps file types to syntax definitions
@@ -229,6 +239,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_BASH   : (ID_LANG_BASH,   stc.STC_LEX_BASH,     'sh'),
             LANG_BATCH  : (ID_LANG_BATCH,  stc.STC_LEX_BATCH,    'batch'),
             LANG_C      : (ID_LANG_C,      stc.STC_LEX_CPP,      'cpp'),
+            LANG_CAML   : (ID_LANG_CAML,   stc.STC_LEX_CAML,     'caml'),
             LANG_CPP    : (ID_LANG_CPP,    stc.STC_LEX_CPP,      'cpp'),
             LANG_CSH    : (ID_LANG_CSH,    stc.STC_LEX_BASH,     'sh'),
             LANG_CSS    : (ID_LANG_CSS,    stc.STC_LEX_CSS,      'css'),
@@ -260,14 +271,16 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_TXT    : (ID_LANG_TXT,    stc.STC_LEX_NULL,     None),
             LANG_VB     : (ID_LANG_VB,     stc.STC_LEX_VB,       'visualbasic'),
             LANG_VHDL   : (ID_LANG_VHDL,   stc.STC_LEX_VHDL,     'vhdl'),
-            LANG_XML    : (ID_LANG_XML,    stc.STC_LEX_XML,      'xml')
+            LANG_XML    : (ID_LANG_XML,    stc.STC_LEX_XML,      'xml'),
+            LANG_YAML   : (ID_LANG_YAML,   stc.STC_LEX_YAML,     'yaml')
             }
 
 # Maps language ID's to File Types
 # Used when manually setting lexer from a menu/dialog
 ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA, 
           ID_LANG_ASM    : LANG_ASM,    ID_LANG_BASH  : LANG_BASH, 
-          ID_LANG_BATCH  : LANG_BATCH,  ID_LANG_C     : LANG_C, 
+          ID_LANG_BATCH  : LANG_BATCH,  
+          ID_LANG_C      : LANG_C,      ID_LANG_CAML  : LANG_CAML,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
           ID_LANG_CSS    : LANG_CSS,    ID_LANG_ESS   : LANG_ESS,
           ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95, 
@@ -283,62 +296,6 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_RUBY   : LANG_RUBY,   ID_LANG_SQL    : LANG_SQL,
           ID_LANG_ST     : LANG_ST,     ID_LANG_VB     : LANG_VB,
           ID_LANG_VHDL   : LANG_VHDL,   ID_LANG_TCL    : LANG_TCL,
-          ID_LANG_TXT    : LANG_TXT,    ID_LANG_XML    : LANG_XML
+          ID_LANG_TXT    : LANG_TXT,    ID_LANG_XML    : LANG_XML,
+          ID_LANG_YAML   : LANG_YAML
 }
-
-# Maps file types to Lexer values
-FILE_LEXERS = { LANG_ADA    : stc.STC_LEX_ADA,
-                LANG_ASM    : stc.STC_LEX_ASM,
-                LANG_BASH   : stc.STC_LEX_BASH,
-                LANG_BATCH  : stc.STC_LEX_BATCH,
-                LANG_C      : stc.STC_LEX_CPP,
-                LANG_CPP    : stc.STC_LEX_CPP,
-                LANG_CSS    : stc.STC_LEX_CSS,
-                LANG_JS     : stc.STC_LEX_HTML,
-                LANG_HTML   : stc.STC_LEX_HTML,
-                LANG_PHP    : stc.STC_LEX_HTML,
-                LANG_LATEX  : stc.STC_LEX_LATEX,
-                LANG_LISP   : stc.STC_LEX_LISP,
-                LANG_LOUT   : stc.STC_LEX_LOUT,
-                LANG_LUA    : stc.STC_LEX_LUA,
-                LANG_MAKE   : stc.STC_LEX_MAKEFILE,
-                LANG_MSSQL  : stc.STC_LEX_MSSQL,
-                LANG_NSIS   : stc.STC_LEX_NSIS,
-                LANG_TXT    : stc.STC_LEX_NULL,
-                LANG_PASCAL : stc.STC_LEX_PASCAL,
-                LANG_PERL   : stc.STC_LEX_PERL,
-                LANG_PS     : stc.STC_LEX_PS,
-                LANG_PYTHON : stc.STC_LEX_PYTHON,
-                LANG_RUBY   : stc.STC_LEX_RUBY,
-                LANG_ST     : stc.STC_LEX_SMALLTALK,
-                LANG_SQL    : stc.STC_LEX_SQL,
-                LANG_VB     : stc.STC_LEX_VB,
-                LANG_VHDL   : stc.STC_LEX_VHDL,
-                LANG_XML    : stc.STC_LEX_XML,
-               } 
-
-# Map Lexers to Module names
-LEX_MODULES = {stc.STC_LEX_ADA      : ['ada'], 
-               stc.STC_LEX_ASM      : ['asm', 'asm68k', 'masm', 'nasm'],
-               stc.STC_LEX_BASH     : ['sh'],
-               stc.STC_LEX_BATCH    : ['bat'],
-               stc.STC_LEX_CPP      : ['cpp'],
-               stc.STC_LEX_CSS      : ['css', 'editra_ss'],
-               stc.STC_LEX_HTML     : ['javascript', 'html', 'php'],
-               stc.STC_LEX_TEX      : ['latex'],
-               stc.STC_LEX_LISP     : ['lisp'],
-               stc.STC_LEX_LUA      : ['lua'],
-               stc.STC_LEX_MAKEFILE : ['make'],
-               stc.STC_LEX_MSSQL    : ['mssql'],
-               stc.STC_LEX_NSIS     : ['nsis'],
-               stc.STC_LEX_NULL     : None,
-               stc.STC_LEX_PASCAL   : ['pascal'],
-               stc.STC_LEX_PERL     : ['perl'],
-               stc.STC_LEX_PS       : ['postscript'],
-               stc.STC_LEX_PYTHON   : ['python'],
-               stc.STC_LEX_RUBY     : ['ruby'],
-               stc.STC_LEX_SMALLTALK: ['smalltalk'],
-               stc.STC_LEX_SQL      : ['sql'],
-               stc.STC_LEX_VB       : ['visualbasic'],
-               stc.STC_LEX_XML      : ['xml'],
-             }

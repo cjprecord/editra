@@ -26,7 +26,7 @@ NEW: [features/improvements]
 +File type detection is now configurable
 +Lots of new documentation
 +Editra can be packaged as an Egg
-+Support for Lout syntax highlighting
++Support for (Caml, Lout, YAML) syntax highlighting
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
