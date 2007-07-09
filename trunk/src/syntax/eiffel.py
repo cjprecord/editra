@@ -1,0 +1,121 @@
+###############################################################################
+#    Copyright (C) 2007 Cody Precord                                          #
+#    staff@editra.org                                                         #
+#                                                                             #
+#    Editra is free software; you can redistribute it and#or modify           #
+#    it under the terms of the GNU General Public License as published by     #
+#    the Free Software Foundation; either version 2 of the License, or        #
+#    (at your option) any later version.                                      #
+#                                                                             #
+#    Editra is distributed in the hope that it will be useful,                #
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
+#    GNU General Public License for more details.                             #
+#                                                                             #
+#    You should have received a copy of the GNU General Public License        #
+#    along with this program; if not, write to the                            #
+#    Free Software Foundation, Inc.,                                          #
+#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.                #
+###############################################################################
+
+"""
+#-----------------------------------------------------------------------------#
+# FILE: eiffel.py                                                             #
+# AUTHOR: Cody Precord                                                        #
+#                                                                             #
+# SUMMARY:                                                                    #
+# Lexer configuration module for Eiffel                                       #
+#                                                                             #
+# @todo: look into why io.anything is highlighted as a number                 #
+#                                                                             #
+#-----------------------------------------------------------------------------#
+"""
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__svnid__ = "$Id$"
+__revision__ = "$Revision$"
+
+#-----------------------------------------------------------------------------#
+import synglob
+#-----------------------------------------------------------------------------#
+
+#---- Keyword Definitions ----#
+EIFFEL_KW = (0, "alias all and any as bit boolean check class character clone "
+                "create creation current debug deferred div do double else "
+                "elseif end ensure equal expanded export external false "
+                "feature forget from frozen general if implies indexing infix "
+                "inherit inspect integer invariant is language like local loop "
+                "mod name nochange none not obsolete old once or platform "
+                "pointer prefix precursor real redefine rename require rescue "
+                "result retry select separate string strip then true undefine "
+                "unique until variant void when xor")
+#---- End Keyword Definitions ----#
+
+#---- Syntax Style Specs ----#
+SYNTAX_ITEMS = [('STC_EIFFEL_CHARACTER', 'char_style'),
+                ('STC_EIFFEL_COMMENTLINE', 'comment_style'),
+                ('STC_EIFFEL_DEFAULT', 'default_style'),
+                ('STC_EIFFEL_IDENTIFIER', 'default_style'),
+                ('STC_EIFFEL_NUMBER', 'number_style'),
+                ('STC_EIFFEL_OPERATOR', 'operator_style'),
+                ('STC_EIFFEL_STRING', 'string_style'),
+                ('STC_EIFFEL_STRINGEOL', 'stringeol_style'),
+                ('STC_EIFFEL_WORD', 'keyword_style')]
+
+#---- Extra Properties ----#
+FOLD = ("fold", "1")
+
+#-----------------------------------------------------------------------------#
+
+#---- Required Module Functions ----#
+def Keywords(lang_id=0):
+    """Returns Specified Keywords List
+    @keyword lang_id: used to select specific subset of keywords
+
+    """
+    if lang_id == synglob.ID_LANG_EIFFEL:
+        return [EIFFEL_KW]
+    else:
+        return list()
+
+def SyntaxSpec(lang_id=0):
+    """Syntax Specifications
+    @keyword lang_id: used for selecting a specific subset of syntax specs
+
+    """
+    if lang_id == synglob.ID_LANG_EIFFEL:
+        return SYNTAX_ITEMS
+    else:
+        return list()
+
+def Properties(lang_id=0):
+    """Returns a list of Extra Properties to set
+    @keyword lang_id: used to select a specific set of properties
+
+    """
+    if lang_id == synglob.ID_LANG_EIFFEL:
+        return [FOLD]
+    else:
+        return list()
+
+def CommentPattern(lang_id=0):
+    """Returns a list of characters used to comment a block of code
+    @keyword lang_id: used to select a specific subset of comment pattern(s)
+
+    """
+    if lang_id == synglob.ID_LANG_EIFFEL:
+        return [u'--']
+    else:
+        return list()
+
+#---- End Required Module Functions ----#
+
+#---- Syntax Modules Internal Functions ----#
+def KeywordString():
+    """Returns the specified Keyword String
+    @note: not used by most modules
+
+    """
+    return None
+
+#---- End Syntax Modules Internal Functions ----#

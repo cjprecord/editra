@@ -91,6 +91,10 @@ LANG_CSS = u'Cascading Style Sheet'
 ID_LANG_ESS = wx.NewId()
 LANG_ESS = u'Editra Style Sheet'
 
+# Use LEX_EIFFEL
+ID_LANG_EIFFEL = wx.NewId()
+LANG_EIFFEL = u"Eiffel"
+
 # Use LEX_F77
 ID_LANG_F77 = wx.NewId()
 LANG_F77 = u'Fortran 77'
@@ -201,6 +205,7 @@ EXT_MAP = {
            'cc c++ cpp cxx hh h++ hpp hxx' : LANG_CPP,
            'csh'                : LANG_CSH,
            'css'                : LANG_CSS,
+           'e'                  : LANG_EIFFEL,
            'ess'                : LANG_ESS,
            'f for'              : LANG_F77,
            'f90 f95 f2k fpp'    : LANG_F95,
@@ -243,6 +248,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_CPP    : (ID_LANG_CPP,    stc.STC_LEX_CPP,      'cpp'),
             LANG_CSH    : (ID_LANG_CSH,    stc.STC_LEX_BASH,     'sh'),
             LANG_CSS    : (ID_LANG_CSS,    stc.STC_LEX_CSS,      'css'),
+            LANG_EIFFEL : (ID_LANG_EIFFEL, stc.STC_LEX_EIFFEL,   'eiffel'),
             LANG_ESS    : (ID_LANG_ESS,    stc.STC_LEX_CSS,      'editra_ss'),
             LANG_F77    : (ID_LANG_F77,    stc.STC_LEX_F77,      'fortran'),
             LANG_F95    : (ID_LANG_F95,    stc.STC_LEX_FORTRAN,  'fortran'),
@@ -282,7 +288,8 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_BATCH  : LANG_BATCH,  
           ID_LANG_C      : LANG_C,      ID_LANG_CAML  : LANG_CAML,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
-          ID_LANG_CSS    : LANG_CSS,    ID_LANG_ESS   : LANG_ESS,
+          ID_LANG_CSS    : LANG_CSS,    ID_LANG_EIFFEL : LANG_EIFFEL,
+          ID_LANG_ESS   : LANG_ESS,
           ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95, 
           ID_LANG_HTML   : LANG_HTML,   ID_LANG_JAVA  : LANG_JAVA, 
           ID_LANG_JS     : LANG_JS,     ID_LANG_KSH   : LANG_KSH,

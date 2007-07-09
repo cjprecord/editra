@@ -147,6 +147,7 @@ src/syntax/caml.py
 src/syntax/cpp.py
 src/syntax/css.py
 src/syntax/editra_ss.py
+src/syntax/eiffel.py
 src/syntax/fortran.py
 src/syntax/html.py
 src/syntax/java.py
@@ -189,6 +190,7 @@ tests/cascading_style_sheet.css
 tests/cpp.cpp
 tests/dos_batch_script.bat
 tests/editra_style_sheet.ess
+tests/eiffel.e
 tests/fortran_77.for
 tests/fortran_95.f95
 tests/html.html
