@@ -196,7 +196,7 @@ LANG_YAML = u'YAML'
 
 # Default extensions to file type map
 EXT_MAP = {
-           '68k asm'            : LANG_68K,
+           '68k'                : LANG_68K,
            'ada adb ads a'      : LANG_ADA,
            'bsh sh configure'   : LANG_BASH,
            'bat cmd'            : LANG_BATCH,
@@ -218,7 +218,7 @@ EXT_MAP = {
            'lt'                 : LANG_LOUT,
            'lua'                : LANG_LUA,
            'mak makefile'       : LANG_MAKE,
-           'masm'               : LANG_MASM,
+           'asm masm'           : LANG_MASM,
            'mssql'              : LANG_MSSQL,
            'nasm'               : LANG_NASM,
            'nsi'                : LANG_NSIS,
