@@ -8,14 +8,16 @@ This page lists all of the programming languages supported by Editra and what co
 = Details =
 
 ||*Language*   ||*Highlighting*||*(Un)Commenting*||*Code Folding*||*Keyword Helper*||
-||68k Asm      ||Yes           ||Yes             ||No            ||Yes             ||
-||Ada          ||Yes           ||Yes             ||No            ||Yes             ||
+||68k Asm      ||Yes           ||Yes             ||No                 ||Yes             ||
+||Ada          ||Yes           ||Yes             ||No                 ||Yes             ||
 ||Bash         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||C            ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||C-Shell      ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Cpp          ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Caml       ||Yes            ||Yes             ||No          ||Yes             ||
 ||Css          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Batch        ||Yes           ||Yes             ||No            ||Yes             ||
+||Eiffel       ||Yes            ||Yes            ||Yes           ||Yes             ||
 ||Ess          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Fortran 77   ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Fortran 95   ||Yes           ||Yes             ||Yes           ||Yes             ||
@@ -44,3 +46,4 @@ This page lists all of the programming languages supported by Editra and what co
 ||VHDL         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Visual Basic ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Xml          ||Yes           ||Yes             ||Yes           ||Yes             ||
+||YAML       ||Yes           ||Yes             ||Yes           ||Yes            ||
