@@ -47,7 +47,7 @@ import ed_menu
 from ed_style import StyleItem
 import util
 import plugin
-
+import time
 #--------------------------------------------------------------------------#
 # Globals
 _ = wx.GetTranslation
@@ -122,15 +122,18 @@ class Generator(plugin.Plugin):
         generator id and contents of the given ED_STC text control.
         @param e_id: event id originating from menu entry
         @param txt_ctrl: reference document to generate from
-        @type txt_ctrl: ED_STC
+        @type txt_ctrl: EDSTC
         @return: the generated text
         @rtype: string
         
         """
         gentext = None
+        start = time.time()
         for observer in self.observers:
             if observer.GetId() == e_id:
                 gentext = observer.Generate(txt_ctrl)
+        wx.GetApp().GetLog()("[generator][info] Generation time %f" % \
+                                                        (time.time() - start))
         return gentext
 
 #--------------------------------------------------------------------------#
@@ -144,7 +147,11 @@ class Html(plugin.Plugin):
     """
     plugin.Implements(GeneratorI)
     def __init__(self, mgr):
-        """Creates the Html object from an Editra stc text control"""
+        """Creates the Html object from an Editra stc text control
+        @param mgr: This generators plugin manager
+
+        """
+        plugin.Plugin.__init__(self, mgr)
 
         # Attributes
         self._id = ed_glob.ID_HTML_GEN
@@ -488,22 +495,11 @@ class LaTeX(plugin.Plugin):
         @param plgmgr: pluginmanger for this object
 
         """
+        plugin.Plugin.__init__(self, plgmgr)
         self._stc = None
         self._id = ed_glob.ID_TEX_GEN
-        self._dback = wx.EmptyString
-        self._dfore = wx.EmptyString
-        self._dface = wx.EmptyString
-        self._dsize = wx.EmptyString
+        self._dstyle = StyleItem()
         self._cmds = dict()
-        self._body = wx.EmptyString
-        self._preamble = wx.EmptyString
-
-    def __str__(self):
-        """Returns the string representation of the object
-        @return: latex object as a string
-
-        """
-        return self._preamble + self._body
 
     def CreateCmdName(self, name):
         """Creates and returns a proper cmd name
@@ -527,8 +523,8 @@ class LaTeX(plugin.Plugin):
 
         """
         tex = list()
-        tmp_tex = wx.EmptyString
-        parse_pos = 0
+        tmp = u''
+        start = parse_pos = 0
         last_pos = self._stc.GetLineEndPosition(self._stc.GetLineCount())
 
         # Define the default style
@@ -537,8 +533,8 @@ class LaTeX(plugin.Plugin):
 
         # Get Document start point info
         last_id = self._stc.GetStyleAt(parse_pos)
-        tmp_tex = self.TransformText(self._stc.GetTextRange(parse_pos, \
-                                                            parse_pos + 1))
+        tmp = self.TransformText(self._stc.GetTextRange(parse_pos, 
+                                                        parse_pos + 1))
         tag = self._stc.FindTagById(last_id)
         if tag != wx.EmptyString:
             self.RegisterStyleCmd(tag, self._stc.GetItemByName(tag))
@@ -547,28 +543,34 @@ class LaTeX(plugin.Plugin):
         stc = self._stc
         GetStyleAt = stc.GetStyleAt
         GetTextRange = stc.GetTextRange
+        TransformText = self.TransformText
 
         # Build LaTeX
-        while parse_pos < last_pos + 1:
-            parse_pos += 1
+        for parse_pos in xrange(last_pos + 1):
             curr_id = GetStyleAt(parse_pos)
-            style_end = parse_pos
             if parse_pos > 1:
-                tmp_tex += self.TransformText(GetTextRange((parse_pos - 1), \
-                                                            parse_pos))
+                # This is the performance bottleneck, changeing the text
+                # collection to when the style changes is much faster as
+                # it only needs to be done once per style section instead
+                # of once per character. Doing that however causes problems
+                # with the style and resulting document formatting.
+                tmp = TransformText(GetTextRange((parse_pos - 1), parse_pos))
+
             if curr_id == 0 and GetStyleAt(parse_pos + 1) == last_id:
                 curr_id = last_id
 
             # If style region has changed close section
-            if curr_id != last_id or tmp_tex[-1] == "\n":
+            if curr_id != last_id or tmp[-1] == "\n":
+                tmp_tex = TransformText(GetTextRange(start, parse_pos))
+#                 tmp_tex = u"".join(tmp)
                 if tag == "operator_style" or \
                    (tag == "default_style" and \
                     tmp_tex.isspace() and len(tmp_tex) <= 2):
                     tex.append(tmp_tex)
                 else:
-                    if "\\\\*\n" in tmp_tex:
-                        tmp_tex = tmp_tex.replace("\\\\*\n", "")
-                        tmp2 = "\\%s{%s}\\\\*\n"
+                    if "\\\\\n" in tmp_tex:
+                        tmp_tex = tmp_tex.replace("\\\\\n", "")
+                        tmp2 = "\\%s{%s}\\\\\n"
                     else:
                         tmp2 = "\\%s{%s}"
 
@@ -581,7 +583,8 @@ class LaTeX(plugin.Plugin):
                 tag = stc.FindTagById(last_id)
                 if tag not in [None, wx.EmptyString]:
                     self.RegisterStyleCmd(tag, stc.GetItemByName(tag))
-                tmp_tex = u''
+                tmp = list()
+                start = parse_pos
         if tex == wx.EmptyString:
             # Case for unstyled documents
             tex.append(self.TransformText(stc.GetText()))
@@ -595,13 +598,13 @@ class LaTeX(plugin.Plugin):
         """
         self._stc = stc_doc
         default_si = self._stc.GetItemByName('default_style')
-        self._dback = default_si.GetBack().split(',')[0]
-        self._dfore = default_si.GetFore().split(',')[0]
-        self._dface = default_si.GetFace().split(',')[0]
-        self._dsize = default_si.GetSize().split(',')[0]
-        self._body = self.GenDoc()
-        self._preamble = self.GenPreamble()
-        return ("tex", self.__str__())
+        self._dstyle.SetBack(default_si.GetBack().split(',')[0])
+        self._dstyle.SetFore(default_si.GetFore().split(',')[0])
+        self._dstyle.SetFace(default_si.GetFace().split(',')[0])
+        self._dstyle.SetSize(default_si.GetSize().split(',')[0])
+        body = self.GenDoc()
+        preamble = self.GenPreamble()
+        return ("tex", u"".join([preamble, body]))
 
     def GenPreamble(self):
         """Generates the Preamble of the document
@@ -618,11 +621,12 @@ class LaTeX(plugin.Plugin):
                "\\usepackage[a4paper, margin=2cm]{geometry}\n"
                "\\usepackage[T1]{fontenc}\n"
 #               "\\usepackage{ucs}\n"
-#               "\\usepackage[utf8x]{inputenc}\n"
+#               "\\usepackage[utf8]{inputenc}\n"
                "\\usepackage{color}\n"
                "\\usepackage{alltt}\n"
                "\\usepackage{times}\n") % ed_glob.version
-        pre += ("\\pagecolor[rgb]{%s}\n" % self.HexToRGB(self._dback))
+        pre += ("\\pagecolor[rgb]{%s}\n" % \
+                self.HexToRGB(self._dstyle.GetBack()))
         pre += "\\parindent=0in\n\n"
         pre += "%% Begin Styling Command Definitions"
         for cmd in self._cmds:
@@ -686,16 +690,16 @@ class LaTeX(plugin.Plugin):
         # Get Style Attributes
         fore = s_item.GetFore()
         if fore == wx.EmptyString:
-            fore = self._dfore
+            fore = self._dstyle.GetFore()
         back = s_item.GetBack()
         if back == wx.EmptyString:
-            back = self._dback
+            back = self._dstyle.GetBack()
         face = s_item.GetFace()
         if face == wx.EmptyString:
-            face = self._dface
+            face = self._dstyle.GetFace()
         size = s_item.GetSize()
         if size == wx.EmptyString:
-            size = self._dsize
+            size = self._dstyle.GetSize()
 
         back = back_tmp % self.HexToRGB(back.split(',')[0])
         fore = fore_tmp % (self.HexToRGB(fore.split(',')[0]), back)
@@ -718,14 +722,14 @@ class LaTeX(plugin.Plugin):
         ch_map = { "#" : "\\#", "$" : "\\$", "^" : "\\^",
                    "%" : "\\%", "&" : "\\&", "_" : "\\_",
                    "{" : "\\{", "}" : "\\}", "~" : "\\~",
-                   "\\": "$\\backslash$", "\n" : "\\\\*\n",
+                   "\\": "$\\backslash$", "\n" : "\\\\\n",
                    "@" : "$@$", "<" : "$<$", ">" : "$>$",
                    "-" : "$-$", "|" : "$|$"
                  }
-        if ch_map.has_key(txt):
-            return ch_map[txt]
-        else:
-            return txt
+        tmp = list()
+        for char in txt:
+            tmp.append(ch_map.get(char, char))
+        return u''.join(tmp)
 
 #-----------------------------------------------------------------------------#
 
@@ -742,6 +746,7 @@ class Rtf(plugin.Plugin):
         @param mgr: plugin manager of this object
 
         """
+        plugin.Plugin.__init__(self, mgr)
         self._stc = None
         self._id = ed_glob.ID_RTF_GEN
         self._colortbl = RtfColorTbl()
@@ -781,7 +786,7 @@ class Rtf(plugin.Plugin):
         AddColor = self._colortbl.AddColor
         GetColorIndex = self._colortbl.GetColorIndex
         GetStyleAt = stc.GetStyleAt
-        while parse_pos <= last_pos+1:
+        for parse_pos in xrange(last_pos + 1):
             sty_id = GetStyleAt(parse_pos)
             end = parse_pos
             # If style has changed build the previous section
@@ -803,7 +808,6 @@ class Rtf(plugin.Plugin):
                                self.TransformText(stc.GetTextRange(start, end)))
                 start = end
             last_id = sty_id
-            parse_pos = parse_pos + 1
         head = "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 %s;}}" % \
                 stc.GetDefaultFont().GetFaceName()
         return u"%s%s%s}" % (head, self._colortbl, "".join(tmp_txt))
