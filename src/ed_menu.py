@@ -400,6 +400,11 @@ class EdMenuBar(wx.MenuBar):
         formatmenu.Append(ed_glob.ID_UNINDENT, _("Unindent Lines") + \
                           u"\tShift+Tab", _("Unindent the selected lines"))
         formatmenu.AppendSeparator()
+        formatmenu.Append(ed_glob.ID_TO_UPPER,  _("Uppercase"),
+                          _("Convert selected text to all uppercase letters"))
+        formatmenu.Append(ed_glob.ID_TO_LOWER,  _("Lowercase"),
+                          _("Convert selected text to all lowercase letters"))
+        formatmenu.AppendSeparator()
         formatmenu.Append(ed_glob.ID_WORD_WRAP, _("Word Wrap"), 
                                _("Wrap Text Horizontally"), wx.ITEM_CHECK)
         formatmenu.AppendSeparator()

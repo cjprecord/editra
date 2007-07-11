@@ -856,7 +856,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                          ID_UNCOMMENT, ID_AUTOINDENT, ID_LINE_AFTER,
                          ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB,
                          ID_TRIM_WS, ID_SHOW_EDGE, ID_MACRO_START, 
-                         ID_MACRO_STOP, ID_MACRO_PLAY])
+                         ID_MACRO_STOP, ID_MACRO_PLAY, ID_TO_LOWER, 
+                         ID_TO_UPPER])
         ctrl = self.nb.GetCurrentCtrl()
         if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
             # If event is from the toolbar manually send it to the control as
