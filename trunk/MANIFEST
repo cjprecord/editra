@@ -184,7 +184,7 @@ tests/68k_assembly.68k
 tests/ada.adb
 tests/bash_shell_script.sh
 tests/c.c
-tests/c_shell.csh
+tests/c-shell_script.csh
 tests/caml.ml
 tests/cascading_style_sheet.css
 tests/cpp.cpp

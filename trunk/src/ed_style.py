@@ -67,7 +67,7 @@ class StyleItem(object):
 
     """
     def __init__(self, fore=wx.EmptyString, back=wx.EmptyString, 
-                    face=wx.EmptyString, size=wx.EmptyString):
+                       face=wx.EmptyString, size=wx.EmptyString):
         """Initiliazes the Style Object.
 
         @param fore: Specifies the forground color (hex string)
