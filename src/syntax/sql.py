@@ -37,40 +37,40 @@ __revision__ = "$Revision$"
 
 #-----------------------------------------------------------------------------#
 # Dependancies
-
+import synglob
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Specifications ----#
 
 # SQL Keywords
-SQL_KW = (0, "ABORT ACCESS ACCESSED ADD AFTER ALL ALTER AND ANY AS ASC "
-             "ATTRIBUTE AUDIT AUTHORIZATION AVG BASE_TABLE BEFORE BETWEEN BY "
-             "CASCADE CAST CHECK CLUSTER CLUSTERS COLAUTH COLUMN COMMENT "
-             "COMPRESS CONNECT CONSTRAINT CRASH CREATE CURRENT DATA DATABASE "
-             "DATA_BASE DBA DEFAULT DELAY DELETE DESC DISTINCT DROP DUAL ELSE "
-             "EXCLUSIVE EXISTS EXTENDS EXTRACT FILE FORCE FOREIGN FROM GRANT "
-             "GROUP HAVING HEAP IDENTIFIED IDENTIFIER IMMEDIATE IN INCLUDING "
-             "INCREMENT INDEX INDEXES INITIAL INSERT INSTEAD INTERSECT INTO "
-             "INVALIDATE IS ISOLATION KEY LIBRARY LIKE LOCK MAXEXTENTS MINUS "
-             "MODE MODIFY MULTISET NESTED NOAUDIT NOCOMPRESS NOT NOWAIT OF OFF "
-             "OFFLINE ON ONLINE OPERATOR OPTION OR ORDER ORGANIZATION PCTFREE "
-             "PRIMARY PRIOR PRIVATE PRIVILEGES PUBLIC QUOTA RELEASE RENAME "
-             "REPLACE RESOURCE REVOKE ROLLBACK ROW ROWLABEL ROWS SCHEMA SELECT "
-             "SEPARATE SESSION SET SHARE SIZE SPACE START STORE SUCCESSFUL "
-             "SYNONYM SYSDATE TABLE TABLES TABLESPACE TEMPORARY TO TREAT "
-             "TRIGGER TRUNCATE UID UNION UNIQUE UNLIMITED UPDATE USE USER "
-             "VALIDATE VALUES VIEW WHENEVER WHERE WITH TRUE FALSE NULL")
+SQL_KW = (0, "abort access accessed add after all alter and any as asc "
+             "attribute audit authorization avg base_table before between by "
+             "cascade cast check cluster clusters colauth column comment "
+             "compress connect constraint crash create current data database "
+             "data_base dba default delay delete desc distinct drop dual else "
+             "exclusive exists extends extract file force foreign from grant "
+             "group having heap identified identifier immediate in including "
+             "increment index indexes initial insert instead intersect into "
+             "invalidate is isolation key library like lock maxextents minus "
+             "mode modify multiset nested noaudit nocompress not nowait of off "
+             "offline on online operator option or order organization pctfree "
+             "primary prior private privileges public quota release rename "
+             "replace resource revoke rollback row rowlabel rows schema select "
+             "separate session set share size space start store successful "
+             "synonym sysdate table tables tablespace temporary to treat "
+             "trigger truncate uid union unique unlimited update use user "
+             "validate values view whenever where with true false null")
 
 # SQL DB Objects (Types)
-SQL_DBO = (1, "ANYDATA ANYTYPE BFILE BINARY_INTEGER BLOB BOOLEAN BYTE CHAR "
-              "CHARACTER CLOB CURSOR DATE DAY DEC DECIMAL DOUBLE LONG NUMBER "
-              "DSINTERVAL_UNCONSTRAINED FLOAT HOUR INT INTEGER INTERVAL LOB "
-              "MINUTE MLSLABEL MONTH NATURAL NATURALN NCHAR NCHAR_CS NCLOB "
-              "NUMERIC NVARCHAR PLS_INT PLS_INTEGER POSITIVE POSITIVEN TABLE "
-              "RAW REAL RECORD SECOND SIGNTYPE SMALLINT STRING SYS_REFCURSOR "
-              "TIME TIMESTAMP TIMESTAMP_UNCONSTRAINED ZONE PRECISION "
-              "TIMESTAMP_LTZ_UNCONSTRAINED UROWID VARCHAR VARCHAR2 YEAR "
-              "YMINTERVAL_UNCONSTRAINED TIMESTAMP_TZ_UNCONSTRAINED ")
+SQL_DBO = (1, "anydata anytype bfile binary_integer blob boolean byte char "
+              "character clob cursor date day dec decimal double long number "
+              "dsinterval_unconstrained float hour int integer interval lob "
+              "minute mlslabel month natural naturaln nchar nchar_cs nclob "
+              "numeric nvarchar pls_int pls_integer positive positiven table "
+              "raw real record second signtype smallint string sys_refcursor "
+              "time timestamp timestamp_unconstrained zone precision "
+              "timestamp_ltz_unconstrained urowid varchar varchar2 year "
+              "yminterval_unconstrained timestamp_tz_unconstrained ")
 # SQL PLDoc
 SQL_PLD = (2, "TODO param author since return see deprecated")
 
@@ -84,42 +84,42 @@ SQL_PLUS = (3, "acc~ept a~ppend archive log attribute bre~ak bti~tle c~hange "
                "disc~onnect ti~tle ")
 
 # SQL User KW1 (PL/SQL Functions)
-SQL_UKW1 = (4, "ABS ACOS ADD_MONTHS ASCII ASCIISTR ASIN ATAN ATAN2 BFILENAME "
-               "BITAND CEIL CHARTOROWID CHR COALESCE COMMIT COMMIT_CM COMPOSE "
-               "CONCAT CONVERT COS COSH COUNT CUBE CURRENT_DATE CURRENT_TIME "
-               "CURRENT_TIMESTAMP DBTIMEZONE DECODE DECOMPOSE DEREF DUMP "
-               "EMPTY_BLOB EMPTY_CLOB EXISTS EXP FLOOR FROM_TZ GETBND GLB "
-               "GREATEST GREATEST_LB GROUPING HEXTORAW INITCAP NSTR INSTR2 "
-               "INSTR4 INSTRB INSTRC ISNCHAR LAST_DAY LEAST LEAST_UB LENGTH "
-               "LENGTH2 LENGTH4 LENGTHB LENGTHC LN LOCALTIME LOCALTIMESTAMP "
-               "LOG LOWER LPAD LTRIM LUB MAKE_REF MAX MIN MOD MONTHS_BETWEEN "
-               "NCHARTOROWID NCHR NEW_TIME NEXT_DAY NHEXTORAW NLS_INITCAP "
-               "NLS_CHARSET_DECL_LEN NLS_CHARSET_ID NLS_CHARSET_NAME ROUND "
-               "NLS_LOWER NLSSORT NLS_UPPER NULLFN NULLIF NUMTODSINTERVAL "
-               "NUMTOYMINTERVAL NVL POWER RAISE_APPLICATION_ERROR RAWTOHEX "
-               "RAWTONHEX REF REFTOHEX REPLACE ROLLBACK_NR ROLLBACK_SV ROLLUP "
-               "ROWIDTOCHAR ROWIDTONCHAR ROWLABEL RPAD RTRIM SAVEPOINT SOUNDEX "
-               "SESSIONTIMEZONE SETBND SET_TRANSACTION_USE SIGN SIN SINH "
-               "SQLCODE SQLERRM SQRT STDDEV SUBSTR SUBSTR2 SUBSTR4 SUBSTRB "
-               "SUBSTRC SUM SYS_AT_TIME_ZONE SYS_CONTEXT SYSDATE TO_DATE "
-               "SYS_EXTRACT_UTC SYS_GUID SYS_LITERALTODATE SYS_OVER__DI"
-               "SYS_LITERALTODSINTERVAL SYS_LITERALTOTIME SYS_OVER__TT "
-               "SYS_LITERALTOTIMESTAMP SYS_LITERALTOTZTIME SYS_OVER__ID"
-               "SYS_LITERALTOTZTIMESTAMP SYS_LITERALTOYMINTERVAL SYS_OVER__DD "
-               "SYS_OVER_IID SYS_OVER_IIT SYS_OVER__IT SYS_OVER__TI TO_NUMBER "
-               "SYSTIMESTAMP TAN TANH TO_ANYLOB TO_BLOB TO_CHAR TO_CLOB "
-               "TO_DSINTERVAL TO_LABEL TO_MULTI_BYTE TO_NCHAR TO_NCLOB UID "
-               "TO_RAW TO_SINGLE_BYTE TO_TIME TO_TIMESTAMP TO_TIMESTAMP_TZ "
-               "TO_TIME_TZ TO_YMINTERVAL TRANSLATE TREAT TRIM TRUNC TZ_OFFSET "
-               "UNISTR UPPER UROWID USER USERENV VALUE VARIANCE VSIZE WORK XOR")
+SQL_UKW1 = (4, "abs acos add_months ascii asciistr asin atan atan2 bfilename "
+               "bitand ceil chartorowid chr coalesce commit commit_cm compose "
+               "concat convert cos cosh count cube current_date current_time "
+               "current_timestamp dbtimezone decode decompose deref dump "
+               "empty_blob empty_clob exists exp floor from_tz getbnd glb "
+               "greatest greatest_lb grouping hextoraw initcap nstr instr2 "
+               "instr4 instrb instrc isnchar last_day least least_ub length "
+               "length2 length4 lengthb lengthc ln localtime localtimestamp "
+               "log lower lpad ltrim lub make_ref max min mod months_between "
+               "nchartorowid nchr new_time next_day nhextoraw nls_initcap "
+               "nls_charset_decl_len nls_charset_id nls_charset_name round "
+               "nls_lower nlssort nls_upper nullfn nullif numtodsinterval "
+               "numtoyminterval nvl power raise_application_error rawtohex "
+               "rawtonhex ref reftohex replace rollback_nr rollback_sv rollup "
+               "rowidtochar rowidtonchar rowlabel rpad rtrim savepoint soundex "
+               "sessiontimezone setbnd set_transaction_use sign sin sinh "
+               "sqlcode sqlerrm sqrt stddev substr substr2 substr4 substrb "
+               "substrc sum sys_at_time_zone sys_context sysdate to_date "
+               "sys_extract_utc sys_guid sys_literaltodate sys_over__di"
+               "sys_literaltodsinterval sys_literaltotime sys_over__tt "
+               "sys_literaltotimestamp sys_literaltotztime sys_over__id"
+               "sys_literaltotztimestamp sys_literaltoyminterval sys_over__dd "
+               "sys_over_iid sys_over_iit sys_over__it sys_over__ti to_number "
+               "systimestamp tan tanh to_anylob to_blob to_char to_clob "
+               "to_dsinterval to_label to_multi_byte to_nchar to_nclob uid "
+               "to_raw to_single_byte to_time to_timestamp to_timestamp_tz "
+               "to_time_tz to_yminterval translate treat trim trunc tz_offset "
+               "unistr upper urowid user userenv value variance vsize work xor")
 
 # SQL User KW2 (PL/SQL Exceptions)
-SQL_UKW2 = (5, "ACCESS_INTO_NULL CASE_NOT_FOUND COLLECTION_IS_NULL "
-               "CURSOR_ALREADY_OPEN DUP_VAL_ON_INDEX INVALID_CURSOR "
-               "LOGIN_DENIED NO_DATA_FOUND NOT_LOGGED_ON PROGRAM_ERROR "
-               "ROWTYPE_MISMATCH SELF_IS_NULL STORAGE_ERROR INVALID_NUMBER"
-               "SUBSCRIPT_OUTSIDE_LIMIT SYS_INVALID_ROWID TIMEOUT_ON_RESOURCE "
-               "TOO_MANY_ROWS VALUE_ERROR ZERO_DIVIDE  SUBSCRIPT_BEYOND_COUNT ")
+SQL_UKW2 = (5, "access_into_null case_not_found collection_is_null "
+               "cursor_already_open dup_val_on_index invalid_cursor "
+               "login_denied no_data_found not_logged_on program_error "
+               "rowtype_mismatch self_is_null storage_error invalid_number"
+               "subscript_outside_limit sys_invalid_rowid timeout_on_resource "
+               "too_many_rows value_error zero_divide  subscript_beyond_count ")
 
 # SQL User KW3
 SQL_UKW3 = (6, "")
@@ -164,32 +164,44 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [SQL_KW, SQL_DBO, SQL_PLD, SQL_PLUS, SQL_UKW1, SQL_UKW2]
+    if lang_id == synglob.ID_LANG_SQL:
+        return [SQL_KW, SQL_DBO, SQL_PLD, SQL_PLUS, SQL_UKW1, SQL_UKW2]
+    else:
+        return list()
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
     @param lang_id: used for selecting a specific subset of syntax specs
 
     """
-    return SYNTAX_ITEMS
+    if lang_id == synglob.ID_LANG_SQL:
+        return SYNTAX_ITEMS
+    else:
+        return list()
 
 def Properties(lang_id=0):
     """Returns a list of Extra Properties to set
     @param lang_id: used to select a specific set of properties
 
     """
-    return [FOLD]
+    if lang_id == synglob.ID_LANG_SQL:
+        return [FOLD]
+    else:
+        return list()
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
     @param lang_id: used to select a specific subset of comment pattern(s)
 
     """
-    return [u'--']
+    if lang_id == synglob.ID_LANG_SQL:
+        return [u'--']
+    else:
+        return list()
 #---- End Required Module Functions ----#
 
 #---- Syntax Modules Internal Functions ----#
-def KeywordString(option=0):
+def KeywordString():
     """Returns the specified Keyword String
     @note: not used by most modules
 

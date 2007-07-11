@@ -99,11 +99,11 @@ PS_L2 = (1, "GlobalFontDirectory ISOLatin1Encoding SharedFontDirectory "
             "undefineuserobject upath ustroke ustrokepath vmreclaim "
             "writeobject xshow xyshow yshow")
 
-# PS Level 3 Operators
+# PS 3 Operators
 PS_L3 = (2, "cliprestore clipsave composefont currentsmoothness "
             "findcolorrendering setsmoothness shfill")
 
-# RIP-specific operators Ghostscript
+# RIP-specific operators
 RIP_OP = (3, ".begintransparencygroup .begintransparencymask .bytestring "
              ".charboxpath .currentaccuratecurves .currentblendmode "
              ".currentcurvejoin .currentdashadapt .currentdotlength "
