@@ -335,6 +335,19 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                         nchars = nchars - len(self._comment[1])
                     self.GotoPos(sel[0] + nchars)
 
+    def ConvertCase(self, to_upper=False):
+        """Converts the case of the selected text to either all lower
+        case(default) or all upper case.
+        @keyword to_upper: Flag whether conversion is to upper case or not.
+
+        """
+        txt = self.GetSelectedText()
+        if to_upper:
+            txt = txt.upper()
+        else:
+            txt = txt.lower()
+        self.ReplaceSelection(txt)
+
     def GetAutoIndent(self):
         """Returns whether auto-indent is being used
         @return: whether autoindent is active or not
@@ -847,6 +860,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.Comment(True)
         elif e_id == ed_glob.ID_LINE_BEFORE:
             self.AddLine(before=True)
+        elif e_id in [ed_glob.ID_TO_UPPER, ed_glob.ID_TO_LOWER]:
+            self.ConvertCase(e_id == ed_glob.ID_TO_UPPER)
         else:
             evt.Skip()
 
@@ -1299,13 +1314,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if lexer in [ wx.stc.STC_LEX_HTML, wx.stc.STC_LEX_XML]:
             self.SetStyleBits(7)
         elif lexer == wx.stc.STC_LEX_NULL:
+            self.SetStyleBits(5)
             self.SetIndentationGuides(False)
             self.SetLexer(lexer)
             self.ClearDocumentStyle()
             self.UpdateBaseStyles()
             return True
         else:
-            pass
+            self.SetStyleBits(5)
 
         try:
             keywords = syn_data[syntax.KEYWORDS]
