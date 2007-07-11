@@ -22,11 +22,13 @@ NEW: [features/improvements]
 +New Preferences Dialog
 +Improved command line support
 +Better Error handling and notification
-+CssOptimizer plugin available via the plugin manager
 +File type detection is now configurable
++To upper/lower case formatting command
++CssOptimizer plugin available via the plugin manager
 +Lots of new documentation
 +Editra can be packaged as an Egg
 +Support for (Caml, Eiffel, Lout, YAML) syntax highlighting
++Improved SQL highlighting support
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
