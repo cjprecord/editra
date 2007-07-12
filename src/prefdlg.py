@@ -438,7 +438,7 @@ class DocGenPanel(wx.Panel):
                           choices=['2','3','4','5','6','7','8','9','10'],
                           default=str(ed_glob.PROFILE['TABWIDTH']))
         ut_cb = wx.CheckBox(self, ed_glob.ID_PREF_TABS, 
-                            _("Use Tabs Instead of Whitespaces"))
+                            _("Use Tabs Instead of Spaces"))
         ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
         eol_lbl = wx.StaticText(self, label=_("Default EOL Mode") + u": ")
         eol_ch = ExChoice(self, ed_glob.ID_EOL_MODE,
