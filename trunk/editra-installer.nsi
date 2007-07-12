@@ -1,6 +1,6 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Editra"
-!define PRODUCT_VERSION "0.1.28"
+!define PRODUCT_VERSION "0.1.50"
 !define PRODUCT_PUBLISHER "Cody Precord"
 !define PRODUCT_WEB_SITE "http://editra.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Editra.exe"
@@ -20,7 +20,7 @@ SetCompressor lzma
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "COPYING.txt"
+!insertmacro MUI_PAGE_LICENSE "COPYING"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -43,7 +43,7 @@ SetCompressor lzma
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "editra.win32.0.1.28.exe"
+OutFile "editra.win32.0.1.50.exe"
 InstallDir "$PROGRAMFILES\Editra"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -156,10 +156,13 @@ Section "MainSection" SEC01
   File "tests\ada.adb"
   File "tests\bash_shell_script.sh"
   File "tests\c.c"
+  File "tests\caml.ml"
+  File "tests\c-shell_script.csh"
   File "tests\cascading_style_sheet.css"
   File "tests\cpp.cpp"
   File "tests\dos_batch_script.bat"
   File "tests\editra_style_sheet.ess"
+  File "tests\eiffel.e"
   File "tests\fortran_77.for"
   File "tests\fortran_95.f95"
   File "tests\html.html"
@@ -172,8 +175,10 @@ Section "MainSection" SEC01
   File "tests\lua.lua"
   File "tests\makefile"
   File "tests\masm.masm"
+  File "tests\matlab.m"
   File "tests\microsoft_sql.sql"
   File "tests\nullsoft_installer_script.nsi"
+  File "tests\octave.oct"
   File "tests\pascal.pas"
   File "tests\perl.pl"
   File "tests\php.php"
@@ -187,6 +192,7 @@ Section "MainSection" SEC01
   File "tests\vhdl.vhdl"
   File "tests\visual_basic.vb"
   File "tests\xml.xml"
+  File "tests\yaml.yaml"
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File "w9xpopen.exe"
@@ -343,11 +349,14 @@ Section Uninstall
   Delete "$INSTDIR\tests\68k_assembly.68k"
   Delete "$INSTDIR\tests\ada.adb"
   Delete "$INSTDIR\tests\bash_shell_script.sh"
+  Delete "$INSTDIR\tests\c-shell_script.csh"
   Delete "$INSTDIR\tests\c.c"
+  Delete "$INSTDIR\tests\caml.ml"
   Delete "$INSTDIR\tests\cascading_style_sheet.css"
   Delete "$INSTDIR\tests\cpp.cpp"
   Delete "$INSTDIR\tests\dos_batch_script.bat"
   Delete "$INSTDIR\tests\editra_style_sheet.ess"
+  Delete "$INSTDIR\tests\eiffel.e"
   Delete "$INSTDIR\tests\fortran_77.for"
   Delete "$INSTDIR\tests\fortran_95.f95"
   Delete "$INSTDIR\tests\html.html"
@@ -360,8 +369,10 @@ Section Uninstall
   Delete "$INSTDIR\tests\lisp.lisp"
   Delete "$INSTDIR\tests\makefile"
   Delete "$INSTDIR\tests\masm.masm"
+  Delete "$INSTDIR\tests\matlab.ml"
   Delete "$INSTDIR\tests\microsoft_sql.sql"
   Delete "$INSTDIR\tests\nullsoft_installer_script.nsi"
+  Delete "$INSTDIR\tests\octave.oct"
   Delete "$INSTDIR\tests\pascal.pas"
   Delete "$INSTDIR\tests\perl.pl"
   Delete "$INSTDIR\tests\php.php"
@@ -375,6 +386,7 @@ Section Uninstall
   Delete "$INSTDIR\tests\vhdl.vhdl"
   Delete "$INSTDIR\tests\visual_basic.vb"
   Delete "$INSTDIR\tests\xml.xml"
+  Delete "$INSTDIR\tests\yaml.yaml"
   Delete "$SMPROGRAMS\Editra\Uninstall.lnk"
   Delete "$SMPROGRAMS\Editra\Website.lnk"
   Delete "$DESKTOP\Editra.lnk"

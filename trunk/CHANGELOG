@@ -7,7 +7,7 @@ Change Log:
 Changes since last release:
 
 #-----------------------------------------------------------------------------#
-VERSION 0.1.xx
+VERSION 0.1.50
 DATE 0x/xx/2007
 3rd Alpha Release
 
@@ -27,8 +27,9 @@ NEW: [features/improvements]
 +CssOptimizer plugin available via the plugin manager
 +Lots of new documentation
 +Editra can be packaged as an Egg
-+Support for (Caml, Eiffel, Lout, YAML) syntax highlighting
++Support for (Caml, Eiffel, Lout, MatLab, Octave, YAML) syntax highlighting
 +Improved SQL highlighting support
++Some minor improvements to the LaTeX generator
 
 BUG FIXES:
 +Respects BOM byte if one is present in the file
