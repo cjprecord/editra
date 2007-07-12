@@ -158,6 +158,7 @@ src/syntax/lout.py
 src/syntax/lua.py
 src/syntax/make.py
 src/syntax/masm.py
+src/syntax/matlab.py
 src/syntax/mssql.py
 src/syntax/nasm.py
 src/syntax/nsis.py
@@ -202,10 +203,12 @@ tests/lout.lt
 tests/lua.lua
 tests/makefile
 tests/masm.masm
+tests/matlab.m
 tests/microsoft_sql.sql
 tests/netwide_assembler.nasm
 tests/no_perm.txt
 tests/nullsoft_installer_script.nsi
+tests/octave.oct
 tests/perl.pl
 tests/perm_ok.txt
 tests/php.php

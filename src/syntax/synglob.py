@@ -152,6 +152,10 @@ LANG_PS = u'Postscript'
 ID_LANG_PYTHON = wx.NewId()
 LANG_PYTHON = u'Python'
 
+# Use LEX_MATLAB
+ID_LANG_MATLAB = wx.NewId()
+LANG_MATLAB = u"Matlab"
+
 # Use LEX_RUBY
 ID_LANG_RUBY = wx.NewId()
 LANG_RUBY = u'Ruby'
@@ -181,6 +185,10 @@ LANG_VB = u'Visual Basic'
 # Use LEX_VHDL
 ID_LANG_VHDL = wx.NewId()
 LANG_VHDL = u'VHDL'
+
+# Use LEX_OCTAVE
+ID_LANG_OCTAVE = wx.NewId()
+LANG_OCTAVE = u'Octave'
 
 # Use LEX_OTHER (Batch, Makefile)
 ID_LANG_BATCH = wx.NewId()
@@ -219,9 +227,11 @@ EXT_MAP = {
            'lua'                : LANG_LUA,
            'mak makefile'       : LANG_MAKE,
            'asm masm'           : LANG_MASM,
+           'm matlab'           : LANG_MATLAB,
            'mssql'              : LANG_MSSQL,
            'nasm'               : LANG_NASM,
            'nsi'                : LANG_NSIS,
+           'oct octave'         : LANG_OCTAVE,
            'dfm dpk dpr inc p pas pp' : LANG_PASCAL,
            'cgi pl pm pod'      : LANG_PERL,
            'php php3 phtml phtm' : LANG_PHP,
@@ -235,7 +245,7 @@ EXT_MAP = {
            'bas cls ctl frm vb' : LANG_VB,
            'vh vhdl'            : LANG_VHDL,
            'axl dtd plist rdf svg xml xrc xsd xsl xslt xul' : LANG_XML,
-           'yaml yml'           : LANG_YAML
+           'yaml yml'           : LANG_YAML,
           }
 
 # Maps file types to syntax definitions
@@ -262,9 +272,11 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_LUA    : (ID_LANG_LUA,    stc.STC_LEX_LUA,      'lua'),
             LANG_MAKE   : (ID_LANG_MAKE,   stc.STC_LEX_MAKEFILE, 'make'),
             LANG_MASM   : (ID_LANG_MASM,   stc.STC_LEX_ASM,      'masm'),
+            LANG_MATLAB : (ID_LANG_MATLAB, stc.STC_LEX_MATLAB,   'matlab'),
             LANG_MSSQL  : (ID_LANG_MSSQL,  stc.STC_LEX_MSSQL,    'mssql'),
             LANG_NASM   : (ID_LANG_NASM,   stc.STC_LEX_ASM,      'nasm'),
             LANG_NSIS   : (ID_LANG_NSIS,   stc.STC_LEX_NSIS,     'nsis'),
+            LANG_OCTAVE : (ID_LANG_OCTAVE, stc.STC_LEX_OCTAVE,   'matlab'),
             LANG_PASCAL : (ID_LANG_PASCAL, stc.STC_LEX_PASCAL,   'pascal'),
             LANG_PERL   : (ID_LANG_PERL,   stc.STC_LEX_PERL,     'perl'),
             LANG_PHP    : (ID_LANG_PHP,    stc.STC_LEX_HTML,     'php'),
@@ -289,15 +301,16 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_C      : LANG_C,      ID_LANG_CAML  : LANG_CAML,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
           ID_LANG_CSS    : LANG_CSS,    ID_LANG_EIFFEL : LANG_EIFFEL,
-          ID_LANG_ESS   : LANG_ESS,
+          ID_LANG_ESS    : LANG_ESS,
           ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95, 
           ID_LANG_HTML   : LANG_HTML,   ID_LANG_JAVA  : LANG_JAVA, 
           ID_LANG_JS     : LANG_JS,     ID_LANG_KSH   : LANG_KSH,
           ID_LANG_LATEX  : LANG_LATEX,  ID_LANG_LISP  : LANG_LISP, 
           ID_LANG_LOUT   : LANG_LOUT,   ID_LANG_LUA   : LANG_LUA,
           ID_LANG_MAKE   : LANG_MAKE,   ID_LANG_MASM  : LANG_MASM,
-          ID_LANG_MSSQL  : LANG_MSSQL,  ID_LANG_NASM  : LANG_MASM,
-          ID_LANG_NSIS   : LANG_NSIS,   ID_LANG_PASCAL : LANG_PASCAL, 
+          ID_LANG_MATLAB : LANG_MATLAB, ID_LANG_MSSQL  : LANG_MSSQL,  
+          ID_LANG_NASM  : LANG_MASM,    ID_LANG_NSIS   : LANG_NSIS,   
+          ID_LANG_OCTAVE : LANG_OCTAVE, ID_LANG_PASCAL : LANG_PASCAL, 
           ID_LANG_PERL   : LANG_PERL,   ID_LANG_PHP    : LANG_PHP,
           ID_LANG_PS     : LANG_PS,     ID_LANG_PYTHON : LANG_PYTHON,
           ID_LANG_RUBY   : LANG_RUBY,   ID_LANG_SQL    : LANG_SQL,
