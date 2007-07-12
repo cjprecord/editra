@@ -1,11 +1,12 @@
-#/usr/bin/env python
+#!/usr/bin/env python
+# Syntax Highlight Test File for Python
 # Some Comments about this file
 
+"""A test file for checking styles for the python highlighter.
+   Its really quite a pointless script.
+  
+"""
 __author__ = "Cody Precord"
-__doc__ = """A test file for checking styles for the python highlighter.
-          Its really quite a pointless script.
-          
-          """
 
 import sys
 
@@ -16,6 +17,7 @@ def add(a, b):
 def say_hello():
     """Prints hello world to the console"""
     print "Hello World"
+    print "unclosed string
 
 class Greeting:
     """A class to represent a greeting"""
