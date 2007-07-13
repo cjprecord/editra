@@ -74,7 +74,7 @@ SYNTAX_ITEMS = [('STC_CAML_CHAR', 'char_style'),
                 ('STC_CAML_TAGNAME', 'directive_style')] #STYLE ME]
 
 #---- Extra Properties ----#
-# Folding is not currently supported
+FOLD = ('fold', '1')
 
 #-----------------------------------------------------------------------------#
 
@@ -105,7 +105,7 @@ def Properties(lang_id=0):
 
     """
     if lang_id == synglob.ID_LANG_CAML:
-        return list()
+        return [FOLD]
     else:
         return list()
 

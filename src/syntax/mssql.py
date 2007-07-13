@@ -75,6 +75,8 @@ SYNTAX_ITEMS = [ ('STC_MSSQL_DEFAULT', 'default_style'),
 
 #---- Extra Properties ----#
 FOLD = ("fold", "1")
+FOLD_COMMENT = ("fold.comment", "1")
+FOLD_COMPACT = ("fold.compact", "1")
 
 #-----------------------------------------------------------------------------#
 
