@@ -1,46 +1,38 @@
-|-------------------------------------------------------------------------------
-| program constants
+; Syntax Test file for 68k Assembly code
+; Some comments about this file
+.D0 00000000
+MS 2100 00000002
+MM 2000;DI
+ LEA.L $002100,A1
+ MOVE.L #2,-(A1)
+ BSR $00002050
 
-    .equ    AMS_jumptable,0xC8
-    .equ    ClrScr,0x19e
-    .equ    DrawStr,0x1a9
-    .equ    ngetchx,0x51
+MM 2050;DI
+ MOVE.L (A1)+,D1
+ MOVE.L (A1),D2
+ ADD.L D1,D2
+ MOVE.L D2,D0
+ RTS
 
-|-------------------------------------------------------------------------------
-| text section
+.D0 00000000
+.D3 00000100
+.D4 00000200
+.D5 00000300
+MM 2000;DI
+ CMP D3,D4
+ BGE $002100
+ CMP D3,D5
+ BGE $002150
+ MOVE.L D3,D0
+.
+MM 2100;DI
+ CMP D4,D5
+ BGE $002150
+ MOVE.L D4,D0
+.
+MM 2150;DI
+ MOVE.L D5,D0
+.
 
-    .text
-    .xdef asm_main
-
-asm_main:
-    movem.l %a4-%a5,-(%sp)      | save a4/a5 registers
-
-    movea.l AMS_jumptable,%a5   | load the AMS jumptable into a5
-
-    movea.l 4*ClrScr(%a5),%a4   | load the ClrScr function
-    jsr     (%a4)               | execute the ClrScr function
-
-    move.w  #1,-(%sp)           | set default color (black text on white bg)
-    pea     str(%pc)            | the string to print
-    move.w  #0,-(%sp)           | set (x,y) coordinate to (0,0)
-    move.w  #0,-(%sp)
-
-    movea.l 4*DrawStr(%a5),%a4  | load the DrawStr function
-    jsr     (%a4)               | execute the DrawStr function
-
-    lea     10(%sp),%sp         | reset the stack pointer
-
-    movea.l 4*ngetchx(%a5),%a4  | load the ngetchx function
-    jsr     (%a4)               | execute the ngetchx function
-
-    movem.l (%sp)+,%a4-%a5      | restore a4/a5 registers
-
-    rts                         | return from subroutine
-
-|-------------------------------------------------------------------------------
-| data section
-
-    .data
-
-str:
-    .string "Hello, World!"
+.PC 2000
+TR

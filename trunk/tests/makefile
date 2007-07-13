@@ -9,11 +9,11 @@ CFLAGS=-Os $(CFLAGS)
 !endif
 
 helloworld: helloworld.o
-        cc -o $@ $<
+		cc -o $@ $<
 
 helloworld.o: helloworld.c
-        cc -c -o $@ $<
+		cc -c -o $@ $<
 
 .PHONY: clean
 clean:
-        rm -f helloworld helloworld.o *~ core
+		rm -f helloworld helloworld.o *~ core
