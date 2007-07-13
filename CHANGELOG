@@ -8,7 +8,7 @@ Changes since last release:
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.50
-DATE 0x/xx/2007
+DATE 07/14/2007
 3rd Alpha Release
 
 NEWS:
@@ -16,6 +16,10 @@ This release is mostly a bug fix and refactoring release. To help with further
 removing bugs and errors there is now an error reporter built into the editor
 that will open when an error condition is raised. Please help to improve Editra
 by clicking on "Report Error" when this dialog is shown.
+
+There are also a few new features that can be seen below, most notable is the
+support for a number of new languages and file encodings. For the specifics
+read the below changelog entries.
 
 NEW: [features/improvements]
 +Support for utf-7, uft-16 encoded files
