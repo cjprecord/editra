@@ -166,7 +166,7 @@ src/syntax/pascal.py
 src/syntax/perl.py
 src/syntax/php.py
 src/syntax/postscript.py
-src/syntax/python.py
+src/syntax/python.python
 src/syntax/ruby.py
 src/syntax/sh.py
 src/syntax/smalltalk.py
@@ -180,7 +180,6 @@ src/syntax/xml.py
 src/syntax/yaml.py
 styles/default.ess
 styles/midnight.ess
-tests/68k_assembly.asm
 tests/68k_assembly.68k
 tests/ada.adb
 tests/bash_shell_script.sh
@@ -206,11 +205,9 @@ tests/masm.masm
 tests/matlab.m
 tests/microsoft_sql.sql
 tests/netwide_assembler.nasm
-tests/no_perm.txt
 tests/nullsoft_installer_script.nsi
 tests/octave.oct
 tests/perl.pl
-tests/perm_ok.txt
 tests/php.php
 tests/plain_text.txt
 tests/postscript.ps
