@@ -113,7 +113,7 @@ DATA_FILES = [("include/python2.5",
               ("tests", glob.glob("tests/*")),
               ("docs", glob.glob("docs/*.txt")), "AUTHORS", "FAQ", "INSTALL",
               "README","CHANGELOG","COPYING", "NEWS", "THANKS", "TODO",
-              "pixmaps/editra_doc.icns"
+              "setup.cfg", "pixmaps/editra_doc.icns"
              ]
 
 DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py", "docs/*.txt",
@@ -127,10 +127,24 @@ DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py", "docs/*.txt",
          "locale/en_US/LC_MESSAGES/Editra.mo",
          "locale/ja_JP/LC_MESSAGES/Editra.mo", "styles/*.ess", "tests/*", 
          "AUTHORS", "CHANGELOG","COPYING", "FAQ", "INSTALL", "NEWS", "README",
-         "THANKS", "TODO", "plugins/*.egg"
+         "THANKS", "TODO", "setup.cfg", "plugins/*.egg"
 ]
 
 DESCRIPTION = "Developer's Text Editor"
+
+LONG_DESCRIPT = \
+r"""
+========
+Overview
+========
+Editra is a multi-platform text editor with an implementation that focuses on 
+creating an easy to use interface and features that aid in code development. 
+Currently it supports syntax highlighting and variety of other useful features 
+for over 40 programing languages. For a more complete list of features and
+screenshots visit the projects homepage at `Editra.org
+<http://www.editra.org/>`_.
+
+"""
 
 ICON = { 'Win' : "pixmaps/editra.ico",
          'Mac' : "pixmaps/Editra.icns"
@@ -268,6 +282,7 @@ else:
         scripts = ['Editra'],
         version = VERSION,
         description = DESCRIPTION,
+        long_description = LONG_DESCRIPT,
         author = AUTHOR,
         author_email = AUTHOR_EMAIL,
         maintainer = AUTHOR,
