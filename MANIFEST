@@ -11,6 +11,7 @@ MANIFEST
 Editra
 __init__.py
 editra_pylintrc
+setup.cfg
 setup.py
 docs/editra_style_sheets.txt
 locale/ja_JP/LC_MESSAGES/Editra.mo
