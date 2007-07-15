@@ -4,7 +4,19 @@ LICENSE: GPLv2
 
 Change Log:
 
+#-----------------------------------------------------------------------------#
 Changes since last release:
+
+VERSION 0.1.50
+DATE 07/14/2007
+3rd Alpha Release
+
+NEWS:
+
+NEW: [features/improvements]
+
+BUG FIXES:
++Handled some unhandled error conditions in the python autocompleter
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.50

@@ -234,7 +234,7 @@ class Completer(object):
                 return False
             try:
                 exec code in newspace
-            except (ImportError, RuntimeError, SyntaxError):
+            except (ImportError, RuntimeError, SyntaxError, SystemError):
                 return False
             else:
                 # No problems, so update the namespace.
