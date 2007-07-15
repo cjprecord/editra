@@ -58,7 +58,9 @@ import syntax.synglob as synglob
 import ed_search
 import util
 import doctools
-import wx.lib.flatnotebook as FNB
+# import wx.lib.flatnotebook as FNB
+# Use local copy until newer release of wxpython
+from extern import flatnotebook as FNB
 
 #---- Class Globals ----#
 # HACK till proper artprovider can be written
@@ -84,10 +86,11 @@ class EdPages(FNB.FlatNotebook):
 
         """
         FNB.FlatNotebook.__init__(self, parent, id_num, 
-                                  style = TAB_STYLE |
-                                          FNB.FNB_X_ON_TAB | 
-                                          FNB.FNB_SMART_TABS |
-                                          FNB.FNB_BACKGROUND_GRADIENT
+                                  style=TAB_STYLE |
+                                        FNB.FNB_X_ON_TAB | 
+                                        FNB.FNB_SMART_TABS |
+                                        FNB.FNB_BACKGROUND_GRADIENT |
+                                        FNB.FNB_DROPDOWN_TABS_LIST
                             )
 
         # Notebook attributes
@@ -102,6 +105,8 @@ class EdPages(FNB.FlatNotebook):
 
         # Set Additional Style Parameters
         self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
+        ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.png"
+        self.SetNavigatorIcon(wx.Bitmap(ed_icon, wx.BITMAP_TYPE_PNG))
 
         # Setup the ImageList and the default image
         imgl = wx.ImageList(16, 16)
