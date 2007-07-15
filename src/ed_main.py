@@ -843,6 +843,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wxMenuEvent
 
         """
+        if not self.IsActive():
+            evt.Skip()
+            return
+        
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
         menu_ids = syntax.SyntaxIds()
@@ -1038,7 +1042,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         dlg.Destroy()
 
         if result == wx.ID_YES:
-            self.OnSave(ID_SAVE)
+            self.OnSave(wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, ID_SAVE))
 
         return result
 
