@@ -201,6 +201,7 @@ ID_HARDDISK          = wx.NewId()
 ID_PLUGIN_CFG        = wx.NewId()
 ID_PLUGIN_DL         = wx.NewId()
 ID_PLUGIN_INST       = wx.NewId()
+ID_REPORTER          = wx.NewId()
 ID_USB               = wx.NewId()
 ID_PREF_ADVANCED     = wx.NewId()
 ID_PREF_APPEARANCE   = wx.NewId()
@@ -238,6 +239,7 @@ PROFILE = {
            'MODE'       : 'CODE',           # Overall editor mode
            'MYPROFILE'  : 'default.pp',     # Path to profile file
            'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
+           'REPORTER'   : True,             # Error Reporter is Active
            'SAVE_POS'   : True,             # Remember Carat positions
            'SHOW_EDGE'  : True,             # Show Edge Guide
            'SHOW_EOL'   : False,            # Show EOL markers
@@ -270,6 +272,7 @@ ID_2_PROF = {
              ID_PREF_FHIST        : 'FHIST_LVL',
              ID_INDENT_GUIDES     : 'GUIDES',
              ID_PREF_LANG         : 'LANG',
+             ID_REPORTER          : 'REPORTER',
              ID_SYNTAX            : 'SYNTAX',
              ID_PREF_SYNTHEME     : 'SYNTHEME',
              ID_PREF_TABS         : 'USETABS',
