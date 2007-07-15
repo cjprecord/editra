@@ -89,7 +89,8 @@ class Editra(wx.App):
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log("[app][info] Editra is Initializing")
-        sys.excepthook = dev_tool.ExceptionHook
+        if ed_glob.PROFILE['REPORTER']:
+            sys.excepthook = dev_tool.ExceptionHook
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)

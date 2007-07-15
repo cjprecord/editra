@@ -308,6 +308,9 @@ class GeneralPanel(PrefPanelBase):
         splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, 
                                 _("Show Splash Screen"))
         splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
+        reporter_cb = wx.CheckBox(self, ed_glob.ID_REPORTER, 
+                                  _("Disable Error Reporter"))
+        reporter_cb.SetValue(not ed_glob.PROFILE['REPORTER'])
 
         # File settings
         file_lbl = wx.StaticText(self, label=_("File Settings") + u": ")
@@ -339,12 +342,13 @@ class GeneralPanel(PrefPanelBase):
                        (start_lbl, (1, 1)),
                        (msizer, (1, 2), (1, 2)),
                        (psizer, (2, 2), (1, 2)),
-                       (splash_cb, (3, 2), (1, 2))])
-        sizer.AddMany([(file_lbl, (5, 1)),
-                       (fhsizer, (5, 2), (1, 2)), (pos_cb, (6, 2), (1, 3)),
-                       (chkmod_cb, (7, 2), (1, 2))])
-        sizer.AddMany([(locale, (9, 1)),
-                       (lsizer, (9, 2), (1, 3))])
+                       (splash_cb, (3, 2), (1, 2)),
+                       (reporter_cb, (4, 2), (1, 2))])
+        sizer.AddMany([(file_lbl, (6, 1)),
+                       (fhsizer, (6, 2), (1, 2)), (pos_cb, (7, 2), (1, 3)),
+                       (chkmod_cb, (8, 2), (1, 2))])
+        sizer.AddMany([(locale, (10, 1)),
+                       (lsizer, (10, 2), (1, 3))])
         self.SetSizer(sizer)
 
     def OnCheck(self, evt):
@@ -358,6 +362,10 @@ class GeneralPanel(PrefPanelBase):
         if e_id is [ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
                     ed_glob.ID_PREF_CHKMOD]:
             ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+        elif e_id == ed_glob.ID_REPORTER:
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = not e_obj.GetValue()
+        else:
+            pass
         evt.Skip()
 
     def OnChoice(self, evt):
