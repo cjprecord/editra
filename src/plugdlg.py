@@ -551,7 +551,8 @@ class InstallPanel(wx.Panel):
                              "and hit Delete or Backspace."))
         self._install = wx.ListBox(self, wx.ID_ANY, style=wx.LB_SORT)
         self._install.SetToolTip(toolt)
-        self._install.SetDropTarget(util.DropTargetFT(self))
+        self._install.SetDropTarget(util.DropTargetFT(self._install, 
+                                                      None, self.OnDrop))
         self._instb = wx.Button(self, self.ID_INSTALL, _("Install"))
         self._instb.Disable()
         self._usercb = wx.CheckBox(self, self.ID_USER, _("User Directory"))
@@ -564,7 +565,7 @@ class InstallPanel(wx.Panel):
         self._syscb.SetToolTip(toolt)
         if not util.CanWrite(ed_glob.CONFIG['SYS_PLUGIN_DIR']):
             self._syscb.Disable()
-        
+
         # Layout Panel
         self._sizer.Add(lbl, 0, wx.ALIGN_CENTER)
         self._sizer.Add(self._install, 1, wx.EXPAND)

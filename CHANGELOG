@@ -15,6 +15,7 @@ NEWS:
 
 NEW: [features/improvements]
 +Improved notebook tab navigation
++Better Drag and Drop feedback
 
 BUG FIXES:
 +Handled some unhandled error conditions in the python autocompleter
