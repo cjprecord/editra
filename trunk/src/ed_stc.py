@@ -96,7 +96,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                           wx.stc.STC_SCMOD_SHIFT, wx.stc.STC_CMD_ZOOMIN)
         #---- Drop Target ----#
         if use_dt:
-            self.SetDropTarget(util.DropTargetFT(parent))
+            self.SetDropTarget(util.DropTargetFT(self, None, parent.OnDrop))
 
         # Attributes
         self.LOG = wx.GetApp().GetLog()

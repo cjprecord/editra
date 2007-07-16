@@ -56,16 +56,13 @@ import dev_tool
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 
-# Found this while playing around with the PyPe source code finally
-# solved the problem of allowing drag n drop text at the same time as
-# drag and drop files.
 class DropTargetFT(wx.PyDropTarget):
     """Drop target capable of accepting dropped files and text
     @todo: has some issues with the clipboard on windows under certain
            conditions. They arent fatal but need fixing.
 
     """
-    def __init__(self, window):
+    def __init__(self, window, textcallback=None, filecallback=None):
         """Initializes the Drop target
         @param window: window to recieve drop objects
 
@@ -75,7 +72,36 @@ class DropTargetFT(wx.PyDropTarget):
         self.data = None
         self.file_data_obj = None
         self.text_data_obj = None
+        self._tmp = None
+        self._lastp = None
+        self._tcallb = textcallback
+        self._fcallb = filecallback
         self.InitObjects()
+
+    def CreateDragString(self, txt):
+        """Creates a bitmap of the text that is being dragged
+        @todo: possibly set colors to match highlighting of text
+        @todo: generalize this to be usable by other widgets besides stc
+
+        """
+        if not issubclass(self.window.__class__, wx.stc.StyledTextCtrl):
+            return
+        stc = self.window
+        txt = txt.split(stc.GetEOLChar())
+        longest = (0, 0)
+        for line in txt:
+            ext = stc.GetTextExtent(line)
+            if ext[0] > longest[0]:
+                longest = ext
+        cords = list()
+        for x in xrange(len(txt)):
+            cords.append((0, x * longest[1]))
+        mdc = wx.MemoryDC(wx.EmptyBitmap(longest[0] + 5, 
+                                         longest[1] * len(txt)))
+        mdc.SetTextForeground(stc.GetDefaultForeColour())
+        mdc.SetFont(stc.GetDefaultFont())
+        mdc.DrawTextList(txt, cords)
+        self._tmp = wx.DragImage(mdc.GetAsBitmap())
 
     def InitObjects(self):
         """Initializes the text and file data objects
@@ -90,50 +116,87 @@ class DropTargetFT(wx.PyDropTarget):
         self.SetDataObject(self.data)
 
     def OnEnter(self, x_cord, y_cord, drag_result):
-        """Handles the window enter event
+        """Called when a drag starts
         @return: result of drop object entering window
 
         """
+        if self.GetData():
+            files = self.file_data_obj.GetFilenames()
+            text = self.text_data_obj.GetText()
+        else:
+            return drag_result
+
+        self._lastp = (x_cord, y_cord)
+        if len(files):
+            self.window.SetCursor(wx.StockCursor(wx.CURSOR_COPY_ARROW))
+        else:
+            self.CreateDragString(text)
         return drag_result
 
     def OnDrop(self, x_cord=0, y_cord=0):
         """Gets the drop cords
         @keyword x: x cord of drop object
         @keyword y: y cord of drop object
+        @todo: implement snapback when drop is out of range
 
         """
+        self._tmp = None
+        self._lastp = None
         return True
 
     def OnDragOver(self, x_cord, y_cord, drag_result):
-        """Gets the drag results/cords
+        """Called when the cursor is moved during a drag action
         @return: result of drag over
-        @todo: if it is text move the carrat
+        @todo: For some reason the carrat postion changes which can be seen
+               by the brackets getting highlighted. However the actual carrat
+               is not moved.
 
         """
-        return drag_result
+        if self._tmp is None:
+            return drag_result
+        else:
+            stc = self.window
+            point = wx.Point(x_cord, y_cord)
+            self._tmp.BeginDrag(point - self._lastp, stc)
+            self._tmp.Hide()
+            stc.GotoPos(stc.PositionFromPoint(point))
+            stc.Refresh()
+            stc.Update()
+            self._tmp.Move(point)
+            self._tmp.Show()
+            self._tmp.RedrawImage(self._lastp, point, True, True)
+            self._lastp = point
+            return drag_result
 
     def OnData(self, x_cord, y_cord, drag_result):
         """Gets and processes the dropped data
         @postcondition: dropped data is processed
 
         """
+        self.window.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
         if self.GetData():
             files = self.file_data_obj.GetFilenames()
             text = self.text_data_obj.GetText()
-            
-            if len(files) > 0:
-                self.window.OnDrop(files)
+            if len(files) > 0 and self._fcallb is not None:
+                self._fcallb(files)
             elif(len(text) > 0):
                 if SetClipboardText(text):
-                    win = self.window.GetCurrentCtrl()
-                    if True:
-                        pos = win.PositionFromPointClose(x_cord, y_cord)
+                    win = self.window
+                    pos = win.PositionFromPointClose(x_cord, y_cord)
+                    if pos != wx.stc.STC_INVALID_POSITION:
                         win.SetSelection(pos, pos)
                         win.Paste()
-            else:
-                self.window.SetStatusText("Can't read this dropped data")
         self.InitObjects()
         return drag_result
+
+    def OnLeave(self):
+        """Handles the event of when the drag object leaves the window
+        @postcondition: Cursor is set back to normal state
+
+        """
+        self.window.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+        if self._tmp is not None:
+            self._tmp.EndDrag()
 
 #---- End FileDropTarget ----#
 
