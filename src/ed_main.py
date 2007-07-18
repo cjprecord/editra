@@ -699,7 +699,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
     #---- Format Menu Functions ----#
     def OnFont(self, evt):
-        """Open Font Settings Dialog
+        """Open Font Settings Dialog for changing fonts on a per document
+        basis.
         @status: This currently does not allow for font settings to stick
                  from one session to the next.
         @param evt: Event fired that called this handler
@@ -707,17 +708,20 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         if evt.GetId() == ID_FONT:
-            dlg = wx.FontDialog(self, wx.FontData())
+            ctrl = self.nb.GetCurrentCtrl()
+            dfont = ctrl.GetDefaultFont()
+            fdata = wx.FontData()
+            fdata.SetInitialFont(ctrl.GetDefaultFont())
+            dlg = wx.FontDialog(self, fdata)
             result = dlg.ShowModal()
             data = dlg.GetFontData()
+            dlg.Destroy()
 
             if result == wx.ID_OK:
                 font = data.GetChosenFont()
-                ctrl = self.nb.GetCurrentCtrl()
                 ctrl.SetGlobalFont(self.nb.control.FONT_TAG_MONO, \
-                                   font.GetFaceName())
+                                   font.GetFaceName(), font.GetPointSize())
                 ctrl.UpdateAllStyles()
-            dlg.Destroy()
         else:
             evt.Skip()
 
