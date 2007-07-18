@@ -1089,7 +1089,7 @@ class TabNavigatorWindow(wx.Dialog):
 
         self._selectedItem = -1
         self._indexMap = []
-
+        
         if icon is None:
             self._bmp = GetMondrianBitmap()
         else:
@@ -1097,8 +1097,7 @@ class TabNavigatorWindow(wx.Dialog):
 
         sz = wx.BoxSizer(wx.VERTICAL)
         
-        self._listBox = wx.ListBox(self, wx.ID_ANY, wx.DefaultPosition, 
-                                   wx.Size(200, 150), [], wx.LB_SINGLE | wx.NO_BORDER)
+        self._listBox = wx.ListBox(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(200, 150), [], wx.LB_SINGLE | wx.NO_BORDER)
         
         mem_dc = wx.MemoryDC()
         mem_dc.SelectObject(wx.EmptyBitmap(1,1))
@@ -4451,7 +4450,7 @@ class PageContainer(wx.Panel):
                 if bRedrawDropArrow:
 
                     render.DrawDropDownArrow(self, dc)
-        
+
         event.Skip()
 
 
@@ -4788,7 +4787,7 @@ class PageContainer(wx.Panel):
         """ Handles the wx.EVT_LEFT_DCLICK event for L{PageContainer}. """
 
         where, tabIdx = self.HitTest(event.GetPosition())
-
+        
         if where == FNB_RIGHT_ARROW:
             self.RotateRight()
 
