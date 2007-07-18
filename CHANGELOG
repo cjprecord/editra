@@ -7,20 +7,21 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
-VERSION 0.1.50
-DATE 07/14/2007
-3rd Alpha Release
+VERSION 0.1.xx
+DATE 0x/xx/2007
+4th Alpha Release
 
 NEWS:
 
 NEW: [features/improvements]
 +Improved notebook tab navigation
-+Better Drag and Drop feedback
++Better Drag and Drop feedback for text and files
 
 BUG FIXES:
 +Handled some unhandled error conditions in the python autocompleter
 +Fixed a bug where a save would fail when clicking on Yes when the modify save
  dialog was shown.
++Fixed a number of minor bugs in the plugin manager
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.50
