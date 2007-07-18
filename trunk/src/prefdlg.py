@@ -421,6 +421,9 @@ class DocGenPanel(wx.Panel):
               how a document is managed.
 
     """
+    ID_FONT_PICKER = wx.NewId()
+    ID_FONT_PICKER2 = wx.NewId()
+
     def __init__(self, parent):
         """Create the panel
         @param parent: Parent window of this panel
@@ -467,6 +470,19 @@ class DocGenPanel(wx.Panel):
         ww_cb = wx.CheckBox(self, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
         ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
 
+        # Font Options
+        font_lbl = wx.StaticText(self, label=_("Primary Font") + u": ")
+        fnt = wx.GetApp().GetMainWindow().nb.GetCurrentCtrl().GetDefaultFont()
+        fpicker = PyFontPicker(self, self.ID_FONT_PICKER, fnt)
+        tt = wx.ToolTip(_("Sets the main/default font of the document"))
+        fpicker.SetToolTip(tt)
+        font_lbl2 = wx.StaticText(self, label=_("Secondary Font") + u": ")
+        fnt = wx.GetApp().GetMainWindow().nb.GetCurrentCtrl().GetDefaultFont()
+        fpicker2 = PyFontPicker(self, self.ID_FONT_PICKER2, fnt)
+        tt = wx.ToolTip(_("Sets a secondary font used for special regions "
+                          "when syntax highlighting is in use"))
+        fpicker2.SetToolTip(tt)
+
         # Layout
         sizer = wx.GridBagSizer(5, 5)
         sizer.Add((5, 5), (1, 0))
@@ -476,7 +492,11 @@ class DocGenPanel(wx.Panel):
                        (eol_lbl, (3, 2)), (eol_ch, (3, 3), wx.GBSpan(1, 2)),
                        ((5, 5), (5, 0)), (view_lbl, (5, 1)),
                        (aa_cb, (5, 2)), (seol_cb, (6, 2)), (sln_cb, (7, 2)),
-                       (sws_cb, (8, 2)), (ww_cb, (9, 2))
+                       (sws_cb, (8, 2)), (ww_cb, (9, 2)),
+                       (font_lbl, (11, 1)), 
+                       (fpicker, (11, 2), (1, 3), wx.EXPAND), 
+                       (font_lbl2, (12, 1)),
+                       (fpicker2, (12, 2), (1, 3), wx.EXPAND)
                        ])
         self.SetSizer(sizer)
 
@@ -518,6 +538,7 @@ class DocCodePanel(wx.Panel):
         # Event Handlers
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_CHOICE, self.OnCheck)
+        self.Bind(wx.EVT_SLIDER, self.OnSlide)
 
     def _DoLayout(self):
         """Layout the page
@@ -534,9 +555,10 @@ class DocCodePanel(wx.Panel):
         edge_cb = wx.CheckBox(self, ed_glob.ID_SHOW_EDGE, _("Edge Guide"))
         edge_cb.SetValue(ed_glob.PROFILE['SHOW_EDGE'])
         
-        edge_ch = ExChoice(self, ed_glob.ID_PREF_EDGE,
-                           choices=range(40, 101),
-                           default=str(ed_glob.PROFILE['EDGE']))
+        edge_sl = wx.Slider(self, ed_glob.ID_PREF_EDGE, ed_glob.PROFILE['EDGE'],
+                            0, 100, size=(-1, 15), style=wx.SL_HORIZONTAL | \
+                            wx.SL_AUTOTICKS | wx.SL_LABELS)
+        edge_sl.SetTickFreq(5, 1)
         ind_cb = wx.CheckBox(self, ed_glob.ID_INDENT_GUIDES, 
                              _("Indentation Guides"))
         ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
@@ -554,7 +576,7 @@ class DocCodePanel(wx.Panel):
         sizer.AddMany([(br_cb, (1, 2)), (fold_cb, (2, 2)),
                        (edge_cb, (3, 2)),
                        (wx.StaticText(self, label=_("Column") + u": "), (3, 3)),
-                       (edge_ch, (3, 4)), (ind_cb, (4, 2))])
+                       (edge_sl, (3, 4), (1, 2)), (ind_cb, (4, 2))])
         sizer.Add(wx.StaticText(self, label=_("Input Helpers") + u": "), (6, 1))
         sizer.AddMany([(comp_cb, (6, 2)), (ai_cb, (7, 2))])
         self.SetSizer(sizer)
@@ -576,6 +598,23 @@ class DocCodePanel(wx.Panel):
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
                 mainw.nb.UpdateTextControls()
+        else:
+            evt.Skip()
+
+    def OnSlide(self, evt):
+        """Catch actions from a slider
+        @param evt: Event that called this handler.
+
+        """
+        e_id = evt.GetId()
+        e_obj = evt.GetEventObject()
+        if e_id == ed_glob.ID_PREF_EDGE:
+            val = e_obj.GetValue()
+            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            mainw = wx.GetApp().GetMainWindow()
+            if mainw is not None:
+                for stc in mainw.nb.GetTextControls():
+                    stc.SetEdgeColumn(val)
         else:
             evt.Skip()
 
@@ -1119,3 +1158,98 @@ class ExChoice(wx.Choice):
         if val.isalpha():
             val.lower()
         return val
+
+class PyFontPicker(wx.Panel):
+    """A slightly enhanced L{wx.FontPickerCtrl} that displays the
+    choosen font in the text control using the choosen font
+    as well as the font's size using nicer formatting.
+
+    """
+    def __init__(self, parent, id_=-1, default=wx.NullFont):
+        """Initializes the PyFontPicker
+        @param default: The font to initialize as selected in the control
+
+        """
+        wx.Panel.__init__(self, parent, id_, style=wx.NO_BORDER)
+
+        # Attributes
+        if default == wx.NullFont:
+            self._font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        else:
+            self._font = default
+        self._text = wx.TextCtrl(self, style=wx.TE_CENTER | wx.TE_READONLY)
+        self._text.SetFont(default)
+        self._text.SetValue(u"%s - %dpt" % (self._font.GetFaceName(), \
+                                            self._font.GetPointSize()))
+        self._button = wx.Button(self, label=_("Set Font") + u'...')
+        
+        # Layout
+        self._sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self._sizer.Add(self._text, 1, wx.ALIGN_LEFT)
+        self._sizer.Add((5, 5), 0)
+        self._sizer.Add(self._button, 0, wx.ALIGN_RIGHT)
+        self.SetSizer(self._sizer)
+        self.SetAutoLayout(True)
+        
+        # Event Handlers
+        self.Bind(wx.EVT_BUTTON, self.OnButton, self._button)
+        self.Bind(wx.EVT_FONTPICKER_CHANGED, self.OnChange)
+
+    def GetFont(self):
+        """Gets the currently choosen font
+        @return: wx.Font
+
+        """
+        return self._font
+
+    def GetTextCtrl(self):
+        """Gets the widgets text control
+        @return: wx.TextCtrl
+
+        """
+        return self._text
+
+    def OnButton(self, evt):
+        """Opens the FontDialog and processes the result
+        @param evt: Event that called this handler
+
+        """
+        fdata = wx.FontData()
+        fdata.SetInitialFont(self._font)
+        fdlg = wx.FontDialog(self.GetParent(), fdata)
+        fdlg.ShowModal()
+        fdata = fdlg.GetFontData()
+        fdlg.Destroy()
+        wx.PostEvent(self, wx.FontPickerEvent(self, self.GetId(), 
+                                              fdata.GetChosenFont()))
+
+    def OnChange(self, evt):
+        """Updates the text control using our custom stylings after
+        the font is changed.
+        @param evt: The event that called this handler
+
+        """
+        font = evt.GetFont()
+        self._font = font
+        self._text.Clear()
+        self._text.SetFont(self._font)
+        self._text.SetValue(u"%s - %dpt" % (font.GetFaceName(), \
+                                            font.GetPointSize()))
+
+    def SetButtonLabel(self, label):
+        """Sets the buttons label"""
+        self._button.SetLabel(label)
+        self._button.Refresh()
+
+    def SetToolTip(self, tip):
+        """Sets the tooltip of the window
+        @param tip: wx.ToolTip
+
+        """
+        # Need to make copies of the tooltip or the program
+        # will crash when the dialog is closed and is doing cleanup
+        self._text.SetToolTip(tip)
+        tip = wx.ToolTip(tip.GetTip())
+        self._button.SetToolTip(tip)
+        tip = wx.ToolTip(tip.GetTip())
+        wx.Panel.SetToolTip(self, tip)

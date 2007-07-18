@@ -411,7 +411,7 @@ class StyleMgr(object):
                   self.FONT_TAG_HELV  : helv_font,
                   self.FONT_TAG_OTHER : other_font,
                   self.FONT_TAG_SIZE  : mfont.GetPointSize(),
-                  self.FONT_TAG_SIZE2 : mfont.GetPointSize()-2
+                  self.FONT_TAG_SIZE2 : mfont.GetPointSize() - 2
                  }
         return faces
 
@@ -654,7 +654,8 @@ class StyleMgr(object):
                 self.LOG("[styles] [syntax error] You are missing a { or } " +
                         "in Def: " + style[0].split()[0])
                 if strict:
-                    raise SyntaxError
+                    raise SyntaxError, \
+                          "Missing { or } near Def: %s" % style[0].split()[0]
                 else:
                     style_tree.remove(style)
 
@@ -688,12 +689,12 @@ class StyleMgr(object):
                     self.LOG("[styles] [syntax_error] Missing a : or ; in the "
                              "declaration of %s" % tag)
                     if strict:
-                        raise SyntaxError
+                        raise SyntaxError, "Missing : or ; in def: %s" % tag
                 elif leaf[0] not in STY_ATTRIBUTES:
                     self.LOG(("[styles][warning] Unknown style attribute: %s"
                              ", In declaration of %s") % (leaf[0], tag))
                     if strict:
-                        raise SyntaxWarning
+                        raise SyntaxWarning, "Unknown attribute %s" % leaf[0]
                 else:
                     value.append(leaf)
             style_dict[tag] = value
@@ -710,7 +711,7 @@ class StyleMgr(object):
                 self.LOG("[styles] [syntax_error] The style def %s is not a "
                          "valid name" % style_def[0])
                 if strict:
-                    raise SyntaxError
+                    raise SyntaxError, "%s is an invalid name" % style_def[0]
             else:
                 style_str = wx.EmptyString
                 for attrib in style_dict[style_def]:
@@ -722,7 +723,7 @@ class StyleMgr(object):
                     values = tval
                     if len(values) > 2:
                         self.LOG("[styles] [syntax_warning] Only one extra " +
-                                 "attribute can be set per style see " +
+                                 "attribute can be set per style. See " +
                                  style_def + " => " + attrib[0])
                         if strict:
                             raise SyntaxWarning
@@ -774,7 +775,7 @@ class StyleMgr(object):
             style_dict[key] = new_item
         return style_dict
 
-    def SetGlobalFont(self, font_tag, fontface):
+    def SetGlobalFont(self, font_tag, fontface, size=-1):
         """Sets one of the fonts in the global font set by tag
         and sets it to the named font. Returns true on success.
         @param font_tag: fonttype identifier key
@@ -783,6 +784,8 @@ class StyleMgr(object):
         """
         if hasattr(self, 'fonts'):
             self.fonts[font_tag] = fontface
+            if size > 0:
+                self.fonts[self.FONT_TAG_SIZE] = size
             return True
         else:
             return False
