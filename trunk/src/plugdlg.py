@@ -42,6 +42,7 @@ __revision__ = "$Revision$"
 # Dependancies
 import sys
 import os
+import re
 import urllib
 import wx
 import wx.lib.delayedresult as delayedresult
@@ -313,6 +314,10 @@ class ConfigPanel(wx.Panel):
 class DownloadPanel(wx.Panel):
     """Creates a panel with controls for downloading plugins."""
     ID_DOWNLOAD = wx.NewId()
+    EGG_PATTERN = re.compile(r"(?P<name>[^-]+)"
+    r"( -(?P<ver>[^-]+) (-py(?P<pyver>[^-]+) (-(?P<plat>.+))? )? )?",
+    re.VERBOSE | re.IGNORECASE
+    ).match
 
     def __init__(self, parent, pid=wx.ID_ANY, style=wx.NO_BORDER):
         """Initializes the panel"""
@@ -472,10 +477,11 @@ class DownloadPanel(wx.Panel):
 
         """
         e_id = evt.GetId()
+        print self._dl_list
         if e_id == self.ID_DOWNLOAD:
             urls = list()
             for item in self._dl_list:
-                if self._dl_list[item]:
+                if self._dl_list[item] and item in self._p_list:
                     urls.append(BASE_URL + self._p_list[item].GetUrl())
             self._eggcount = len(urls)
             for egg in range(len(urls)):
@@ -529,6 +535,23 @@ class DownloadPanel(wx.Panel):
             self._list.SetColumnWidth(3, wx.LIST_AUTOSIZE)
             self._list.SendSizeEvent()
         return self._list.GetItemCount()
+
+    def RemoveDownloadedItem(self, item):
+        """Remove an item from the download cache
+        @param item: Name of item to remove
+
+        """
+        # Removed downloaded data
+        if self._eggbasket.has_key(item):
+            del self._eggbasket[item]
+
+        # Remove download entry data
+        match = self.EGG_PATTERN(item)
+        if match:
+            plugin_name = match.group('name').lower()
+            print plugin_name
+            if self._dl_list.has_key(plugin_name):
+                del self._dl_list[plugin_name]
 
 class InstallPanel(wx.Panel):
     """Creates a panel for installing plugins."""
@@ -605,7 +628,7 @@ class InstallPanel(wx.Panel):
                     reader = file(item, "rb")
                     egg = reader.read()
                     reader.close()
-                except IOError:
+                except (IOError, SystemError, OSError):
                     continue
             else:
                 dl_pg = self.GetParent().GetPage(DOWNLOAD_PG)
@@ -622,8 +645,10 @@ class InstallPanel(wx.Panel):
             else:
                 # If successfully installed remove from list
                 ind = self._install.FindString(item)
+                dl_pg = self.GetParent().GetPage(DOWNLOAD_PG)
                 if ind != wx.NOT_FOUND:
                     self._install.Delete(ind)
+                    dl_pg.RemoveDownloadedItem(item)
 
         if not len(self._install.GetItems()):
             # All plugins installed correctly
