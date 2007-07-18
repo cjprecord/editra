@@ -234,7 +234,7 @@ PROFILE = {
            'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
            'GUIDES'     : True,             # Use Indentation guides
            'ICONS'      : 'Nuovo',          # Icon Theme
-           'ICON_SZ'    : (24,24),          # Toolbar Icon Size
+           'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
            'LANG'       : 'Default',        # UI language
            'MODE'       : 'CODE',           # Overall editor mode
            'MYPROFILE'  : 'default.pp',     # Path to profile file

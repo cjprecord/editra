@@ -107,6 +107,14 @@ def EnvironmentInfo():
     info.append("wxPython Encoding: %s" % wx.GetDefaultPyEncoding())
     info.append("Frozen: %s" % str(hasattr(sys, 'frozen')))
     info.append("#---- End System Information ----#")
+    info.append("#---- Runtime Variables ----#")
+    for key, val in ed_glob.PROFILE.iteritems():
+        # Exclude "private" information
+        if key.startswith('FILE') or key == 'MYPROFILE':
+            continue
+        else:
+            info.append("%s=%s" % (key, str(val)))
+    
     return "\n".join(info)
 
 def ExceptionHook(exctype, value, trace):
