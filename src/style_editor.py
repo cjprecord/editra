@@ -312,7 +312,7 @@ class StyleEditor(wx.Dialog):
         fground_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fground_lbl = wx.StaticText(self.ctrl_pane, 
                                     label=_("Foreground") + u": ")
-        fground_sel = csel.ColourSelect(self.ctrl_pane, ID_FORE_COLOR, 
+        fground_sel = csel.ColourSelect(self.ctrl_pane, ID_FORE_COLOR,
                                         "#000000", (0, 0, 0), size=(80, 25))
         fground_sizer.AddMany([((5, 5)), 
                                (fground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
@@ -507,13 +507,9 @@ class StyleEditor(wx.Dialog):
         hex_str = "#%s%s%s" % (red[2:].zfill(2).upper(),
                                green[2:].zfill(2).upper(),
                                blue[2:].zfill(2).upper())
-        # ?wxBug? Label doesnt refresh unless I do this stupid sequence (wxMac)
-        e_obj.SetValue(wx.Color(e_val[0], e_val[1], e_val[2]))
         e_obj.SetLabel(hex_str)
-        e_obj.Refresh()
-        e_obj.Update()
         e_obj.SetValue(wx.Color(e_val[0], e_val[1], e_val[2]))
-        e_obj.SetLabel(hex_str)
+
         # Update The Style data for current tag
         self.UpdateStyleSet(e_id)
 
@@ -632,19 +628,12 @@ class StyleEditor(wx.Dialog):
             elif c_type == "wxChoice":
                 ctrl.SetStringSelection(val_map[sid])
             elif c_type == "wxBitmapButton":
+                # Note: must call set label before set value or the label
+                # is not redrawn
+                ctrl.SetLabel(val_map[sid][:7])
                 ctrl.SetValue(wx.Color(int(val_map[sid][1:3], 16), 
                                        int(val_map[sid][3:5], 16), 
                                        int(val_map[sid][5:7], 16)))
-                ctrl.SetLabel(val_map[sid][:7])
-                # HACK the button refuses to update rightaway unless I do this 
-                #      in this order. wxMac: ?Bug?
-                ctrl.Refresh()
-                ctrl.Update()
-                ctrl.SetValue(wx.Color(int(val_map[sid][1:3], 16), 
-                                       int(val_map[sid][3:5], 16), 
-                                       int(val_map[sid][5:7], 16)))
-                ctrl.SetLabel(val_map[sid][:7])
-
         return True
 
     def UpdateStyleSet(self, id_):
