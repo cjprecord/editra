@@ -137,6 +137,7 @@ src/autocomp/pycomp.py
 src/extern/README
 src/extern/__init__.py
 src/extern/ez_setup.py
+src/extern/flatnotebook.py
 src/extern/pkg_resources.py
 src/syntax/README
 src/syntax/__init__.py
