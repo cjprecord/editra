@@ -135,6 +135,8 @@ class PrefTools(wx.Toolbook):
         """Initializes the main book control of the preferences dialog
         @summary: creates the top level notebook control for the prefdlg
                   a toolbar is used for changing pages.
+        @todo: there is some nasty dithering/icon rescaling happening on
+               osx. need to se why this is.
 
         """
         wx.Toolbook.__init__(self, parent, tbid, style=style)
@@ -437,6 +439,7 @@ class DocGenPanel(wx.Panel):
         # Event Handlers
         self.Bind(wx.EVT_CHECKBOX, self.OnUpdateEditor)
         self.Bind(wx.EVT_CHOICE, self.OnUpdateEditor)
+        self.Bind(ed_event.EVT_NOTIFY, self.OnFontChange)
 
     def _DoLayout(self):
         """Layout the controls
@@ -471,13 +474,14 @@ class DocGenPanel(wx.Panel):
         ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
 
         # Font Options
+        main = wx.GetApp().GetMainWindow()
         font_lbl = wx.StaticText(self, label=_("Primary Font") + u": ")
-        fnt = wx.GetApp().GetMainWindow().nb.GetCurrentCtrl().GetDefaultFont()
+        fnt = main.nb.GetCurrentCtrl().GetStyleFont()
         fpicker = PyFontPicker(self, self.ID_FONT_PICKER, fnt)
         tt = wx.ToolTip(_("Sets the main/default font of the document"))
         fpicker.SetToolTip(tt)
         font_lbl2 = wx.StaticText(self, label=_("Secondary Font") + u": ")
-        fnt = wx.GetApp().GetMainWindow().nb.GetCurrentCtrl().GetDefaultFont()
+        fnt = main.nb.GetCurrentCtrl().GetStyleFont(False)
         fpicker2 = PyFontPicker(self, self.ID_FONT_PICKER2, fnt)
         tt = wx.ToolTip(_("Sets a secondary font used for special regions "
                           "when syntax highlighting is in use"))
@@ -499,6 +503,23 @@ class DocGenPanel(wx.Panel):
                        (fpicker2, (12, 2), (1, 3), wx.EXPAND)
                        ])
         self.SetSizer(sizer)
+
+    def OnFontChange(self, evt):
+        """Handles L{ed_event.EVT_NOTIFY} from the font controls"""
+        e_id = evt.GetId()
+        if e_id in [self.ID_FONT_PICKER, self.ID_FONT_PICKER2]:
+            font = evt.GetValue()
+            if e_id == self.ID_FONT_PICKER:
+                ed_glob.PROFILE['FONT1'] = font
+            else:
+                ed_glob.PROFILE['FONT2'] = font
+            main = wx.GetApp().GetMainWindow()
+            if main:
+                for stc in main.nb.GetTextControls():
+                    stc.SetStyleFont(font, e_id == self.ID_FONT_PICKER)
+                    stc.UpdateAllStyles()
+        else:
+            evt.Skip()
 
     def OnUpdateEditor(self, evt):
         """Update any open text controls to reflect the changes made in this
@@ -1235,6 +1256,9 @@ class PyFontPicker(wx.Panel):
         self._text.SetFont(self._font)
         self._text.SetValue(u"%s - %dpt" % (font.GetFaceName(), \
                                             font.GetPointSize()))
+        evt = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, 
+                                         self.GetId(), self._font, self)
+        wx.PostEvent(self.GetParent(), evt)
 
     def SetButtonLabel(self, label):
         """Sets the buttons label"""

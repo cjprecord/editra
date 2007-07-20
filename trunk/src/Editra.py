@@ -92,6 +92,21 @@ class Editra(wx.App):
         if ed_glob.PROFILE['REPORTER']:
             sys.excepthook = dev_tool.ExceptionHook
 
+        # TEMP Convert Profile Objects
+        for key in ['FONT1', 'FONT2']:
+            font = ed_glob.PROFILE.get(key)
+            if font is None:
+                continue
+            tmp = font.split(',')
+            if len(tmp) == 2:
+                face = tmp[0]
+                if tmp[1].isdigit():
+                    size = int(tmp[1])
+                else:
+                    size = 10
+                val = wx.FFont(size, wx.DEFAULT, face=face)
+                ed_glob.PROFILE[key] = val
+
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
 

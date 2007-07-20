@@ -51,6 +51,7 @@ __revision__ = "$Revision$"
 import os
 import re
 import wx
+import ed_glob
 import util
 
 # Globals
@@ -80,7 +81,7 @@ class StyleItem(object):
             #123456       = hex color code
             #123456,bold  = hex color code + extra style
             Monaco        = Font Face Name
-            %(mono)s      = Format string to be swapped at runtime
+            %(primary)s      = Format string to be swapped at runtime
             10            = A font point size
             %(size)s      = Format string to be swapped at runtime
         """
@@ -294,12 +295,11 @@ class StyleMgr(object):
     @todo: dont load style sheet for every newly created instance
 
     """
-    FONT_TAG_TIMES     = u"times"
-    FONT_TAG_MONO      = u"mono"
-    FONT_TAG_HELV      = u"helv"
-    FONT_TAG_OTHER     = u"other"
-    FONT_TAG_SIZE      = u"size"
-    FONT_TAG_SIZE2     = u"size2"
+    FONT_PRIMARY   = u"primary"
+    FONT_SECONDARY = u"secondary"
+    FONT_SIZE      = u"size"
+    FONT_SIZE2     = u"size2"
+    FONT_SIZE3     = u"size3"
 
     def __init__(self, custom=wx.EmptyString):
         """Initializes the Style Manager
@@ -330,26 +330,27 @@ class StyleMgr(object):
         """
         def_dict = \
             {'brace_good' : StyleItem("#FFFFFF", "#0000FF,bold"),
-             'brace_bad'  : StyleItem(back = "#FF0000,bold"),
+             'brace_bad'  : StyleItem(back="#FF0000,bold"),
              'calltip' : StyleItem("#404040", "#FFFFB8"),
              'ctrl_char'  : StyleItem(),
-             'line_num'   : StyleItem(back="#C0C0C0", face = "%(other)s", \
-                                      size = "%(size2)d"),
-             'array_style': StyleItem("#EE8B02,bold", face = "%(other)s"),
-             'btick_style': StyleItem("#8959F6,bold", size = "%(size)d"),
+             'line_num'   : StyleItem(back="#C0C0C0", face="%(secondary)s", \
+                                      size="%(size3)d"),
+             'array_style': StyleItem("#EE8B02,bold", face="%(secondary)s"),
+             'btick_style': StyleItem("#8959F6,bold", size="%(size)d"),
              'default_style': StyleItem("#000000", "#F6F6F6", \
-                                        "%(mono)s", "%(size)d"),
+                                        "%(primary)s", "%(size)d"),
              'char_style' : StyleItem("#FF3AFF"),
              'class_style' : StyleItem("#2E8B57,bold"),
              'class2_style' : StyleItem("#2E8B57,bold"),
              'comment_style' : StyleItem("#838383"),
-             'directive_style' : StyleItem("#0000FF,bold", face = "%(other)s"),
+             'directive_style' : StyleItem("#0000FF,bold", 
+                                           face="%(secondary)s"),
              'dockey_style' : StyleItem("#0000FF"),
-             'error_style' : StyleItem("#DD0101,bold", face = "%(other)s"),
+             'error_style' : StyleItem("#DD0101,bold", face="%(secondary)s"),
              'funct_style' : StyleItem("#008B8B,italic"),
-             'global_style' : StyleItem("#007F7F,bold", face = "%(other)s"), 
-             'here_style' : StyleItem("#CA61CA,bold", face = "%(other)s"),
-             'ideol_style' : StyleItem("#E0C0E0", face = "%(other)s"),
+             'global_style' : StyleItem("#007F7F,bold", face="%(secondary)s"), 
+             'here_style' : StyleItem("#CA61CA,bold", face="%(secondary)s"),
+             'ideol_style' : StyleItem("#E0C0E0", face="%(secondary)s"),
              'keyword_style' : StyleItem("#A52B2B,bold"),
              'keyword2_style' : StyleItem("#2E8B57,bold"),
              'keyword3_style' : StyleItem("#008B8B,bold"),
@@ -358,17 +359,17 @@ class StyleMgr(object):
              'folder_style' : StyleItem("#FFFFFF", "#000000"),
              'number_style' : StyleItem("#DD0101"),
              'number2_style' : StyleItem("#DD0101,bold"),
-             'operator_style' : StyleItem("#000000", face = "%(mono)s,bold"),
+             'operator_style' : StyleItem("#000000", face="%(primary)s,bold"),
              'pre_style' : StyleItem("#AB39F2,bold"),               
              'pre2_style' : StyleItem("#AB39F2,bold", "#FFFFFF"),
              'regex_style' : StyleItem("#008B8B"),
-             'scalar_style' : StyleItem("#AB37F2,bold", face = "%(other)s"),
-             'scalar2_style' : StyleItem("#AB37F2", face = "%(other)s"),
+             'scalar_style' : StyleItem("#AB37F2,bold", face="%(secondary)s"),
+             'scalar2_style' : StyleItem("#AB37F2", face="%(secondary)s"),
              'string_style' : StyleItem("#FF3AFF,bold"),
              'stringeol_style' : StyleItem("#000000,bold", "#EEC0EE,eol", \
-                                           "%(other)s"),
+                                           "%(secondary)s"),
              'unknown_style' : StyleItem("#FFFFFF,bold", "#DD0101,eol", \
-                                        "%(other)s")
+                                        "%(secondary)s")
              }
         return def_dict
 
@@ -381,7 +382,7 @@ class StyleMgr(object):
         """
         sty_dict = self.DefaultStyleDictionary()
         for key in sty_dict:
-            sty_dict[key] = StyleItem(face = u"%(mono)s", size = "%(size)d")
+            sty_dict[key] = StyleItem(face="%(primary)s", size="%(size)d")
         return sty_dict
 
     def GetFontDictionary(self, default=True):
@@ -389,29 +390,30 @@ class StyleMgr(object):
         ten point fonts as the standards size.
         @keyword default: return default dictionary or custom
         @type default: bool
-        @return: font dictionary (times, mono, helf, other) + (size, size2)
+        @return: font dictionary (primary, secondary) + (size, size2)
 
         """
         if hasattr(self, 'fonts') and not default:
             return self.fonts
-        mfont = wx.Font(10, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, 
-                        wx.FONTWEIGHT_NORMAL)
-        mono_font = mfont.GetFaceName()
-        font = wx.Font(10, wx.FONTFAMILY_DECORATIVE, wx.FONTSTYLE_NORMAL, 
-                        wx.FONTWEIGHT_NORMAL)
-        time_font = font.GetFaceName()
-        font = wx.Font(10, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, 
-                        wx.FONTWEIGHT_NORMAL)
-        other_font = font.GetFaceName()
-        font = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, 
-                        wx.FONTWEIGHT_NORMAL)
-        helv_font = font.GetFaceName()
-        faces = { self.FONT_TAG_TIMES : time_font,
-                  self.FONT_TAG_MONO  : mono_font,
-                  self.FONT_TAG_HELV  : helv_font,
-                  self.FONT_TAG_OTHER : other_font,
-                  self.FONT_TAG_SIZE  : mfont.GetPointSize(),
-                  self.FONT_TAG_SIZE2 : mfont.GetPointSize() - 2
+        font = ed_glob.PROFILE.get('FONT1', None)
+        if font is not None:
+            mfont = font
+        else:
+            mfont = wx.Font(10, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, 
+                            wx.FONTWEIGHT_NORMAL)
+        primary = mfont.GetFaceName()
+
+        font = ed_glob.PROFILE.get('FONT2', None)
+        if font is None:
+            font = wx.Font(10, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, 
+                            wx.FONTWEIGHT_NORMAL)
+        secondary = font.GetFaceName()
+        faces = { 
+                  self.FONT_PRIMARY   : primary,
+                  self.FONT_SECONDARY : secondary,
+                  self.FONT_SIZE  : mfont.GetPointSize(),
+                  self.FONT_SIZE2 : font.GetPointSize(),
+                  self.FONT_SIZE3 : mfont.GetPointSize() - 2
                  }
         return faces
 
@@ -432,7 +434,7 @@ class StyleMgr(object):
                 size = size % self.fonts
             font = wx.FFont(int(size), wx.MODERN, face=face)
         else:
-            font = wx.FFont(self.fonts[self.FONT_TAG_SIZE], wx.MODERN)
+            font = wx.FFont(self.fonts[self.FONT_SIZE], wx.MODERN)
         return font
 
     def GetDefaultForeColour(self, as_hex=False):
@@ -497,12 +499,19 @@ class StyleMgr(object):
         else:
             return StyleItem()
 
-    def GetMonoFont(self):
-        """Returns the current global mono font facename
-        @return face name of current mono spaced font in use
+    def GetStyleFont(self, primary=True):
+        """Returns the primary font facename by default
+        @keyword primary: Get Primary(default) or Secondary Font
+        @return face name of current font in use
 
         """
-        return self.fonts[self.FONT_TAG_MONO]
+        if primary:
+            font = wx.FFont(self.fonts[self.FONT_SIZE], wx.DEFAULT, 
+                            face=self.fonts[self.FONT_PRIMARY])
+        else:
+            font = wx.FFont(self.fonts[self.FONT_SIZE2], wx.DEFAULT, 
+                            face=self.fonts[self.FONT_SECONDARY])
+        return font
 
     def GetStyleByName(self, name):
         """Gets and returns a style string using its name for the search
@@ -785,29 +794,29 @@ class StyleMgr(object):
         if hasattr(self, 'fonts'):
             self.fonts[font_tag] = fontface
             if size > 0:
-                self.fonts[self.FONT_TAG_SIZE] = size
+                self.fonts[self.FONT_SIZE] = size
             return True
         else:
             return False
 
-    def SetStyleFont(self, named_style, wx_font):
-        """Sets the font of a specific style
-        @param named_style: style tag name to set value for
+    def SetStyleFont(self, wx_font, primary=True):
+        """Sets the\primary or secondary font and their respective
+        size values.
         @param wx_font: font object to set styles font info from
-        @return: whether font was set or not
+        @keyword primary: Set primary(default) or secondary font
 
         """
-        if self.HasNamedStyle(named_style):
-            self.styles[named_style].SetFont(wx_font.GetFaceName())
-            self.styles[named_style].SetSize(wx.Font.GetPointSize())
-            return True
+        if primary:
+            self.fonts[self.FONT_PRIMARY] = wx_font.GetFaceName()
+            self.fonts[self.FONT_SIZE] = wx_font.GetPointSize()
         else:
-            return False
+            self.fonts[self.FONT_SECONDARY] = wx_font.GetFaceName()
+            self.fonts[self.FONT_SIZE2] = wx_font.GetPointSize()
 
     def SetStyleTag(self, style_tag, value):
         """Sets the value of style tag by name
         @param style_tag: desired tag name of style definition
-        @param value: style item to set tag for
+        @param value: style item to set tag to
 
         """
         self.styles[style_tag] = value

@@ -215,7 +215,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # Edit Menu Events
         self.Bind(wx.EVT_MENU, self.DispatchToControl)
         self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
-        self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, id=ID_FIND_REPLACE)
+        self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, 
+                  id=ID_FIND_REPLACE)
         self.Bind(wx.EVT_MENU, self.OnQuickFind, id=ID_QUICK_FIND)
         self.Bind(wx.EVT_MENU, self.OnPreferences, id=ID_PREF)
 
@@ -312,7 +313,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                     dirname = util.GetPathName(path)
                     filename = util.GetFileName(path)
                     self.nb.OpenPage(dirname, filename)		   
-                    self.SetTitle("%s - file://%s/%s" % (filename, dirname, filename))
+                    self.SetTitle("%s - file://%s/%s" % \
+                                  (filename, dirname, filename))
                     self.nb.GoCurrentPage()
             else:
                 pass
@@ -427,8 +429,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                      self.nb.GetCurrentCtrl())]
         elif e_id == ID_SAVEALL:
             for page in range(self.nb.GetPageCount()):
-                if issubclass(self.nb.GetPage(page).__class__, wx.stc.StyledTextCtrl):
-                    ctrls.append((self.nb.GetPageText(page), self.nb.GetPage(page)))
+                if issubclass(self.nb.GetPage(page).__class__, 
+                                           wx.stc.StyledTextCtrl):
+                    ctrls.append((self.nb.GetPageText(page), 
+                                  self.nb.GetPage(page)))
         else:
             evt.Skip()
             return
@@ -716,10 +720,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             result = dlg.ShowModal()
             data = dlg.GetFontData()
             dlg.Destroy()
-
             if result == wx.ID_OK:
                 font = data.GetChosenFont()
-                ctrl.SetGlobalFont(self.nb.control.FONT_TAG_MONO, \
+                ctrl.SetGlobalFont(self.nb.control.FONT_PRIMARY, \
                                    font.GetFaceName(), font.GetPointSize())
                 ctrl.UpdateAllStyles()
         else:
