@@ -356,12 +356,12 @@ class StyleEditor(wx.Dialog):
         fsizer = wx.BoxSizer(wx.HORIZONTAL)
         flbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Font") + u": ")
         fontenum = wx.FontEnumerator()
-        fontenum.EnumerateFacenames(fixedWidthOnly = True)
+        fontenum.EnumerateFacenames(fixedWidthOnly=True)
         f_lst = fontenum.GetFacenames()
         f_lst.sort()
-        font_lst = ["%(helv)s", "%(mono)s", "%(other)s", "%(times)s"]
+        font_lst = ["%(primary)s", "%(secondary)s"]
         font_lst.extend(f_lst)
-        fchoice = wx.Choice(self.ctrl_pane, ID_FONT, choices = font_lst)
+        fchoice = wx.Choice(self.ctrl_pane, ID_FONT, choices=font_lst)
         fsizer.AddMany([((5, 5)), (flbl, 0, wx.ALIGN_CENTER_VERTICAL),
                         (fchoice, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 5))])
         fbox_sizer.Add(fsizer, 0, wx.ALIGN_LEFT)

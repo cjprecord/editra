@@ -319,7 +319,12 @@ def WriteProfile(profile):
             prof_keys.remove('WPOS')
 
     for item in prof_keys:
-        writer.write(conv(item) + u"\t\t" + conv(PROFILE[item]) + u"\n")
+        if item not in ['FONT1', 'FONT2']:
+            writer.write(conv(item) + u"\t\t" + conv(PROFILE[item]) + u"\n")
+        else:
+            font = PROFILE[item]
+            val = "%s,%d" % (font.GetFaceName(), font.GetPointSize())
+            writer.write(conv(item) + u"\t\t" + conv(val) + u"\n")
 
     writer.write(u"\n\nEOF\n")
     dev_tool.DEBUGP("[prof_info] Wrote out Profile: " + profile)
