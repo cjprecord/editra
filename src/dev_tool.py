@@ -29,6 +29,7 @@ __revision__ = "$Revision$"
 
 import os
 import sys
+import platform
 import traceback
 import codecs
 import time
@@ -70,7 +71,6 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
         for line in s_lst:
             out = u"%s %s" % (now, line)
             print out.encode('utf-8', 'replace')
-        return 0
     elif mode == "log":
         logfile = os.environ.get('EDITRA_LOG')
         if logfile is None or not os.path.exists(logfile):
@@ -84,11 +84,9 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
         else:
             writer.write(u"MSG: %s\n" % statement)
         file_handle.close()
-        return 0	
     else:
         print u"Improper DEBUG MODE: Defaulting to stdout"
         print statement
-        return 1
 
 def EnvironmentInfo():
     """Returns a string of the systems information
@@ -99,13 +97,22 @@ def EnvironmentInfo():
     info.append("#---- System Information ----#")
     info.append("%s Version: %s" % (ed_glob.prog_name, ed_glob.version))
     info.append("Operating System: %s" % wx.GetOsDescription())
+    if sys.platform == 'darwin':
+        info.append("Mac OSX: %s" % platform.mac_ver()[0])
     info.append("Python Version: %s" % sys.version)
     info.append("wxPython Version: %s" % wx.version())
     info.append("wxPython Info: %s" % "\n\t\t\t".join(wx.PlatformInfo))
     info.append("Python Encoding: Default=%s  File=%s" % \
                 (sys.getdefaultencoding(), sys.getfilesystemencoding()))
     info.append("wxPython Encoding: %s" % wx.GetDefaultPyEncoding())
-    info.append("Frozen: %s" % str(hasattr(sys, 'frozen')))
+    info.append("System Architecture: %s %s" % (platform.architecture()[0], \
+                                                platform.machine()))
+    info.append("Byte order: %s" % sys.byteorder)
+    if hasattr(sys, 'frozen'):
+        frz = sys.frozen
+    else:
+        frz = "False"
+    info.append("Frozen: %s" % str(frz))
     info.append("#---- End System Information ----#")
     info.append("#---- Runtime Variables ----#")
     for key, val in ed_glob.PROFILE.iteritems():
