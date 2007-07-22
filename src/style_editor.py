@@ -475,9 +475,10 @@ class StyleEditor(wx.Dialog):
         if e_id == ed_glob.ID_LEXER:
             self.OpenPreviewFile(val)
         elif e_id == ed_glob.ID_PREF_SYNTHEME:
+            # TODO Need to check for style changes before switching this
             self.preview.UpdateAllStyles(val)
             self.styles_new = self.preview.GetStyleSet()
-            self.styles_orig = self.DuplicateStyleDict(self.styles_orig)
+            self.styles_orig = self.DuplicateStyleDict(self.styles_new)
             ctrl = self.FindWindowById(ID_STYLES)
             tag = ctrl.GetStringSelection()
             if tag != wx.EmptyString:
