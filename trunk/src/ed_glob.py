@@ -127,6 +127,10 @@ ID_JOIN_LINES    = wx.NewId()
 ID_TRANSPOSE     = wx.NewId()
 ID_FIND          = wx.ID_FIND
 ID_FIND_REPLACE  = wx.ID_REPLACE
+# Using the system ids automatically disables the menus which is not wanted
+if wx.Platform == '__WXMAC__':
+    ID_FIND = wx.NewId()
+    ID_FIND_REPLACE = wx.NewId()
 ID_QUICK_FIND    = wx.NewId()
 ID_PREF          = wx.ID_PREFERENCES
 

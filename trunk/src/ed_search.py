@@ -195,14 +195,12 @@ class TextFinder(object):
         @param evt: event that called this handler
 
         """
-        if self._find_dlg is not None:
-            self._find_dlg.Destroy()
-            self._find_dlg = None
+        self._find_dlg.Destroy()
+        self._find_dlg = None
         evt.Skip()
 
     def OnShowFindDlg(self, evt):
-        """Catches the Find events and organizes the data
-        before pushing it to the DoFind Function.
+        """Catches the Find events and shows the appropriate find dialog
         @param evt: event that called this handler
         @postcondition: find dialog is shown
 
@@ -220,6 +218,7 @@ class TextFinder(object):
             self._find_dlg = wx.FindReplaceDialog(self._parent, self._data, \
                                                   _("Find"), wx.FR_NOUPDOWN)
         else:
+            evt.Skip()
             return
         if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
             self._find_dlg.SetExtraStyle(wx.DIALOG_EX_METAL)

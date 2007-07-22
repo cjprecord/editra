@@ -983,6 +983,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             sel1, sel2 = ctrl.GetSelection()
             menu.Enable(ID_COPY, sel1 != sel2)
             menu.Enable(ID_CUT, sel1 != sel2)
+            menu.Enable(ID_FIND, True)
+            menu.Enable(ID_FIND_REPLACE, True)
         elif menu == self.settingsmenu:
             self.LOG("[menu_evt] Updating Settings Menu")
             menu.Check(ID_AUTOCOMP, ctrl.GetAutoComplete())
