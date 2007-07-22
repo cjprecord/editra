@@ -533,7 +533,8 @@ class DocGenPanel(wx.Panel):
         if e_id in [ed_glob.ID_PREF_TABS, ed_glob.ID_PREF_TABW,
                     ed_glob.ID_EOL_MODE, ed_glob.ID_PREF_AALIAS,
                     ed_glob.ID_SHOW_EOL, ed_glob.ID_SHOW_LN,
-                    ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP]:
+                    ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP,
+                     ed_glob.ID_PREF_AALIAS]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
