@@ -305,7 +305,8 @@ def InitConfig():
             profile_updated = True
     else:
         util.CreateConfigDir()
-    ed_glob.DEBUG = Profile_Get('DEBUG', 'bool', False)
+    if 'DEBUG' in Profile_Get('MODE'):
+        ed_glob.DEBUG = True
     ed_glob.CONFIG['CONFIG_DIR'] = util.ResolvConfigDir("")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
     ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
