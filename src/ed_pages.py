@@ -52,6 +52,7 @@ import glob
 import re
 import wx
 import ed_glob
+from profiler import Profile_Get
 import ed_event
 import ed_stc
 import syntax.synglob as synglob
@@ -67,12 +68,6 @@ from extern import flatnotebook as FNB
 IMG = {}
 
 _ = wx.GetTranslation
-
-# Compatibility for wxPython versions before 2.8.4
-if hasattr(FNB, 'FNB_FF2'):
-    TAB_STYLE = FNB.FNB_FF2
-else:
-    TAB_STYLE = FNB.FNB_FANCY_TABS
 #--------------------------------------------------------------------------#
 class EdPages(FNB.FlatNotebook):
     """Editras Notebook
@@ -86,7 +81,7 @@ class EdPages(FNB.FlatNotebook):
 
         """
         FNB.FlatNotebook.__init__(self, parent, id_num, 
-                                  style=TAB_STYLE |
+                                  style=FNB.FNB_FF2 |
                                         FNB.FNB_X_ON_TAB | 
                                         FNB.FNB_SMART_TABS |
                                         FNB.FNB_BACKGROUND_GRADIENT |
@@ -251,7 +246,7 @@ class EdPages(FNB.FlatNotebook):
         self.control.CheckEOL()
         self.control.EmptyUndoBuffer()
 
-        if ed_glob.PROFILE['SAVE_POS']:
+        if Profile_Get('SAVE_POS'):
             self.control.GotoPos(self.DocMgr.GetPos(self.control.GetFileName()))
 
         # Set tab image
@@ -375,7 +370,7 @@ class EdPages(FNB.FlatNotebook):
         @type evt: wx.IdleEvent
 
         """
-        if ed_glob.PROFILE['CHECKMOD'] and \
+        if Profile_Get('CHECKMOD') and \
            wx.GetApp().IsActive() and self.GetPageCount():
             cfile = os.path.join(self.control.dirname, self.control.filename)
             lmod = util.GetFileModTime(cfile)

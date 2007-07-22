@@ -49,6 +49,7 @@ import gettext
 import wx
 import ed_glob
 import ed_i18n
+from profiler import Profile_Get, Profile_Set
 import util
 import dev_tool
 import ed_main
@@ -89,23 +90,8 @@ class Editra(wx.App):
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
         self._log("[app][info] Editra is Initializing")
-        if ed_glob.PROFILE['REPORTER']:
+        if Profile_Get('REPORTER', 'bool', True):
             sys.excepthook = dev_tool.ExceptionHook
-
-        # TEMP Convert Profile Objects
-        for key in ['FONT1', 'FONT2']:
-            font = ed_glob.PROFILE.get(key)
-            if font is None:
-                continue
-            tmp = font.split(',')
-            if len(tmp) == 2:
-                face = tmp[0]
-                if tmp[1].isdigit():
-                    size = int(tmp[1])
-                else:
-                    size = 10
-                val = wx.FFont(size, wx.DEFAULT, face=face)
-                ed_glob.PROFILE[key] = val
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
@@ -299,13 +285,18 @@ def InitConfig():
     profile_updated = False
     if util.HasConfigDir():
         if profiler.ProfileIsCurrent():
-            profiler.LoadProfile()
+            profiler.Profile().Load(profiler.GetProfileStr())
         else:
             dev_tool.DEBUGP("[main_info] Updating Profile to current version")
-            profiler.WriteProfile(profiler.GetProfileStr())
-            profiler.LoadProfile()
+            pstr = profiler.GetProfileStr()
+            # upgrade earlier profiles to current 
+            if len(pstr) > 3 and pstr[-2:] == "pp":
+                pstr = pstr + u'b'
+            profiler.Profile().LoadDefaults()
             if wx.Platform == '__WXGTK__':
-                ed_glob.PROFILE['ICONS'] = 'Default'
+                Profile_Set('ICONS', 'Default')
+            profiler.Profile().Write(pstr)  # Write out defaults
+            profiler.Profile().Load(pstr)   # Test reload profile
             # When upgrading from an older version make sure all
             # config directories are available.
             for cfg in ["cache", "styles", "plugins", "profiles"]:
@@ -314,6 +305,7 @@ def InitConfig():
             profile_updated = True
     else:
         util.CreateConfigDir()
+    ed_glob.DEBUG = Profile_Get('DEBUG', 'bool', False)
     ed_glob.CONFIG['CONFIG_DIR'] = util.ResolvConfigDir("")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
     ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
@@ -378,13 +370,13 @@ def Main():
 
     # 1. Create Application
     dev_tool.DEBUGP("[main_info] Initializing Application...")
-    if ed_glob.PROFILE['MODE'] == u"GUI_DEBUG":
+    if Profile_Get('MODE') == u"GUI_DEBUG":
         editra_app = Editra(True)
     else:
         editra_app = Editra(False)
 
     # 2. Initialize the Language Settings
-    langid = ed_i18n.GetLangId(ed_glob.PROFILE['LANG'])
+    langid = ed_i18n.GetLangId(Profile_Get('LANG'))
     the_locale = wx.Locale(langid)
     the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
     the_locale.AddCatalog(ed_glob.prog_name)
@@ -402,7 +394,7 @@ def Main():
                       _("Profile Updated"))
 
     # Splash a warning if version is not a final version
-    if ed_glob.PROFILE['APPSPLASH'] and int(ed_glob.version[0]) < 1:
+    if Profile_Get('APPSPLASH') and int(ed_glob.version[0]) < 1:
         splash_img = wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
                                               wx.ART_OTHER)
         splash = wx.SplashScreen(splash_img, wx.SPLASH_CENTRE_ON_PARENT | \
@@ -410,7 +402,7 @@ def Main():
         splash.Show()
         wx.FutureCall(3000, splash.Destroy)
 
-    frame = ed_main.MainWindow(None, wx.ID_ANY, ed_glob.PROFILE['WSIZE'], 
+    frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
                                     ed_glob.prog_name)
     editra_app.RegisterWindow(repr(frame), frame, True)
     editra_app.SetTopWindow(frame)

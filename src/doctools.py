@@ -41,7 +41,7 @@ __revision__ = "$Revision$"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
-import ed_glob
+import profiler
 import util
 import dev_tool
 
@@ -62,7 +62,7 @@ class DocPositionMgr(object):
         object.__init__(self)
         self._book = book_path
         self._records = dict()
-        if ed_glob.PROFILE['SAVE_POS']:
+        if profiler.Profile_Get('SAVE_POS'):
             if self.LoadBook(book_path):
                 dev_tool.DEBUGP("[docpositionmgr] successfully loaded book")
             else:

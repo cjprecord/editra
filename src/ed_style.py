@@ -51,8 +51,8 @@ __revision__ = "$Revision$"
 import os
 import re
 import wx
-import ed_glob
 import util
+from profiler import Profile_Get as _PGET
 
 # Globals
 STY_ATTRIBUTES     = u"face fore back size"
@@ -395,7 +395,7 @@ class StyleMgr(object):
         """
         if hasattr(self, 'fonts') and not default:
             return self.fonts
-        font = ed_glob.PROFILE.get('FONT1', None)
+        font = _PGET('FONT1', 'font', None)
         if font is not None:
             mfont = font
         else:
@@ -403,7 +403,7 @@ class StyleMgr(object):
                             wx.FONTWEIGHT_NORMAL)
         primary = mfont.GetFaceName()
 
-        font = ed_glob.PROFILE.get('FONT2', None)
+        font = _PGET('FONT2', 'font', None)
         if font is None:
             font = wx.Font(10, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, 
                             wx.FONTWEIGHT_NORMAL)

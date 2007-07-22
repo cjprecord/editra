@@ -12,16 +12,33 @@ DATE 0x/xx/2007
 4th Alpha Release
 
 NEWS:
+Major changes to profile system, the view of the the profile should not be much
+different from the perspective of usage but the underlying system has been
+completely rewritten to be more robust and reliable.
+
+Some changes to the style sheet system have been made that make older syntax
+style sheets incompatible with this version. If you are just using the builtin
+styles there is no need to worry about this but if you have created a custom
+style sheet you will need to change the font face definitions not to use to
+use the following format expressions (%(mono), %(helv), %(other), %(times)), and
+instead use the new tags of (%(primary), %(secondary)) these expressions are
+to ensure that the fonts that are set as the preffered fonts in the preference
+dialog are used instead of the defaults.
 
 NEW: [features/improvements]
 +Improved notebook tab navigation
 +Better Drag and Drop feedback for text and files
++Font preferences can be saved from session to session
++New User Profile system
++FileBrowser plugin is now bundled with Editra
 
 BUG FIXES:
 +Handled some unhandled error conditions in the python autocompleter
 +Fixed a bug where a save would fail when clicking on Yes when the modify save
  dialog was shown.
 +Fixed a number of minor bugs in the plugin manager
++Fixed bug in the Preferences Dialog where some settings wouldn't get set
++Filehistory order is properly preserved
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.50

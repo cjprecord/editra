@@ -36,6 +36,7 @@ import time
 import webbrowser
 import wx
 import ed_glob
+import profiler
 
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
@@ -55,7 +56,7 @@ def DEBUGP(statement, mode="std", log_lvl="none"):
        
     """
     # Turn off normal debugging messages when not in Debug mode
-    if mode == "std" and not 'DEBUG' in ed_glob.PROFILE['MODE']:
+    if mode == "std" and not ed_glob.DEBUG:
         return 0
 
     # Build time string for tstamp
@@ -108,14 +109,10 @@ def EnvironmentInfo():
     info.append("System Architecture: %s %s" % (platform.architecture()[0], \
                                                 platform.machine()))
     info.append("Byte order: %s" % sys.byteorder)
-    if hasattr(sys, 'frozen'):
-        frz = sys.frozen
-    else:
-        frz = "False"
-    info.append("Frozen: %s" % str(frz))
+    info.append("Frozen: %s" % str(getattr(sys, 'frozen', 'False')))
     info.append("#---- End System Information ----#")
     info.append("#---- Runtime Variables ----#")
-    for key, val in ed_glob.PROFILE.iteritems():
+    for key, val in profiler.Profile().iteritems():
         # Exclude "private" information
         if key.startswith('FILE') or key == 'MYPROFILE':
             continue
@@ -303,3 +300,5 @@ class ErrorDialog(wx.Dialog):
 
         """
         self.Destroy()
+        evt.Skip()
+

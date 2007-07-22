@@ -42,6 +42,7 @@ __revision__ = "$Revision$"
 # Dependancies
 import wx
 import ed_glob
+from profiler import Profile_Get
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -87,8 +88,8 @@ class EdToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, parent, id_, style = sstyle)
 
         # Attributes
-        self._theme = ed_glob.PROFILE['ICONS']
-        self.tool_size = ed_glob.PROFILE['ICON_SZ']
+        self._theme = Profile_Get('ICONS')
+        self.tool_size = Profile_Get('ICON_SZ', 'size_tuple')
         self.SetToolBitmapSize(self.tool_size)
         self.PopulateTools()
         #-- Bind Events --#
@@ -171,8 +172,8 @@ class EdToolBar(wx.ToolBar):
         pos = -1
         lastpos = 0
         wx.GetApp().ReloadArtProvider()
-        self.tool_size = ed_glob.PROFILE['ICON_SZ']
-        self._theme = ed_glob.PROFILE['ICONS']
+        self.tool_size = Profile_Get('ICON_SZ', 'size_tuple')
+        self._theme = Profile_Get('ICONS')
         self.SetToolBitmapSize(self.tool_size)
         self.GetParent().Freeze()
         self.Freeze()

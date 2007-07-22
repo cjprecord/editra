@@ -55,6 +55,7 @@ import os
 import wx, wx.stc
 import ed_event
 import ed_glob
+from profiler import Profile_Get as _PGET
 from syntax import syntax
 from autocomp import autocomp
 import util
@@ -115,11 +116,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # Command/Settings Attributes
         self.old_pos = -1
         self._autocomp_svc = autocomp.AutoCompService(self)
-        self._use_autocomp = ed_glob.PROFILE['AUTO_COMP']
-        self._autoindent = ed_glob.PROFILE['AUTO_INDENT']
-        self.brackethl = ed_glob.PROFILE["BRACKETHL"]
-        self.folding = ed_glob.PROFILE['CODE_FOLD']
-        self.highlight = ed_glob.PROFILE["SYNTAX"]
+        self._use_autocomp = _PGET('AUTO_COMP')
+        self._autoindent = _PGET('AUTO_INDENT')
+        self.brackethl = _PGET("BRACKETHL")
+        self.folding = _PGET('CODE_FOLD')
+        self.highlight = _PGET("SYNTAX")
         self._synmgr = syntax.SyntaxMgr(ed_glob.CONFIG['CACHE_DIR'])
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
@@ -273,22 +274,22 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @postcondition: all profile dependant attributes are configured
 
         """
-        self.SetWrapMode(ed_glob.PROFILE['WRAP']) 
-        self.SetViewWhiteSpace(ed_glob.PROFILE['SHOW_WS'])
-        self.SetUseAntiAliasing(ed_glob.PROFILE['AALIASING'])
-        self.SetUseTabs(ed_glob.PROFILE['USETABS'])
-        self.SetIndent(int(ed_glob.PROFILE['TABWIDTH']))
-        self.SetTabWidth(int(ed_glob.PROFILE['TABWIDTH']))
-        self.SetIndentationGuides(ed_glob.PROFILE['GUIDES'])
-        self.SetEOLFromString(ed_glob.PROFILE['EOL'])
-        self.SetViewEOL(ed_glob.PROFILE['SHOW_EOL'])
-        self.SyntaxOnOff(ed_glob.PROFILE['SYNTAX'])  # <- do before autocomp
-        self.SetAutoComplete(ed_glob.PROFILE['AUTO_COMP'])
-        self.FoldingOnOff(ed_glob.PROFILE['CODE_FOLD'])
-        self.ToggleAutoIndent(ed_glob.PROFILE['AUTO_INDENT'])
-        self.ToggleBracketHL(ed_glob.PROFILE['BRACKETHL'])
-        self.ToggleLineNumbers(ed_glob.PROFILE['SHOW_LN'])
-        self.SetViewEdgeGuide(ed_glob.PROFILE['SHOW_EDGE'])
+        self.SetWrapMode(_PGET('WRAP', 'bool')) 
+        self.SetViewWhiteSpace(_PGET('SHOW_WS', 'bool'))
+        self.SetUseAntiAliasing(_PGET('AALIASING'))
+        self.SetUseTabs(_PGET('USETABS'))
+        self.SetIndent(_PGET('TABWIDTH', 'int'))
+        self.SetTabWidth(_PGET('TABWIDTH', 'int'))
+        self.SetIndentationGuides(_PGET('GUIDES'))
+        self.SetEOLFromString(_PGET('EOL'))
+        self.SetViewEOL(_PGET('SHOW_EOL'))
+        self.SyntaxOnOff(_PGET('SYNTAX'))  # <- do before autocomp
+        self.SetAutoComplete(_PGET('AUTO_COMP'))
+        self.FoldingOnOff(_PGET('CODE_FOLD'))
+        self.ToggleAutoIndent(_PGET('AUTO_INDENT'))
+        self.ToggleBracketHL(_PGET('BRACKETHL'))
+        self.ToggleLineNumbers(_PGET('SHOW_LN'))
+        self.SetViewEdgeGuide(_PGET('SHOW_EDGE'))
 
     def Comment(self, uncomment=False):
         """(Un)Comments a line or a selected block of text
@@ -446,10 +447,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             style = sheet_name
             if sheet_name.split(u'.')[-1] != u"ess":
                 style += u".ess"
-        elif ed_glob.PROFILE['SYNTHEME'].split(u'.')[-1] != u"ess":
-            style = (ed_glob.PROFILE['SYNTHEME'] + u".ess").lower()
+        elif _PGET('SYNTHEME', 'str').split(u'.')[-1] != u"ess":
+            style = (_PGET('SYNTHEME', 'str') + u".ess").lower()
         else:
-            style = ed_glob.PROFILE['SYNTHEME'].lower()
+            style = _PGET('SYNTHEME', 'str').lower()
         user = os.path.join(ed_glob.CONFIG['STYLES_DIR'], style)
         sys = os.path.join(ed_glob.CONFIG['SYS_STYLES_DIR'], style)
         if os.path.exists(user):
@@ -1064,7 +1065,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         if (switch is None and not self.GetEdgeMode()) or switch:
-            self.SetEdgeColumn(int(ed_glob.PROFILE.get("EDGE", 80)))
+            self.SetEdgeColumn(_PGET("EDGE", 'int', 80))
             self.SetEdgeMode(wx.stc.STC_EDGE_LINE)
         else:
             self.SetEdgeMode(wx.stc.STC_EDGE_NONE)

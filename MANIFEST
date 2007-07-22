@@ -92,7 +92,8 @@ pixmaps/theme/Nuovo/menu/web.png
 pixmaps/theme/Nuovo/menu/zoomd.png
 pixmaps/theme/Nuovo/menu/zoomi.png
 pixmaps/theme/Nuovo/menu/zoomo.png
-plugins/PyShell-0.2-py2.5.egg
+plugins/PyShell-0.3-py2.5.egg
+plugins/FileBrowser-0.2-py2.5.egg
 profiles/.loader
 profiles/default.pp
 profiles/default.pp.sample
