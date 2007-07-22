@@ -39,6 +39,8 @@ BUG FIXES:
 +Fixed a number of minor bugs in the plugin manager
 +Fixed bug in the Preferences Dialog where some settings wouldn't get set
 +Filehistory order is properly preserved
++Fixed a bug in the Style Editor where it would occasionally prompt for saving 
+ when it didn't need to.
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.50
