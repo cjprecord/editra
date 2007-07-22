@@ -383,6 +383,8 @@ class GeneralPanel(PrefPanelBase):
         if e_id in [ed_glob.ID_PREF_MODE, ed_glob.ID_PRINT_MODE,
                     ed_glob.ID_PREF_FHIST, ed_glob.ID_PREF_LANG]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
+            if e_id == ed_glob.ID_PREF_MODE:
+                ed_glob.DEBUG = ('DEBUG' in e_obj.GetValue())
         else:
             evt.Skip()
 
