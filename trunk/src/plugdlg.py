@@ -48,6 +48,7 @@ import wx
 import wx.lib.delayedresult as delayedresult
 import wx.lib.mixins.listctrl as listmix
 import ed_glob
+from profiler import Profile_Get
 import ed_event
 import plugin
 import util
@@ -78,6 +79,9 @@ class PluginDialog(wx.Frame):
         """Creates the dialog, does not call Show()"""
         wx.Frame.__init__(self, parent, fid, title, pos, size, style)
         util.SetWindowIcon(self)
+
+        if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
+            self.SetExtraStyle(wx.FRAME_EX_METAL)
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)

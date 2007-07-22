@@ -71,13 +71,21 @@ SETTINGS_IDS = [ ID_FORE_COLOR, ID_BACK_COLOR, ID_BOLD, ID_ITALIC,
 
 class StyleEditor(wx.Dialog):
     """This class creates the window that contains the controls
-    for editing/configuring the syntax highlighting styles.
+    for editing/configuring the syntax highlighting styles it acts
+    as a a graphical way to interact with the L{ed_style.StyleMgr}.
 
+    @see: ed_style.StyleMgr
     """
     def __init__(self, parent, id_=wx.ID_ANY, title=_("Style Editor"),
                  style=wx.DEFAULT_DIALOG_STYLE | wx.RAISED_BORDER):
-        """Initializes the Dialog"""
+        """Initializes the Dialog
+        @todo: rework the layout
+
+        """
         wx.Dialog.__init__(self, parent, id_, title, style=style)
+
+        if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
+            self.SetExtraStyle(wx.DIALOG_EX_METAL)
 
         # Attributes
         self.LOG = wx.GetApp().GetLog()
