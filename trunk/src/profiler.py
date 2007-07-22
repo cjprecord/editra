@@ -164,13 +164,17 @@ class Profile(dict):
                 if isinstance(val, dict):
                     self.update(val)
                     self.Set('MYPROFILE', path)
-                return True
         else:
             print "[profile][err] %s does not exist" % path
             print "[profile][info] Loading defaults"
             self.LoadDefaults()
             self.Set('MYPROFILE', path)
-            return False 
+            return False
+
+        if len(self) < len(_DEFAULTS):
+            self.update(_DEFAULTS)
+            return False
+        return True
 
     def LoadDefaults(self):
         """Loads the default values into the profile

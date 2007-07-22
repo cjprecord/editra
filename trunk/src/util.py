@@ -478,9 +478,9 @@ def CreateConfigDir():
     prof_dir = ed_glob.CONFIG['PROFILE_DIR']
     config_dir = u"%s%s.%s" % (wx.GetHomeDir(), pchar, ed_glob.prog_name)
     profile_dir = u"%s%sprofiles" % (config_dir, pchar)
-    config_file = u"%sdefault.pp" % prof_dir
-    loader =  u"%s.loader" % prof_dir
-    dest_file = u"%s%sdefault.pp" % (profile_dir, pchar)
+    config_file = u"%sdefault.ppb" % prof_dir
+    loader =  u"%s.loader2" % prof_dir
+    dest_file = u"%s%sdefault.ppb" % (profile_dir, pchar)
     ext_cfg = ["cache", "styles", "plugins"]
 
     #---- Create Directories ----#
@@ -496,15 +496,16 @@ def CreateConfigDir():
     if os.sys.platform == 'win32':
         os.system(u"copy " + u"\"" + config_file + u"\" \"" + dest_file + u"\"")
         os.system(u"copy " + u"\"" + loader + u"\" \"" + profile_dir + 
-                  GetPathChar() + u".loader\"")
+                  GetPathChar() + u".loader2\"")
     else:
         os.system(u"cp " + config_file + " " + dest_file)
         os.system(u"cp " + loader + " " + profile_dir + 
-                  pchar + u".loader")
+                  pchar + u".loader2")
 
-    from profiler import UpdateProfileLoader, Profile_Set
-    Profile_Set("MYPROFILE", dest_file)
-    UpdateProfileLoader()
+    import profiler
+    profiler.Profile().Load(dest_file)
+    profiler.Profile_Set("MYPROFILE", dest_file)
+    profiler.UpdateProfileLoader()
 
 def ResolvConfigDir(config_dir, sys_only=False):
     """Checks for a user config directory and if it is not
