@@ -41,6 +41,8 @@ BUG FIXES:
 +Filehistory order is properly preserved
 +Fixed a bug in the Style Editor where it would occasionally prompt for saving 
  when it didn't need to.
++Style Editor and Plugin Manager now properly use Metal style when it is set on
+ OSX.
 
 #-----------------------------------------------------------------------------#
 VERSION 0.1.50
