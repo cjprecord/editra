@@ -236,7 +236,7 @@ class ConfigPanel(wx.Panel):
         if self.HasItem(name):
             item_id = self._list.FindItem(0, name)
             ver = self._list.GetItem(item_id, self._list.VERSION_COL)
-            identifer = name + ver.GetText()
+            identifer = (name, ver.GetText())
         return identifer
 
     def HasItem(self, name):
@@ -454,9 +454,10 @@ class DownloadPanel(wx.Panel):
         config_pg = self.GetParent().GetPage(CONFIG_PG)
         to_clean = list()
         for pin in p_list:
-            pin_id = p_list[pin].GetName() + p_list[pin].GetVersion()
+            ver = p_list[pin].GetVersion()
+            pin_id = p_list[pin].GetName() + ver
             cfg_id = config_pg.GetItemIdentifier(pin.lower())
-            if cfg_id and cfg_id.lower() == pin_id.lower():
+            if cfg_id is not None and cfg_id[1] >= ver:
                 to_clean.append(pin)
         for item in to_clean:
             del p_list[item]
