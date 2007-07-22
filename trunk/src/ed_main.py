@@ -63,6 +63,8 @@ import wx
 import wx.aui
 from ed_glob import *
 import util
+from profiler import Profile_Get as _PGET
+from profiler import Profile_Set as _PSET
 import profiler
 import ed_toolbar
 import ed_pages
@@ -105,15 +107,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         util.SetWindowIcon(self)
 
         # Check if user wants Metal Style under OS X
-        if wx.Platform == '__WXMAC__' and PROFILE.has_key('METAL'):
-            if PROFILE['METAL']:
-                self.SetExtraStyle(wx.FRAME_EX_METAL)
+        if wx.Platform == '__WXMAC__' and _PGET('METAL'):
+            self.SetExtraStyle(wx.FRAME_EX_METAL)
 
         #---- Sizers to hold subapplets ----#
         self.sizer = wx.BoxSizer(wx.VERTICAL)
 
         #---- Setup File History ----#
-        self.filehistory = wx.FileHistory(int(PROFILE['FHIST_LVL']))
+        self.filehistory = wx.FileHistory(_PGET('FHIST_LVL', 'int', 5))
 
         #---- Toolbar ----#
         self.toolbar = None
@@ -144,7 +145,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- End Statusbar Setup ----#
 
         #---- Create a toolbar ----#
-        if PROFILE['TOOLBAR']:
+        if _PGET('TOOLBAR'):
             self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
             self.SetToolBar(self.toolbar)
 
@@ -254,15 +255,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Final Setup Calls ----#
         self._exiting = False
-        self.LoadFileHistory(int(PROFILE['FHIST_LVL']))
+        self.LoadFileHistory(_PGET('FHIST_LVL', fmt='int'))
         self.UpdateToolBar()
 
         #---- Set Position and Size ----#
-        if PROFILE.has_key('ALPHA'):
-            self.SetTransparent(PROFILE['ALPHA'])
-        if PROFILE['SET_WPOS'] and PROFILE.has_key('WPOS') and \
-          isinstance(PROFILE['WPOS'], tuple) and len(PROFILE['WPOS']) == 2:
-            self.SetPosition(PROFILE['WPOS'])
+        self.SetTransparent(_PGET('ALPHA', default=255))
+        if _PGET('SET_WPOS') and _PGET('WPOS', "size_tuple", False):
+            self.SetPosition(_PGET('WPOS'))
         else:
             self.CenterOnParent()
 
@@ -277,7 +276,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             pass
 
         # Set Perspective
-        self.SetPerspective(PROFILE['DEFAULT_VIEW'])
+        self.SetPerspective(_PGET('DEFAULT_VIEW'))
         self._mgr.Update()
         self.Show(True)
 
@@ -345,12 +344,15 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         file_key = "FILE"
-        for i in range(size - 1):
+        keys = range(size - 1)
+        keys.reverse()
+        for i in keys:
             key = file_key + str(i)
-            try:
-                self.filehistory.AddFileToHistory(PROFILE[key])
-            except KeyError: 
-                self.LOG("[main] [exception] Invalid Key on LoadFileHistory")
+            path = _PGET(key, "str")
+            if isinstance(path, basestring) and path != wx.EmptyString:
+                self.filehistory.AddFileToHistory(path)
+            else:
+                pass
 
     def OnNew(self, evt):
         """Star a New File
@@ -466,7 +468,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', 
                             title.lstrip(u"*"), self.MenuFileTypes(), 
-                            wx.SAVE|wx.OVERWRITE_PROMPT)
+                            wx.SAVE | wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
         if result == wx.ID_OK:
             path = dlg.GetPath()
@@ -502,15 +504,15 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         if evt.GetId() == ID_SAVE_PROFILE:
             dlg = wx.FileDialog(self, _("Where to Save Profile?"), \
-                               CONFIG['PROFILE_DIR'], "default.pp", \
-                               _("Profile") + " (*.pp)|*.pp", 
+                               CONFIG['PROFILE_DIR'], "default.ppb", \
+                               _("Profile") + " (*.ppb)|*.ppb", 
                                 wx.SAVE | wx.OVERWRITE_PROMPT)
 
             result = dlg.ShowModal()
             if result == wx.ID_OK: 
                 profile = dlg.GetFilename()
                 path = dlg.GetPath()
-                profiler.WriteProfile(path)
+                profiler.Profile().Write(path)
                 self.PushStatusText(_("Profile Saved as: %s") % profile, SB_INFO)
                 dlg.Destroy()
             else:
@@ -527,14 +529,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         if evt.GetId() == ID_LOAD_PROFILE:
             dlg = wx.FileDialog(self, _("Load a Custom Profile"), 
-                                CONFIG['PROFILE_DIR'], "default.pp", 
-                                _("Profile") + " (*.pp)|*.pp", wx.OPEN)
+                                CONFIG['PROFILE_DIR'], "default.ppb", 
+                                _("Profile") + " (*.ppb)|*.ppb", wx.OPEN)
 
             result = dlg.ShowModal()
             if result == wx.ID_OK: 
                 profile = dlg.GetFilename()
                 path = dlg.GetPath()
-                profiler.ReadProfile(path)
+                profiler.Profile().Load()(path)
                 self.PushStatusText(_("Loaded Profile: %s") % profile, SB_INFO)
                 dlg.Destroy()
             else:
@@ -554,7 +556,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         e_id = evt.GetId()
-        pmode = PROFILE['PRINT_MODE'].replace(u'/', u'_').lower()
+        pmode = _PGET('PRINT_MODE', "str").replace(u'/', u'_').lower()
         self.printer.SetColourMode(pmode)
         if e_id == ID_PRINT:
             self.printer.Print()
@@ -616,15 +618,15 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # XXX workaround for possible bug in wxPython 2.8
         if wx.Platform == '__WXMAC__' and self.GetToolBar():
             self.toolbar.Destroy()
-        PROFILE['WSIZE'] = self.GetSize()
-        PROFILE['WPOS'] = self.GetPosition()
+        _PSET('WSIZE', self.GetSizeTuple())
+        _PSET('WPOS', self.GetPositionTuple())
         self.LOG("[main_evt] [exit] Closing editor at pos=%s size=%s" % \
-                 (str(PROFILE['WPOS']), str(PROFILE['WSIZE'])))
+                 (_PGET('WPOS', 'str'), _PGET('WSIZE', 'str')))
         
         # Update profile
         profiler.UpdateProfileLoader()
         profiler.AddFileHistoryToProfile(self.filehistory)
-        profiler.WriteProfile(PROFILE['MYPROFILE'])
+        profiler.Profile().Write(_PGET('MYPROFILE'))
 
         # Cleanup file history
         try:
@@ -687,14 +689,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         if evt.GetId() == ID_VIEW_TOOL:
-            if PROFILE['TOOLBAR'] and self.toolbar != None:
+            if _PGET('TOOLBAR', 'bool', False) and self.toolbar != None:
                 self.toolbar.Destroy()
                 del self.toolbar
-                PROFILE['TOOLBAR'] = False
+                _PSET('TOOLBAR', False)
             else:
                 self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
                 self.SetToolBar(self.toolbar)
-                PROFILE['TOOLBAR'] = True
+                _PSET('TOOLBAR', True)
                 self.UpdateToolBar()
         else:
             evt.Skip()
@@ -713,7 +715,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         if evt.GetId() == ID_FONT:
             ctrl = self.nb.GetCurrentCtrl()
-            dfont = ctrl.GetDefaultFont()
             fdata = wx.FontData()
             fdata.SetInitialFont(ctrl.GetDefaultFont())
             dlg = wx.FontDialog(self, fdata)

@@ -23,41 +23,16 @@
 # FILE: profiler.py                                                        #
 # LANGUAGE: Python                                                         #
 #                                                                          #
-# SUMMARY:                                                                 #
-# This collection of functions handle user profiles for the editor.        #
-# It provides support for customization of settings and preferences to be  #
-# saved in between sessions.                                               #
-#                                                                          #
-# SPECIFICATIONS:                                                          #
-# The format of the profile file is                                        #
-#                                                                          #
-# LABLE [<TAB(S)> or <SPACE(S)>] VALUE                                     #
-#                                                                          #
-# Comment lines are denoted by a '#' mark.                                 #
-#                                                                          #
-# Only one value can be set per line all other statements                  #
-# after the first one will be ignored.                                     #
-#                                                                          #
-# EOF marks the end of file, no configuration data will be read past       #
-# this keyword.                                                            #
-#                                                                          #
-#   LABLES              VALUES                                             #
-# ----------------------------------------                                 #
-#  MODE	                CODE, DEBUG                                        #
-#  THEME                DEFAULT                                            #
-#  ICONS                Default, Nuovo, ect...                             #
-#  LANG	                ENGLISH, JAPANESE                                  #
-#  WRAP                 On, Off, True, False	                           #
-#  SYNTAX               On, Off, True, False                               #
-#  GUIDES               On, Off, True, False	                           #
-#  KWHELPER             On, Off, True, False	                           #
-#  TOOLBAR              On, Off, True, False	                           #
-#  LASTFILE             path/to/file                                       #
+# @summary:                                                                #
+# This module provides the profile object and support functions for        #
+# loading and saving user preferences between sessions. The preferences are#
+# saved on disk as a cPickle, because of this no objects that cannot be    #
+# resolved in the namespace of this module prior to starting the mainloop  #
+# must not be put in the Profile as it will cause errors on load. Ths means#
+# that only builtin python types should be used and that a translation from#
+# that type to the required type should happen during run time.            #
 #                                                                          #
 # METHODS:                                                                 #
-# ReadProfile: Reads a profile into the profile dictionary                 #
-# WriteProfile: Writes a profile dictionary to a file	                   #
-# LoadProfile: Checks loader for last used profile	                       #
 # UpdateProfileLoader: Updates loader after changes to profile	           #
 #--------------------------------------------------------------------------#
 """
@@ -69,13 +44,244 @@ __revision__ = "$Revision$"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
+import cPickle
 import wx
-from ed_glob import CONFIG, PROFILE, prog_name, version
+from ed_glob import CONFIG, prog_name, version
 import util
-import dev_tool
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
+# Globals
+_DEFAULTS = {
+           'ALPHA'      : 255,              # Transparency level
+           'AALIASING'  : True,             # Use Anti-Aliasing if availble
+           'APPSPLASH'  : True,             # Show splash at startup
+           'AUTO_COMP'  : True,             # Use Auto-comp if available
+           'AUTO_INDENT': True,             # Use Auto Indent
+           'BRACKETHL'  : True,             # Use bracket highlighting
+           'CHECKMOD'   : True,             # Auto check file for file mod
+           'CODE_FOLD'  : True,             # Use code folding
+           'DEFAULT'    : False,            # No longer used I believe
+           'DEFAULT_VIEW' : 'Default',      # Default Perspective
+           'EDGE'       : 80,               # Edge guide column
+           'EOL'        : 'Unix (\\n)',     # EOL mode
+           'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
+           'GUIDES'     : True,             # Use Indentation guides
+           'ICONS'      : 'Nuovo',          # Icon Theme
+           'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
+           'LANG'       : 'Default',        # UI language
+           'MODE'       : 'CODE',           # Overall editor mode
+           'MYPROFILE'  : 'default.ppb',    # Path to profile file
+           'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
+           'REPORTER'   : True,             # Error Reporter is Active
+           'SAVE_POS'   : True,             # Remember Carat positions
+           'SHOW_EDGE'  : True,             # Show Edge Guide
+           'SHOW_EOL'   : False,            # Show EOL markers
+           'SHOW_LN'    : True,             # Show Line Numbers
+           'SYNTAX'     : True,             # Use Syntax Highlighting
+           'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
+           'TABWIDTH'   : 8,                # Tab width
+           'THEME'      : 'DEFAULT',        # For future use
+           'TOOLBAR'    : True,             # Show Toolbar
+           'USETABS'    : True,             # Use tabs instead of spaces
+           'SHOW_WS'    : False,            # Show whitespace markers
+           'WRAP'       : True,             # Use Wordwrap
+           'SET_WSIZE'  : True,             # Remember mainwindow size on exit
+           'WSIZE'      : (700, 450),       # Mainwindow size
+           'SET_WPOS'   : True              # Remember window position
+}
+
+#--------------------------------------------------------------------------#
+
+class Profile(dict):
+    """Class for managing profile data. All data is stored as builtin
+    python objects (i.e. str, tuple, list, ect...) however on a request
+    for data the object can be transformed in to a requested type where
+    applicable. The profile saves itself to disk using the cPickle module
+    to preserve data types and allow for easy loading.
+
+    """
+    _instance = None
+    _created = False
+    
+    def __init__(self):
+        """Initialize the profile"""
+        if not self._created:
+            dict.__init__(self)
+        
+            # Attributes
+        else:
+            pass
+
+    def __new__(cls, *args, **kargs):
+        """Maintain only a single instance of this object
+        @return: instance of this class
+
+        """
+        if cls._instance is None:
+            cls._instance = dict.__new__(cls, *args, **kargs)
+        return cls._instance
+
+    #---- End Private Members ----#
+
+    #---- Protected Members ----#
+
+    #---- Begin Public Members ----#
+    def Get(self, index, fmt=None, default=None):
+        """Gets the specified item from the data set
+        
+        @param index: index of item to get
+        @keyword fmt: format the item should be in
+        @keyword default: Default value to return if index is
+                          not in profile.
+
+        """
+        if self.has_key(index):
+            val = self.__getitem__(index)
+        else:
+            return default
+
+        if fmt is None:
+            return val
+        else:
+            return _ToObject(index, val, fmt)
+
+    def Load(self, path):
+        """Load the profiles data set with data from the given file
+        @param path: path to file to load data from
+        @note: The files data must have been written with a pickler
+
+        """
+        if os.path.exists(path):
+            try:
+                fhandle = open(path, 'rb')
+                val = cPickle.load(fhandle)
+                fhandle.close()
+            except (IOError, SystemError, OSError, 
+                    cPickle.UnpicklingError), msg:
+                print "[profile][err] %s" % str(msg)
+            else:
+                if isinstance(val, dict):
+                    self.update(val)
+                    self.Set('MYPROFILE', path)
+                return True
+        else:
+            print "[profile][err] %s does not exist" % path
+            print "[profile][info] Loading defaults"
+            self.LoadDefaults()
+            self.Set('MYPROFILE', path)
+            return False 
+
+    def LoadDefaults(self):
+        """Loads the default values into the profile
+        @return: None
+
+        """
+        self.clear()
+        self.update(_DEFAULTS)
+
+    def Set(self, index, val, fmt=None):
+        """Set the value of the given index
+        @param index: Index to set
+        @param val: Value to set
+        @keyword fmt: Format to convert to string from
+
+        """
+        if fmt is None:
+            self.__setitem__(index, val)
+        else:
+            tmp = _FromObject(val, fmt)
+            self.__setitem__(index, tmp)
+
+    def Write(self, path):
+        """Write the dataset of this profile as a pickle
+        @param path: path to where to write the pickle
+        @return: True on success/ False on failure
+
+        """
+        try:
+            fhandle = open(path, 'wb')
+            cPickle.dump(self, fhandle, cPickle.HIGHEST_PROTOCOL)
+            fhandle.close()
+        except (IOError, cPickle.PickleError), msg:
+            print "[profile][err] %s" % str(msg)
+            return False
+        else:
+            return True
+
+    #---- End Public Members ----#
+
+# Profile convinience functions
+def Profile_Get(index, fmt=None, default=None):
+    """Convinience for Profile().Get()
+    @param index: profile index to retrieve
+    @keyword fmt: format to get value as
+    @keyword default: default value to return if not found
+
+    """
+    return Profile().Get(index, fmt, default)
+
+def Profile_Set(index, val, fmt=None):
+    """Convinience for Profile().Set()
+    @param index: profile index to set
+    @param val: value to set index to
+    @keyword fmt: format to convert object from
+
+    """
+    return Profile().Set(index, val, fmt)
+
+def _FromObject(val, fmt):
+    """Convert the given value to a to a profile compatible value
+    @param val: value to convert
+    @param fmt: Format to convert to
+    @type fmt: string
+    @todo: exception handling, 
+
+    """
+    if fmt == u'font':
+        return "%s,%s" % (val.GetFaceName(), val.GetPointSize())
+    else:
+        return val
+
+def _ToObject(index, val, fmt):
+    """Convert the given value to a different object
+    @param index: fallback to retrieve item from defaults
+    @param val: value to convert
+    @param fmt: Format to convert to
+    @type fmt: string
+    @todo: exception handling, 
+
+    """
+    if not isinstance(fmt, basestring):
+        raise TypeError, "_ToObject expects a string for parameter 2"
+    else:
+        tmp = fmt.lower()
+        if tmp == u'font':
+            fnt = val.split(',')
+            rval = wx.FFont(int(fnt[1]), wx.DEFAULT, face=fnt[0])
+        elif tmp == u'bool':
+            if isinstance(val, bool):
+                rval = val
+            else:
+                rval = _DEFAULTS.get(index, False)
+        elif tmp == u'size_tuple':
+            if len(val) == 2 and \
+               all([isinstance(val[0], int), isinstance(val[1], int)]):
+                rval = val
+            else:
+                rval = _DEFAULTS.get(index, wx.DefaultSize)
+        elif tmp == u'str':
+            rval = str(val)
+        elif tmp == u'int':
+            if isinstance(val, int):
+                rval = val
+            elif isinstance(val, basestring) and val.isdigit():
+                rval = int(val)
+            else:
+                rval = _DEFAULTS.get(index)
+        else:
+            return val
+        return rval
 
 #---- Begin Function Definitions ----#
 def AddFileHistoryToProfile(file_history):
@@ -92,7 +298,7 @@ def AddFileHistoryToProfile(file_history):
     while size > i:
         key = file_key + str(i)
         file_path = file_history.GetHistoryFile(i)
-        PROFILE[key] = file_path
+        Profile_Set(key, file_path)
         i += 1
     return i
 
@@ -119,12 +325,12 @@ def GetLoader():
     """Finds the loader to use"""
     user_home = wx.GetHomeDir() + util.GetPathChar()
     rel_prof_path = ("." + prog_name + util.GetPathChar() + 
-                     "profiles" + util.GetPathChar() + ".loader")
+                     "profiles" + util.GetPathChar() + ".loader2")
 
     if os.path.exists(user_home + rel_prof_path):
         loader = user_home + rel_prof_path
     else:
-        loader = CONFIG['PROFILE_DIR'] + ".loader"
+        loader = CONFIG['PROFILE_DIR'] + ".loader2"
 
     return loader
 
@@ -136,10 +342,8 @@ def GetProfileStr():
     """
     reader = util.GetFileReader(GetLoader())
     if reader == -1:
-        dev_tool.DEBUGP("[profiler] [exception] Failed to open profile loader")
         # So return the default
-        dev_tool.DEBUGP("[prof_info] Trying Default Profile")
-        return CONFIG['PROFILE_DIR'] + u"default.pp"
+        return CONFIG['PROFILE_DIR'] + u"default.ppb"
 
     profile = reader.readline()
     profile = profile.split("\n")[0] # strip newline from end
@@ -156,9 +360,9 @@ def LoadProfile():
         profile = "default.pp"
 
     if os.path.isabs(profile):
-        retval = ReadProfile(profile)
+        retval = Profile().Load(profile)
     else:
-        retval = ReadProfile(CONFIG['PROFILE_DIR'] + profile)
+        retval = Profile().Load(CONFIG['PROFILE_DIR'] + profile)
     return retval
 
 def ProfileIsCurrent():
@@ -182,7 +386,6 @@ def ProfileVersionStr():
     loader = GetLoader()
     reader = util.GetFileReader(loader)
     if reader == -1:
-        dev_tool.DEBUGP('[profile] [exception] Failed to open loader')
         return "0.0.0"
 
     ret_val = "0.0.0"
@@ -202,68 +405,6 @@ def ProfileVersionStr():
 
     return ret_val
 
-def ReadProfile(profile):
-    """Reads profile settings from a file into the
-    profile dictionary.
-    @postcondition: profile is loaded into memory from disk
-    @see: ed_glob.PROFILE
-    @todo: Should do value validation and default to ed_glob on invalid
-           values, to prevent errors from improperly editted profiles.
-
-    """
-    reader = util.GetFileReader(profile)
-    if reader == -1:
-        dev_tool.DEBUGP("[profiler] [exception] Loading Profile: " + profile +
-                        "\n[prof_warn] Loaded Default Profile Settings")
-        PROFILE['MYPROFILE'] = os.path.join(os.path.split(profile)[0], 
-                                            u"default.pp")
-        return 1
-
-    conv = unicode
-    if isinstance(reader, file):
-        conv = str
-
-    lable = ""
-    val = ""
-    values = []
-    invalid_line = 0
-
-    # Parse File
-    lines = reader.readlines()
-    for line in lines:
-        if line != "" and line[0] != "#":
-            values = line.split()
-
-            # Populate Profile Dictionary
-            if len(values) >= 2:
-                lable = values[0]
-                val = " ".join(values[1:])
-
-                # Convert int values from string to int
-                if val.isdigit():
-                    val = int(val)
-
-                # If val is a bool convert it from string
-                if val in [conv("True"), conv("On")]:
-                    val = True
-                elif val in [conv("False"), conv("Off")]:
-                    val = False
-                else:
-                    pass
-
-                if lable in [conv('WSIZE'), conv('WPOS'), conv('ICON_SZ')]:
-                    val = util.StrToTuple(val)
-
-                PROFILE[lable] = val
-        else:
-            invalid_line += 1
-
-    # Save this profile as my profile
-    PROFILE['MYPROFILE'] = profile
-    reader.close()
-    dev_tool.DEBUGP("[prof_info] Loaded Profile: " + profile)
-    return 0
-
 def UpdateProfileLoader():
     """Updates Loader File
     @postcondition: on disk profile loader is updated
@@ -272,8 +413,6 @@ def UpdateProfileLoader():
     """
     writer = util.GetFileWriter(GetLoader())
     if writer == -1:
-        dev_tool.DEBUGP("[profiler] [exception] Failed to open "
-                        "profile loader for writting")
         return 1
 
     if isinstance(writer, file):
@@ -281,54 +420,7 @@ def UpdateProfileLoader():
     else:
         conv = unicode
 
-    writer.write(conv(PROFILE['MYPROFILE']))
+    writer.write(conv(Profile_Get('MYPROFILE')))
     writer.write(u"\nVERSION\t" + version)
-    writer.close()
-    return 0
-
-def WriteProfile(profile):
-    """Writes a profile to a file
-    @postcondition: profile is saved to disk.
-
-    """
-    writer = util.GetFileWriter(profile)
-    if writer == -1:
-        return -1
-
-    if isinstance(writer, file):
-        conv = str
-    else:
-        conv = unicode
-    header = u"# " + profile + u"\n# Editra " + version + u" Profile\n" \
-              + u"# You are can edit this file but be aware that if it\n" \
-              + u"# is your active profile it will be overwritten the next\n" \
-              + u"# time you close the editor.\n" \
-              + u"#\n# Lable\t\t\tValue #" + \
-              u"\n#-----------------------------#\n"
-
-    writer.write(header)
-
-    prof_keys = PROFILE.keys()
-    prof_keys.sort()
-
-    if not PROFILE['SET_WSIZE']:
-        if 'WSIZE' in prof_keys:
-            prof_keys.remove('WSIZE')
-    if not PROFILE['SET_WPOS']:
-        if 'WPOS' in prof_keys:
-            prof_keys.remove('WPOS')
-
-    for item in prof_keys:
-        if item not in ['FONT1', 'FONT2']:
-            writer.write(conv(item) + u"\t\t" + conv(PROFILE[item]) + u"\n")
-        else:
-            font = PROFILE[item]
-            val = "%s,%d" % (font.GetFaceName(), font.GetPointSize())
-            writer.write(conv(item) + u"\t\t" + conv(val) + u"\n")
-
-    writer.write(u"\n\nEOF\n")
-    dev_tool.DEBUGP("[prof_info] Wrote out Profile: " + profile)
-
-    PROFILE['MYPROFILE'] = profile
     writer.close()
     return 0

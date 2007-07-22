@@ -21,7 +21,7 @@
 # Plugin Meta
 """Adds a File Browser sidepanel"""
 __author__ = "Cody Precord"
-__version__ = "0.1"
+__version__ = "0.2"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -29,6 +29,7 @@ import os
 import stat
 import wx
 import ed_glob
+from profiler import Profile_Get, Profile_Set
 import ed_main
 import ed_menu
 import syntax.syntax
@@ -69,7 +70,7 @@ class FileBrowserPanel(plugin.Plugin):
                             Caption("Editra | File Browser").Left().Layer(0).\
                             CloseButton(True).MaximizeButton(False).\
                             BestSize(wx.Size(215,350)))
-            if ed_glob.PROFILE.get('SHOW_FB', False):
+            if Profile_Get('SHOW_FB', 'bool', False):
                 mw._mgr.GetPane(PANE_NAME).Show()
                 self._mi.Check(True)
             else:
@@ -85,7 +86,7 @@ class FileBrowserPanel(plugin.Plugin):
         """Handles when the pane is closed to update the profile"""
         pane = evt.GetPane()
         if pane.name == PANE_NAME:
-            ed_glob.PROFILE['SHOW_FB'] = False
+            Profile_Set('SHOW_FB', False)
             self._mi.Check(False)
         else:
             evt.Skip()
@@ -95,13 +96,13 @@ class FileBrowserPanel(plugin.Plugin):
         if evt.GetId() == ID_FILEBROWSE:
             mw = wx.GetApp().GetMainWindow().GetFrameManager()
             pane = mw.GetPane(PANE_NAME).Hide()
-            if ed_glob.PROFILE.get('SHOW_FB', False) and pane.IsShown():
+            if Profile_Get('SHOW_FB', 'bool', False) and pane.IsShown():
                 pane.Hide()
-                ed_glob.PROFILE['SHOW_FB'] = False
+                Profile_Set('SHOW_FB', False)
                 self._mi.Check(False)
             else:
                 pane.Show()
-                ed_glob.PROFILE['SHOW_FB'] = True
+                Profile_Set('SHOW_FB', True)
                 self._mi.Check(True)
             mw.Update()
         else:
@@ -377,7 +378,7 @@ class FileBrowser(wx.GenericDirCtrl):
 
         # HACK if the GenericDirCtrl ever changes the order of the images used in it
         #      this will have to be updated accordingly
-        if ed_glob.PROFILE['ICONS'].lower() != u'default':
+        if Profile_Get('ICONS', 'str', 'default').lower() != u'default':
             bmp1 = wx.ArtProvider.GetBitmap(str(ed_glob.ID_FOLDER), wx.ART_MENU)
             self._imglst = wx.ImageList(bmp1.GetWidth(), bmp1.GetHeight())
             self._imglst.Add(bmp1) # Folder Normal

@@ -40,6 +40,8 @@ import wx
 import wx.lib.mixins.listctrl as listmix
 import sys
 import ed_glob
+import profiler
+from profiler import Profile_Get, Profile_Set
 import ed_i18n
 import ed_event
 import updater
@@ -89,10 +91,9 @@ class PreferencesDialog(wx.Frame):
 
         # Extra Styles
         self.SetExtraStyle(wx.FRAME_EX_CONTEXTHELP)
-        self.SetTransparent(ed_glob.PROFILE.get('ALPHA', 255))
-        if wx.Platform == '__WXMAC__' and ed_glob.PROFILE.has_key('METAL'):
-            if ed_glob.PROFILE['METAL']:
-                self.SetExtraStyle(wx.DIALOG_EX_METAL)
+        self.SetTransparent(Profile_Get('ALPHA', 'int', 255))
+        if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
+            self.SetExtraStyle(wx.DIALOG_EX_METAL)
 
         # Attributes
         self._tbook = PrefTools(self)
@@ -297,45 +298,45 @@ class GeneralPanel(PrefPanelBase):
         mode_lbl = wx.StaticText(self, label=_("Editor Mode") + u": ")
         mode_ch = ExChoice(self, ed_glob.ID_PREF_MODE,
                            choices=['CODE', 'DEBUG', 'GUI_DEBUG'],
-                           default=ed_glob.PROFILE['MODE'])
+                           default=Profile_Get('MODE'))
         msizer = wx.BoxSizer(wx.HORIZONTAL)
         msizer.AddMany([(mode_lbl, 0), ((5, 5), 0), (mode_ch, 0)])
         pmode_lbl = wx.StaticText(self, label=_("Printer Mode") + u": ")
         pmode_ch = ExChoice(self, ed_glob.ID_PRINT_MODE,
                             choices=['Black/White', 'Colour/White', 
                                      'Colour/Default', 'Inverse', 'Normal'],
-                            default=ed_glob.PROFILE['PRINT_MODE'])
+                            default=Profile_Get('PRINT_MODE'))
         psizer = wx.BoxSizer(wx.HORIZONTAL)
         psizer.AddMany([(pmode_lbl, 0), ((5, 5), 0), (pmode_ch, 0)])
         splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, 
                                 _("Show Splash Screen"))
-        splash_cb.SetValue(ed_glob.PROFILE['APPSPLASH'])
+        splash_cb.SetValue(Profile_Get('APPSPLASH'))
         reporter_cb = wx.CheckBox(self, ed_glob.ID_REPORTER, 
                                   _("Disable Error Reporter"))
-        reporter_cb.SetValue(not ed_glob.PROFILE['REPORTER'])
+        reporter_cb.SetValue(not Profile_Get('REPORTER'))
 
         # File settings
         file_lbl = wx.StaticText(self, label=_("File Settings") + u": ")
         fh_lbl = wx.StaticText(self, label=_("File History Length") + u": ")
         fh_ch = ExChoice(self, ed_glob.ID_PREF_FHIST,
                          choices=['1','2','3','4','5','6','7','8','9'],
-                         default=str(ed_glob.PROFILE['FHIST_LVL']))
+                         default=Profile_Get('FHIST_LVL', 'str'))
         fhsizer = wx.BoxSizer(wx.HORIZONTAL)
         fhsizer.AddMany([(fh_lbl, 0), ((5, 5), 0), (fh_ch, 0)])
         pos_cb = wx.CheckBox(self, ed_glob.ID_PREF_SPOS, 
                              _("Remember File Position"))
-        pos_cb.SetValue(ed_glob.PROFILE['SAVE_POS'])
+        pos_cb.SetValue(Profile_Get('SAVE_POS'))
         chkmod_cb = wx.CheckBox(self, ed_glob.ID_PREF_CHKMOD, 
                                 _("Check if on disk file has been "
                                   "modified by others"))
-        chkmod_cb.SetValue(ed_glob.PROFILE['CHECKMOD'])
+        chkmod_cb.SetValue(Profile_Get('CHECKMOD'))
 
         # Locale
         locale = wx.StaticText(self, label=_("Locale Settings") + u": ")
         lsizer = wx.BoxSizer(wx.HORIZONTAL)
         lang_lbl = wx.StaticText(self, label=_("Language") + u": ")
         lang_c = ed_i18n.LangListCombo(self, ed_glob.ID_PREF_LANG, 
-                                       ed_glob.PROFILE['LANG'])
+                                       Profile_Get('LANG'))
         lsizer.AddMany([(lang_lbl, 0), ((5, 5), 0), (lang_c, 0)])
 
         # Layout items
@@ -361,11 +362,11 @@ class GeneralPanel(PrefPanelBase):
         self.LOG("[prefdlg][gen][evt] Check box clicked")
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
-        if e_id is [ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
+        if e_id in [ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
                     ed_glob.ID_PREF_CHKMOD]:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
         elif e_id == ed_glob.ID_REPORTER:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = not e_obj.GetValue()
+            Profile_Set(ed_glob.ID_2_PROF[e_id], not e_obj.GetValue())
         else:
             pass
         evt.Skip()
@@ -381,7 +382,7 @@ class GeneralPanel(PrefPanelBase):
         e_obj = evt.GetEventObject()
         if e_id in [ed_glob.ID_PREF_MODE, ed_glob.ID_PRINT_MODE,
                     ed_glob.ID_PREF_FHIST, ed_glob.ID_PREF_LANG]:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
         else:
             evt.Skip()
 
@@ -450,28 +451,28 @@ class DocGenPanel(wx.Panel):
         tabw_lbl = wx.StaticText(self, label=_("Tab Width") + u": ")
         tw_ch = ExChoice(self, ed_glob.ID_PREF_TABW,
                           choices=['2','3','4','5','6','7','8','9','10'],
-                          default=str(ed_glob.PROFILE['TABWIDTH']))
+                          default=Profile_Get('TABWIDTH', 'str'))
         ut_cb = wx.CheckBox(self, ed_glob.ID_PREF_TABS, 
                             _("Use Tabs Instead of Spaces"))
-        ut_cb.SetValue(ed_glob.PROFILE['USETABS'])
+        ut_cb.SetValue(Profile_Get('USETABS', 'bool', False))
         eol_lbl = wx.StaticText(self, label=_("Default EOL Mode") + u": ")
         eol_ch = ExChoice(self, ed_glob.ID_EOL_MODE,
-                          choices = [_("Macintosh (\\r)"), _("Unix (\\n)"), 
+                          choices=[_("Macintosh (\\r)"), _("Unix (\\n)"), 
                                    _("Windows (\\r\\n)")],
-                          default = ed_glob.PROFILE['EOL'])
+                          default=Profile_Get('EOL'))
 
         # View Options
         view_lbl = wx.StaticText(self, label=_("View Options") + u": ")
         aa_cb = wx.CheckBox(self, ed_glob.ID_PREF_AALIAS, _("AntiAliasing"))
-        aa_cb.SetValue(ed_glob.PROFILE['AALIASING'])
+        aa_cb.SetValue(Profile_Get('AALIASING'))
         seol_cb = wx.CheckBox(self, ed_glob.ID_SHOW_EOL, _("Show EOL Markers"))
-        seol_cb.SetValue(ed_glob.PROFILE['SHOW_EOL'])
+        seol_cb.SetValue(Profile_Get('SHOW_EOL'))
         sln_cb = wx.CheckBox(self, ed_glob.ID_SHOW_LN, _("Show Line Numbers"))
-        sln_cb.SetValue(ed_glob.PROFILE['SHOW_LN'])
+        sln_cb.SetValue(Profile_Get('SHOW_LN'))
         sws_cb = wx.CheckBox(self, ed_glob.ID_SHOW_WS, _("Show Whitespace"))
-        sws_cb.SetValue(ed_glob.PROFILE['SHOW_WS'])
+        sws_cb.SetValue(Profile_Get('SHOW_WS'))
         ww_cb = wx.CheckBox(self, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
-        ww_cb.SetValue(ed_glob.PROFILE['WRAP'])
+        ww_cb.SetValue(Profile_Get('WRAP'))
 
         # Font Options
         main = wx.GetApp().GetMainWindow()
@@ -510,9 +511,9 @@ class DocGenPanel(wx.Panel):
         if e_id in [self.ID_FONT_PICKER, self.ID_FONT_PICKER2]:
             font = evt.GetValue()
             if e_id == self.ID_FONT_PICKER:
-                ed_glob.PROFILE['FONT1'] = font
+                Profile_Set('FONT1', font, 'font')
             else:
-                ed_glob.PROFILE['FONT2'] = font
+                Profile_Set('FONT2', font, 'font')
             main = wx.GetApp().GetMainWindow()
             if main:
                 for stc in main.nb.GetTextControls():
@@ -533,7 +534,7 @@ class DocGenPanel(wx.Panel):
                     ed_glob.ID_EOL_MODE, ed_glob.ID_PREF_AALIAS,
                     ed_glob.ID_SHOW_EOL, ed_glob.ID_SHOW_LN,
                     ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP]:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
                 mainw.nb.UpdateTextControls()
@@ -570,25 +571,25 @@ class DocCodePanel(wx.Panel):
         vis_lbl = wx.StaticText(self, label=_("Visual Helpers") + u": ")
         br_cb = wx.CheckBox(self, ed_glob.ID_BRACKETHL, 
                             _("Bracket Highlighting"))
-        br_cb.SetValue(ed_glob.PROFILE['BRACKETHL'])
+        br_cb.SetValue(Profile_Get('BRACKETHL'))
         fold_cb = wx.CheckBox(self, ed_glob.ID_FOLDING, _("Code Folding"))
-        fold_cb.SetValue(ed_glob.PROFILE['CODE_FOLD'])
+        fold_cb.SetValue(Profile_Get('CODE_FOLD'))
         edge_cb = wx.CheckBox(self, ed_glob.ID_SHOW_EDGE, _("Edge Guide"))
-        edge_cb.SetValue(ed_glob.PROFILE['SHOW_EDGE'])
+        edge_cb.SetValue(Profile_Get('SHOW_EDGE'))
         
-        edge_sl = wx.Slider(self, ed_glob.ID_PREF_EDGE, ed_glob.PROFILE['EDGE'],
+        edge_sl = wx.Slider(self, ed_glob.ID_PREF_EDGE, Profile_Get('EDGE'),
                             0, 100, size=(-1, 15), style=wx.SL_HORIZONTAL | \
                             wx.SL_AUTOTICKS | wx.SL_LABELS)
         edge_sl.SetTickFreq(5, 1)
         ind_cb = wx.CheckBox(self, ed_glob.ID_INDENT_GUIDES, 
                              _("Indentation Guides"))
-        ind_cb.SetValue(ed_glob.PROFILE['GUIDES'])
+        ind_cb.SetValue(Profile_Get('GUIDES'))
 
         # Input Helpers
         comp_cb = wx.CheckBox(self, ed_glob.ID_AUTOCOMP, _("Auto-Completion"))
-        comp_cb.SetValue(ed_glob.PROFILE['AUTO_COMP'])
+        comp_cb.SetValue(Profile_Get('AUTO_COMP'))
         ai_cb = wx.CheckBox(self, ed_glob.ID_AUTOINDENT, _("Auto-Indent"))
-        ai_cb.SetValue(ed_glob.PROFILE['AUTO_INDENT'])
+        ai_cb.SetValue(Profile_Get('AUTO_INDENT'))
 
         # Layout the controls
         sizer = wx.GridBagSizer(5, 5)
@@ -615,7 +616,7 @@ class DocCodePanel(wx.Panel):
                     ed_glob.ID_INDENT_GUIDES, ed_glob.ID_FOLDING,
                     ed_glob.ID_AUTOCOMP, ed_glob.ID_AUTOINDENT,
                     ed_glob.ID_PREF_EDGE]:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
                 mainw.nb.UpdateTextControls()
@@ -631,7 +632,7 @@ class DocCodePanel(wx.Panel):
         e_obj = evt.GetEventObject()
         if e_id == ed_glob.ID_PREF_EDGE:
             val = e_obj.GetValue()
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
                 for stc in mainw.nb.GetTextControls():
@@ -671,11 +672,11 @@ class DocSyntaxPanel(wx.Panel):
         """
         # Syntax Settings
         syn_cb = wx.CheckBox(self, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
-        syn_cb.SetValue(ed_glob.PROFILE['SYNTAX'])
+        syn_cb.SetValue(Profile_Get('SYNTAX'))
         syntheme = ExChoice(self, ed_glob.ID_PREF_SYNTHEME,
                             choices=util.GetResourceFiles(u'styles', 
                                                           get_all=True),
-                            default=str(ed_glob.PROFILE['SYNTHEME']))
+                            default=Profile_Get('SYNTHEME', 'str'))
         line = wx.StaticLine(self, size=(-1, 2))
         lsizer = wx.BoxSizer(wx.VERTICAL)
         lsizer.Add(line, 0, wx.EXPAND)
@@ -725,7 +726,7 @@ class DocSyntaxPanel(wx.Panel):
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
         if e_id in [ed_glob.ID_SYNTAX, ed_glob.ID_PREF_SYNTHEME]:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = e_obj.GetValue()
+            Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
                 mainw.nb.UpdateTextControls()
@@ -765,12 +766,12 @@ class AppearancePanel(PrefPanelBase):
                             choices=util.GetResources(u"pixmaps" + \
                                                       util.GetPathChar() + \
                                                       u"theme"), 
-                            default=ed_glob.PROFILE['ICONS'].title())
+                            default=Profile_Get('ICONS', 'str').title())
         tb_isz_lbl = wx.StaticText(self, wx.ID_ANY, \
                                    _("Toolbar Icon Size") + u": ")
         tb_isz_ch = ExChoice(self, ed_glob.ID_PREF_ICONSZ,
                               choices=['16', '24', '32'],
-                              default=str(ed_glob.PROFILE['ICON_SZ'][0]))
+                              default=str(Profile_Get('ICON_SZ', 'size_tuple')[0]))
 
         # Layout Section
         perspect_lbl = wx.StaticText(self, wx.ID_ANY, \
@@ -782,18 +783,18 @@ class AppearancePanel(PrefPanelBase):
             pchoices = list()
         perspect_ch = ExChoice(self, ed_glob.ID_PERSPECTIVES,
                                choices=pchoices,
-                               default=ed_glob.PROFILE['DEFAULT_VIEW'])
+                               default=Profile_Get('DEFAULT_VIEW'))
         ws_cb = wx.CheckBox(self, ed_glob.ID_PREF_WSIZE, \
                             _("Remember Window Size on Exit"))
-        ws_cb.SetValue(ed_glob.PROFILE['SET_WSIZE'])
+        ws_cb.SetValue(Profile_Get('SET_WSIZE'))
         wp_cb = wx.CheckBox(self, ed_glob.ID_PREF_WPOS, \
                             _("Remember Window Position on Exit"))
-        wp_cb.SetValue(ed_glob.PROFILE['SET_WPOS'])
+        wp_cb.SetValue(Profile_Get('SET_WPOS'))
 
         # Misc
         trans_lbl = wx.StaticText(self, wx.ID_ANY, _("Transparency") + u": ")
         trans = wx.Slider(self, ed_glob.ID_TRANSPARENCY, 
-                          ed_glob.PROFILE['ALPHA'], 100, 255, 
+                          Profile_Get('ALPHA'), 100, 255, 
                           style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | 
                                 wx.SL_LABELS)
         tsizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -803,7 +804,7 @@ class AppearancePanel(PrefPanelBase):
         if wx.Platform == '__WXMAC__':
             m_cb = wx.CheckBox(self, ed_glob.ID_PREF_METAL, \
                                _("Use Metal Style (OS X Only)"))
-            m_cb.SetValue(ed_glob.PROFILE.get('METAL', False))
+            m_cb.SetValue(Profile_Get('METAL', 'bool', False))
         else:
             m_cb = (0, 0)
 
@@ -834,10 +835,10 @@ class AppearancePanel(PrefPanelBase):
         e_id = evt.GetId()
         val = evt.GetEventObject().GetValue()
         if e_id in [ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_WSIZE]:
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
         elif e_id == ed_glob.ID_PREF_METAL:
             windows = wx.GetApp().GetOpenWindows()
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
             for window in windows.values():
                 sty = None
                 if isinstance(window[0], wx.Frame):
@@ -870,17 +871,17 @@ class AppearancePanel(PrefPanelBase):
         if e_id in [ed_glob.ID_PREF_ICON, ed_glob.ID_PREF_ICONSZ]:
             if e_id == ed_glob.ID_PREF_ICONSZ:
                 val = (int(val), int(val))
-            ed_glob.PROFILE[ed_glob.ID_2_PROF[e_id]] = val
+            Profile_Set(ed_glob.ID_2_PROF[e_id], val)
             toolbar = wx.GetApp().GetMainWindow().GetToolBar()
             if toolbar is not None and \
-               (toolbar.GetToolTheme() != ed_glob.PROFILE['ICONS'] \
-               or toolbar.GetToolSize() != ed_glob.PROFILE['ICON_SZ']):
+               (toolbar.GetToolTheme() != Profile_Get('ICONS')) \
+               or (toolbar.GetToolSize() != Profile_Get('ICON_SZ')):
                 toolbar.ReInit()
         elif e_id == ed_glob.ID_PERSPECTIVES:
-            ed_glob.PROFILE['DEFAULT_VIEW'] = e_obj.GetValue()
+            Profile_Set('DEFAULT_VIEW', e_obj.GetValue())
             main_win = wx.GetApp().GetMainWindow()
             if main_win is not None:
-                main_win.SetPerspective(ed_glob.PROFILE['DEFAULT_VIEW'])
+                main_win.SetPerspective(Profile_Get('DEFAULT_VIEW'))
         else:
             evt.Skip()
 
@@ -897,7 +898,7 @@ class AppearancePanel(PrefPanelBase):
                 win = window[0]
                 if hasattr(win, 'SetTransparent'):
                     win.SetTransparent(value)
-            ed_glob.PROFILE['ALPHA'] = value
+            Profile_Set('ALPHA', value)
         else:
             evt.Skip()
 
@@ -1037,11 +1038,11 @@ class ProfileListCtrl(wx.ListCtrl,
         self.InsertColumn(0, _("Item"))
         self.InsertColumn(1, _("Value"))
 
-        prof = ed_glob.PROFILE.keys()
+        prof = profiler.Profile().keys()
         prof.sort()
 
         for key in prof:
-            val = unicode(ed_glob.PROFILE[key])
+            val = unicode(Profile_Get(key))
             index = self.InsertStringItem(sys.maxint, key)
             self.SetStringItem(index, 0, key)
             self.SetStringItem(index, 1, val)

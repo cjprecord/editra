@@ -43,6 +43,7 @@ __revision__ = "$Revision$"
 import os
 import wx
 import ed_glob
+from profiler import Profile_Get
 import util
 import syntax.synglob as synglob
 from edimage import catalog
@@ -186,7 +187,7 @@ class EditraArt(wx.ArtProvider):
             return wx.NullBitmap
 
         # If using default theme let the system provide the art when possible
-        if ed_glob.PROFILE['ICONS'].lower() == u'default' and \
+        if Profile_Get('ICONS', 'str').lower() == u'default' and \
            DEFAULT.has_key(art_id):
             return wx.ArtProvider.GetBitmap(DEFAULT[art_id], client, size)
         if CLIENTS.has_key(client) and \
@@ -212,7 +213,7 @@ class EditraArt(wx.ArtProvider):
             # Assume ART_MENU by default since its most common
             size = wx.Size(16, 16) # Menu icons must be 16x16
             if client == wx.ART_TOOLBAR:
-                size = ed_glob.PROFILE['ICON_SZ']
+                size = Profile_Get('ICON_SZ', 'size_tuple')
 
             # Rescale image to specified size if need be but dont allow
             # upscaling as it reduces quality.
@@ -251,7 +252,7 @@ def GetArtPath(client, mime = False):
                    u'mime' + util.GetPathChar()
         else:
             path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
-                   ed_glob.PROFILE['ICONS'] + util.GetPathChar() + \
+                   Profile_Get('ICONS') + util.GetPathChar() + \
                    CLIENTS[client] + util.GetPathChar()
 
     if os.path.exists(path):

@@ -39,7 +39,7 @@ __author__ = "Cody Precord <cprecord@editra.org>"
 __svnid__ = "$Id$"
 __revision__ = "$Revision$"
 
-__all__ = [ 'PROFILE', 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
+__all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
             'ID_NEW', 'ID_OPEN', 'ID_CLOSE', 'ID_CLOSEALL', 'ID_SAVE', 
             'ID_SAVEAS', 'ID_SAVEALL', 'ID_SAVE_PROFILE', 'ID_LOAD_PROFILE', 
             'ID_PRINT', 'ID_PRINT_PRE', 'ID_PRINT_SU', 'ID_EXIT', 'ID_UNDO', 
@@ -61,12 +61,9 @@ __all__ = [ 'PROFILE', 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
             'ID_CONTACT', 'ID_COMMAND_BAR' 
 ]
 
-# Statusbar IDs
-SB_INFO          = 0
-SB_ROWCOL        = 1
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.1.50'
+version = __version__ = u'0.1.55'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
@@ -90,6 +87,8 @@ CONFIG = {
           'SYS_STYLES_DIR' : "", # Editra base style sheets
           'TEST_DIR'    : "",   # Test data files dir
 }
+
+DEBUG = False
 
 #---- Object ID's ----#
 # File Menu IDs
@@ -239,48 +238,6 @@ SB_INFO          = 0
 SB_ROWCOL        = 1
 
 #---- Objects ----#
-
-# Dictionary to hold the profile
-# Always holds default settings incase profile loading fails or file
-# is incorrecly formatted/missing values
-PROFILE = {
-           'ALPHA'      : 255,              # Transparency level
-           'AALIASING'  : True,             # Use Anti-Aliasing if availble
-           'APPSPLASH'  : True,             # Show splash at startup
-           'AUTO_COMP'  : True,             # Use Auto-comp if available
-           'AUTO_INDENT': True,             # Use Auto Indent
-           'BRACKETHL'  : True,             # Use bracket highlighting
-           'CHECKMOD'   : True,             # Auto check file for file mod
-           'CODE_FOLD'  : True,             # Use code folding
-           'DEFAULT'    : False,            # No longer used I believe
-           'DEFAULT_VIEW' : 'Default',      # Default Perspective
-           'EDGE'       : 80,               # Edge guide column
-           'EOL'        : 'Unix (\\n)',     # EOL mode
-           'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
-           'GUIDES'     : True,             # Use Indentation guides
-           'ICONS'      : 'Nuovo',          # Icon Theme
-           'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
-           'LANG'       : 'Default',        # UI language
-           'MODE'       : 'CODE',           # Overall editor mode
-           'MYPROFILE'  : 'default.pp',     # Path to profile file
-           'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
-           'REPORTER'   : True,             # Error Reporter is Active
-           'SAVE_POS'   : True,             # Remember Carat positions
-           'SHOW_EDGE'  : True,             # Show Edge Guide
-           'SHOW_EOL'   : False,            # Show EOL markers
-           'SHOW_LN'    : True,             # Show Line Numbers
-           'SYNTAX'     : True,             # Use Syntax Highlighting
-           'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
-           'TABWIDTH'   : 8,                # Tab width
-           'THEME'      : 'DEFAULT',        # For future use
-           'TOOLBAR'    : True,             # Show Toolbar
-           'USETABS'    : True,             # Use tabs instead of spaces
-           'SHOW_WS'    : False,            # Show whitespace markers
-           'WRAP'       : True,             # Use Wordwrap
-           'SET_WSIZE'  : True,             # Remember mainwindow size on exit
-           'WSIZE'      : (700, 450),       # Mainwindow size
-           'SET_WPOS'   : True              # Remember window position
-}
 
 # Dictionary to map object ids to Profile keys
 ID_2_PROF = {

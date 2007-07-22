@@ -502,8 +502,8 @@ def CreateConfigDir():
         os.system(u"cp " + loader + " " + profile_dir + 
                   pchar + u".loader")
 
-    ed_glob.PROFILE["MYPROFILE"] = dest_file
-    from profiler import UpdateProfileLoader
+    from profiler import UpdateProfileLoader, Profile_Set
+    Profile_Set("MYPROFILE", dest_file)
     UpdateProfileLoader()
 
 def ResolvConfigDir(config_dir, sys_only=False):

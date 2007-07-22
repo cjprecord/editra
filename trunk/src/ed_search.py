@@ -42,6 +42,7 @@ __revision__ = "$Revision$"
 # Dependancies
 import wx
 import ed_glob
+from profiler import Profile_Get
 import dev_tool
 
 _ = wx.GetTranslation
@@ -194,8 +195,9 @@ class TextFinder(object):
         @param evt: event that called this handler
 
         """
-        self._find_dlg.Destroy()
-        self._find_dlg = None
+        if self._find_dlg is not None:
+            self._find_dlg.Destroy()
+            self._find_dlg = None
         evt.Skip()
 
     def OnShowFindDlg(self, evt):
@@ -219,9 +221,8 @@ class TextFinder(object):
                                                   _("Find"), wx.FR_NOUPDOWN)
         else:
             return
-        if wx.Platform == '__WXMAC__' and ed_glob.PROFILE.has_key('METAL'):
-            if ed_glob.PROFILE['METAL']:
-                self._find_dlg.SetExtraStyle(wx.DIALOG_EX_METAL)
+        if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
+            self._find_dlg.SetExtraStyle(wx.DIALOG_EX_METAL)
         self._find_dlg.CenterOnParent()
         self._find_dlg.Show()
 

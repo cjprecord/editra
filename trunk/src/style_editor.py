@@ -45,6 +45,7 @@ import glob
 import wx
 import wx.lib.colourselect as  csel
 import ed_glob
+from profiler import Profile_Get
 import ed_stc
 from ed_style import StyleItem
 import util
@@ -399,7 +400,7 @@ class StyleEditor(wx.Dialog):
         ss_lst.sort()
         ss_choice = wx.Choice(self.ctrl_pane, ed_glob.ID_PREF_SYNTHEME,
                               choices=ss_lst)
-        ss_choice.SetStringSelection(ed_glob.PROFILE['SYNTHEME'])
+        ss_choice.SetStringSelection(Profile_Get('SYNTHEME', 'str'))
         ss_new = wx.CheckBox(self.ctrl_pane, wx.ID_NEW, _("New"))
         ss_sizer.AddMany([((10, 10)), (ss_lbl, 0, wx.ALIGN_CENTER_VERTICAL), 
                           ((5, 0)),
