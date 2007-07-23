@@ -333,8 +333,8 @@ def Main():
               an instance of Editra and starts the main loop.
 
     """
-    shortopts = "hv"
-    longopts = ['help', 'oldPath=', 'version']
+    shortopts = "dhv"
+    longopts = ['debug', 'help', 'oldPath=', 'version']
     try:
         opts, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
     except getopt.GetoptError, msg:
@@ -353,9 +353,11 @@ def Main():
                    "Cody Precord (2005-2007)\n\n"
                    "usage: Editra [arguments] [files... ]\n\n"
                    "Short Arguments:\n"
+                   "  -d         Turn on console debugging\n"
                    "  -h         Show this help message\n"
                    "  -v         Print version number and exit\n"
                    "\nLong Arguments:\n"
+                   "  --debug    Turn on console debugging\n"
                    "  --help     Show this help message\n"
                    "  --oldPath  Don't use this!!\n"
                    "  --version  Print version number and exit\n"
@@ -365,6 +367,8 @@ def Main():
             print "%s - v%s - Developers Editor" % (ed_glob.prog_name, \
                                                     ed_glob.version)
             exit(0)
+        if True in [x[0] in ['-d', '--debug'] for x in opts]:
+            ed_glob.DEBUG = True
 
     # We are ready to run so fire up the config and launch the app
     profile_updated = InitConfig()

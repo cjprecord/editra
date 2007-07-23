@@ -36,7 +36,6 @@ import time
 import webbrowser
 import wx
 import ed_glob
-import profiler
 
 _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
@@ -102,7 +101,7 @@ def EnvironmentInfo():
         info.append("Mac OSX: %s" % platform.mac_ver()[0])
     info.append("Python Version: %s" % sys.version)
     info.append("wxPython Version: %s" % wx.version())
-    info.append("wxPython Info: %s" % "\n\t\t\t".join(wx.PlatformInfo))
+    info.append("wxPython Info: %s" % "\n\t\t".join(wx.PlatformInfo))
     info.append("Python Encoding: Default=%s  File=%s" % \
                 (sys.getdefaultencoding(), sys.getfilesystemencoding()))
     info.append("wxPython Encoding: %s" % wx.GetDefaultPyEncoding())
@@ -112,13 +111,15 @@ def EnvironmentInfo():
     info.append("Frozen: %s" % str(getattr(sys, 'frozen', 'False')))
     info.append("#---- End System Information ----#")
     info.append("#---- Runtime Variables ----#")
-    for key, val in profiler.Profile().iteritems():
+    from profiler import Profile
+    for key, val in Profile().iteritems():
         # Exclude "private" information
         if key.startswith('FILE') or key == 'MYPROFILE':
             continue
         else:
             info.append("%s=%s" % (key, str(val)))
-    
+    info.append("#---- End Runtime Variables ----#")
+
     return "\n".join(info)
 
 def ExceptionHook(exctype, value, trace):
