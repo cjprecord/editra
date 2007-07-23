@@ -48,6 +48,7 @@ import cPickle
 import wx
 from ed_glob import CONFIG, prog_name, version
 import util
+import dev_tool
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -159,14 +160,15 @@ class Profile(dict):
                 fhandle.close()
             except (IOError, SystemError, OSError, 
                     cPickle.UnpicklingError), msg:
-                print "[profile][err] %s" % str(msg)
+                dev_tool.DEBUGP("[profile][err] %s" % str(msg))
             else:
                 if isinstance(val, dict):
                     self.update(val)
                     self.Set('MYPROFILE', path)
+                    dev_tool.DEBUGP("[profile][info] Loaded %s" % path)
         else:
-            print "[profile][err] %s does not exist" % path
-            print "[profile][info] Loading defaults"
+            dev_tool.DEBUGP("[profile][err] %s does not exist" % path)
+            dev_tool.DEBUGP("[profile][info] Loading defaults")
             self.LoadDefaults()
             self.Set('MYPROFILE', path)
             return False
@@ -208,7 +210,7 @@ class Profile(dict):
             cPickle.dump(self, fhandle, cPickle.HIGHEST_PROTOCOL)
             fhandle.close()
         except (IOError, cPickle.PickleError), msg:
-            print "[profile][err] %s" % str(msg)
+            dev_tool.DEBUGP("[profile][err] %s" % str(msg))
             return False
         else:
             return True
