@@ -105,11 +105,15 @@ class Generator(plugin.Plugin):
         @type menu: wx.Menu
 
         """
+        log = wx.GetApp().GetLog()
         menu_items = list()
         for observer in self.observers:
-            menu_i = observer.GetMenuEntry(menu)
-            if menu_i:
-                menu_items.append((menu_i.GetLabel(), menu_i))
+            try:
+                menu_i = observer.GetMenuEntry(menu)
+                if menu_i:
+                    menu_items.append((menu_i.GetLabel(), menu_i))
+            except Exception, msg:
+                log("[generator][err] %s" % str(msg))
         menu_items.sort()
         genmenu = ed_menu.ED_Menu()
         for item in menu_items:

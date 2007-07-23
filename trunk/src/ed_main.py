@@ -266,14 +266,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.CenterOnParent()
 
         # Call add on plugins
-        try:
-            plgmgr = wx.GetApp().GetPluginManager()
-            addons = MainWindowAddOn(plgmgr)
-            addons.Init(self)
-            self._generator = generator.Generator(plgmgr)
-            self._generator.InstallMenu(self.toolsmenu)
-        finally:
-            pass
+        self.LOG("[main][info] Loading MainWindow Plugins ")
+        plgmgr = wx.GetApp().GetPluginManager()
+        addons = MainWindowAddOn(plgmgr)
+        addons.Init(self)
+        self.LOG("[main][info] Loading Generator plugins")
+        self._generator = generator.Generator(plgmgr)
+        self._generator.InstallMenu(self.toolsmenu)
 
         # Set Perspective
         self.SetPerspective(_PGET('DEFAULT_VIEW'))
@@ -1094,5 +1093,9 @@ class MainWindowAddOn(plugin.Plugin):
         @param window: window that observers become children of
 
         """
+        log = wx.GetApp().GetLog()
         for ob in self.observers:
-            ob.PlugIt(window)
+            try:
+                ob.PlugIt(window)
+            except Exception, msg:
+                log("[main_addon][err] %s" % str(msg))
