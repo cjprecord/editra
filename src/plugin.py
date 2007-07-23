@@ -341,7 +341,7 @@ class PluginManager(object):
                 self.LOG("[pluginmgr][err] %s Not Registered" % cls.__name__)
             try:
                 plugin = cls(self)
-            except TypeError, msg:
+            except (AttributeError, TypeError), msg:
                 self.LOG("[pluginmgr][err] Unable in initialize plugin")
                 self.LOG("[pluginmgr][err] %s" % str(msg))
         return plugin
