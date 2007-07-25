@@ -67,9 +67,9 @@ class FileBrowserPanel(plugin.Plugin):
             self._filebrowser = BrowserPane(mw, ID_BROWSERPANE)
 
             mw._mgr.AddPane(self._filebrowser, wx.aui.AuiPaneInfo().Name(PANE_NAME).\
-                            Caption("Editra | File Browser").Left().Layer(0).\
+                            Caption("Editra | File Browser").Left().Layer(1).\
                             CloseButton(True).MaximizeButton(False).\
-                            BestSize(wx.Size(215,350)))
+                            BestSize(wx.Size(215, 350)))
             if Profile_Get('SHOW_FB', 'bool', False):
                 mw._mgr.GetPane(PANE_NAME).Show()
                 self._mi.Check(True)
