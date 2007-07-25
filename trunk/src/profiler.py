@@ -128,6 +128,18 @@ class Profile(dict):
     #---- Protected Members ----#
 
     #---- Begin Public Members ----#
+    def DeleteItem(self, item):
+        """Removes an entry from the profile
+        
+        @param item: items name
+        @type item: string
+
+        """
+        if self.has_key(item):
+            del self[item]
+        else:
+            pass
+
     def Get(self, index, fmt=None, default=None):
         """Gets the specified item from the data set
         
@@ -218,6 +230,14 @@ class Profile(dict):
     #---- End Public Members ----#
 
 # Profile convinience functions
+def Profile_Del(item):
+    """Removes an item from the profile
+    
+    @param item: items name
+
+    """
+    Profile().DeleteItem(item)
+
 def Profile_Get(index, fmt=None, default=None):
     """Convinience for Profile().Get()
     @param index: profile index to retrieve
