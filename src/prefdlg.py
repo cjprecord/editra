@@ -601,7 +601,7 @@ class DocCodePanel(wx.Panel):
         sizer.AddMany([(br_cb, (1, 2)), (fold_cb, (2, 2)),
                        (edge_cb, (3, 2)),
                        (wx.StaticText(self, label=_("Column") + u": "), (3, 3)),
-                       (edge_sl, (3, 4), (1, 2)), (ind_cb, (4, 2))])
+                       (edge_sl, (3, 4), (2, 2), wx.EXPAND), (ind_cb, (4, 2))])
         sizer.Add(wx.StaticText(self, label=_("Input Helpers") + u": "), (6, 1))
         sizer.AddMany([(comp_cb, (6, 2)), (ai_cb, (7, 2))])
         self.SetSizer(sizer)

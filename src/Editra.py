@@ -49,7 +49,7 @@ import gettext
 import wx
 import ed_glob
 import ed_i18n
-from profiler import Profile_Get, Profile_Set
+from profiler import Profile_Del, Profile_Get, Profile_Set
 import util
 import dev_tool
 import ed_main
@@ -392,6 +392,8 @@ def Main():
     language.install()
 
     if profile_updated:
+        # Make sure window iniliazes to default position
+        Profile_Del('WPOS')
         wx.MessageBox(_("Your profile has been updated to the latest "
                         "version") + u"\n" + \
                       _("Please check the preferences dialog to reset "
