@@ -1,6 +1,6 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Editra"
-!define PRODUCT_VERSION "0.1.50"
+!define PRODUCT_VERSION "0.1.64"
 !define PRODUCT_PUBLISHER "Cody Precord"
 !define PRODUCT_WEB_SITE "http://editra.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Editra.exe"
@@ -43,7 +43,7 @@ SetCompressor lzma
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "editra.win32.0.1.50.exe"
+OutFile "editra.win32.0.1.64.exe"
 InstallDir "$PROGRAMFILES\Editra"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -136,7 +136,8 @@ Section "MainSection" SEC01
   File "pixmaps\theme\Nuovo\toolbar\save.png"
   File "pixmaps\theme\Nuovo\toolbar\undo.png"
   SetOutPath "$INSTDIR\plugins"
-  File "plugins\PyShell-0.2-py2.5.egg"
+  File "plugins\PyShell-0.3-py2.5.egg"
+  File "plugins\FileBrowser-0.2-py2.5.egg"
   SetOutPath "$INSTDIR\locale"
   SetOutPath "$INSTDIR\locale\en_US"
   SetOutPath "$INSTDIR\locale\en_US\LC_MESSAGES"
@@ -347,7 +348,8 @@ Section Uninstall
   Delete "$INSTDIR\pixmaps\theme\Nuovo\toolbar\redo.png"
   Delete "$INSTDIR\pixmaps\theme\Nuovo\toolbar\save.png"
   Delete "$INSTDIR\pixmaps\theme\Nuovo\toolbar\undo.png"
-  Delete "$INSTDIR\plugins\PyShell-0.2-py2.5.egg"
+  Delete "$INSTDIR\plugins\PyShell-0.3-py2.5.egg"
+  Delete "$INSTDIR\plugins\FileBrowser-0.2-py2.5.egg"
   Delete "$INSTDIR\styles\default.ess"
   Delete "$INSTDIR\styles\midnight.ess"
   Delete "$INSTDIR\tests\68k_assembly.68k"

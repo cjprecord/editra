@@ -144,6 +144,13 @@ for over 40 programing languages. For a more complete list of features and
 screenshots visit the projects homepage at `Editra.org
 <http://www.editra.org/>`_.
 
+============
+Dependancies
+============
+Python 2.4+
+wxPython 2.8+ (Unicode build suggested)
+setuptools 0.6+
+
 """
 
 ICON = { 'Win' : "pixmaps/editra.ico",
