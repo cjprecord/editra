@@ -122,6 +122,8 @@ class Editra(wx.App):
         
         """
         for window in self._windows:
+            if not hasattr(self._windows[window][0], '__name__'):
+                continue
             if self._windows[window][0].__name__ == "MainWindow":
                 return self._windows[window][0]
         return None
@@ -246,7 +248,10 @@ class Editra(wx.App):
                 for key in self._windows:
                     if self._windows[key][1]:
                         self._log("[app][info] Promoting %s to top" % key)
-                        self.SetTopWindow(self._windows[key][0])
+                        try:
+                            self.SetTopWindow(self._windows[key][0])
+                        except Exception:
+                            continue
                         found = True
                         break
                 if not found:
