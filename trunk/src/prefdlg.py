@@ -512,6 +512,8 @@ class DocGenPanel(wx.Panel):
         e_id = evt.GetId()
         if e_id in [self.ID_FONT_PICKER, self.ID_FONT_PICKER2]:
             font = evt.GetValue()
+            if font == wx.EmptyString:
+                return
             if e_id == self.ID_FONT_PICKER:
                 Profile_Set('FONT1', font, 'font')
             else:
@@ -536,7 +538,7 @@ class DocGenPanel(wx.Panel):
                     ed_glob.ID_EOL_MODE, ed_glob.ID_PREF_AALIAS,
                     ed_glob.ID_SHOW_EOL, ed_glob.ID_SHOW_LN,
                     ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP,
-                     ed_glob.ID_PREF_AALIAS]:
+                    ed_glob.ID_PREF_AALIAS]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:
@@ -1255,6 +1257,8 @@ class PyFontPicker(wx.Panel):
 
         """
         font = evt.GetFont()
+        if font.IsNull():
+            return
         self._font = font
         self._text.Clear()
         self._text.SetFont(self._font)
