@@ -195,7 +195,8 @@ class TextFinder(object):
         @param evt: event that called this handler
 
         """
-        self._find_dlg.Destroy()
+        if self._find_dlg is not None:
+            self._find_dlg.Destroy()
         self._find_dlg = None
         evt.Skip()
 
@@ -205,7 +206,7 @@ class TextFinder(object):
         @postcondition: find dialog is shown
 
         """
-        if self._find_dlg != None:
+        if self._find_dlg is not None:
             self._find_dlg.Destroy()
             self._find_dlg = None
         e_id = evt.GetId()
