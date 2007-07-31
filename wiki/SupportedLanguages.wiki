@@ -11,16 +11,18 @@ This page lists all of the programming languages supported by Editra and what co
 ||68k Asm      ||Yes           ||Yes             ||No                 ||Yes             ||
 ||Ada          ||Yes           ||Yes             ||No                 ||Yes             ||
 ||Bash         ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Batch        ||Yes           ||Yes             ||No            ||Yes             ||
 ||C            ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||C-Shell      ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Cpp          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Caml       ||Yes            ||Yes             ||No          ||Yes             ||
 ||Css          ||Yes           ||Yes             ||Yes           ||Yes             ||
-||Batch        ||Yes           ||Yes             ||No            ||Yes             ||
+||D            ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Eiffel       ||Yes            ||Yes            ||Yes           ||Yes             ||
 ||Ess          ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Fortran 77   ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Fortran 95   ||Yes           ||Yes             ||Yes           ||Yes             ||
+||Haskell      ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Html         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||Java         ||Yes           ||Yes             ||Yes           ||Yes             ||
 ||JavaScript   ||Yes           ||Yes             ||Yes           ||Yes             ||
