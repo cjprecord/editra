@@ -97,6 +97,10 @@ LANG_ESS = u'Editra Style Sheet'
 ID_LANG_EIFFEL = wx.NewId()
 LANG_EIFFEL = u"Eiffel"
 
+# Use LEX_FLAGSHIP
+ID_LANG_FLAGSHIP = wx.NewId()
+LANG_FLAGSHIP = u'FlagShip'
+
 # Use LEX_F77
 ID_LANG_F77 = wx.NewId()
 LANG_F77 = u'Fortran 77'
@@ -222,6 +226,7 @@ EXT_MAP = {
            'css'                : LANG_CSS,
            'e'                  : LANG_EIFFEL,
            'ess'                : LANG_ESS,
+           'prg'                : LANG_FLAGSHIP,
            'f for'              : LANG_F77,
            'f90 f95 f2k fpp'    : LANG_F95,
            'ksh'                : LANG_KSH,
@@ -271,6 +276,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_ESS    : (ID_LANG_ESS,    stc.STC_LEX_CSS,      'editra_ss'),
             LANG_F77    : (ID_LANG_F77,    stc.STC_LEX_F77,      'fortran'),
             LANG_F95    : (ID_LANG_F95,    stc.STC_LEX_FORTRAN,  'fortran'),
+            LANG_FLAGSHIP: (ID_LANG_FLAGSHIP, stc.STC_LEX_FLAGSHIP, 'flagship'),
             LANG_HASKELL : (ID_LANG_HASKELL, stc.STC_LEX_HASKELL, 'haskell'),
             LANG_HTML   : (ID_LANG_HTML,   stc.STC_LEX_HTML,     'html'),
             LANG_JAVA   : (ID_LANG_JAVA,   stc.STC_LEX_CPP,      'java'),
@@ -313,7 +319,7 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_CSS    : LANG_CSS,    ID_LANG_D     : LANG_D,
           ID_LANG_EIFFEL : LANG_EIFFEL, ID_LANG_ESS    : LANG_ESS,
           ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95,
-          ID_LANG_HASKELL: LANG_HASKELL,
+          ID_LANG_FLAGSHIP : LANG_FLAGSHIP, ID_LANG_HASKELL: LANG_HASKELL,
           ID_LANG_HTML   : LANG_HTML,   ID_LANG_JAVA  : LANG_JAVA, 
           ID_LANG_JS     : LANG_JS,     ID_LANG_KSH   : LANG_KSH,
           ID_LANG_LATEX  : LANG_LATEX,  ID_LANG_LISP  : LANG_LISP, 

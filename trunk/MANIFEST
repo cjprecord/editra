@@ -152,6 +152,7 @@ src/syntax/css.py
 src/syntax/d.py
 src/syntax/editra_ss.py
 src/syntax/eiffel.py
+src/syntax/flagship.py
 src/syntax/fortran.py
 src/syntax/haskell.py
 src/syntax/html.py
@@ -197,6 +198,7 @@ tests/d.d
 tests/dos_batch_script.bat
 tests/editra_style_sheet.ess
 tests/eiffel.e
+tests/flagship.prg
 tests/fortran_77.for
 tests/fortran_95.f95
 tests/haskell.hs
