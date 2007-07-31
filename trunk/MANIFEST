@@ -149,6 +149,7 @@ src/syntax/batch.py
 src/syntax/caml.py
 src/syntax/cpp.py
 src/syntax/css.py
+src/syntax/d.py
 src/syntax/editra_ss.py
 src/syntax/eiffel.py
 src/syntax/fortran.py
@@ -191,6 +192,7 @@ tests/c-shell_script.csh
 tests/caml.ml
 tests/cascading_style_sheet.css
 tests/cpp.cpp
+tests/d.d
 tests/dos_batch_script.bat
 tests/editra_style_sheet.ess
 tests/eiffel.e

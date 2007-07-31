@@ -7,6 +7,21 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
+VERSION 0.1.xx
+DATE 0x/xx/2007
+5th Alpha Release
+
+NEWS:
+
+NEW: [features/improvements]
++Added support for D programming language
+
+BUG FIXES:
++Fixed bug when closing font dialog with cancel button on MSW
++Fixed bug that would occure sometimes when closing find dialog
+
+#-----------------------------------------------------------------------------#
+
 VERSION 0.1.64
 DATE 07/27/2007
 4th Alpha Release

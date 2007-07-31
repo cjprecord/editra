@@ -82,6 +82,8 @@ ID_LANG_C    = wx.NewId()
 LANG_C = u'C'
 ID_LANG_CPP  = wx.NewId()
 LANG_CPP = u'CPP'
+ID_LANG_D = wx.NewId()
+LANG_D = u'D'
 ID_LANG_JAVA = wx.NewId()
 LANG_JAVA = u'Java'
 
@@ -209,6 +211,7 @@ EXT_MAP = {
            'bsh sh configure'   : LANG_BASH,
            'bat cmd'            : LANG_BATCH,
            'c h'                : LANG_C,
+           'd'                  : LANG_D,
            'ml mli'             : LANG_CAML,
            'cc c++ cpp cxx hh h++ hpp hxx' : LANG_CPP,
            'csh'                : LANG_CSH,
@@ -254,6 +257,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_BASH   : (ID_LANG_BASH,   stc.STC_LEX_BASH,     'sh'),
             LANG_BATCH  : (ID_LANG_BATCH,  stc.STC_LEX_BATCH,    'batch'),
             LANG_C      : (ID_LANG_C,      stc.STC_LEX_CPP,      'cpp'),
+            LANG_D      : (ID_LANG_D,      stc.STC_LEX_CPP,      'd'),
             LANG_CAML   : (ID_LANG_CAML,   stc.STC_LEX_CAML,     'caml'),
             LANG_CPP    : (ID_LANG_CPP,    stc.STC_LEX_CPP,      'cpp'),
             LANG_CSH    : (ID_LANG_CSH,    stc.STC_LEX_BASH,     'sh'),
@@ -300,8 +304,8 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_BATCH  : LANG_BATCH,  
           ID_LANG_C      : LANG_C,      ID_LANG_CAML  : LANG_CAML,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
-          ID_LANG_CSS    : LANG_CSS,    ID_LANG_EIFFEL : LANG_EIFFEL,
-          ID_LANG_ESS    : LANG_ESS,
+          ID_LANG_CSS    : LANG_CSS,    ID_LANG_D     : LANG_D,
+          ID_LANG_EIFFEL : LANG_EIFFEL, ID_LANG_ESS    : LANG_ESS,
           ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95, 
           ID_LANG_HTML   : LANG_HTML,   ID_LANG_JAVA  : LANG_JAVA, 
           ID_LANG_JS     : LANG_JS,     ID_LANG_KSH   : LANG_KSH,
