@@ -105,6 +105,10 @@ LANG_F77 = u'Fortran 77'
 ID_LANG_F95 = wx.NewId()
 LANG_F95 = u'Fortran 95'
 
+# Use LEX_HASKELL
+ID_LANG_HASKELL = wx.NewId()
+LANG_HASKELL = u'Haskell'
+
 # Use LEX_HTML
 ID_LANG_HTML = wx.NewId()
 LANG_HTML = u'HTML'
@@ -223,6 +227,7 @@ EXT_MAP = {
            'ksh'                : LANG_KSH,
            'java'               : LANG_JAVA,
            'js'                 : LANG_JS,
+           'hs'                 : LANG_HASKELL,
            'htm html shtm shtml xhtml' : LANG_HTML,
            'aux tex sty'        : LANG_LATEX,
            'cl lisp lsp'        : LANG_LISP,
@@ -266,6 +271,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_ESS    : (ID_LANG_ESS,    stc.STC_LEX_CSS,      'editra_ss'),
             LANG_F77    : (ID_LANG_F77,    stc.STC_LEX_F77,      'fortran'),
             LANG_F95    : (ID_LANG_F95,    stc.STC_LEX_FORTRAN,  'fortran'),
+            LANG_HASKELL : (ID_LANG_HASKELL, stc.STC_LEX_HASKELL, 'haskell'),
             LANG_HTML   : (ID_LANG_HTML,   stc.STC_LEX_HTML,     'html'),
             LANG_JAVA   : (ID_LANG_JAVA,   stc.STC_LEX_CPP,      'java'),
             LANG_JS     : (ID_LANG_JS,     stc.STC_LEX_CPP,      'javascript'), 
@@ -306,7 +312,8 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
           ID_LANG_CSS    : LANG_CSS,    ID_LANG_D     : LANG_D,
           ID_LANG_EIFFEL : LANG_EIFFEL, ID_LANG_ESS    : LANG_ESS,
-          ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95, 
+          ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95,
+          ID_LANG_HASKELL: LANG_HASKELL,
           ID_LANG_HTML   : LANG_HTML,   ID_LANG_JAVA  : LANG_JAVA, 
           ID_LANG_JS     : LANG_JS,     ID_LANG_KSH   : LANG_KSH,
           ID_LANG_LATEX  : LANG_LATEX,  ID_LANG_LISP  : LANG_LISP, 

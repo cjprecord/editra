@@ -14,7 +14,7 @@ DATE 0x/xx/2007
 NEWS:
 
 NEW: [features/improvements]
-+Added support for D programming language
++Added support for (D, Haskell) programming languages
 
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW

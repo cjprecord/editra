@@ -153,6 +153,7 @@ src/syntax/d.py
 src/syntax/editra_ss.py
 src/syntax/eiffel.py
 src/syntax/fortran.py
+src/syntax/haskell.py
 src/syntax/html.py
 src/syntax/java.py
 src/syntax/javascript.py
@@ -198,6 +199,7 @@ tests/editra_style_sheet.ess
 tests/eiffel.e
 tests/fortran_77.for
 tests/fortran_95.f95
+tests/haskell.hs
 tests/html.html
 tests/java.java
 tests/javascript.js
