@@ -107,10 +107,10 @@ class CalcPanel(wx.Panel):
         sizer = wx.GridBagSizer(1, 2)
         sizer.AddMany([((3, 3), (0, 0)), ((3, 3), (0, 6)), 
                        (self._disp, (1, 1), (3, 5), wx.EXPAND)])
-#         sbox = wx.StaticBox(self, label="ASCII")
-#         sbsizer = wx.StaticBoxSizer(sbox)
-#         sbsizer.Add(self._ascii)
-#         sizer.Add(sbsizer, (4, 1), (1, 1), wx.ALIGN_LEFT | wx.EXPAND)
+        dspbox = wx.RadioBox(self, label=_("Char Display"), choices=["Ascii", "Unicode"],
+                             majorDimension=2, style=wx.RA_SPECIFY_COLS)
+        dspbox.SetStringSelection("Ascii")
+        sizer.Add(dspbox, (4, 1), (1, 2), wx.ALIGN_LEFT)
         radbox = wx.RadioBox(self, label=_("Mode"), choices=["Hex", "Oct", "Dec"], 
                              majorDimension=3, style=wx.RA_SPECIFY_COLS)
         radbox.SetStringSelection("Dec")
@@ -195,13 +195,19 @@ class CalcPanel(wx.Panel):
         e_id = evt.GetInt()
         e_obj = evt.GetEventObject()
         mode = e_obj.GetItemLabel(e_id)
-        self._disp.SetMode(mode)
-        if mode == "Hex":
-            self.SetHexMode()
-        elif mode == "Oct":
-            self.SetOctMode()
+        if mode in ['Hex', 'Oct', 'Dec']:
+            self._disp.SetMode(mode)
+            if mode == "Hex":
+                self.SetHexMode()
+            elif mode == "Oct":
+                self.SetOctMode()
+            else:
+                self.SetDecimalMode()
         else:
-            self.SetDecimalMode()
+            if mode == 'Ascii':
+                self._disp.SetAscii()
+            else:
+                self._disp.SetUnicode()
 
     def SetDecimalMode(self):
         """Set the calculator to decimal mode"""
@@ -239,27 +245,41 @@ class Display(wx.PyPanel):
         self._val = u'0'    # Current value in display
         self._mode = mode   # Current mode to display
         self._op = u' '     # Operation
+        self._ascii = True  # Show ascii by default
         
         # Event Handlers
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 
-    def _DrawMode(self, gc, rect, font):
-        """Draws the calculators mode and current opperator to the display"""
+    def _DrawText(self, gc, rect, font):
+        """Draws the text into the display"""
+        # Draw the Value
+        font.SetPointSize(16)
+        gc.SetFont(gc.CreateFont(font))
+        v_extent = gc.GetTextExtent(self._val)
+        gc.DrawText(self._val, rect.width - (v_extent[0] + 15), 3)
+
+        # Draw the mode and operator
         font.SetPointSize(12)
         gc.SetFont(gc.CreateFont(font))
         mode = "%s        %s" % (self._op, self._mode)
         t_extent = gc.GetTextExtent(mode)
-        gc.DrawText(mode, rect.width - (t_extent[0] + 10), rect.height - (t_extent[1] + 5))
+        gc.DrawText(mode, rect.width - (t_extent[0] + 10), 
+                    rect.height - (t_extent[1] + 5))
 
-    def _DrawValue(self, gc, rect, font):
-        """Draws the value text in the upper right corner of the display
-        using the given GraphicsContext.
-        
-        """
-        font.SetPointSize(16)
-        gc.SetFont(gc.CreateFont(font))
-        t_extent = gc.GetTextExtent(self._val)
-        gc.DrawText(self._val, rect.width - (t_extent[0] + 15), 3)
+        # Draw Ascii/Unicode char equivalent of the value
+        val = int(self._val)
+        if self._ascii:
+            asc_val = u''
+            if val >= 0 and val < 255:
+                asc_val = chr(val)
+            chr_val = "ascii: " + asc_val.decode('latin-1')
+        else:
+            try:
+                uni_val = unichr(val)
+            except ValueError:
+                uni_val = u''
+            chr_val = u"unicode: " + uni_val
+        gc.DrawText(chr_val, 5, rect.height - (t_extent[1] + 5))
 
     def GetMode(self):
         """Returns the mode of the display"""
@@ -294,10 +314,14 @@ class Display(wx.PyPanel):
 
         font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
         gc.SetPen(wx.BLACK_PEN)
-        self._DrawValue(gc, rect, font)
-        self._DrawMode(gc, rect, font)
+        self._DrawText(gc, rect, font)
 
         evt.Skip()
+
+    def SetAscii(self):
+        """Set the character display to show ascii"""
+        self._ascii = True
+        self.Refresh()
 
     def SetMode(self, mode):
         """Set the mode value of the display"""
@@ -309,7 +333,17 @@ class Display(wx.PyPanel):
         self._op = str(op)
         self.Refresh()
 
+    def SetUnicode(self):
+        """Set the character display to show unicode"""
+        self._ascii = False
+        self.Refresh()
+
     def SetValue(self, val):
         """Set the value of the control"""
-        self._val = str(val).lstrip('0')
+        tmp = str(val)
+        if not len(tmp):
+            tmp = u'0'
+        if len(tmp) > 1:
+            tmp = tmp.lstrip('0')
+        self._val = tmp
         self.Refresh()
