@@ -19,6 +19,8 @@ NEW: [features/improvements]
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
 +Fixed bug that would occure sometimes when closing find dialog
++Fixed a major bug in the setup file for source package installs that
+excluded some of the necessary files.
 
 #-----------------------------------------------------------------------------#
 

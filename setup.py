@@ -116,7 +116,7 @@ DATA_FILES = [("include/python2.5",
              ]
 
 DATA = [ "src/*.py", "src/syntax/*.py", "src/autocomp/*.py", "docs/*.txt",
-         "pixmaps/*.png", "pixmaps/editra.ico", 'Editra',
+         "pixmaps/*.png", "pixmaps/editra.ico", 'Editra', "src/extern/*.py",
          "pixmaps/*.icns", "pixmaps/mime/*.png", "pixmaps/theme/Default/README",
          "pixmaps/theme/Nuovo/AUTHOR", "pixmaps/theme/Nuovo/COPYING", 
          "pixmaps/theme/Nuovo/DONATE", "pixmaps/theme/Nuovo/README", 
