@@ -222,6 +222,7 @@ ID_CDROM             = wx.NewId()
 ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMMAND_BAR       = wx.NewId()
 ID_COMPUTER          = wx.NewId()
+ID_DELETE            = wx.NewId()
 ID_DOWNLOAD_DLG      = wx.NewId()
 ID_FILE              = wx.ID_FILE
 ID_FLOPPY            = wx.NewId()
