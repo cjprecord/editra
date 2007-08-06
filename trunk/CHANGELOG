@@ -15,6 +15,7 @@ NEWS:
 
 NEW: [features/improvements]
 +Added support for (D, Flagship, Haskell) programming languages
++Highlighting for Diff files
 
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
