@@ -17,7 +17,7 @@ int main(void)
     exit(a);
 }
 
-int add(x, y)
+int add(int x, int y)
 {
     return x + y;
 }

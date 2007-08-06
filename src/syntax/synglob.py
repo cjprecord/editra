@@ -200,9 +200,11 @@ LANG_VHDL = u'VHDL'
 ID_LANG_OCTAVE = wx.NewId()
 LANG_OCTAVE = u'Octave'
 
-# Use LEX_OTHER (Batch, Makefile)
+# Use LEX_OTHER (Batch, Diff, Makefile)
 ID_LANG_BATCH = wx.NewId()
 LANG_BATCH = u'DOS Batch Script'
+ID_LANG_DIFF = wx.NewId()
+LANG_DIFF = u'Diff File'
 ID_LANG_MAKE  = wx.NewId()
 LANG_MAKE = u'Makefile'
 
@@ -220,6 +222,7 @@ EXT_MAP = {
            'bat cmd'            : LANG_BATCH,
            'c h'                : LANG_C,
            'd'                  : LANG_D,
+           'patch diff'         : LANG_DIFF,
            'ml mli'             : LANG_CAML,
            'cc c++ cpp cxx hh h++ hpp hxx' : LANG_CPP,
            'csh'                : LANG_CSH,
@@ -268,6 +271,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_BATCH  : (ID_LANG_BATCH,  stc.STC_LEX_BATCH,    'batch'),
             LANG_C      : (ID_LANG_C,      stc.STC_LEX_CPP,      'cpp'),
             LANG_D      : (ID_LANG_D,      stc.STC_LEX_CPP,      'd'),
+            LANG_DIFF   : (ID_LANG_DIFF,   stc.STC_LEX_DIFF,     'diff'),
             LANG_CAML   : (ID_LANG_CAML,   stc.STC_LEX_CAML,     'caml'),
             LANG_CPP    : (ID_LANG_CPP,    stc.STC_LEX_CPP,      'cpp'),
             LANG_CSH    : (ID_LANG_CSH,    stc.STC_LEX_BASH,     'sh'),
@@ -317,6 +321,7 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_C      : LANG_C,      ID_LANG_CAML  : LANG_CAML,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
           ID_LANG_CSS    : LANG_CSS,    ID_LANG_D     : LANG_D,
+          ID_LANG_DIFF   : LANG_DIFF,
           ID_LANG_EIFFEL : LANG_EIFFEL, ID_LANG_ESS    : LANG_ESS,
           ID_LANG_F77    : LANG_F77,    ID_LANG_F95   : LANG_F95,
           ID_LANG_FLAGSHIP : LANG_FLAGSHIP, ID_LANG_HASKELL: LANG_HASKELL,
