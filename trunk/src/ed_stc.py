@@ -432,7 +432,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: full path name of document
 
         """
-        return "".join([self.dirname, util.GetPathChar(), self.filename])
+        fname = "".join([self.dirname, util.GetPathChar(), self.filename])
+        if fname == util.GetPathChar():
+            return wx.EmptyString
+        else:
+            return fname
 
     def GetStyleSheet(self, sheet_name=None):
         """Finds the current style sheet and returns its path. The
