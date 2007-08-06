@@ -21,7 +21,7 @@
 # Plugin Meta
 """Adds a File Browser sidepanel"""
 __author__ = "Cody Precord"
-__version__ = "0.2"
+__version__ = "0.3"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -123,7 +123,11 @@ class BrowserMenuBar(wx.Panel):
                           size=wx.DefaultSize, style=wx.NO_BORDER)
 
         # Attributes
-        self._menub = wx.ToggleButton(self, self.ID_PATHS, _("Saved Paths..."))
+        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_ADD_BM), wx.ART_MENU)
+        self._menub = wx.BitmapButton(self, self.ID_PATHS, 
+                                      bmp, style=wx.NO_BORDER)
+        tt = wx.ToolTip(_("Pathmarks"))
+        self._menub.SetToolTip(tt)
         self._menu = ed_menu.ED_Menu()
         self._saved = ed_menu.ED_Menu()
         self._rmpath = ed_menu.ED_Menu()
@@ -155,7 +159,7 @@ class BrowserMenuBar(wx.Panel):
         self.SetSizer(self._sizer)
 
         # Event Handlers
-        self._menub.Bind(wx.EVT_TOGGLEBUTTON, self.OnButton, id=self.ID_PATHS)
+        self._menub.Bind(wx.EVT_BUTTON, self.OnButton, id=self.ID_PATHS)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 
     # XXX maybe change to list the more recently added items near the top
@@ -195,21 +199,13 @@ class BrowserMenuBar(wx.Panel):
         """Returns the menu containg the saved items"""
         return self._saved
 
-    # wxBug? The SetValue calls are needed on OSX for the button to 
-    #        toggle properly. However On Windows making the calls to 
-    #        SetValue cause the button continually pop up the menu without 
-    #        dismissing it first.
     def OnButton(self, evt):
         """Pops the menu open when the button has been clicked on"""
         e_id = evt.GetId()
-        if e_id == self.ID_PATHS and self._menub.GetValue():
+        if e_id == self.ID_PATHS:
             men_rect = self._menub.GetRect()
             pos = wx.Point(0, men_rect.GetY() + men_rect.GetHeight())
-            if wx.Platform == '__WXMAC__':
-                self._menub.SetValue(True)
             self._menub.PopupMenu(self._menu, pos)
-            if wx.Platform == '__WXMAC__':
-                self._menub.SetValue(False)
         else:
             evt.Skip()
 
@@ -399,6 +395,8 @@ class FileBrowser(wx.GenericDirCtrl):
 
         # Event Handlers
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnOpen)
+        if wx.Platform == '__WXMSW__':
+            self._tree.Bind(wx.EVT_KEY_UP, self.OnOpen)
 #         self.Bind(wx.EVT_TREE_BEGIN_DRAG, self.OnDragStart)
 #         self.Bind(wx.EVT_TREE_END_DRAG, self.OnDragEnd)
 
@@ -443,6 +441,13 @@ class FileBrowser(wx.GenericDirCtrl):
 
         """
         files = self.GetPaths()
+        if wx.Platform == '__WXMSW__':
+            key = evt.GetKeyCode()
+            if len(files) == 1 and stat.S_ISDIR(os.stat(files[0])[0]):
+                evt.Skip()
+                if key == wx.WXK_RETURN:
+                    self.ExpandPath(files[0])
+                return
         to_open = list()
         for fname in files:
             try:
