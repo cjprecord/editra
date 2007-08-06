@@ -29,7 +29,6 @@ import ed_menu
 import plugin
 import util
 
-PANE_NAME = u'Calculator'
 ID_CALC = wx.NewId()
 #-----------------------------------------------------------------------------#
 
@@ -37,7 +36,7 @@ class Calculator(plugin.Plugin):
     """Simple Programmer's Calculator"""
     plugin.Implements(ed_main.MainWindowI)
     def PlugIt(self, parent):
-        """Create the calculator panel and give it to the auimgr"""
+        """Create the calculator and hook into the menu"""
         mw = parent
         self._log = wx.GetApp().GetLog()
         self._log("[calc] Installing calculator plugin")
@@ -47,46 +46,77 @@ class Calculator(plugin.Plugin):
         vm = mb.GetMenuByName("view")
         self._mi = vm.InsertAlpha(ID_CALC, _("Calculator"), ("Open Calculator"),
                                   wx.ITEM_CHECK, after=ed_glob.ID_PRE_MARK)
-        # Do Layout
-        calcp = CalcPanel(mw, ID_CALC)
-        mw._mgr.AddPane(calcp, wx.aui.AuiPaneInfo().Name(PANE_NAME).\
-                            Caption("Editra | Calculator").Bottom().Layer(0).\
-                            CloseButton(True).MaximizeButton(False).\
-                            BestSize(calcp.GetSize()))
 
         # Event Handlers
-        mw.Bind(wx.EVT_MENU, self.OnShowBrowser, id=ID_CALC)
-        mw.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
+        mw.Bind(wx.EVT_MENU, self.OnShowCalc, id=ID_CALC)
 
-    def OnPaneClose(self, evt):
-        """Handles when the pane is closed to update the menu"""
-        pane = evt.GetPane()
-        self._log("[calc] Calculator closed")
-        if pane.name == PANE_NAME:
-            self._mi.Check(False)
-        else:
-            evt.Skip()
+    def OnCalcClose(self):
+        """Called when calculator is closed to update menu"""
+        self._mi.Check(False)
 
-    def OnShowBrowser(self, evt):
+    def OnShowCalc(self, evt):
         """Shows the filebrowser"""
         if evt.GetId() == ID_CALC:
             self._log("[calc] Calculator opened")
-            mw = wx.GetApp().GetMainWindow().GetFrameManager()
-            pane = mw.GetPane(PANE_NAME).Hide()
-            if pane.IsShown():
-                pane.Hide()
-                self._mi.Check(False)
-            else:
-                pane.Show()
+            if CalcFrame.INSTANCE is None:
+                mw = wx.GetApp().GetMainWindow()
+                calc = CalcFrame(mw, "Editra | Calculator", self.OnCalcClose)
                 self._mi.Check(True)
-            mw.Update()
+                calc.Show()
+            else:
+                self._mi.Check(False)
+                CalcFrame.INSTANCE.Destroy()
+                CalcFrame.INSTANCE = None
         else:
             evt.Skip()
 
 #-----------------------------------------------------------------------------#
+class CalcFrame(wx.MiniFrame):
+    """Create the calculator. Only a single instance can exist at
+    any given time.
+
+    """
+    INSTANCE = None
+    def __init__(self, parent, title, close_callback):
+        """Initialize the calculator frame"""
+        wx.MiniFrame.__init__(self, parent, title=title, 
+                              style=wx.DEFAULT_DIALOG_STYLE)
+        
+        # Attributes
+        self.callback = close_callback
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(CalcPanel(self, ID_CALC), 1, wx.EXPAND)
+        self.SetSizer(sizer)
+        self.SetInitialSize()
+        self.CenterOnParent()
+
+        # Event Handlers
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+
+    def __new__(cls, *args, **kargs):
+        """Create the instance"""
+        if cls.INSTANCE is None:
+            cls.INSTANCE = wx.MiniFrame.__new__(cls, *args, **kargs)
+        return cls.INSTANCE
+
+    def Destroy(self):
+        """Destroy the instance"""
+        self.__class__.INSTANCE = None
+        wx.MiniFrame.Destroy(self)
+
+    def OnClose(self, evt):
+        """Cleanup settings on close"""
+        self.__class__.INSTANCE = None
+        self.callback()
+        evt.Skip()
 
 class CalcPanel(wx.Panel):
-    """Creates the calculators interface"""
+    """Creates the calculators interface
+    @todo: Dissable << and >> when floating values are present
+    @todo: When integer values overflow display convert to scientific notation
+    @todo: Keybindings to numpad and enter key
+
+    """
     def __init__(self, parent, id_):
         """Initialiases the calculators main interface"""
         wx.Panel.__init__(self, parent, id_)
@@ -133,7 +163,7 @@ class CalcPanel(wx.Panel):
         sizer.Add(self._keys, (5, 1), (6, 3), wx.EXPAND)
         gsizer2 = wx.GridSizer(6, 2, 1, 1)
         for row in (("AC", "C"), ("/", "-"), ("*", "+"), 
-                    ("<<", ">>"), ("2's", "1's")):
+                    ("<<", ">>"), (".", "^")):
             for label in row:
                 b = wx.Button(self, label=label)
                 gsizer2.Add(b)
@@ -146,10 +176,22 @@ class CalcPanel(wx.Panel):
     def Compute(self):
         """Compute the result of the calculators entries"""
         try:
+            if self._leftop.startswith('ERR'):
+                self._leftop = 0
             rop = self._disp.GetValue()
             op = self._disp.GetOperator()
             if op == u'^':
                 op = u'**'
+            if self._disp.GetMode() == 'Dec' and \
+               ('.' in self._leftop or '.' in rop):
+                if self._leftop[-1] == '.':
+                    self._leftop = self._leftop + '0'
+                if rop[-1] == '.':
+                    rop = rop + '0'
+                if '.' not in self._leftop:
+                    self._leftop = self._leftop + '.0'
+                if '.' not in rop:
+                    rop = rop + '.0'
             compute = "%s %s %s" % (self._leftop, op, rop)
             self._log("[calc] Calculating answer to %s" % compute)
 
@@ -160,10 +202,22 @@ class CalcPanel(wx.Panel):
             # Calculate result
             result = eval(compute)
 
+            mode = self._disp.GetMode()
+            if mode == 'Hex':
+                result = str(hex(result))
+                result = '0x' + result.lstrip('0x').upper()
+            elif mode == 'Oct':
+                result = oct(result)
+            else:
+                pass
+
             # Show result
             self._disp.SetValue(str(result))
-        except Exception, e:
-            wx.LogError(str(e))
+        except Exception, msg:
+            self._log("[calc][err] %s" % str(msg))
+            self._disp.PrintError()
+            self._disp.SetOperator('')
+            self._leftop = ''
             return
 
     def GetKeys(self):
@@ -177,27 +231,39 @@ class CalcPanel(wx.Panel):
             win = item.GetWindow()
             if win is not None:
                 keys.append(win)
+        for child in self.GetChildren():
+            if isinstance(child, wx.Button):
+                if child.GetLabel() == u'.':
+                    keys.append(child)
+                    break
         return keys
 
     def OnButton(self, evt):
         """Process the button clicks on the calculator"""
-        label = evt.GetEventObject().GetLabel()
+        e_obj = evt.GetEventObject()
+        label = e_obj.GetLabel()
         
         if label == "=": # Calculate
+            if self._disp.GetOperator() == u'=':
+                return
             self.Compute()
             self._disp.SetOperator("=")
             self._leftop = u''
-        elif label in ["AC", "C"]: # Clear
+        elif label == 'AC' or (label == 'C' and e_obj not in self.GetKeys()):
+            if label == 'AC':
+                self._leftop = u''
+                self._disp.SetOperator("")
             self._disp.SetValue("")
-            self._disp.SetOperator("")
-        elif label == "1's": # 1's compliment
-            pass
-        elif label == "2's": # 2's compliment
-            pass
         else: # Just add button text to current calculation
-            if label in ['*', '+', '/', '<<', '>>', '-']:
+            if label in ['*', '+', '/', '<<', '>>', '-', '^']:
+                if len(self._leftop):
+                    self.Compute()
                 self._disp.SetOperator(label)
-                self._leftop = self._disp.GetValue()
+                tmp = self._disp.GetValue()
+                if tmp.startswith('ERR'):
+                    tmp = '0'
+                    self._disp.SetValue(tmp)
+                self._leftop = tmp
                 self._rstart = True
             else:
                 if self._leftop != wx.EmptyString and self._rstart:
@@ -254,13 +320,16 @@ class CalcPanel(wx.Panel):
     def SetHexMode(self):
         """Set the calculator into hex mode"""
         for key in self.GetKeys():
-            key.Enable(True)
+            if key.GetLabel() == u'.':
+                key.Enable(False)
+            else:
+                key.Enable(True)
 
     def SetOctMode(self):
         """Set the calculator into octal mode"""
         for key in self.GetKeys():
             lbl = key.GetLabel()
-            if lbl.isalpha():
+            if lbl.isalpha() or lbl == u'.':
                 key.Enable(False)
             elif lbl.isdigit() and len(lbl) == 1 and int(lbl) > 7:
                 key.Enable(False)
@@ -303,6 +372,9 @@ class Display(wx.PyPanel):
         font.SetPointSize(16)
         gc.SetFont(gc.CreateFont(font))
         v_extent = gc.GetTextExtent(self._val)
+        if v_extent[0] > rect.width:
+            self._val = "ERROR: Display Overflow"
+            v_extent = gc.GetTextExtent(self._val)
         gc.DrawText(self._val, rect.width - (v_extent[0] + 15), 3)
 
         # Draw the mode and operator
@@ -315,6 +387,10 @@ class Display(wx.PyPanel):
 
         # Draw Ascii/Unicode char equivalent of the value
         try:
+            if self._mode in ['Oct', 'Hex']:
+                val = self._val.lstrip('0').lstrip('0x')
+                if not len(val):
+                    val = '0'
             if self._mode == 'Dec':
                 val = long(self._val)
             elif self._mode == 'Oct':
@@ -323,7 +399,7 @@ class Display(wx.PyPanel):
                 val = long(val, 16)
         except (ValueError, OverflowError):
             val = 0
-        
+
         if self._ascii:
             asc_val = u''
             if val >= 0 and val < 255:
@@ -332,7 +408,7 @@ class Display(wx.PyPanel):
         else:
             try:
                 uni_val = unichr(val)
-            except ValueError:
+            except (OverflowError, ValueError):
                 uni_val = u''
             chr_val = u"unicode: " + uni_val
         gc.DrawText(chr_val, 5, rect.height - (t_extent[1] + 5))
@@ -348,6 +424,28 @@ class Display(wx.PyPanel):
     def GetValue(self):
         """Gets the value in the control"""
         return self._val
+
+    def GetValAsInt(self):
+        """Gets the value of the display as an integer
+        @note: Floating point values are rounded and only
+               works for when display is in decimal mode
+
+        """
+        val = self._val
+        if u'.' in val:
+            tmp = val.split(u'.')
+            if len(tmp) > 1:
+                fval = int(tmp[0])
+                if int(tmp[1]) >= 5:
+                    fval = fval + 1
+            else:
+                if int(tmp[0]) >= 5:
+                    fval = 1
+                else:
+                    fval = 0
+        else:
+            fval = int(val)
+        return fval
 
     def OnPaint(self, evt):
         """Paint the display and its values"""
@@ -374,6 +472,16 @@ class Display(wx.PyPanel):
 
         evt.Skip()
 
+    def PrintError(self, msg=u''):
+        """Set the display to show error condition
+        @todo: perhaps add more detailed messages
+
+        """
+        if msg != u'':
+            self.SetValue("ERROR: %s" % msg)
+        else:
+            self.SetValue("ERROR")
+
     def SetAscii(self):
         """Set the character display to show ascii"""
         self._ascii = True
@@ -382,27 +490,31 @@ class Display(wx.PyPanel):
     def SetMode(self, mode):
         """Set the mode value of the display"""
         if self._mode == 'Dec':
+            tmp = self.GetValAsInt()
             if mode == 'Oct':
-                val = oct(int(self._val))
+                val = oct(tmp)
             elif mode == 'Hex':
-                val = hex(int(self._val))
+                val = str(hex(tmp))
+                val = '0x' + val.lstrip('0x').upper()
             else:
                 val = self._val
         elif self._mode == 'Oct':
-            tmp = self._val.lstrip('0')
+            tmp = self._val.lstrip('0').rstrip('L')
             if not len(tmp):
                 tmp = '0'
             if mode == 'Dec' and len(tmp):
                 val = int(tmp, 8)
             elif mode == 'Hex' and len(tmp):
-                val = hex(int(tmp, 8))
+                val = str(hex(int(tmp, 8)))
+                val = '0x' + val.lstrip('0x').upper()
             else:
                 val = self._val
         else:
+            tmp = self._val.lstrip('0x').rstrip('L')
             if mode == 'Dec':
-                val = int(self._val, 16)
+                val = int(tmp, 16)
             elif mode == 'Oct':
-                val = oct(int(self._val, 16))
+                val = oct(int(tmp, 16))
             else:
                 val = self._val
         self._val = str(val)
@@ -422,6 +534,10 @@ class Display(wx.PyPanel):
     def SetValue(self, val):
         """Set the value of the control"""
         tmp = str(val)
+        if tmp.startswith("ERROR"):
+            self._val = tmp
+            self.Refresh()
+            return
         if len(tmp) > 1 and self._mode == 'Dec':
             tmp = tmp.lstrip('0')
         if not len(tmp):
