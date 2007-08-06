@@ -115,3 +115,29 @@ class NotificationEvent(wx.PyCommandEvent):
 
         """
         return self._value
+
+#--------------------------------------------------------------------------#
+
+edEVT_MAINWINDOW_EXIT = wx.NewEventType()
+EVT_MAINWINDOW_EXIT = wx.PyEventBinder(edEVT_MAINWINDOW_EXIT, 1)
+class MainWindowExitEvent(wx.PyCommandEvent):
+    """Event to signal that text needs updating"""
+    def __init__(self, etype, eid):
+        """Creates the event object"""
+        wx.PyCommandEvent.__init__(self, etype, eid)
+        self._etype = etype
+        self._id = eid
+
+    def GetEvtType(self):
+        """Returns the event type
+        @return: this events event type (ed_event)
+
+        """
+        return self._etype
+
+    def GetId(self):
+        """Returns the event id
+        @return: the identifier of this event
+
+        """
+        return self._id

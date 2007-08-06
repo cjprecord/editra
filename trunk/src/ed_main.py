@@ -67,6 +67,7 @@ from profiler import Profile_Get as _PGET
 from profiler import Profile_Set as _PSET
 import profiler
 import ed_toolbar
+import ed_event
 import ed_pages
 import ed_menu
 import ed_print
@@ -633,6 +634,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         except AttributeError:
             self.LOG("[main][exit][err] Trapped AttributeError OnExit")
         self._cmdbar.Destroy()
+
+        # Post exit notice to all aui panes
+        panes = self._mgr.GetAllPanes()
+        exit_evt = ed_event.MainWindowExitEvent(ed_event.edEVT_MAINWINDOW_EXIT,
+                                                wx.ID_ANY)
+        for pane in panes:
+            wx.PostEvent(pane.window, exit_evt)
 
         # Finally close the application
         self.LOG("[main_info] Closing Main Frame")
