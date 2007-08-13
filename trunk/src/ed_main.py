@@ -76,6 +76,7 @@ import syntax.syntax as syntax
 import generator
 import plugin
 import perspective as viewmgr
+import iface
 
 # Function Aliases
 _ = wx.GetTranslation
@@ -271,6 +272,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         plgmgr = wx.GetApp().GetPluginManager()
         addons = MainWindowAddOn(plgmgr)
         addons.Init(self)
+        shelf = iface.Shelf(plgmgr)
+        shelf.Init(self)
         self.LOG("[main][info] Loading Generator plugins")
         self._generator = generator.Generator(plgmgr)
         self._generator.InstallMenu(self.toolsmenu)

@@ -13,15 +13,19 @@ DATE 0x/xx/2007
 
 NEWS:
 
+
 NEW: [features/improvements]
++New plugin interface 'The Shelf' for opening alowing plugins that wish to
+have multiple instances opened in a notebook interface.
 +Added support for (D, Flagship, Haskell) programming languages
-+Highlighting for Diff files
++Highlighting for Diff/Patch files
 
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
 +Fixed bug that would occure sometimes when closing find dialog
 +Fixed a major bug in the setup file for source package installs that
 excluded some of the necessary files.
++Fixed bug in python autocomp for python files that have syntax errors
 
 #-----------------------------------------------------------------------------#
 

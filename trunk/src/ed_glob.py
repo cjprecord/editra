@@ -166,6 +166,7 @@ ID_SHOW_WS       = wx.NewId()
 ID_PERSPECTIVES  = wx.NewId()
 ID_INDENT_GUIDES = wx.NewId()
 ID_VIEW_TOOL     = wx.NewId()
+ID_SHELF         = wx.NewId()
 ID_GOTO_LINE     = wx.NewId()
 ID_NEXT_MARK     = wx.ID_FORWARD
 ID_PRE_MARK      = wx.ID_BACKWARD
@@ -283,4 +284,5 @@ ID_2_PROF = {
 }
 
 # Default Plugins
-DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX", "generator.Rtf")
+DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX", "generator.Rtf",
+                   "iface.Shelf")

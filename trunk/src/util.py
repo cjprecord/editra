@@ -632,6 +632,13 @@ def GetResourceFiles(resource, trim=True, get_all=False):
         rec_list.sort()
         return list(set(rec_list))
 
+def Log(msg):
+    """Push the message to the apps log
+    @param msg: message string to log
+
+    """
+    wx.GetApp().GetLog()(msg)
+
 # GUI helper functions
 def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     """ Brighten/Darken input colour by percent and adjust alpha
