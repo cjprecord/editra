@@ -51,6 +51,7 @@ ShowUnInstDetails show
 
 Section "MainSection" SEC01
   SetOverwrite try
+  # File /r "${PROJECT_PATH}\*.*"
   SetOutPath "$INSTDIR\include"
   SetOutPath "$INSTDIR\include\python2.5"
   # TODO add python site file (if needed)
@@ -248,6 +249,7 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
+  #RmDir /r "$INSTDIR\"
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\AUTHORS"

@@ -348,7 +348,9 @@ class Display(wx.PyPanel):
             |                        Value  |
             |                               |
             |Charval           Op     Mode  |
-             -------------------------------
+            |-------------------------------|
+
+    @todo: optimize drawning there is some flickering on Windows
     """
     def __init__(self, parent, mode):
         """Initialize the display the mode parameter is the

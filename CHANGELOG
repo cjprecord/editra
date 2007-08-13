@@ -17,6 +17,7 @@ NEWS:
 NEW: [features/improvements]
 +New plugin interface 'The Shelf' for opening alowing plugins that wish to
 have multiple instances opened in a notebook interface.
++PyShell is now part of the Shelf, so multiple shells can be open at once
 +Added support for (D, Flagship, Haskell) programming languages
 +Highlighting for Diff/Patch files
 
