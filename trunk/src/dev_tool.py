@@ -130,6 +130,8 @@ def ExceptionHook(exctype, value, trace):
 
     """
     ftrace = FormatTrace(exctype, value, trace)
+    # Ensure that error gets raised to console as well
+    print ftrace
     ErrorDialog(ftrace)
 
 def FormatTrace(etype, value, trace):

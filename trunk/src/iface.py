@@ -67,7 +67,7 @@ class ShelfI(plugin.Interface):
         """
 
     def CreateItem(self, parent):
-        """This is them method used to open the tool in the L{Shelf}
+        """This is them method used to open the item in the L{Shelf}
         It should return an object that is a Panel or subclass of a Panel.
         @param parent: The would be parent window of this panel
         @return: wx.Panel
@@ -76,7 +76,7 @@ class ShelfI(plugin.Interface):
 
     def GetId(self):
         """Return the id that identifies this item (same as the menuid)
-        @return: Tool ID
+        @return: Item ID
         @rtype: int
 
         """
@@ -141,6 +141,7 @@ class Shelf(plugin.Plugin):
 
     def EnsureShelfVisible(self):
         """Make sure the Shelf is visable
+        @precondition: Shelf.Init has been called
         @postcondition: Shelf is shown
 
         """
@@ -167,6 +168,13 @@ class Shelf(plugin.Plugin):
                                   self._shelf.GetPageText(page), 1):
                 count = count + 1
         return count
+
+    def GetItemStack(self):
+        """Returns a list of ordered named items that are open in the shelf
+        @return: list of strings
+
+        """
+        
 
     def GetMenu(self):
         """Return the menu of this object

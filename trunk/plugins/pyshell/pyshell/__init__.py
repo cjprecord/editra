@@ -57,8 +57,8 @@ class PyShell(plugin.Plugin):
         return self.ID_PYSHELL
 
     def GetMenuEntry(self, menu):
-        return wx.MenuItem(menu, self.ID_PYSHELL, _("PyShell"), 
-                                        _("Show A Python Shell"))
+        return wx.MenuItem(menu, self.ID_PYSHELL, self.__name__, 
+                                        _("Open A Python Shell"))
 
     def GetName(self):
         return self.__name__
