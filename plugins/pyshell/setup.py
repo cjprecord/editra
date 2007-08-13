@@ -2,12 +2,8 @@
 # Setup script to build the PyShell plugin. To build the plugin
 # just run 'python setup.py' and an egg will be built and put into 
 # the plugin directory
-"""Adds an interactive PyShell option to Editra's view menu. When
-active the PyShell will be placed in the bottom portion of Editra's
-frame, but it is dockable it can be moved to any other part of the frame
-or pulled out as a standalone dialog by use of the mouse. This plugin
-also interacts with Editra's PROFILE object so that it can remember if
-it was active or not in the users last session.
+"""Adds an interactive PyShell that can be opened in the Shelf. Multiple
+instances can be opened in the Shelf at once.
 
 """
 
@@ -25,7 +21,7 @@ if setup != None:
     sys.argv.append("--dist-dir=../.")
     setup(
         name='PyShell',
-        version='0.3',
+        version='0.4',
         description=__doc__,
         author=__author__,
         author_email="cprecord@editra.org",

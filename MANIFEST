@@ -125,6 +125,7 @@ src/ed_theme.py
 src/ed_toolbar.py
 src/edimage.py
 src/generator.py
+src/iface.py
 src/perspective.py
 src/plugdlg.py
 src/plugin.py

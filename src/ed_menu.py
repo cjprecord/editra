@@ -97,7 +97,7 @@ class ED_Menu(wx.Menu):
         return item
 
     def InsertAfter(self, item_id, id_, label=u'', helpstr=u'', 
-                    kind = wx.ITEM_NORMAL, use_bmp=True):
+                    kind=wx.ITEM_NORMAL, use_bmp=True):
         """Inserts the given item after the specified item id in
         the menu. If the id cannot be found then the item will appended
         to the end of the menu.
