@@ -35,7 +35,7 @@
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id$"
+__svnid__ = "$Id$"
 __revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
@@ -44,6 +44,7 @@ import re
 import wx
 import plugin
 from extern import flatnotebook as FNB
+from profiler import Profile_Get
 import ed_menu
 import ed_glob
 import util
@@ -125,6 +126,7 @@ class Shelf(plugin.Plugin):
                             BestSize(wx.Size(500,250)))
         # Hide the pane and let the perspective manager take care of it
         mgr.GetPane(self.__name__).Hide()
+        mgr.Update()
 
         # Install Menu and bind event handler
         view = parent.GetMenuBar().GetMenuByName("view")
@@ -138,6 +140,8 @@ class Shelf(plugin.Plugin):
                         menu, _("Put an item on the Shelf"))
         for item in menu.GetMenuItems():
             parent.Bind(wx.EVT_MENU, self.OnGetShelfItem, item)
+
+        self.StockShelf(Profile_Get('SHELF_ITEMS', 'list', []))
 
     def EnsureShelfVisible(self):
         """Make sure the Shelf is visable
@@ -169,12 +173,29 @@ class Shelf(plugin.Plugin):
                 count = count + 1
         return count
 
+    def GetItemId(self, item_name):
+        """Get the id that identifies a given item
+        @param item_name: name of item to get ID for
+        @return: integer id or None if not found
+
+        """
+        for item in self.observers:
+            if item_name == item.GetName():
+                return item.GetId()
+        return None
+
     def GetItemStack(self):
         """Returns a list of ordered named items that are open in the shelf
         @return: list of strings
 
         """
-        
+        rval = list()
+        if self._shelf is None:
+            return rval
+        for page in xrange(self._shelf.GetPageCount()):
+            rval.append(re.sub(PGNUM_PAT, u'', 
+                        self._shelf.GetPageText(page), 1))
+        return rval
 
     def GetMenu(self):
         """Return the menu of this object
@@ -247,4 +268,14 @@ class Shelf(plugin.Plugin):
                 return True
         return False
 
+    def StockShelf(self, i_list):
+        """Fill the shelf by opening an ordered list of items
+        @param i_list: List of named L{ShelfI} instances
+        @type i_list: list of strings
+
+        """
+        for item in i_list:
+            itemid = self.GetItemId(item)
+            if itemid:
+                self.PutItemOnShelf(itemid)
 #--------------------------------------------------------------------------#

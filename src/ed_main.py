@@ -272,8 +272,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         plgmgr = wx.GetApp().GetPluginManager()
         addons = MainWindowAddOn(plgmgr)
         addons.Init(self)
-        shelf = iface.Shelf(plgmgr)
-        shelf.Init(self)
+        self._shelf = iface.Shelf(plgmgr)
+        self._shelf.Init(self)
         self.LOG("[main][info] Loading Generator plugins")
         self._generator = generator.Generator(plgmgr)
         self._generator.InstallMenu(self.toolsmenu)
@@ -616,6 +616,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # Write out saved document information
         self.nb.DocMgr.WriteBook()
         syntax.SyntaxMgr().SaveState()
+
+        # Save Shelf contents
+        _PSET('SHELF_ITEMS', self._shelf.GetItemStack())
 
         # Save Window Size/Position for next launch
         # XXX workaround for possible bug in wxPython 2.8
