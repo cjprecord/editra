@@ -1281,14 +1281,26 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                         u'{' : self.ParaUp,
                         u'}' : self.ParaDown }
 
-            # TODO emulating vim's put method has alot of cases to handle
             if rcmd == u'p':
-                pass
-#                 self.GotoLine(cline)
-#                 if cline == self.GetLineCount() - 1:
-#                     self.NewLine()
+                success = False
+                newline = False
+                if wx.TheClipboard.Open():
+                    td = wx.TextDataObject()
+                    success = wx.TheClipboard.GetData(td)
+                    wx.TheClipboard.Close()
+                if success:
+                    text = td.GetText()
+                    if text[-1] == '\n':
+                        if cline == self.GetLineCount() - 1:
+                            self.NewLine()
+                        else:
+                            self.GotoLine(cline + 1)
+                        newline = True
             elif rcmd == u'x':
-                self.SetSelection(cpos, cpos + repeat)
+                tmp = self.GetTextRange(cpos, cpos + repeat)
+                tmp = tmp.split(self.GetEOLChar())
+                end = cpos + len(tmp[0])
+                self.SetSelection(cpos, end)
                 repeat = 1
 
             self.BeginUndoAction()
@@ -1309,6 +1321,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 run = cmd_map[rcmd]
                 for count in xrange(repeat):                
                     run()
+            if rcmd == u'p' and newline:
+                self.GotoPos(self.GetLineEndPosition(cline + repeat))
             self.EndUndoAction()
             self._cmdcache = u''
         # 2 key commands
@@ -1321,17 +1335,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 repeat = int(repeat)
 
             self.GotoLine(cline)
-            sel_end = self.GetLineEndPosition(cline + (repeat - 1))
+            sel_end = self.PositionFromLine(cline + repeat)
             if repeat != 1 or rcmd not in u'<<>>':
                 self.SetSelection(self.GetCurrentPos(), sel_end)
             self.BeginUndoAction()
             if rcmd == u'cc':
                 self.Cut()
-                self.DeleteBack()
+#                 self.DeleteBack()
                 self.SetViNormalMode(False)
             elif rcmd == u'dd':
                 self.Cut()
-                self.DeleteBack()
+#                 self.DeleteBack()
             elif rcmd == u'yy':
                 self.Copy()
                 self.GotoPos(cpos)
