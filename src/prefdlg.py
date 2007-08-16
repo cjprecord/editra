@@ -595,6 +595,8 @@ class DocCodePanel(wx.Panel):
         comp_cb.SetValue(Profile_Get('AUTO_COMP'))
         ai_cb = wx.CheckBox(self, ed_glob.ID_AUTOINDENT, _("Auto-Indent"))
         ai_cb.SetValue(Profile_Get('AUTO_INDENT'))
+        vi_cb = wx.CheckBox(self, ed_glob.ID_VI_MODE, _("Enable Vi Emulation"))
+        vi_cb.SetValue(Profile_Get('VI_EMU'))
 
         # Layout the controls
         sizer = wx.GridBagSizer(5, 5)
@@ -605,7 +607,7 @@ class DocCodePanel(wx.Panel):
                        (wx.StaticText(self, label=_("Column") + u": "), (3, 3)),
                        (edge_sl, (3, 4), (2, 2), wx.EXPAND), (ind_cb, (4, 2))])
         sizer.Add(wx.StaticText(self, label=_("Input Helpers") + u": "), (6, 1))
-        sizer.AddMany([(comp_cb, (6, 2)), (ai_cb, (7, 2))])
+        sizer.AddMany([(comp_cb, (6, 2)), (ai_cb, (7, 2)), (vi_cb, (8, 2))])
         self.SetSizer(sizer)
 
     def OnCheck(self, evt):
@@ -620,7 +622,7 @@ class DocCodePanel(wx.Panel):
         if e_id in [ed_glob.ID_BRACKETHL, ed_glob.ID_SHOW_EDGE,
                     ed_glob.ID_INDENT_GUIDES, ed_glob.ID_FOLDING,
                     ed_glob.ID_AUTOCOMP, ed_glob.ID_AUTOINDENT,
-                    ed_glob.ID_PREF_EDGE]:
+                    ed_glob.ID_PREF_EDGE, ed_glob.ID_VI_MODE]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
             mainw = wx.GetApp().GetMainWindow()
             if mainw is not None:

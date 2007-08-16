@@ -101,6 +101,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         # Attributes
         self.LOG = wx.GetApp().GetLog()
+        self._vimode = False
+        self._vinormal = False
+        self._cmdcache = u''
 
         # File Attributes
         self.filename = ''	                # This controls File
@@ -240,6 +243,26 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.InsertText(pos, self.GetEOLChar())
         self.GotoPos(pos + curr)
 
+    def AutoIndent(self):
+        """Indent from the current postion to match the indentation
+        of the previous line.
+        @postcondition: proper type of white space is added from current pos
+                        to match that of indentation in above line
+        """
+        line = self.GetCurrentLine()
+        text = self.GetTextRange(self.PositionFromLine(line), \
+                                 self.GetCurrentPos())
+        if text.strip() == u'':
+            self.AddText(self.GetEOLChar() + text)
+            self.EnsureCaretVisible()
+            return
+        indent = self.GetLineIndentation(line)
+        i_space = indent / self.GetTabWidth()
+        ndent = self.GetEOLChar() + self.GetIndentChar() * i_space
+        self.AddText(ndent + \
+                     ((indent - (self.GetTabWidth() * i_space)) * u' '))
+        self.EnsureCaretVisible()
+
     def Bookmark(self, action):
         """Handles bookmark actions
         @param action: An event ID that describes what is to be done
@@ -289,6 +312,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.ToggleAutoIndent(_PGET('AUTO_INDENT'))
         self.ToggleBracketHL(_PGET('BRACKETHL'))
         self.ToggleLineNumbers(_PGET('SHOW_LN'))
+        self.SetViEmulationMode(_PGET('VI_EMU'))
         self.SetViewEdgeGuide(_PGET('SHOW_EDGE'))
 
     def Comment(self, uncomment=False):
@@ -472,23 +496,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         k_code = evt.GetKeyCode()
+        if self._vimode and k_code == wx.WXK_ESCAPE:
+            # If Vi emulation is active go into Normal mode and
+            # pass the key event to OnChar
+            self.SetViNormalMode(True)
+            evt.Skip()
+            return
         if self._autoindent and k_code == wx.WXK_RETURN:
             if self.GetSelectedText():
                 self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
                 return
-            line = self.GetCurrentLine()
-            text = self.GetTextRange(self.PositionFromLine(line), \
-                                     self.GetCurrentPos())
-            if text.strip() == u'':
-                self.AddText(self.GetEOLChar() + text)
-                self.EnsureCaretVisible()
-                return
-            indent = self.GetLineIndentation(line)
-            i_space = indent / self.GetTabWidth()
-            ndent = self.GetEOLChar() + self.GetIndentChar() * i_space
-            self.AddText(ndent + \
-                         ((indent - (self.GetTabWidth() * i_space)) * u' '))
-            self.EnsureCaretVisible()
+            self.AutoIndent()
         else:
             evt.Skip()
 
@@ -502,10 +520,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                prevent a slow down in the input of text into the buffer
 
         """
+        key_code = evt.GetKeyCode()
+        if self._vimode and self._vinormal:
+            self._cmdcache = self._cmdcache + unichr(key_code)
+            self.ViCmdDispatch()
+            return
         if not self._use_autocomp:
             evt.Skip()
             return True
-        key_code = evt.GetKeyCode()
         if key_code in self._autocomp_svc.GetAutoCompKeys():
             if self.AutoCompActive():
                 self.AutoCompCancel()
@@ -1063,6 +1085,30 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         mode = mode_map.get(mode_str, wx.stc.STC_EOL_LF)
         self.SetEOLMode(mode)
 
+    def SetViEmulationMode(self, use_vi):
+        """Activate/Deactivate Vi eumulation mode
+        @param use_vi: Turn vi emulation on/off
+        @type use_vi: boolean
+
+        """
+        self._vimode = use_vi
+        self.SetViNormalMode(False)  # Use input mode by default
+        self._cmdcache = u'' # clear all cmds when switching modes
+
+    def SetViNormalMode(self, normal):
+        """Change the cursor appearance when toggling
+        in and out of vi normal mode.
+        @param normal: Normal mode on/off
+        @type normal: boolean
+
+        """
+        self._vinormal = normal
+        self._cmdcache = u''
+        if normal:
+            self.SetCaretWidth(10)
+        else:
+            self.SetCaretWidth(1)
+
     def SetViewEdgeGuide(self, switch=None):
         """Toggles the visibility of the edge guide
         @keyword switch: force a particular setting
@@ -1123,6 +1169,69 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetText(txt)
         self.GotoPos(cpos)
         del txt
+
+    def ViCmdDispatch(self):
+        """Processes vi commands
+        @prerequisite: Vi emulation is enabled and in Normal mode
+
+        """
+        if not len(self._cmdcache):
+            return
+        
+        cmd = self._cmdcache
+        cpos = self.GetCurrentPos()
+        cline = self.LineFromPosition(cpos)
+        # Single key commands activated with Shift
+        if len(cmd) == 1 and (cmd.isupper() or cmd in '^{}'):
+            if  cmd == u'A': # Insert at EOL
+                epos = self.GetLineEndPosition(cline)
+                self.SetCurrentPos(epos)
+                self.SetSelection(epos, epos)
+                self.SetViNormalMode(False)
+            elif cmd == u'G': # Jump End of document
+                pos = self.GetLength()
+                self.SetCurrentPos(pos)
+                self.SetSelection(pos, pos)
+            elif cmd in u'I^': # Insert at line start / Jump line start
+                indent = self.GetLineIndentation(cline)
+                pos = self.PositionFromLine(cline) + indent
+                self.SetCurrentPos(self.PositionFromLine(cline) + indent)
+                self.SetSelection(pos, pos)
+                if cmd == u'I':
+                    self.SetViNormalMode(False)
+            elif cmd == u'J': # Join next line
+                self.SetTargetStart(cpos)
+                self.SetTargetEnd(self.PositionFromLine(cline + 1))
+                self.LinesJoin()
+            elif cmd == u'B': # Jump to previous word
+                self.WordLeft()
+            elif cmd == u'O': # Insert new line above
+                self.GotoPos(self.GetLineEndPosition(cline - 1))
+                self.AutoIndent()
+            elif cmd == u'E': # Go Next Word
+                self.WordRight()
+            elif cmd == '{':
+                self.ParaUp()
+            elif cmd == '}':
+                self.ParaDown()
+            self._cmdcache = u''
+        # single key non sequence commands
+        elif len(cmd) == 1 and cmd in u'nbuia/?o':
+            if cmd == u'b': # jump word left
+                self.WordLeft()
+            elif cmd == u'u': # undo
+                self.Undo()
+            elif cmd == u'i': # insert mode
+                self.SetViNormalMode(False)
+            elif cmd == u'a': # insert mode after current pos
+                pos = cpos + 1
+                self.SetCurrentPos(pos)
+                self.SetSelection(pos, pos)
+                self.SetViNormalMode(False)
+            elif cmd == u'o':
+                self.GotoPos(self.GetLineEndPosition(cline))
+                self.AutoIndent()
+            self._cmdcache = u''
 
     def FoldingOnOff(self, switch=None):
         """Turn code folding on and off
@@ -1504,3 +1613,5 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Refresh()
 
     #---- End Style Definitions ----#
+
+#-----------------------------------------------------------------------------#
