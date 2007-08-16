@@ -15,6 +15,7 @@ NEWS:
 
 
 NEW: [features/improvements]
++Vi emulation mode
 +New plugin interface 'The Shelf' for opening alowing plugins that wish to
 have multiple instances opened in a notebook interface.
 +PyShell is now part of the Shelf, so multiple shells can be open at once

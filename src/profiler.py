@@ -186,9 +186,6 @@ class Profile(dict):
             self.Set('MYPROFILE', path)
             return False
 
-#         if len(self) < len(_DEFAULTS):
-#             self.update(_DEFAULTS)
-#             return False
         # Update profile to any keys that are missing
         for key in _DEFAULTS:
             if key not in self:
