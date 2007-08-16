@@ -139,8 +139,9 @@ class Shelf(plugin.Plugin):
         view.InsertMenu(pos + 1, ed_glob.ID_SHELF, self.__name__, 
                         menu, _("Put an item on the Shelf"))
         for item in menu.GetMenuItems():
+            if item.IsSeparator():
+                continue
             parent.Bind(wx.EVT_MENU, self.OnGetShelfItem, item)
-
         self.StockShelf(Profile_Get('SHELF_ITEMS', 'list', []))
 
     def EnsureShelfVisible(self):
@@ -203,6 +204,8 @@ class Shelf(plugin.Plugin):
 
         """
         menu = ed_menu.ED_Menu()
+        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf"), _("Show the Shelf"))
+        menu.AppendSeparator()
         menu_items = list()
         for observer in self.observers:
             try:
@@ -223,7 +226,11 @@ class Shelf(plugin.Plugin):
         @param evt: Event that called this handler
 
         """
-        self.PutItemOnShelf(evt.GetId())
+        e_id = evt.GetId()
+        if e_id == ed_glob.ID_SHOW_SHELF:
+            self.EnsureShelfVisible()
+        else:
+            self.PutItemOnShelf(evt.GetId())
 
     def OnPutShelfItemAway(self, evt):
         """Handles when an item is closed
