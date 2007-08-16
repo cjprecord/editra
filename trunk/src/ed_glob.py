@@ -239,6 +239,7 @@ ID_PREF_APPEARANCE   = wx.NewId()
 ID_PREF_DOCUMENT     = wx.NewId()
 ID_PREF_GENERAL      = wx.NewId()
 ID_PREF_UPDATE       = wx.NewId()
+ID_VI_MODE           = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0
@@ -280,7 +281,8 @@ ID_2_PROF = {
              ID_PREF_ICON         : 'ICONS',
              ID_PREF_ICONSZ       : 'ICON_SZ',
              ID_PREF_MODE         : 'MODE',
-             ID_PRINT_MODE        : 'PRINT_MODE'
+             ID_PRINT_MODE        : 'PRINT_MODE',
+             ID_VI_MODE           : 'VI_EMU'
 }
 
 # Default Plugins

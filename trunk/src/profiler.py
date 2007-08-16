@@ -89,7 +89,8 @@ _DEFAULTS = {
            'WRAP'       : True,             # Use Wordwrap
            'SET_WSIZE'  : True,             # Remember mainwindow size on exit
            'WSIZE'      : (700, 450),       # Mainwindow size
-           'SET_WPOS'   : True              # Remember window position
+           'SET_WPOS'   : True,             # Remember window position
+           'VI_EMU'     : False             # Use Vi emulation mode 
 }
 
 #--------------------------------------------------------------------------#
@@ -185,9 +186,13 @@ class Profile(dict):
             self.Set('MYPROFILE', path)
             return False
 
-        if len(self) < len(_DEFAULTS):
-            self.update(_DEFAULTS)
-            return False
+#         if len(self) < len(_DEFAULTS):
+#             self.update(_DEFAULTS)
+#             return False
+        # Update profile to any keys that are missing
+        for key in _DEFAULTS:
+            if key not in self:
+                self.Set(key, _DEFAULTS[key])
         return True
 
     def LoadDefaults(self):
