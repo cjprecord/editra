@@ -243,7 +243,8 @@ ID_VI_MODE           = wx.NewId()
 
 # Statusbar IDs
 SB_INFO          = 0
-SB_ROWCOL        = 1
+SB_BUFF          = 1
+SB_ROWCOL        = 2
 
 #---- Objects ----#
 
