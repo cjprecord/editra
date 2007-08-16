@@ -52,6 +52,7 @@ __revision__ = "$Revision$"
 # Dependencies
 
 import os
+import re
 import wx, wx.stc
 import ed_event
 import ed_glob
@@ -61,10 +62,20 @@ from autocomp import autocomp
 import util
 import ed_style
 
+#-------------------------------------------------------------------------#
+# Globals
+
 _ = wx.GetTranslation
 MARK_MARGIN = 0
 NUM_MARGIN  = 1
 FOLD_MARGIN = 2
+
+# Vi command patterns
+VI_DOUBLE_P1 = re.compile('[cdy][0-9]*[cdy]')
+VI_DOUBLE_P2 = re.compile('[0-9]*[cdy][cdy]')
+VI_SINGLE_REPEAT = re.compile('[0-9]*[behjklpuwx{}]')
+NUM_PAT = re.compile('[0-9]*')
+
 #-------------------------------------------------------------------------#
 class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text
@@ -388,6 +399,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         return self.lang_id
+
+    def GetLastVisibleLine(self):
+        """Return what the last visible line is
+        @return: int
+
+        """
+        fline = self.GetFirstVisibleLine()
+        return fline + self.LinesOnScreen() - 1
 
     def GetPos(self, key):
         """Update Line/Column information
@@ -1104,10 +1123,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         self._vinormal = normal
         self._cmdcache = u''
+        mw = wx.GetApp().GetMainWindow()
         if normal:
             self.SetCaretWidth(10)
+            if mw:
+                mw.SetStatusText('NORMAL', ed_glob.SB_BUFF)
         else:
             self.SetCaretWidth(1)
+            if mw:
+                mw.SetStatusText('INSERT', ed_glob.SB_BUFF)
 
     def SetViewEdgeGuide(self, switch=None):
         """Toggles the visibility of the edge guide
@@ -1172,7 +1196,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def ViCmdDispatch(self):
         """Processes vi commands
-        @prerequisite: Vi emulation is enabled and in Normal mode
+        @prerequisite: Vi emulation is enabled and editor in Normal mode
 
         """
         if not len(self._cmdcache):
@@ -1181,8 +1205,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         cmd = self._cmdcache
         cpos = self.GetCurrentPos()
         cline = self.LineFromPosition(cpos)
+        mw = wx.GetApp().GetMainWindow()
         # Single key commands activated with Shift
-        if len(cmd) == 1 and (cmd.isupper() or cmd in '^{}'):
+        if len(cmd) == 1 and (cmd.isupper() or cmd in '^'):
             if  cmd == u'A': # Insert at EOL
                 epos = self.GetLineEndPosition(cline)
                 self.SetCurrentPos(epos)
@@ -1192,17 +1217,21 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 pos = self.GetLength()
                 self.SetCurrentPos(pos)
                 self.SetSelection(pos, pos)
+            elif cmd == u'H': # Go first visible line
+                fline = self.GetFirstVisibleLine()
+                self.GotoPos(self.GetLineIndentPosition(fline))
             elif cmd in u'I^': # Insert at line start / Jump line start
-                indent = self.GetLineIndentation(cline)
-                pos = self.PositionFromLine(cline) + indent
-                self.SetCurrentPos(self.PositionFromLine(cline) + indent)
-                self.SetSelection(pos, pos)
+                pos = self.GetLineIndentPosition(cline)
+                self.GotoPos(pos)
                 if cmd == u'I':
                     self.SetViNormalMode(False)
             elif cmd == u'J': # Join next line
                 self.SetTargetStart(cpos)
                 self.SetTargetEnd(self.PositionFromLine(cline + 1))
                 self.LinesJoin()
+            elif cmd == u'L': # Go to start of last visible line
+                last = self.GetLastVisibleLine()
+                self.GotoPos(self.GetLineIndentPosition(last))
             elif cmd == u'B': # Jump to previous word
                 self.WordLeft()
             elif cmd == u'O': # Insert new line above
@@ -1210,18 +1239,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.AutoIndent()
             elif cmd == u'E': # Go Next Word
                 self.WordRight()
-            elif cmd == '{':
-                self.ParaUp()
-            elif cmd == '}':
-                self.ParaDown()
             self._cmdcache = u''
         # single key non sequence commands
-        elif len(cmd) == 1 and cmd in u'nbuia/?o':
-            if cmd == u'b': # jump word left
-                self.WordLeft()
-            elif cmd == u'u': # undo
-                self.Undo()
-            elif cmd == u'i': # insert mode
+        elif len(cmd) == 1 and cmd in u'nia/?o':
+            if cmd == u'i': # insert mode
                 self.SetViNormalMode(False)
             elif cmd == u'a': # insert mode after current pos
                 pos = cpos + 1
@@ -1231,8 +1252,80 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             elif cmd == u'o':
                 self.GotoPos(self.GetLineEndPosition(cline))
                 self.AutoIndent()
+            elif cmd in u'/?':
+                if mw is not None:
+                    evt = wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, 
+                                       ed_glob.ID_QUICK_FIND)
+                    wx.PostEvent(mw, evt)
             self._cmdcache = u''
+        # Repeatable 1 key commands
+        elif re.match(VI_SINGLE_REPEAT, cmd):
+            rcmd = cmd[-1]
+            repeat = cmd[0:-1]
+            if repeat == u'':
+                repeat = 1
+            else:
+                repeat = int(repeat)
 
+            cmd_map = { u'b' : self.WordLeft,
+                        u'e' : self.WordPartRight,
+                        u'h' : self.CharLeft,
+                        u'j' : self.LineDown,
+                        u'k' : self.LineUp,
+                        u'l' : self.CharRight,
+                        u'p' : self.Paste,
+                        u'u' : self.Undo,
+                        u'w' : self.WordRight,
+                        u'x' : self.Cut,
+                        u'{' : self.ParaUp,
+                        u'}' : self.ParaDown }
+
+            run = cmd_map[rcmd]
+            # TODO emulating vim's put method has alot of cases to handle
+            if rcmd == u'p':
+                pass
+#                 self.GotoLine(cline)
+#                 if cline == self.GetLineCount() - 1:
+#                     self.NewLine()
+            elif rcmd == u'x':
+                self.SetSelection(cpos, cpos + repeat)
+                repeat = 1
+
+            self.BeginUndoAction()
+            for count in xrange(repeat):
+                run()
+            self.EndUndoAction()
+            self._cmdcache = u''
+        # 2 key commands
+        elif re.match(VI_DOUBLE_P1, cmd) or re.match(VI_DOUBLE_P2, cmd):
+            rcmd = re.sub(NUM_PAT, u'', cmd)
+            repeat = re.subn(re.compile('[cdy]'), u'', cmd, 2)[0]
+            if repeat == u'':
+                repeat = 1
+            else:
+                repeat = int(repeat)
+
+            self.GotoLine(cline)
+            sel_end = self.GetLineEndPosition(cline + (repeat - 1))
+            self.SetSelection(self.GetCurrentPos(), sel_end)
+            if rcmd == u'cc':
+                self.Cut()
+                self.SetViNormalMode(False)
+            elif rcmd == u'dd':
+                self.Cut()
+            elif rcmd == u'yy':
+                self.Copy()
+                self.GotoPos(cpos)
+            else:
+                pass
+            self._cmdcache = u''
+        else:
+            pass
+
+        # Update status bar
+        if mw:
+            mw.SetStatusText('NORMAL\t%s' % self._cmdcache, ed_glob.SB_BUFF)
+        
     def FoldingOnOff(self, switch=None):
         """Turn code folding on and off
         @keyword switch: force a particular setting

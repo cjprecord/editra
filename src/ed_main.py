@@ -142,8 +142,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._cmdbar.Hide()
 
         #---- Status bar on bottom of window ----#
-        self.CreateStatusBar(2, style = wx.ST_SIZEGRIP | wx.ST_DOTS_MIDDLE)
-        self.SetStatusWidths([-1, 155])
+        self.CreateStatusBar(3, style = wx.ST_SIZEGRIP | wx.ST_DOTS_MIDDLE)
+        self.SetStatusWidths([-1, 120, 155])
         #---- End Statusbar Setup ----#
 
         #---- Create a toolbar ----#
