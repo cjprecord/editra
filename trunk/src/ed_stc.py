@@ -71,9 +71,9 @@ NUM_MARGIN  = 1
 FOLD_MARGIN = 2
 
 # Vi command patterns
-VI_DOUBLE_P1 = re.compile('[cdy][0-9]*[cdy]')
-VI_DOUBLE_P2 = re.compile('[0-9]*[cdy][cdy]')
-VI_SINGLE_REPEAT = re.compile('[0-9]*[behjklpuwx{}]')
+VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[cdy<>]')
+VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>][cdy<>]')
+VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEhjJkloOpuwWx{}]')
 NUM_PAT = re.compile('[0-9]*')
 
 #-------------------------------------------------------------------------#
@@ -1207,7 +1207,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         cline = self.LineFromPosition(cpos)
         mw = wx.GetApp().GetMainWindow()
         # Single key commands activated with Shift
-        if len(cmd) == 1 and (cmd.isupper() or cmd in '^'):
+        if len(cmd) == 1 and (cmd in 'AGHIL^$'):
             if  cmd == u'A': # Insert at EOL
                 epos = self.GetLineEndPosition(cline)
                 self.SetCurrentPos(epos)
@@ -1225,23 +1225,17 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.GotoPos(pos)
                 if cmd == u'I':
                     self.SetViNormalMode(False)
-            elif cmd == u'J': # Join next line
-                self.SetTargetStart(cpos)
-                self.SetTargetEnd(self.PositionFromLine(cline + 1))
-                self.LinesJoin()
-            elif cmd == u'L': # Go to start of last visible line
+            elif cmd == u'L': # Goto start of last visible line
                 last = self.GetLastVisibleLine()
                 self.GotoPos(self.GetLineIndentPosition(last))
-            elif cmd == u'B': # Jump to previous word
-                self.WordLeft()
             elif cmd == u'O': # Insert new line above
                 self.GotoPos(self.GetLineEndPosition(cline - 1))
                 self.AutoIndent()
-            elif cmd == u'E': # Go Next Word
-                self.WordRight()
+            elif cmd == u'$': # Goto end of current line
+                self.GotoPos(self.GetLineEndPosition(cline))
             self._cmdcache = u''
         # single key non sequence commands
-        elif len(cmd) == 1 and cmd in u'nia/?o':
+        elif len(cmd) == 1 and cmd in u'nia/?':
             if cmd == u'i': # insert mode
                 self.SetViNormalMode(False)
             elif cmd == u'a': # insert mode after current pos
@@ -1249,9 +1243,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.SetCurrentPos(pos)
                 self.SetSelection(pos, pos)
                 self.SetViNormalMode(False)
-            elif cmd == u'o':
-                self.GotoPos(self.GetLineEndPosition(cline))
-                self.AutoIndent()
             elif cmd in u'/?':
                 if mw is not None:
                     evt = wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, 
@@ -1267,20 +1258,29 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             else:
                 repeat = int(repeat)
 
-            cmd_map = { u'b' : self.WordLeft,
-                        u'e' : self.WordPartRight,
+            def NewLineAfter():
+                """Insert newline after current line"""
+                line = self.LineFromPosition(self.GetCurrentPos())
+                self.GotoPos(self.GetLineEndPosition(line))
+                self.AutoIndent()
+
+            cmd_map = { u'b' : self.WordPartLeft,
+                        u'B' : self.WordLeft,
+                        u'e' : self.WordPartRightEnd,
+                        u'E' : self.WordRightEnd,
                         u'h' : self.CharLeft,
                         u'j' : self.LineDown,
                         u'k' : self.LineUp,
                         u'l' : self.CharRight,
+                        u'o' : NewLineAfter, # TODO only auto indent on last
                         u'p' : self.Paste,
                         u'u' : self.Undo,
-                        u'w' : self.WordRight,
+                        u'w' : self.WordPartRight,
+                        u'W' : self.WordRight,
                         u'x' : self.Cut,
                         u'{' : self.ParaUp,
                         u'}' : self.ParaDown }
 
-            run = cmd_map[rcmd]
             # TODO emulating vim's put method has alot of cases to handle
             if rcmd == u'p':
                 pass
@@ -1292,14 +1292,29 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 repeat = 1
 
             self.BeginUndoAction()
-            for count in xrange(repeat):
-                run()
+            if rcmd in u'CD': # Cut line right
+                self.SetSelection(cpos, 
+                                  self.GetLineEndPosition(cline + (repeat - 1)))
+                self.Cut()
+                if rcmd == u'C':
+                    self.SetViNormalMode(False)
+            elif rcmd == u'J':
+                self.SetTargetStart(cpos)
+                self.SetTargetEnd(self.PositionFromLine(cline + repeat))
+                self.LinesJoin()
+            elif rcmd == u'O':
+                for count in xrange(repeat):
+                    self.AddLine(before=True)
+            else:
+                run = cmd_map[rcmd]
+                for count in xrange(repeat):                
+                    run()
             self.EndUndoAction()
             self._cmdcache = u''
         # 2 key commands
         elif re.match(VI_DOUBLE_P1, cmd) or re.match(VI_DOUBLE_P2, cmd):
             rcmd = re.sub(NUM_PAT, u'', cmd)
-            repeat = re.subn(re.compile('[cdy]'), u'', cmd, 2)[0]
+            repeat = re.subn(re.compile('[cdy<>]'), u'', cmd, 2)[0]
             if repeat == u'':
                 repeat = 1
             else:
@@ -1307,17 +1322,28 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
             self.GotoLine(cline)
             sel_end = self.GetLineEndPosition(cline + (repeat - 1))
-            self.SetSelection(self.GetCurrentPos(), sel_end)
+            if repeat != 1 or rcmd not in u'<<>>':
+                self.SetSelection(self.GetCurrentPos(), sel_end)
+            self.BeginUndoAction()
             if rcmd == u'cc':
                 self.Cut()
+                self.DeleteBack()
                 self.SetViNormalMode(False)
             elif rcmd == u'dd':
                 self.Cut()
+                self.DeleteBack()
             elif rcmd == u'yy':
                 self.Copy()
                 self.GotoPos(cpos)
+            elif rcmd == u'<<':
+                for x in xrange(repeat):
+                    self.BackTab()
+            elif rcmd == u'>>':
+                for x in xrange(repeat):
+                    self.Tab()
             else:
                 pass
+            self.EndUndoAction()
             self._cmdcache = u''
         else:
             pass
@@ -1394,6 +1420,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.LOG("[stc_evt] Hiding Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 0)
+
+    def WordPartRightEnd(self):
+        """Move caret to end of next change in capitalization/puncuation
+        @postcondition: caret is moved
+
+        """
+        self.WordPartRight()
+        self.WordPartRight()
 
     def ReloadFile(self):
         """Reloads the current file, returns True on success and
