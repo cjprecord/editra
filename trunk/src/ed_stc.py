@@ -1363,7 +1363,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             pass
 
         # Update status bar
-        if mw:
+        if mw and self._vinormal:
             mw.SetStatusText('NORMAL\t%s' % self._cmdcache, ed_glob.SB_BUFF)
         
     def FoldingOnOff(self, switch=None):
