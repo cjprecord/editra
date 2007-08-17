@@ -185,6 +185,12 @@ class EdPages(FNB.FlatNotebook):
             result = mdlg.ShowModal()
             mdlg.Destroy()
             if result == wx.ID_NO:
+                for page in xrange(self.GetPageCount()):
+                    ctrl = self.GetPage(page)
+                    if path2file == os.path.join(ctrl.dirname, ctrl.filename):
+                        self.SetSelection(page)
+                        self.ChangePage(page)
+                        break
                 return
 
         # Create new control to place text on if necessary
@@ -450,14 +456,12 @@ class EdPages(FNB.FlatNotebook):
         self.LOG("[nb_evt] Page Changed to %d" % evt.GetSelection())
         evt.Skip()
 
-    def OnPageChanged(self, evt):
-        """Actions to do after a page change
-        @param evt: event that called this handler
-        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGED
+    def ChangePage(self, pgid):
+        """Change the page and focus to the the given page id
+        @param pgid: Page number to change to
 
         """
-        current = evt.GetSelection()
-        window = self.GetPage(current) #returns current stc
+        window = self.GetPage(pgid) #returns current stc
         window.SetFocus()
         self.control = window
 
@@ -475,6 +479,33 @@ class EdPages(FNB.FlatNotebook):
 
         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
         self.control.Bind(wx.EVT_LEFT_UP, self.frame.OnKeyUp)
+
+    def OnPageChanged(self, evt):
+        """Actions to do after a page change
+        @param evt: event that called this handler
+        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGED
+
+        """
+        current = evt.GetSelection()
+        self.ChangePage(current)
+#         window = self.GetPage(current) #returns current stc
+#         window.SetFocus()
+#         self.control = window
+
+#         if self.control.filename == "":
+#             self.control.filename = "Untitled - %d" % window.GetId()
+
+#         self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
+#                                                     self.control.dirname,
+#                                                     util.GetPathChar(),
+#                                                     self.control.filename))
+
+#         matchstrn = re.compile('Untitled*')
+#         if matchstrn.match(self.control.filename):
+#             self.control.filename = ""
+
+#         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
+#         self.control.Bind(wx.EVT_LEFT_UP, self.frame.OnKeyUp)
 
         self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
                  "[nb_info] It has file named: %s\n"
