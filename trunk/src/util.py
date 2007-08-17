@@ -45,6 +45,7 @@ __revision__ = "$Revision$"
 # Dependancies
 import os
 import sys
+import shutil
 import stat
 import codecs
 import mimetypes
@@ -493,14 +494,8 @@ def CreateConfigDir():
             MakeConfigDir(cfg)
 
     #---- Copy Default Config Files ----#
-    if os.sys.platform == 'win32':
-        os.system(u"copy " + u"\"" + config_file + u"\" \"" + dest_file + u"\"")
-        os.system(u"copy " + u"\"" + loader + u"\" \"" + profile_dir + 
-                  GetPathChar() + u".loader2\"")
-    else:
-        os.system(u"cp " + config_file + " " + dest_file)
-        os.system(u"cp " + loader + " " + profile_dir + 
-                  pchar + u".loader2")
+    shutil.copyfile(config_file, dest_file)
+    shutil.copyfile(loader, profile_dir + pchar + u".loader2")
 
     import profiler
     profiler.Profile().Load(dest_file)
