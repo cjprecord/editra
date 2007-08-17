@@ -450,7 +450,7 @@ class EdPages(FNB.FlatNotebook):
     def OnPageChanging(self, evt):
         """Page changing event handler.
         @param evt: event that called this handler
-        @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGING
+        @type evt: flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGING
 
         """
         self.LOG("[nb_evt] Page Changed to %d" % evt.GetSelection())
@@ -488,25 +488,6 @@ class EdPages(FNB.FlatNotebook):
         """
         current = evt.GetSelection()
         self.ChangePage(current)
-#         window = self.GetPage(current) #returns current stc
-#         window.SetFocus()
-#         self.control = window
-
-#         if self.control.filename == "":
-#             self.control.filename = "Untitled - %d" % window.GetId()
-
-#         self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
-#                                                     self.control.dirname,
-#                                                     util.GetPathChar(),
-#                                                     self.control.filename))
-
-#         matchstrn = re.compile('Untitled*')
-#         if matchstrn.match(self.control.filename):
-#             self.control.filename = ""
-
-#         self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
-#         self.control.Bind(wx.EVT_LEFT_UP, self.frame.OnKeyUp)
-
         self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
                  "[nb_info] It has file named: %s\n"
                  "[nb_info] In DIR: %s") % (evt.GetOldSelection(), 
