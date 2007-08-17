@@ -112,13 +112,39 @@ class Shelf(plugin.Plugin):
         """
         self._log = wx.GetApp().GetLog()
         self._shelf = None
+        self._open = dict()
+
+    def _GetMenu(self):
+        """Return the menu of this object
+        @return: ed_menu.ED_Menu()
+
+        """
+        menu = ed_menu.ED_Menu()
+        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf"), _("Show the Shelf"))
+        menu.AppendSeparator()
+        menu_items = list()
+        for observer in self.observers:
+            # Register Observers
+            self._open[observer.GetName()] = 0
+            try:
+                menu_i = observer.GetMenuEntry(menu)
+                if menu_i:
+                    menu_items.append((menu_i.GetLabel(), menu_i))
+            except Exception, msg:
+                self._log("[shelf][err] %s" % str(msg))
+        menu_items.sort()
+        genmenu = ed_menu.ED_Menu()
+        for item in menu_items:
+            menu.AppendItem(item[1])
+        return menu
 
     def Init(self, parent):
         """Mixes the shelf into the parent window
         @param parent: Reference to MainWindow
 
         """
-        self._shelf = FNB.FlatNotebook(parent, style=FNB.FNB_FF2|FNB.FNB_X_ON_TAB)
+        self._shelf = FNB.FlatNotebook(parent, 
+                                       style=FNB.FNB_FF2 | FNB.FNB_X_ON_TAB)
         mgr = parent.GetFrameManager()
         mgr.AddPane(self._shelf, wx.aui.AuiPaneInfo().Name(self.__name__).\
                             Caption("Editra | Shelf").Bottom().Layer(0).\
@@ -130,7 +156,7 @@ class Shelf(plugin.Plugin):
 
         # Install Menu and bind event handler
         view = parent.GetMenuBar().GetMenuByName("view")
-        menu = self.GetMenu()
+        menu = self._GetMenu()
         pos = 0
         for pos in xrange(view.GetMenuItemCount()):
             mitem = view.FindItemByPosition(pos)
@@ -198,28 +224,6 @@ class Shelf(plugin.Plugin):
                         self._shelf.GetPageText(page), 1))
         return rval
 
-    def GetMenu(self):
-        """Return the menu of this object
-        @return: ed_menu.ED_Menu()
-
-        """
-        menu = ed_menu.ED_Menu()
-        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf"), _("Show the Shelf"))
-        menu.AppendSeparator()
-        menu_items = list()
-        for observer in self.observers:
-            try:
-                menu_i = observer.GetMenuEntry(menu)
-                if menu_i:
-                    menu_items.append((menu_i.GetLabel(), menu_i))
-            except Exception, msg:
-                self._log("[shelf][err] %s" % str(msg))
-        menu_items.sort()
-        genmenu = ed_menu.ED_Menu()
-        for item in menu_items:
-            menu.AppendItem(item[1])
-        return menu
-
     def OnGetShelfItem(self, evt):
         """Handles menu events that have been registered
         by the Shelf Items on the Shelf.
@@ -260,7 +264,8 @@ class Shelf(plugin.Plugin):
         else:
             self.EnsureShelfVisible()
             self._shelf.AddPage(shelfi.CreateItem(self._shelf), 
-                              u"%s - %d" % (name, self.GetCount(name)))
+                                u"%s - %d" % (name, self._open.get(name, 0)))
+            self._open[name] = self._open.get(name, 0) + 1
 
     def ItemIsOnShelf(self, item_name):
         """Check if at least one instance of a given item
