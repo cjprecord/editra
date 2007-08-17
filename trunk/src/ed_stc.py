@@ -73,7 +73,7 @@ FOLD_MARGIN = 2
 # Vi command patterns
 VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[cdy<>]')
 VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>][cdy<>]')
-VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEhjJkloOpuwWx{}]')
+VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEhjJkloOpuwWx{}.]')
 NUM_PAT = re.compile('[0-9]*')
 
 #-------------------------------------------------------------------------#
@@ -1196,18 +1196,19 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def ViCmdDispatch(self):
         """Processes vi commands
-        @prerequisite: Vi emulation is enabled and editor in Normal mode
+        @keyword do_cmd: Specify a command to run, if not specified the command
+                         in the cache will be used by default.
 
         """
         if not len(self._cmdcache):
             return
-        
+
         cmd = self._cmdcache
         cpos = self.GetCurrentPos()
         cline = self.LineFromPosition(cpos)
         mw = wx.GetApp().GetMainWindow()
         # Single key commands activated with Shift
-        if len(cmd) == 1 and (cmd in 'AGHIL^$'):
+        if len(cmd) == 1 and (cmd in 'AGHIL0^$nia/?'):
             if  cmd == u'A': # Insert at EOL
                 epos = self.GetLineEndPosition(cline)
                 self.SetCurrentPos(epos)
@@ -1225,6 +1226,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.GotoPos(pos)
                 if cmd == u'I':
                     self.SetViNormalMode(False)
+            elif cmd == u'0': # Jump to line start column 0
+                self.GotoPos(self.PositionFromLine(cline))
             elif cmd == u'L': # Goto start of last visible line
                 last = self.GetLastVisibleLine()
                 self.GotoPos(self.GetLineIndentPosition(last))
@@ -1233,10 +1236,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.AutoIndent()
             elif cmd == u'$': # Goto end of current line
                 self.GotoPos(self.GetLineEndPosition(cline))
-            self._cmdcache = u''
-        # single key non sequence commands
-        elif len(cmd) == 1 and cmd in u'nia/?':
-            if cmd == u'i': # insert mode
+            elif cmd == u'i': # insert mode
                 self.SetViNormalMode(False)
             elif cmd == u'a': # insert mode after current pos
                 pos = cpos + 1
@@ -1350,14 +1350,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.Copy()
                 self.GotoPos(cpos)
             elif rcmd == u'<<':
-                for x in xrange(repeat):
-                    self.BackTab()
+                self.BackTab()
             elif rcmd == u'>>':
-                for x in xrange(repeat):
-                    self.Tab()
+                self.Tab()
             else:
                 pass
             self.EndUndoAction()
+            if rcmd in '<<>>':
+                self.SetSelection(cpos, cpos)
             self._cmdcache = u''
         else:
             pass
