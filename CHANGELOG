@@ -12,7 +12,16 @@ DATE 0x/xx/2007
 5th Alpha Release
 
 NEWS:
+This version of Editra has support for a Vim Emulation mode that emulates
+Vim's Input and Normal modes. Most Vi Normal Mode commands are supported
+with more to come in future releases.
 
+There is also a new plugin interface available to work with in this version.
+The new interface is called 'The Shelf' its provides an easy interface for 
+plugins that want to allow multiple copies of their interface by managing the
+panes in a notebook that is docked by default to the bottom of the editor. The 
+Shelf can also be repositioned or pulled out to a separate floating window and
+saved in that position through the perspectives manager in the view menu.
 
 NEW: [features/improvements]
 +Vi emulation mode
