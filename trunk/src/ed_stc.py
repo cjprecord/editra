@@ -71,9 +71,9 @@ NUM_MARGIN  = 1
 FOLD_MARGIN = 2
 
 # Vi command patterns
-VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[bcdhlwy{}<>]')
-VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>][bcdhlwy{}<>]')
-VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpsuwWxX{}.+-]')
+VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[bcdhlwy{}$<>]')
+VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>][bcdhlwy{}$<>]')
+VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpPsuwWxX{}~|.+-]')
 NUM_PAT = re.compile('[0-9]*')
 
 #-------------------------------------------------------------------------#
@@ -379,12 +379,22 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @keyword to_upper: Flag whether conversion is to upper case or not.
 
         """
-        txt = self.GetSelectedText()
         if to_upper:
-            txt = txt.upper()
+            self.UpperCase()
         else:
-            txt = txt.lower()
-        self.ReplaceSelection(txt)
+            self.LowerCase()
+
+    def InvertCase(self):
+        """Invert the case of the selected text
+        @postcondition: all text in selection has case inverted
+
+        """
+        text = self.GetSelectedText()
+        if len(text) > 0:
+            text = text.swapcase()
+            self.BeginUndoAction()
+            self.ReplaceSelection(text)
+            self.EndUndoAction()
 
     def GetAutoIndent(self):
         """Returns whether auto-indent is being used
@@ -428,6 +438,19 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return (line + 1, column)
         else:
             return (-1, -1)
+
+    def GotoColumn(self, column):
+        """Move caret to column of current line
+        @param column: Column to move to
+
+        """
+        cline = self.GetCurrentLineNum()
+        lstart = self.PositionFromLine(cline)
+        lend = self.GetLineEndPosition(cline)
+        linelen = lend - lstart
+        if column > linelen:
+            column = linelen
+        self.GotoPos(lstart + column)
 
     def GotoIndentPos(self, line):
         """Move the caret to the end of the indentation
@@ -1228,7 +1251,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         cline = self.LineFromPosition(cpos)
         mw = wx.GetApp().GetMainWindow()
         # Single key commands
-        if len(cmd) == 1 and (cmd in 'AHILM0^$nia/?'):
+        if len(cmd) == 1 and (cmd in 'AHILmM0^$nia/?:'):
             if  cmd in u'A$': # Insert at EOL
                 self.GotoPos(self.GetLineEndPosition(cline))
             elif cmd == u'H': # Go first visible line
@@ -1241,13 +1264,18 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.GotoIndentPos(self.GetLastVisibleLine())
             elif cmd == u'M': # Goto middle line of display
                 fline = self.GetFirstVisibleLine() - 7
-                self.GotoIndentPos(fline + (self.LinesOnScreen() / 2)) 
+                self.GotoIndentPos(fline + (self.LinesOnScreen() / 2))
+            elif cmd == u'm': # Mark line
+                self.Bookmark(ed_glob.ID_ADD_BM)
             elif cmd == u'a': # insert mode after current pos
                 self.GotoPos(cpos + 1)
-            elif cmd in u'/?':
+            elif cmd in u'/?:':
                 if mw is not None:
-                    evt = wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, 
-                                       ed_glob.ID_QUICK_FIND)
+                    if cmd in u'/?':
+                        mid = ed_glob.ID_QUICK_FIND
+                    else:
+                        mid = ed_glob.ID_GOTO_LINE
+                    evt = wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, mid)
                     wx.PostEvent(mw, evt)
             if cmd in u'aAiI':
                 self.SetViNormalMode(False)
@@ -1276,6 +1304,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                        u'o' : self.AddLine,
                        u'O' : self.AddLine,
                        u'p' : self.Paste,
+                       u'P' : self.Paste,
                        u's' : self.Cut,
                        u'u' : self.Undo,
                        u'w' : self.WordPartRight,
@@ -1283,9 +1312,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                        u'x' : self.Cut,
                        u'X' : self.Cut,
                        u'{' : self.ParaUp,
-                       u'}' : self.ParaDown }
+                       u'}' : self.ParaDown,
+                       u'~' : self.InvertCase }
 
-            if rcmd == u'p':
+            if rcmd in u'pP':
                 success = False
                 newline = False
                 if wx.TheClipboard.Open():
@@ -1295,13 +1325,18 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 if success:
                     text = td.GetText()
                     if text[-1] == '\n':
-                        if cline == self.GetLineCount() - 1:
-                            self.NewLine()
+                        if cline == self.GetLineCount() - 1 and rcmd == u'p':
+                                self.NewLine()
                         else:
-                            self.GotoLine(cline + 1)
+                            if rcmd == u'P':
+                                self.GotoLine(cline)
+                            else:
+                                self.GotoLine(cline + 1)
                         newline = True
-            elif rcmd in u'sxX':
-                if rcmd in u'sx':
+                    elif rcmd == u'p':
+                        self.CharRight()
+            elif rcmd in u'sxX~':
+                if rcmd in u'sx~':
                     tmp = self.GetTextRange(cpos, cpos + repeat)
                     tmp = tmp.split(self.GetEOLChar())
                     end = cpos + len(tmp[0])
@@ -1312,6 +1347,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     tmp = end
                     end = cpos
                     cpos = tmp
+
                 if cpos == self.GetLineEndPosition(cline):
                     self.SetSelection(cpos - 1, cpos)
                 else:
@@ -1337,6 +1373,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.GotoIndentPos(cline + repeat)
             elif rcmd == u'-':
                 self.GotoIndentPos(cline - repeat)
+            elif rcmd == u'|':
+                self.GotoColumn(repeat - 1)
             else:
                 run = cmd_map[rcmd]
                 for count in xrange(repeat):                
@@ -1351,14 +1389,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # 2 key commands
         elif re.match(VI_DOUBLE_P1, cmd) or re.match(VI_DOUBLE_P2, cmd):
             rcmd = re.sub(NUM_PAT, u'', cmd)
-            repeat = re.subn(re.compile('[bcdhlwy<>{}]'), u'', cmd, 2)[0]
+            repeat = re.subn(re.compile('[bcdhlwy$<>{}]'), u'', cmd, 2)[0]
             if repeat == u'':
                 repeat = 1
             else:
                 repeat = int(repeat)
             
             if (repeat != 1 or rcmd not in u'<<>>') and \
-               rcmd[-1] not in u'bhlw{}':
+               rcmd[-1] not in u'bhlw${}':
                 self.GotoLine(cline)
                 self.SetSelectionStart(self.GetCurrentPos())
                 self.SetSelectionEnd(self.PositionFromLine(cline + repeat))
@@ -1370,17 +1408,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                          u'w' : self.WordRightExtend,
                          u'{' : self.ParaUpExtend,
                          u'}' : self.ParaDownExtend}
-                doit = mcmd[rcmd[-1]]
-                for x in xrange(repeat):
-                    doit()
+                if u'$' in rcmd:
+                    self.SetCurrentPos(self.GetLineEndPosition(cline + repeat))
+                else:
+                    doit = mcmd[rcmd[-1]]
+                    for x in xrange(repeat):
+                        doit()
 
             self.BeginUndoAction()
-            if re.match(re.compile('c|c[bhlw{}]'), rcmd):
+            if re.match(re.compile('c|c[bhlw${}]'), rcmd):
                 self.Cut()
                 self.SetViNormalMode(False)
-            elif re.match(re.compile('d|d[bhlw{}]'), rcmd):
+            elif re.match(re.compile('d|d[bhlw${}]'), rcmd):
                 self.Cut()
-            elif re.match(re.compile('y|y[bhlw{}]'), rcmd):
+            elif re.match(re.compile('y|y[bhlw${}]'), rcmd):
                 self.Copy()
                 self.GotoPos(cpos)
             elif rcmd == u'<<':
@@ -1791,47 +1832,3 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     #---- End Style Definitions ----#
 
 #-----------------------------------------------------------------------------#
-
-class ViDispatcher(object):
-    """Class for managing, interpreting, and translating
-    Vi commands into STC commands.
-    """
-    def __init__(self, stc):
-        """Creates the Dispatcher
-        @param stc: The styled text control that the commands will
-                    be dispatched for.
-
-        """
-        object.__init__(self)
-
-        # Attributes
-        self._stc = stc
-        self._lastexec = u''
-        self._cpos = stc.GetCurrentPos()
-        self._cline = stc.LineFromPosition(self._cpos)
-
-    def Interpret(self, cmdstr):
-        """Interprets the command string and executes it if possible
-        @param cmdstr: Command string to interpret
-
-        """
-        # Update positional information
-        self._cpos = self._stc.GetCurrentPos()
-        self._cline = self._stc.LineFromPosition(self._cpos)
-
-    def Repeat(self, callable, num, args):
-        """Call the given command repetativly
-        @param callable: Function to call
-        @param num: Number of times to call function
-        @keyword args: list of args to pass function
-
-        """
-        for x in xrange(num):
-            callable(*args)
-
-    def SetLastCmd(self, cmdstr):
-        """Set the value of the last executed command
-        @param cmdstr: Command string to set
-
-        """
-        self._lastexec = cmdstr
