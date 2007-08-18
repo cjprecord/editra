@@ -73,7 +73,7 @@ FOLD_MARGIN = 2
 # Vi command patterns
 VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[bcdhlwy{}<>]')
 VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>][bcdhlwy{}<>]')
-VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpuwWxX{}.]')
+VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpsuwWxX{}.+-]')
 NUM_PAT = re.compile('[0-9]*')
 
 #-------------------------------------------------------------------------#
@@ -115,6 +115,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.LOG = wx.GetApp().GetLog()
         self._vimode = False
         self._vinormal = False
+        self._vilast = u''
         self._cmdcache = u''
 
         # File Attributes
@@ -1219,7 +1220,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if not len(self._cmdcache):
             return
 
-        cmd = self._cmdcache
+        if self._cmdcache != u'.':
+            cmd = self._cmdcache
+        else:
+            cmd = self._vilast
         cpos = self.GetCurrentPos()
         cline = self.LineFromPosition(cpos)
         mw = wx.GetApp().GetMainWindow()
@@ -1247,6 +1251,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     wx.PostEvent(mw, evt)
             if cmd in u'aAiI':
                 self.SetViNormalMode(False)
+
+            self._vilast = cmd
             self._cmdcache = u''
         # Repeatable 1 key commands
         elif re.match(VI_SINGLE_REPEAT, cmd):
@@ -1270,6 +1276,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                        u'o' : self.AddLine,
                        u'O' : self.AddLine,
                        u'p' : self.Paste,
+                       u's' : self.Cut,
                        u'u' : self.Undo,
                        u'w' : self.WordPartRight,
                        u'W' : self.WordRight,
@@ -1293,8 +1300,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                         else:
                             self.GotoLine(cline + 1)
                         newline = True
-            elif rcmd in u'xX':
-                if rcmd == u'x':
+            elif rcmd in u'sxX':
+                if rcmd in u'sx':
                     tmp = self.GetTextRange(cpos, cpos + repeat)
                     tmp = tmp.split(self.GetEOLChar())
                     end = cpos + len(tmp[0])
@@ -1326,15 +1333,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 if repeat == 1 and '1' not in cmd:
                     repeat = self.GetLineCount()
                 self.GotoLine(repeat - 1)
+            elif rcmd == u'+':
+                self.GotoIndentPos(cline + repeat)
+            elif rcmd == u'-':
+                self.GotoIndentPos(cline - repeat)
             else:
                 run = cmd_map[rcmd]
                 for count in xrange(repeat):                
                     run(*args, **kargs)
             if rcmd == u'p' and newline:
                 self.GotoPos(self.GetLineEndPosition(cline + repeat))
-            elif rcmd in u'oOC':
+            elif rcmd in u'CoOs':
                 self.SetViNormalMode(False)
             self.EndUndoAction()
+            self._vilast = cmd
             self._cmdcache = u''
         # 2 key commands
         elif re.match(VI_DOUBLE_P1, cmd) or re.match(VI_DOUBLE_P2, cmd):
@@ -1380,6 +1392,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.EndUndoAction()
             if rcmd in '<<>>':
                 self.SetSelection(cpos, cpos)
+            self._vilast = cmd
             self._cmdcache = u''
         else:
             pass
