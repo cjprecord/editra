@@ -34,7 +34,7 @@
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id$"
+__svnid__ = "$Id$"
 __revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
@@ -264,10 +264,13 @@ class EdMenuBar(wx.MenuBar):
         filemenu.Append(ed_glob.ID_SAVEALL, _("Save All"), \
                         _("Save all open pages")) 
         filemenu.AppendSeparator()
-        filemenu.Append(ed_glob.ID_SAVE_PROFILE, _("Save Profile"), 
-                             _("Save Current Settings to a New Profile"))
-        filemenu.Append(ed_glob.ID_LOAD_PROFILE, _("Load Profile"), 
-                        _("Load a Custom Profile"))
+        pmenu = ED_Menu()
+        pmenu.Append(ed_glob.ID_SAVE_PROFILE, _("Save Profile"), 
+                     _("Save Current Settings to a New Profile"))
+        pmenu.Append(ed_glob.ID_LOAD_PROFILE, _("Load Profile"), 
+                     _("Load a Custom Profile"))
+        filemenu.AppendSubMenu(pmenu, _("Profile"), 
+                               _("Load and save custom rofiles"))
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_PRINT_SU, _("Page Setup") + "\tCtrl+Shift+P",
                         _("Configure Printer"))
