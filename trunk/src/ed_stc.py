@@ -73,7 +73,7 @@ FOLD_MARGIN = 2
 # Vi command patterns
 VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[bcdhlwy{}$<>]')
 VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>][bcdhlwy{}$<>]')
-VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpPsuwWxX{}~|.+-]')
+VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpPsuwWxX{}~|+-]')
 NUM_PAT = re.compile('[0-9]*')
 
 #-------------------------------------------------------------------------#
@@ -1376,6 +1376,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             elif rcmd == u'|':
                 self.GotoColumn(repeat - 1)
             else:
+                if not cmd_map.has_key(rcmd):
+                    return
                 run = cmd_map[rcmd]
                 for count in xrange(repeat):                
                     run(*args, **kargs)
@@ -1394,12 +1396,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 repeat = 1
             else:
                 repeat = int(repeat)
-            
-            if (repeat != 1 or rcmd not in u'<<>>') and \
-               rcmd[-1] not in u'bhlw${}':
+
+            if rcmd[-1] not in u'bhlw${}':
                 self.GotoLine(cline)
-                self.SetSelectionStart(self.GetCurrentPos())
-                self.SetSelectionEnd(self.PositionFromLine(cline + repeat))
+                if repeat != 1 or rcmd not in u'>><<':
+                    self.SetSelectionStart(self.GetCurrentPos())
+                    self.SetSelectionEnd(self.PositionFromLine(cline + repeat))
             else:
                 self.SetAnchor(self.GetCurrentPos())
                 mcmd = { u'b' : self.WordLeftExtend,
