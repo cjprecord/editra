@@ -52,7 +52,7 @@ import glob
 import re
 import wx
 import ed_glob
-from profiler import Profile_Get
+from profiler import Profile_Get, Profile_Set
 import ed_event
 import ed_stc
 import syntax.synglob as synglob
@@ -63,9 +63,8 @@ import doctools
 # Use local copy until newer release of wxpython
 from extern import flatnotebook as FNB
 
-#---- Class Globals ----#
-# HACK till proper artprovider can be written
-IMG = {}
+#--------------------------------------------------------------------------#
+# Globals
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -143,6 +142,34 @@ class EdPages(FNB.FlatNotebook):
             return self.control
         else:
             return None
+
+    def GetFileNames(self):
+        """Gets the name of all open files in the notebook
+        @return: list of file names
+
+        """
+        rlist = list()
+        for buff in self.GetTextControls():
+            fname = buff.GetFileName()
+            if fname != wx.EmptyString:
+                rlist.append(fname)
+        return rlist
+
+    def LoadSessionFiles(self):
+        """Load files from saved session data in profile
+        @postcondition: Files saved from previous session are
+                        opened. If no files were found then only a
+                        single blank page is opened.
+
+        """
+        files = Profile_Get('LAST_SESSION')
+        print "FILES", files
+        if files is not None:
+            for file in files:
+                self.OpenPage(os.path.dirname(file), os.path.basename(file))
+
+        if self.GetPageCount() == 0:
+            self.NewPage()
 
     def NewPage(self):
         """Create a new notebook page with a blank text control
