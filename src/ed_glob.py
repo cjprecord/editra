@@ -154,6 +154,7 @@ ID_PRINT_MODE    = wx.NewId()
 ID_TRANSPARENCY  = wx.NewId()
 ID_PREF_SPOS     = wx.NewId()
 ID_PREF_UPDATE_BAR = wx.NewId()
+ID_SESSION       = wx.NewId()
 
 # View Menu IDs
 ID_ZOOM_OUT      = wx.ID_ZOOM_OUT
@@ -269,6 +270,7 @@ ID_2_PROF = {
              ID_PREF_SYNTHEME     : 'SYNTHEME',
              ID_PREF_TABS         : 'USETABS',
              ID_PREF_TABW         : 'TABWIDTH',
+             ID_SESSION           : 'SAVE_SESSION',
              ID_SHOW_EDGE         : 'SHOW_EDGE',
              ID_SHOW_EOL          : 'SHOW_EOL',
              ID_SHOW_LN           : 'SHOW_LN',
