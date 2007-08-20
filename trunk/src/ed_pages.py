@@ -163,7 +163,6 @@ class EdPages(FNB.FlatNotebook):
 
         """
         files = Profile_Get('LAST_SESSION')
-        print "FILES", files
         if files is not None:
             for file in files:
                 self.OpenPage(os.path.dirname(file), os.path.basename(file))
