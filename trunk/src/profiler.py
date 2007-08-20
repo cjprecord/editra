@@ -76,21 +76,22 @@ _DEFAULTS = {
            'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
            'REPORTER'   : True,             # Error Reporter is Active
            'SAVE_POS'   : True,             # Remember Carat positions
+           'SAVE_SESSION' : False,          # Load previous session on startup
+           'SET_WPOS'   : True,             # Remember window position
+           'SET_WSIZE'  : True,             # Remember mainwindow size on exit
            'SHOW_EDGE'  : True,             # Show Edge Guide
            'SHOW_EOL'   : False,            # Show EOL markers
            'SHOW_LN'    : True,             # Show Line Numbers
+           'SHOW_WS'    : False,            # Show whitespace markers
            'SYNTAX'     : True,             # Use Syntax Highlighting
            'SYNTHEME'   : 'Default',        # Syntax Highlight color scheme
            'TABWIDTH'   : 8,                # Tab width
            'THEME'      : 'DEFAULT',        # For future use
            'TOOLBAR'    : True,             # Show Toolbar
            'USETABS'    : True,             # Use tabs instead of spaces
-           'SHOW_WS'    : False,            # Show whitespace markers
+           'VI_EMU'     : False,            # Use Vi emulation mode 
            'WRAP'       : True,             # Use Wordwrap
-           'SET_WSIZE'  : True,             # Remember mainwindow size on exit
-           'WSIZE'      : (700, 450),       # Mainwindow size
-           'SET_WPOS'   : True,             # Remember window position
-           'VI_EMU'     : False             # Use Vi emulation mode 
+           'WSIZE'      : (700, 450)        # Mainwindow size
 }
 
 #--------------------------------------------------------------------------#
