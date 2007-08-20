@@ -30,6 +30,7 @@ have multiple instances opened in a notebook interface.
 +PyShell is now part of the Shelf, so multiple shells can be open at once
 +Added support for (D, Flagship, Haskell) programming languages
 +Highlighting for Diff/Patch files
++Basic session saving support for loading files from previous session on launch
 
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
