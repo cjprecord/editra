@@ -308,12 +308,17 @@ class GeneralPanel(PrefPanelBase):
                             default=Profile_Get('PRINT_MODE'))
         psizer = wx.BoxSizer(wx.HORIZONTAL)
         psizer.AddMany([(pmode_lbl, 0), ((5, 5), 0), (pmode_ch, 0)])
-        splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, 
-                                _("Show Splash Screen"))
-        splash_cb.SetValue(Profile_Get('APPSPLASH'))
         reporter_cb = wx.CheckBox(self, ed_glob.ID_REPORTER, 
                                   _("Disable Error Reporter"))
         reporter_cb.SetValue(not Profile_Get('REPORTER'))
+        session_cb = wx.CheckBox(self, ed_glob.ID_SESSION, 
+                                 _("Load Last Session"))
+        session_cb.SetValue(Profile_Get('SAVE_SESSION'))
+        tt = wx.ToolTip(_("Load files from last session on startup"))
+        session_cb.SetToolTip(tt)
+        splash_cb = wx.CheckBox(self, ed_glob.ID_APP_SPLASH, 
+                                _("Show Splash Screen"))
+        splash_cb.SetValue(Profile_Get('APPSPLASH'))
 
         # File settings
         file_lbl = wx.StaticText(self, label=_("File Settings") + u": ")
@@ -345,13 +350,14 @@ class GeneralPanel(PrefPanelBase):
                        (start_lbl, (1, 1)),
                        (msizer, (1, 2), (1, 2)),
                        (psizer, (2, 2), (1, 2)),
-                       (splash_cb, (3, 2), (1, 2)),
-                       (reporter_cb, (4, 2), (1, 2))])
-        sizer.AddMany([(file_lbl, (6, 1)),
-                       (fhsizer, (6, 2), (1, 2)), (pos_cb, (7, 2), (1, 3)),
-                       (chkmod_cb, (8, 2), (1, 2))])
-        sizer.AddMany([(locale, (10, 1)),
-                       (lsizer, (10, 2), (1, 3))])
+                       (reporter_cb, (3, 2), (1, 2)),
+                       (session_cb, (4, 2), (1, 2)),
+                       (splash_cb, (5, 2), (1, 2))])
+        sizer.AddMany([(file_lbl, (7, 1)),
+                       (fhsizer, (7, 2), (1, 2)), (pos_cb, (8, 2), (1, 3)),
+                       (chkmod_cb, (9, 2), (1, 2))])
+        sizer.AddMany([(locale, (11, 1)),
+                       (lsizer, (11, 2), (1, 3))])
         self.SetSizer(sizer)
 
     def OnCheck(self, evt):
@@ -363,7 +369,7 @@ class GeneralPanel(PrefPanelBase):
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
         if e_id in [ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
-                    ed_glob.ID_PREF_CHKMOD]:
+                    ed_glob.ID_PREF_CHKMOD, ed_glob.ID_SESSION]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
         elif e_id == ed_glob.ID_REPORTER:
             Profile_Set(ed_glob.ID_2_PROF[e_id], not e_obj.GetValue())
