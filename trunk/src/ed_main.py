@@ -278,6 +278,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._generator = generator.Generator(plgmgr)
         self._generator.InstallMenu(self.toolsmenu)
 
+        # Load Session Data
+        if _PGET('SAVE_SESSION', 'bool', False):
+            self.nb.LoadSessionFiles()
+
         # Set Perspective
         self.SetPerspective(_PGET('DEFAULT_VIEW'))
         self._mgr.Update()
@@ -585,6 +589,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         # Cleanup Controls
         controls = self.nb.GetPageCount()
+        _PSET('LAST_SESSION', self.nb.GetFileNames())
         self.LOG("[main_evt] [exit] Number of controls: %d" % controls)
 
         self._exiting = True
