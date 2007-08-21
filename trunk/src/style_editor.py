@@ -45,7 +45,7 @@ import glob
 import wx
 import wx.lib.colourselect as  csel
 import ed_glob
-from profiler import Profile_Get
+from profiler import Profile_Get, Profile_Set
 import ed_stc
 from ed_style import StyleItem
 import util
@@ -262,6 +262,15 @@ class StyleEditor(wx.Dialog):
             except IOError,msg:
                 self.LOG('[style_editor][err] Failed to export style sheet')
                 self.LOG('[style_editor][sys error] %s' % msg)
+            else:
+                # Update editor to use new sheet
+                sheet = os.path.basename(sheet_path).split(u'.')[0]
+                Profile_Set('SYNTHEME', sheet)
+                mainw = wx.GetApp().GetMainWindow()
+                if mainw is not None:
+                    mainw.nb.UpdateTextControls()
+                    mainw.SetStatusText(_("Chaned color scheme to %s") % sheet,
+                                        ed_glob.SB_INFO)
         return result
 
     def GenerateStyleSheet(self):
@@ -298,6 +307,8 @@ class StyleEditor(wx.Dialog):
                                   _("Syntax Files") + u": ")
         lexer_lst = wx.Choice(self.ctrl_pane, ed_glob.ID_LEXER, 
                               choices=syntax.GetLexerList())
+        tt = wx.ToolTip(_("Set the preview file type"))
+        lexer_lst.SetToolTip(tt)
         lexer_lst.SetStringSelection(u"CPP")
         lex_sizer.AddMany([((10, 10)), 
                             (lexer_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
