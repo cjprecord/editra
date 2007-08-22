@@ -71,10 +71,14 @@ NUM_MARGIN  = 1
 FOLD_MARGIN = 2
 
 # Vi command patterns
-VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*[bcdhlwy{}$<>]')
-VI_DOUBLE_P2 = re.compile('[0-9]*[ncdy<>][npbcdhlwy{}$<>]')
+VI_DCMD_RIGHT = '[bBcdeEhlwWy{}$<>]'
+VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*' + VI_DCMD_RIGHT)
+VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>]' + VI_DCMD_RIGHT)
 VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpPsuwWxX{}~|+-]')
 NUM_PAT = re.compile('[0-9]*')
+NONSPACE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
+           "0123456789_./\?[]{}<>!@#$%^&*():=-+\"';,"
+SPACECHARS = " \t\r\n"
 
 #-------------------------------------------------------------------------#
 class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
@@ -1449,23 +1453,27 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # 2 key commands
         elif re.match(VI_DOUBLE_P1, cmd) or re.match(VI_DOUBLE_P2, cmd):
             rcmd = re.sub(NUM_PAT, u'', cmd)
-            repeat = re.subn(re.compile('[bcdhlwy$<>{}]'), u'', cmd, 2)[0]
+            repeat = re.subn(re.compile(VI_DCMD_RIGHT), u'', cmd, 2)[0]
             if repeat == u'':
                 repeat = 1
             else:
                 repeat = int(repeat)
 
-            if rcmd[-1] not in u'bhlw${}':
+            if rcmd[-1] not in u'bBeEhlwW${}':
                 self.GotoLine(cline)
                 if repeat != 1 or rcmd not in u'>><<':
                     self.SetSelectionStart(self.GetCurrentPos())
                     self.SetSelectionEnd(self.PositionFromLine(cline + repeat))
             else:
                 self.SetAnchor(self.GetCurrentPos())
-                mcmd = { u'b' : self.WordLeftExtend,
+                mcmd = { u'b' : self.WordPartLeftExtend,
+                         u'B' : self.WordLeftExtend,
+                         u'e' : self.WordPartRightEndExtend,
+                         u'E' : self.WordRightEndExtend,
                          u'h' : self.CharLeftExtend,
                          u'l' : self.CharRightExtend,
-                         u'w' : self.WordRightExtend,
+                         u'w' : self.WordPartRightExtend,
+                         u'W' : self.WordRightExtend,
                          u'{' : self.ParaUpExtend,
                          u'}' : self.ParaDownExtend}
                 if u'$' in rcmd:
@@ -1478,15 +1486,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                         doit()
 
             self.BeginUndoAction()
-            if re.match(re.compile('c|c[bhlw${}]'), rcmd):
+            if re.match(re.compile('c|c' + VI_DCMD_RIGHT), rcmd):
                 if rcmd == u'cc':
                     self.SetSelectionEnd(self.GetSelectionEnd() - \
                                          len(self.GetEOLChar()))
                 self.Cut()
                 self.SetViNormalMode(False)
-            elif re.match(re.compile('d|d[bhlw${}]'), rcmd):
+            elif re.match(re.compile('d|d' + VI_DCMD_RIGHT), rcmd):
                 self.Cut()
-            elif re.match(re.compile('y|y[bhlw${}]'), rcmd):
+            elif re.match(re.compile('y|y' + VI_DCMD_RIGHT), rcmd):
                 self.Copy()
                 self.GotoPos(cpos)
             elif rcmd == u'<<':
@@ -1576,6 +1584,30 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.LOG("[stc_evt] Hiding Line Numbers")
             self.SetMarginWidth(NUM_MARGIN, 0)
 
+    def WordLeft(self):
+        """Move caret to begining of previous word
+        @note: override builtin to include extra characters in word
+
+        """
+        self.SetWordChars(NONSPACE)
+        wx.stc.StyledTextCtrl.WordLeft(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordLeft(self)
+        self.SetWordChars('')
+
+    def WordLeftExtend(self):
+        """Extend selection to begining of previous word
+        @note: override builtin to include extra characters in word
+
+        """
+        self.SetWordChars(NONSPACE)
+        wx.stc.StyledTextCtrl.WordLeftExtend(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordLeftExtend(self)
+        self.SetWordChars('')
+
     def WordPartLeft(self):
         """Move the caret left to the next change in capitalization/puncuation
         @note: overrides default function to not count whitespace as words
@@ -1583,16 +1615,96 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         wx.stc.StyledTextCtrl.WordPartLeft(self)
         cpos = self.GetCurrentPos()
-        if self.GetTextRange(cpos, cpos + 1) == u' ':
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
             wx.stc.StyledTextCtrl.WordPartLeft(self)
+
+    def WordPartLeftExtend(self):
+        """Extend selection left to the next change in capitalization/puncuation
+        @note: overrides default function to not count whitespace as words
+
+        """
+        wx.stc.StyledTextCtrl.WordPartLeftExtend(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordPartLeftExtend(self)
+
+    def WordPartRight(self):
+        """Move the caret to the start of the next word part to the right
+        @note: overrides default function to exclude white space
+
+        """
+        wx.stc.StyledTextCtrl.WordPartRight(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordPartRight(self)
 
     def WordPartRightEnd(self):
         """Move caret to end of next change in capitalization/puncuation
         @postcondition: caret is moved
 
         """
-        self.WordPartRight()
-        self.WordPartRight()
+        wx.stc.StyledTextCtrl.WordPartRight(self)
+        wx.stc.StyledTextCtrl.WordPartRight(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos - 1) in SPACECHARS:
+            self.CharLeft()
+
+    def WordPartRightEndExtend(self):
+        """Extend selection to end of next change in capitalization/puncuation
+        @postcondition: selection is extended
+
+        """
+        wx.stc.StyledTextCtrl.WordPartRightExtend(self)
+        wx.stc.StyledTextCtrl.WordPartRightExtend(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos - 1) in SPACECHARS:
+            self.CharLeftExtend()
+
+    def WordPartRightExtend(self):
+        """Extend selection to start of next change in capitalization/puncuation
+        @postcondition: selection is extended
+
+        """
+        wx.stc.StyledTextCtrl.WordPartRightExtend(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordPartRightExtend(self)
+
+    def WordRight(self):
+        """Move caret to begining of next word
+        @note: override builtin to include extra characters in word
+
+        """
+        self.SetWordChars(NONSPACE)
+        wx.stc.StyledTextCtrl.WordRight(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordRight(self)
+        self.SetWordChars('')
+
+    def WordRightEnd(self):
+        """Move caret to end of next change in word
+        @note: override builtin to include extra characters in word
+
+        """
+        self.SetWordChars(NONSPACE)
+        wx.stc.StyledTextCtrl.WordRightEnd(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos - 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordRightEnd(self)
+        self.SetWordChars('')
+
+    def WordRightExtend(self):
+        """Extend selection to begining of next word
+        @note: override builtin to include extra characters in word
+
+        """
+        self.SetWordChars(NONSPACE)
+        wx.stc.StyledTextCtrl.WordRightExtend(self)
+        cpos = self.GetCurrentPos()
+        if self.GetTextRange(cpos, cpos + 1) in SPACECHARS:
+            wx.stc.StyledTextCtrl.WordRightExtend(self)
+        self.SetWordChars('')
 
     def ReloadFile(self):
         """Reloads the current file, returns True on success and
