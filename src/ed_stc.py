@@ -71,7 +71,7 @@ NUM_MARGIN  = 1
 FOLD_MARGIN = 2
 
 # Vi command patterns
-VI_DCMD_RIGHT = '[bBcdeEhlwWy{}$<>]'
+VI_DCMD_RIGHT = '[bBcdeEGhHlLMwWy|{}$<>]'
 VI_DOUBLE_P1 = re.compile('[cdy<>][0-9]*' + VI_DCMD_RIGHT)
 VI_DOUBLE_P2 = re.compile('[0-9]*[cdy<>]' + VI_DCMD_RIGHT)
 VI_SINGLE_REPEAT = re.compile('[0-9]*[bBCDeEGhjJkloOpPsuwWxX{}~|+-]')
@@ -424,6 +424,18 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         fline = self.GetFirstVisibleLine()
         return fline + self.LinesOnScreen() - 1
 
+    def GetMiddleVisibleLine(self):
+        """Return the number of the line that is in the middle of the display
+        @return: int
+
+        """
+        fline = self.GetFirstVisibleLine()
+        if self.LinesOnScreen() < self.GetLineCount():
+            mid = (fline + (self.LinesOnScreen() / 2))
+        else:
+            mid = (fline + (self.GetLineCount() / 2))
+        return mid
+
     def GetPos(self, key):
         """Update Line/Column information
         @param key: KeyEvent object
@@ -454,6 +466,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if column > linelen:
             column = linelen
         self.GotoPos(lstart + column)
+
+    def SetCurrentCol(self, column):
+        """Set the current column position on the currently line
+        extending the selection.
+        @param column: Column to move to
+
+        """
+        cline = self.GetCurrentLineNum()
+        lstart = self.PositionFromLine(cline)
+        lend = self.GetLineEndPosition(cline)
+        linelen = lend - lstart
+        if column > linelen:
+            column = linelen
+        self.SetCurrentPos(lstart + column)
 
     def GotoIndentPos(self, line):
         """Move the caret to the end of the indentation
@@ -1299,20 +1325,16 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if len(cmd) == 1 and (cmd in 'AHILmM0^$nia/?:'):
             if  cmd in u'A$': # Insert at EOL
                 self.GotoPos(self.GetLineEndPosition(cline))
-            elif cmd == u'H': # Go first visible line
+            elif cmd == u'H': # Go first visible line # todo allow num
                 self.GotoIndentPos(self.GetFirstVisibleLine())
             elif cmd in u'I^': # Insert at line start / Jump line start
                 self.GotoIndentPos(cline)
             elif cmd == u'0': # Jump to line start column 0
                 self.GotoPos(self.PositionFromLine(cline))
-            elif cmd == u'L': # Goto start of last visible line
+            elif cmd == u'L': # Goto start of last visible line # todo allow num
                 self.GotoIndentPos(self.GetLastVisibleLine())
             elif cmd == u'M': # Goto middle line of display
-                fline = self.GetFirstVisibleLine()
-                if self.LinesOnScreen() < self.GetLineCount():
-                    self.GotoIndentPos(fline + (self.LinesOnScreen() / 2))
-                else:
-                    self.GotoIndentPos(fline + (self.GetLineCount() / 2))
+                self.GotoIndentPos(self.GetMiddleVisibleLine())
             elif cmd == u'm': # Mark line
                 if self.MarkerGet(cline):
                     self.Bookmark(ed_glob.ID_DEL_BM)
@@ -1459,7 +1481,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             else:
                 repeat = int(repeat)
 
-            if rcmd[-1] not in u'bBeEhlwW${}':
+            if rcmd[-1] not in u'bBeEGhHlLMwW$|{}':
                 self.GotoLine(cline)
                 if repeat != 1 or rcmd not in u'>><<':
                     self.SetSelectionStart(self.GetCurrentPos())
@@ -1476,10 +1498,67 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                          u'W' : self.WordRightExtend,
                          u'{' : self.ParaUpExtend,
                          u'}' : self.ParaDownExtend}
+
                 if u'$' in rcmd:
                     pos = self.GetLineEndPosition(cline + repeat - \
                                                   len(self.GetEOLChar()))
                     self.SetCurrentPos(pos)
+                elif u'G' in rcmd:
+                    if repeat == 0: # invalid cmd
+                        self._cmdcache = u''
+                        return
+                    if repeat == 1 and u'1' not in cmd: # Default eof
+                        self.SetAnchor(self.GetLineEndPosition(cline - 1))
+                        repeat = self.GetLength()
+                    elif repeat < cline + 1:
+                        self.SetAnchor(self.PositionFromLine(cline + 1))
+                        repeat = self.PositionFromLine(repeat - 1)
+                        cline = self.LineFromPosition(repeat) - 1
+                    elif repeat > cline:
+                        self.SetAnchor(self.GetLineEndPosition(cline - 1))
+                        if cline == 0:
+                            repeat = self.PositionFromLine(repeat)
+                        else:
+                            repeat = self.GetLineEndPosition(repeat - 1)
+                    else:
+                        self.SetAnchor(self.PositionFromLine(cline))
+                        repeat = self.PositionFromLine(cline + 1)
+                    self.SetCurrentPos(repeat)
+                elif rcmd[-1] in u'HM':
+                    fline = self.GetFirstVisibleLine()
+                    lline = self.GetLastVisibleLine()
+
+                    if u'M' in rcmd:
+                        repeat = self.GetMiddleVisibleLine() + 1
+                    elif fline + repeat > lline:
+                        repeat = lline
+                    else:
+                        repeat = fline + repeat
+
+                    if repeat > cline:
+                        self.SetAnchor(self.PositionFromLine(cline))
+                        self.SetCurrentPos(self.PositionFromLine(repeat))
+                    else:
+                        self.SetAnchor(self.PositionFromLine(repeat - 1))
+                        self.SetCurrentPos(self.PositionFromLine(cline + 1))
+                elif u'L' in rcmd:
+                    fline = self.GetFirstVisibleLine()
+                    lline = self.GetLastVisibleLine()
+                    if lline - repeat < fline:
+                        repeat = fline
+                    else:
+                        repeat = lline - repeat
+
+                    if repeat < cline:
+                        self.SetAnchor(self.PositionFromLine(cline))
+                        self.SetCurrentPos(self.PositionFromLine(repeat))
+                    else:
+                        self.SetAnchor(self.PositionFromLine(cline))
+                        self.SetCurrentPos(self.PositionFromLine(repeat + 2))
+                elif u'|' in rcmd:
+                    if repeat == 1 and u'1' not in cmd:
+                        repeat = 0
+                    self.SetCurrentCol(repeat)
                 else:
                     doit = mcmd[rcmd[-1]]
                     for x in xrange(repeat):
@@ -1504,7 +1583,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             else:
                 pass
             self.EndUndoAction()
-            if rcmd in '<<>>':
+            if rcmd in '<<>>' or rcmd[-1] == u'G':
                 self.GotoIndentPos(cline)
             self._vilast = cmd
             self._cmdcache = u''
