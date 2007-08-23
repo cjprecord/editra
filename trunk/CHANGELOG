@@ -24,9 +24,9 @@ Shelf can also be repositioned or pulled out to a separate floating window and
 saved in that position through the perspectives manager in the view menu.
 
 NEW: [features/improvements]
-+Vi emulation mode
-+New plugin interface 'The Shelf' for opening alowing plugins that wish to
-have multiple instances opened in a notebook interface.
++Vim Emulation Mode / Key binding option
++New plugin interface 'The Shelf' for plugins that wish to allow multiple
+instances to be opened at once in a notebook interface.
 +PyShell is now part of the Shelf, so multiple shells can be open at once
 +Added support for (D, Flagship, Haskell) programming languages
 +Highlighting for Diff/Patch files
@@ -36,7 +36,7 @@ BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
 +Fixed bug that would occure sometimes when closing find dialog
 +Fixed a major bug in the setup file for source package installs that
-excluded some of the necessary files.
+excluded copying some of the necessary files.
 +Fixed bug in python autocomp for python files that have syntax errors
 
 #-----------------------------------------------------------------------------#
