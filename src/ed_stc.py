@@ -1309,6 +1309,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def ViCmdDispatch(self):
         """Processes vi commands
+        @todo: complete rewrite, this was initially intended for testing but
+               now has implemented everything.
 
         """
         if not len(self._cmdcache):
@@ -1465,23 +1467,28 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.GotoIndentPos(cline)
                 else:
                     self.GotoPos(cpos)
-            elif rcmd == u'u':
-                self.GotoPos(cpos)
+#             elif rcmd == u'u':
+#                 self.GotoPos(cpos)
             elif rcmd in u'CoOs':
                 self.SetViNormalMode(False)
             self.EndUndoAction()
             self._vilast = cmd
             self._cmdcache = u''
         # 2 key commands
-        elif re.match(VI_DOUBLE_P1, cmd) or re.match(VI_DOUBLE_P2, cmd):
-            rcmd = re.sub(NUM_PAT, u'', cmd)
+        elif re.match(VI_DOUBLE_P1, cmd) or \
+             re.match(VI_DOUBLE_P2, cmd) or \
+             re.match(re.compile('[cdy]0'), cmd):
+            if re.match(re.compile('[cdy]0'), cmd):
+                rcmd = cmd
+            else:
+                rcmd = re.sub(NUM_PAT, u'', cmd)
             repeat = re.subn(re.compile(VI_DCMD_RIGHT), u'', cmd, 2)[0]
             if repeat == u'':
                 repeat = 1
             else:
                 repeat = int(repeat)
 
-            if rcmd[-1] not in u'bBeEGhHlLMwW$|{}':
+            if rcmd[-1] not in u'bBeEGhHlLMwW$|{}0':
                 self.GotoLine(cline)
                 if repeat != 1 or rcmd not in u'>><<':
                     self.SetSelectionStart(self.GetCurrentPos())
@@ -1559,6 +1566,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     if repeat == 1 and u'1' not in cmd:
                         repeat = 0
                     self.SetCurrentCol(repeat)
+                elif rcmd[-1] == u'0':
+                    self.SetCurrentCol(0)
                 else:
                     doit = mcmd[rcmd[-1]]
                     for x in xrange(repeat):
