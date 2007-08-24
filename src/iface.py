@@ -147,7 +147,7 @@ class Shelf(plugin.Plugin):
                                        style=FNB.FNB_FF2 | FNB.FNB_X_ON_TAB)
         mgr = parent.GetFrameManager()
         mgr.AddPane(self._shelf, wx.aui.AuiPaneInfo().Name(self.__name__).\
-                            Caption("Editra | Shelf").Bottom().Layer(0).\
+                            Caption("Shelf").Bottom().Layer(0).\
                             CloseButton(True).MaximizeButton(False).\
                             BestSize(wx.Size(500,250)))
         # Hide the pane and let the perspective manager take care of it
