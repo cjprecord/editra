@@ -309,11 +309,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if e_id == ID_OPEN:
             dlg = wx.FileDialog(self, _("Choose a File"), '', "", 
                                 self.MenuFileTypes(), wx.OPEN | wx.MULTIPLE)
+            dlg.SetFilterIndex(_PGET('FFILTER', 'int', 0))
             if dlg.ShowModal() == wx.ID_OK:
                 paths = dlg.GetPaths()
                 dlg.Destroy()
                 result = dlg.GetReturnCode()
 
+            _PSET('FFILTER', dlg.GetFilterIndex())
             if result != wx.ID_CANCEL:
                 for path in paths:
                     dirname = util.GetPathName(path)
