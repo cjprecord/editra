@@ -67,6 +67,7 @@ _DEFAULTS = {
            'EDGE'       : 80,               # Edge guide column
            'EOL'        : 'Unix (\\n)',     # EOL mode
            'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
+           'FFILTER'    : 0,                # Last file filter used
            'GUIDES'     : True,             # Use Indentation guides
            'ICONS'      : 'Nuovo',          # Icon Theme
            'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
