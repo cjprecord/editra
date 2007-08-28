@@ -31,6 +31,8 @@ instances to be opened at once in a notebook interface.
 +Added support for (D, Flagship, Haskell) programming languages
 +Highlighting for Diff/Patch files
 +Basic session saving support for loading files from previous session on launch
++Remember file filter selection in file open dialog
++Improvements to windows installer/uninstaller
 
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
@@ -38,6 +40,7 @@ BUG FIXES:
 +Fixed a major bug in the setup file for source package installs that
 excluded copying some of the necessary files.
 +Fixed bug in python autocomp for python files that have syntax errors
++Fixed bug in handling compatibility issues with older Editra Style Sheets.
 
 #-----------------------------------------------------------------------------#
 
