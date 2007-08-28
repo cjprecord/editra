@@ -522,10 +522,16 @@ class StyleMgr(object):
 
         """
         if self.HasNamedStyle(name):
-            if u"%" in unicode(self.styles[name]):
-                return unicode(self.styles[name]) % self.fonts
-            else:
-                return unicode(self.styles[name])
+            try:
+                if u"%" in unicode(self.styles[name]):
+                    style = unicode(self.styles[name]) % self.fonts
+                else:
+                    style = unicode(self.styles[name])
+            except KeyError, msg:
+                self.LOG("[styles][err] Bad Format Value %s in def of %s" % \
+                         (str(msg), name))
+                style = wx.EmptyString
+            return style
         else:
             return wx.EmptyString
 
