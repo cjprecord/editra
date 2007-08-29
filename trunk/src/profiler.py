@@ -296,7 +296,7 @@ def _ToObject(index, val, fmt):
                 rval = _DEFAULTS.get(index, False)
         elif tmp == u'size_tuple':
             if len(val) == 2 and \
-               all([isinstance(val[0], int), isinstance(val[1], int)]):
+               isinstance(val[0], int) and isinstance(val[1], int):
                 rval = val
             else:
                 rval = _DEFAULTS.get(index, wx.DefaultSize)
