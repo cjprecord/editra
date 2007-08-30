@@ -1838,10 +1838,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 bom = u''
             writer.write(bom + self.GetText())
             writer.close()
-        except IOError:
+        except IOError, AttributeError, msg:
             writer.close()
             result = False
             self.LOG("[stc][err]There was an error saving %s" % path)
+            self.LOG("[stc][err] ERROR: %s" % str(msg))
         if result:
             self.SetSavePoint()
             self.modtime = util.GetFileModTime(path)
