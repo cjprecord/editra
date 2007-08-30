@@ -1838,7 +1838,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 bom = u''
             writer.write(bom + self.GetText())
             writer.close()
-        except IOError, AttributeError, msg:
+        except (IOError, AttributeError), msg:
             writer.close()
             result = False
             self.LOG("[stc][err]There was an error saving %s" % path)
