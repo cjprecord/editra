@@ -47,9 +47,9 @@ SYNTAX_ITEMS = [('STC_DIFF_ADDED', 'global_style'),
                 ('STC_DIFF_COMMAND', 'pre_style'),
                 ('STC_DIFF_COMMENT', 'comment_style'),
                 ('STC_DIFF_DEFAULT', 'default_style'),
-                ('STC_DIFF_DELETED', 'keyword4_style'),
+                ('STC_DIFF_DELETED', 'error_style'),
                 ('STC_DIFF_HEADER', 'comment_style'),
-                ('STC_DIFF_POSITION', 'error_style')]
+                ('STC_DIFF_POSITION', 'pre_style')]
 
 #---- Extra Properties ----#
 FOLD = ('fold', '1')
