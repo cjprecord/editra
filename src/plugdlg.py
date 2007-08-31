@@ -685,9 +685,12 @@ class DownloadPanel(wx.Panel):
     def UpdateList(self, url=PLUGIN_REPO):
         """Update the list of available downloads
         @param url: url to fetch update list from
-        @postcondition: Worker thread is started that will update list
+        @postcondition: Worker thread is started that will update list when it
+                        finishes.
 
         """
+        if self._list.GetItemCount():
+            self._list.DeleteAllItems()
         frame =  self.GetGrandParent()
         frame.SetStatusText(_("Retrieving Plugin List") + "...", 0)
         frame.Busy(True)
