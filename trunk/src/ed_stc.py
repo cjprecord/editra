@@ -1181,7 +1181,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             eline = 1
         lines = list()
         for line in xrange(sline, eline + 1):
-            lines.append(self.GetLine(line).strip())
+            if line != sline:
+                lines.append(self.GetLine(line).strip())
+            else:
+                lines.append(self.GetLine(line).rstrip())
         self.SetTargetStart(self.PositionFromLine(sline))
         self.SetTargetEnd(self.GetLineEndPosition(eline))
         self.ReplaceTarget(u' '.join(lines))
