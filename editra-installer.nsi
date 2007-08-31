@@ -92,6 +92,11 @@ FunctionEnd
 
 Section Uninstall
   RmDir /r "$INSTDIR\"
+  Delete "$SMPROGRAMS\Editra\Uninstall.lnk"
+  Delete "$SMPROGRAMS\Editra\Website.lnk"
+  Delete "$DESKTOP\Editra.lnk"
+  Delete "$SMPROGRAMS\Editra\Editra.lnk"
+  RMDir "$SMPROGRAMS\Editra"
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
