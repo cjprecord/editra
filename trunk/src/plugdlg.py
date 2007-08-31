@@ -46,7 +46,8 @@ import re
 import urllib
 import wx
 import wx.lib.delayedresult as delayedresult
-import wx.lib.mixins.listctrl as listmix
+# import wx.lib.mixins.listctrl as listmix
+import extern.listctrl as listmix
 import ed_glob
 from profiler import Profile_Get
 import ed_event
@@ -85,8 +86,8 @@ class PluginDialog(wx.Frame):
 
         # Attributes
         self._sizer = wx.BoxSizer(wx.VERTICAL)
-        self.CreateStatusBar(2)
-        self.SetStatusWidths([-1, 155])
+        self._sb = DownloadStatusBar(self)
+        self.SetStatusBar(self._sb)
         self._nb = PluginPages(self)
         
         # Layout Dialog
@@ -125,6 +126,112 @@ class PluginDialog(wx.Frame):
         """
         wx.GetApp().RegisterWindow(repr(self), self, True)
         wx.Frame.Show(self, show)
+
+    def Busy(self, busy=True):
+        """Set the status of the frame to be busy or not
+        @keyword busy: Start or Stop being busy
+
+        """
+        if busy:
+            self._sb.StartBusy()
+        else:
+            self._sb.StopBusy()
+
+#--------------------------------------------------------------------------#
+
+class DownloadStatusBar(wx.StatusBar):
+    """Custom StatusBar with a builtin progress bar"""
+    def __init__(self, parent):
+        """Creates a status bar that can hide and show a progressbar
+        in the far right divider.
+        @param parent: Frame this status bar belongs to
+
+        """
+        wx.StatusBar.__init__(self, parent)
+  
+        # Attributes
+        self._changed = False
+        self.timer = wx.Timer(self)
+        self.prog = wx.Gauge(self, style=wx.GA_HORIZONTAL)
+        self.prog.Hide()
+
+        # Layout
+        self.SetFieldsCount(2)
+        self.SetStatusWidths([-1, 155])
+
+        # Event Handlers
+        self.Bind(wx.EVT_TIMER, self.OnTick)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self.Bind(wx.EVT_IDLE, self.OnIdle)
+
+    def __del__(self):
+        """Make sure the timer is stopped
+        @postcondition: timer is cleaned up
+
+        """
+        if self.timer.IsRunning():
+            self.timer.Stop()
+
+    def Destroy(self):
+        """Cleanup timer
+        @postcondition: timer is cleaned up and status bar is destroyed
+
+        """
+        if self.timer.IsRunning():
+            self.timer.Stop()
+        del self.timer
+        wx.StatusBar.Destroy(self)
+
+    def OnIdle(self, evt):
+        """Reposition progress bar as necessary on moves, ect...
+        @param evt: wx.EVT_IDLE
+
+        """
+        if self._changed:
+            self.Reposition()
+        evt.Skip()
+
+    def OnSize(self, evt):
+        """Reposition progress bar on resize
+        @param evt: wx.EVT_SIZE
+
+        """
+        self.Reposition()
+        self._changed = True
+        evt.Skip()
+
+    def OnTick(self, evt):
+        """Update progress bar
+        @param evt: wx.EVT_TIMER
+
+        """
+        self.prog.Pulse()
+
+    def Reposition(self):
+        """Does the actual repositioning of progress bar
+        @postcondition: Progress bar is repostioned to right side
+
+        """
+        rect = self.GetFieldRect(1)
+        self.prog.SetPosition((rect.x + 2, rect.y + 2))
+        self.prog.SetSize((rect.width - 4, rect.height - 4))
+        self._changed = False
+
+    def StartBusy(self):
+        """Start the timer
+        @postcondition: Progress bar is shown and animated
+
+        """
+        self.prog.Show()
+        self.timer.Start(100)
+
+    def StopBusy(self):
+        """Stop the timer
+        @postcondition: Progress bar is hidden from view
+
+        """
+        self.prog.Hide()
+        self.timer.Stop()
 
 #--------------------------------------------------------------------------#
 
@@ -193,10 +300,9 @@ class PluginPages(wx.Toolbook):
         if cur_pg == CONFIG_PG:
             self._config.PopulateCtrl()
             self.GetParent().SetStatusText(_("Changes will take affect once the"
-                                             " program has been resarted"), 0)
+                                             " program has been restarted"), 0)
         elif cur_pg == DOWNLOAD_PG:
-            self._download.PopulateList()
-            self.GetParent().SetStatusText("", 0)
+            self._download.UpdateList()
         elif cur_pg == INSTALL_PG:
             pass
         else:
@@ -284,6 +390,7 @@ class ConfigPanel(wx.Panel):
         p_mgr = wx.GetApp().GetPluginManager()
         p_mgr.ReInit()
         for item in p_mgr.GetConfig():
+            self._list.Freeze()
             mod = sys.modules.get(item)
             pin = PluginData()
             pin.SetName(item)
@@ -300,7 +407,8 @@ class ConfigPanel(wx.Panel):
             except (NameError, TypeError):
                 pin.SetVersion(_("Unknown"))
 
-            self._list.InsertPluginItem(pin) #, check = p_mgr._config[item])
+            self._list.InsertPluginItem(pin)
+            self._list.Thaw()
 
         # Check Enabled Items
         for item in p_mgr.GetConfig():
@@ -402,34 +510,38 @@ class DownloadPanel(wx.Panel):
                 frame.SetStatusText(_("Downloaded") + ": " + plug, 0)
         finally:
             if not self._eggcount:
-                frame.SetStatusText(_("Complete"), 1)
                 frame.SetStatusText(_("Finshed downloading plugins"), 0)
+                wx.CallAfter(frame.Busy, False)
                 inst_pg = self.GetParent().GetPage(INSTALL_PG)
                 for key in self._eggbasket:
                     inst_pg.AddItemToInstall(key)
                 self.GetParent().SetSelection(INSTALL_PG)
 
-    def GetDownloadedData(self):
-        """Returns the dictionary of downloaded data or an
-        empty dictionary if no data has been downloaded.
-        @return: set of all successfully downloaded plugins
+    def _UpdateCatcher(self, delayedResult):
+        """Catches the results from the download worker threads"""
+        frame = self.GetGrandParent()
+        try:
+            result = delayedResult.get()
+            if len(result):
+                self._p_list = self.FormatPluginList(result)
+                self.PopulateList()
+                frame.SetStatusText(_("Select plugins to download"), 0)
+                wx.CallAfter(frame.Busy, False)
+        except Exception, msg:
+            frame.SetStatusText(_("Unable to retrieve plugin list"), 0)
 
-        """
-        return self._eggbasket
-
-    def GetPluginList(self, url=PLUGIN_REPO):
-        """Gets the list of available plugins from the web and returns
-        it as a dictionary of names mapped to metadata.
+    def FormatPluginList(self, data):
+        """Formats a list of plugin data served by the server into
+        PluginData objects for usage in the list view.
         @return: PluginData of all available plugins
         @rtype: dict
 
         """
-        plugins = self._GetPluginListData(url)
+        plugins = data
         p_list = dict()
         if len(plugins) < 2:
-            grandp = self.GetGrandParent()
-            grandp.SetStatusText(_("Unable to retrieve available downloads"), 0)
             return p_list
+
         for meta in plugins:
             data = meta.split("\n")
             if len(data) < 4:
@@ -463,6 +575,14 @@ class DownloadPanel(wx.Panel):
             del p_list[item]
         return p_list
 
+    def GetDownloadedData(self):
+        """Returns the dictionary of downloaded data or an
+        empty dictionary if no data has been downloaded.
+        @return: set of all successfully downloaded plugins
+
+        """
+        return self._eggbasket
+
     def IsDownloading(self):
         """Returns whether the panel has active download
         threads or not.
@@ -482,15 +602,17 @@ class DownloadPanel(wx.Panel):
 
         """
         e_id = evt.GetId()
-        print self._dl_list
         if e_id == self.ID_DOWNLOAD:
             urls = list()
             for item in self._dl_list:
                 if self._dl_list[item] and item in self._p_list:
                     urls.append(BASE_URL + self._p_list[item].GetUrl())
             self._eggcount = len(urls)
+            
+            # Start a separate thread to download each selection
             for egg in range(len(urls)):
-                self.GetGrandParent().SetStatusText(_("Downloading") + "...", 1)
+                self.GetGrandParent().SetStatusText(_("Downloading") + "...", 0)
+                self.GetGrandParent().Busy(True)
                 delayedresult.startWorker(self._ResultCatcher, 
                                           self._DownloadPlugin,
                                           wargs = (urls[egg]), jobID = egg)
@@ -522,16 +644,19 @@ class DownloadPanel(wx.Panel):
 
     def PopulateList(self):
         """Populates the list control based off data in the plugin data
-        list.
+        list. The plugin data list is set as a result of calling UpdateList
+        it is not recomended to call this directly.
+
         @return: number of items added to control
 
         """
-        self._p_list = self.GetPluginList()
         if self._list.GetItemCount():
             self._list.DeleteAllItems()
 
         for item in self._p_list:
+            self._list.Freeze()
             self._list.InsertPluginItem(self._p_list[item])
+            self._list.Thaw()
 
         if self._list.GetItemCount():
             self._list.SetColumnWidth(0, wx.LIST_AUTOSIZE)
@@ -554,9 +679,21 @@ class DownloadPanel(wx.Panel):
         match = self.EGG_PATTERN(item)
         if match:
             plugin_name = match.group('name').lower()
-            print plugin_name
             if self._dl_list.has_key(plugin_name):
                 del self._dl_list[plugin_name]
+
+    def UpdateList(self, url=PLUGIN_REPO):
+        """Update the list of available downloads
+        @param url: url to fetch update list from
+        @postcondition: Worker thread is started that will update list
+
+        """
+        frame =  self.GetGrandParent()
+        frame.SetStatusText(_("Retrieving Plugin List") + "...", 0)
+        frame.Busy(True)
+        delayedresult.startWorker(self._UpdateCatcher,
+                                  self._GetPluginListData,
+                                  wkwargs={'url' : url}, jobID='update')
 
 class InstallPanel(wx.Panel):
     """Creates a panel for installing plugins."""
