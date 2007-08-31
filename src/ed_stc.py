@@ -1182,9 +1182,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         lines = list()
         for line in xrange(sline, eline + 1):
             if line != sline:
-                lines.append(self.GetLine(line).strip())
+                tmp = self.GetLine(line).strip()
             else:
-                lines.append(self.GetLine(line).rstrip())
+                tmp = self.GetLine(line)
+                if not tmp.isspace():
+                    tmp = tmp.rstrip()
+                else:
+                    tmp = tmp.replace("\n", u'').replace("\r", u'')
+            if len(tmp):
+                lines.append(tmp)
         self.SetTargetStart(self.PositionFromLine(sline))
         self.SetTargetEnd(self.GetLineEndPosition(eline))
         self.ReplaceTarget(u' '.join(lines))
