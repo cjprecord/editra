@@ -7,8 +7,8 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
-VERSION 0.1.xx
-DATE 0x/xx/2007
+VERSION 0.1.78
+DATE 09/01/2007
 5th Alpha Release
 
 NEWS:
@@ -33,6 +33,7 @@ instances to be opened at once in a notebook interface.
 +Basic session saving support for loading files from previous session on launch
 +Remember file filter selection in file open dialog
 +Improvements to windows installer/uninstaller
++Improved plugin downloaders performance and interface
 
 BUG FIXES:
 +Fixed bug when closing font dialog with cancel button on MSW
