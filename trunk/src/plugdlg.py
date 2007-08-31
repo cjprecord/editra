@@ -222,6 +222,7 @@ class DownloadStatusBar(wx.StatusBar):
         @postcondition: Progress bar is shown and animated
 
         """
+        self.Reposition()
         self.prog.Show()
         self.timer.Start(100)
 
