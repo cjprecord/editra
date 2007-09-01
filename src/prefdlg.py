@@ -519,7 +519,6 @@ class DocGenPanel(wx.Panel):
         if e_id in [self.ID_FONT_PICKER, self.ID_FONT_PICKER2]:
             font = evt.GetValue()
             if not isinstance(font, wx.Font):
-                print "NOT FONT"
                 return
             elif font.IsNull():
                 return
