@@ -1332,6 +1332,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         cpos = self.GetCurrentPos()
         cline = self.LineFromPosition(cpos)
         mw = wx.GetApp().GetMainWindow()
+        if u':' in cmd:
+            self._cmdcache = u''
+            mw.ShowCommandCtrl()
+
         # Single key commands
         if len(cmd) == 1 and (cmd in 'AHILmM0^$nia/?:'):
             if  cmd in u'A$': # Insert at EOL
@@ -1353,14 +1357,12 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.Bookmark(ed_glob.ID_ADD_BM)
             elif cmd == u'a': # insert mode after current pos
                 self.GotoPos(cpos + 1)
-            elif cmd in u'/?:':
+            elif cmd in u'/?':
                 if mw is not None:
-                    if cmd in u'/?':
-                        mid = ed_glob.ID_QUICK_FIND
-                    else:
-                        mid = ed_glob.ID_GOTO_LINE
-                    evt = wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, mid)
+                    evt = wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED,
+                                       ed_glob.ID_QUICK_FIND)
                     wx.PostEvent(mw, evt)
+
             if cmd in u'aAiI':
                 self.SetViNormalMode(False)
 
