@@ -956,6 +956,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         else:
             evt.Skip()
 
+    def ShowCommandCtrl(self):
+        """Open the Commandbar in command mode.
+
+        """
+        self._cmdbar.Show(ed_cmdbar.ID_CMD_CTRL)
+        self.sizer.Layout()
+
     # Menu Helper Functions
     #TODO this is fairly stupid, write a more general solution
     def UpdateMenu(self, evt):
