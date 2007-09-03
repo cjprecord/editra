@@ -165,7 +165,8 @@ class EdPages(FNB.FlatNotebook):
         files = Profile_Get('LAST_SESSION')
         if files is not None:
             for file in files:
-                self.OpenPage(os.path.dirname(file), os.path.basename(file))
+                if os.path.exists(file):
+                    self.OpenPage(os.path.dirname(file), os.path.basename(file))
 
         if self.GetPageCount() == 0:
             self.NewPage()
@@ -443,7 +444,16 @@ class EdPages(FNB.FlatNotebook):
                     result = mdlg.ShowModal()
                     mdlg.Destroy()
                     if result == wx.ID_YES:
-                        self.control.ReloadFile()
+                        ret, rmsg = self.control.ReloadFile()
+                        if not ret:
+                            mdlg = wx.MessageDialog(self.frame, 
+                                                    _("Failed to reload %s:\n"
+                                                      "Error: %s") % \
+                                                      (cfile, rmsg),
+                                                    _("Error"),
+                                                    wx.OK | wx.ICON_ERROR)
+                            mdlg.ShowModal()
+                            mdlg.Destroy()
                     else:
                         self.control.modtime = util.GetFileModTime(cfile)
                 wx.CallAfter(AskToReload, cfile)
@@ -637,6 +647,11 @@ class EdPages(FNB.FlatNotebook):
             if self.control.GetModify():
                 title = u"*" + title
             wx.CallAfter(self.SetPageText, pg_num, title)
+            wx.CallAfter(self.frame.SetTitle, ("%s - file://%s%s%s" % \
+                                               (self.control.filename,
+                                                self.control.dirname,
+                                                util.GetPathChar(),
+                                                self.control.filename)))
             
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have
