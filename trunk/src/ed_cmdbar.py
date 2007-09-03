@@ -43,11 +43,13 @@ __revision__ = "$Revision$"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
+import sys
 import re
 import wx
 import util
-import ed_search
 import ed_glob
+import ed_search
+import ed_event
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -420,7 +422,12 @@ class CommandExecuter(wx.SearchCtrl):
                                style=wx.TE_PROCESS_ENTER)
 
         # Attributes
-        self._cmdstack = list()
+        self._cmdstack = ['']
+        self._histidx = -1
+        self._curdir = wx.GetHomeDir() + os.sep
+        self._bpath = None
+        if not hasattr(sys, 'frozen'):
+            self._curdir = os.path.abspath(os.curdir) + os.sep
 
         # Hide the search button and text
         self.ShowSearchButton(False)
@@ -463,6 +470,25 @@ class CommandExecuter(wx.SearchCtrl):
         else:
             pass
 
+    def ChangeDir(self, cmd):
+        """Change to a directory based on cd command
+        @param cmd: cd path
+
+        """
+        path = cmd.replace('cd', '', 1).strip()
+        if not os.path.isabs(path):
+            if path.startswith('..'):
+                path = os.path.abspath(path)
+            else:
+                path = os.path.join(self._curdir, path)
+
+        if os.path.exists(path) and os.path.isdir(path):
+            os.chdir(path)
+            self._curdir = os.path.abspath(os.path.curdir) + os.sep
+        else:
+            self.Clear()
+            wx.Bell()
+            
     def CommandPush(self, cmd):
         """Push a command to the stack popping as necessary to
         keep stack size less than MAX.
@@ -473,13 +499,21 @@ class CommandExecuter(wx.SearchCtrl):
         if len(self._cmdstack) > 25: # TODO make this configurable
             self._cmdstack.pop()
 
-    def EditCommand(self, cstr):
+    def EditCommand(self, cmd):
         """Perform an edit related command
-        @param cstr: command string to execute
+        @param cmd: command string to execute
 
         """
         # e fname: edit file
-        
+        cmd = cmd[1:].strip()
+        frame = self.GetTopLevelParent()
+        if not os.path.isabs(cmd):
+            cmd = os.path.join(self._curdir, cmd)
+
+        if os.path.exists(cmd):
+            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, cmd)
+        else:
+            frame.nb.OpenPage(util.GetPathName(cmd) ,util.GetFileName(cmd))
 
     def ExecuteCommand(self, cmd_str):
         """Interprets and executes a command then hides the control
@@ -487,7 +521,7 @@ class CommandExecuter(wx.SearchCtrl):
 
         """
         frame = self.GetTopLevelParent()
-        cmd = cmd_str.strip()
+        cmd = cmd_str.strip().lstrip(':')
         if cmd in ['x', 'ZZ']:
             cmd = 'wq'
 
@@ -510,6 +544,8 @@ class CommandExecuter(wx.SearchCtrl):
             else:
                 line = int(cmd) - 1
             ctrl.GotoLine(line)
+        elif cmd.startswith('cd'):
+            self.ChangeDir(cmd)
         elif cmd == 'q':
             self.Quit()
         else:
@@ -517,15 +553,31 @@ class CommandExecuter(wx.SearchCtrl):
             return
 
         self.CommandPush(cmd_str)
+        self._curidx = 0
         self.GetParent().Hide()
 
-    def Quit(self):
-        """Tell the editor to exit
-        @postcondition: Editor begins exit, confirming file saves
+    def GetHistCommand(self, pre=True):
+        """Look up a command from the history of recent commands
+        @param pre: Get previous (default) or get Next
+        @note: pre moves right in stack, next moves left in stack
 
         """
-        wx.PostEvent(self.GetTopLevelParent(), 
-                     wx.CloseEvent(wx.wxEVT_CLOSE_WINDOW))
+        hist_l = len(self._cmdstack) - 1
+        curr_cmd = self.GetValue()
+        if pre:
+            self._histidx += 1
+            if self._histidx >= hist_l + 1:
+                self._histidx = hist_l
+            cmd = self._cmdstack[self._histidx]
+        else:
+            self._histidx -= 1
+            if self._histidx < 0:
+                cmd = ''
+                self._histidx = -1
+            else:
+                cmd = self._cmdstack[self._histidx]
+        self.SetValue(cmd)
+        self.SelectAll()
 
     def GoBuffer(self, cmd):
         """Go to next/previous buffer in notebook
@@ -541,6 +593,73 @@ class CommandExecuter(wx.SearchCtrl):
         frame = self.GetTopLevelParent()
         for x in xrange(do):
             frame.nb.AdvanceSelection(cmd == 'n')
+
+    def ListDir(self):
+        """List the next directory from the current cmd path
+        @note: used for tab completion of cd, completion is based off cwd
+
+        """
+#         cmd = self.GetValue()
+#         if not cmd.startswith('cd '):
+#             return
+
+#         cmd = cmd.replace('cd ', u'', 1).strip()
+#         print "CPATH: ", self._curdir, "CMD: ", cmd
+#         if not os.path.exists(self._curdir):
+#             self._curdir = wx.GetHomeDir()
+
+#         if len(cmd) and (cmd[0].isalnum() or cmd.startswith('.')):
+#             path = self._curdir
+#             cmd = os.path.join(path, cmd)
+#         else:
+#             path = os.path.abspath(cmd)
+#             if (len(cmd) and cmd[-1] == os.sep) or not len(cmd):
+#                 path = path + os.sep
+
+#         if not os.path.exists(path):
+#             print "NO EXIST: ", path
+#             path = self._curdir
+
+#         # Filter Directories
+#         if path[-1] != os.sep:
+#             path = os.path.join(*os.path.split(path)[:-1]) + os.sep
+#             if not path.startswith(os.sep):
+#                 path = os.sep + path
+#         dirs = [ os.path.join(path, x) \
+#                  for x in os.listdir(path) \
+#                  if os.path.isdir(os.path.join(path, x)) ]
+#         dirs.sort()
+#         if not len(dirs):
+#             return
+
+#         print dirs
+#         if len(cmd):
+#             npath = None
+#             for next in dirs:
+#                 print "NVAL: ", next, "CMDVAL", cmd
+#                 if next.startswith(cmd):
+#                     print "NEXT: ", next
+#                     if cmd[-1] != os.path.sep and next == cmd:
+#                         idx = dirs.index(next) + 1
+#                     else:
+#                         idx = dirs.index(next)
+                    
+#                     print "INDEX: ", idx, "DIR NUM: ", len(dirs)
+#                     if idx < len(dirs):
+#                         print "INDEX OK: ", idx, "LEN: ", len(dirs)
+#                         npath = dirs[idx] #.replace(path, u'', 1)
+#                     break
+#             if npath:
+#                 self.SetValue('cd ' + npath)
+#         else:
+#             self.SetValue('cd ' + dirs[0])
+
+    def ListFile(self):
+        """List the next file in the current cmd path
+        @note: used for tab completion of e, completion is based off cwd
+
+        """
+        
 
     def OnEnter(self, evt):
         """Get the currently entered command string and
@@ -561,12 +680,20 @@ class CommandExecuter(wx.SearchCtrl):
         e_key = evt.GetKeyCode()
         cmd = self.GetValue()
         if e_key == wx.WXK_UP:
-            pass
+            self.GetHistCommand(pre=True)
         elif e_key == wx.WXK_DOWN:
-            pass
+            self.GetHistCommand(pre=False)
         elif e_key == wx.WXK_SPACE and not len(cmd):
             # Swallow space key when command is empty
             pass
+        elif e_key == wx.WXK_TAB:
+            # Provide Tab Completion or swallow key
+            if cmd.startswith('e '):
+                self.ListFile()
+            elif cmd.startswith('cd '):
+                self.ListDir()
+            else:
+                pass
         elif e_key == wx.WXK_ESCAPE:
             self.Clear()
             self.GetParent().Hide()
@@ -574,12 +701,20 @@ class CommandExecuter(wx.SearchCtrl):
             evt.Skip()
 
     def OnKeyUp(self, evt):
-        """
+        """Adjust size as needed when characters are entered
         @param evt: event that called this handler
 
         """
         self._AdjustSize()
         evt.Skip()
+
+    def Quit(self):
+        """Tell the editor to exit
+        @postcondition: Editor begins exit, confirming file saves
+
+        """
+        wx.PostEvent(self.GetTopLevelParent(), 
+                     wx.CloseEvent(wx.wxEVT_CLOSE_WINDOW))
 
     def WriteCommand(self, cstr):
         """Perform a file write related command
