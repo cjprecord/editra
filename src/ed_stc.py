@@ -1823,15 +1823,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.modtime = util.GetFileModTime(cfile)
                 self.EndUndoAction()
                 self.SetSavePoint()
-            except (OSError, IOError):
+            except (AttributeError, OSError, IOError), msg:
                 self.LOG("[stc][err] Failed to Reload %s" % cfile)
-                return False
+                return False, str(msg)
             else:
                 self.GotoPos(cpos)
-                return True
+                return True, ''
         else:
             self.LOG("[stc][err] %s does not exists, cannot reload it." % cfile)
-            return False
+            return False, "%s does not exist" % cfile
 
     def SaveFile(self, path):
         """Save buffers contents to disk
