@@ -379,10 +379,10 @@ class EdSearchCtrl(wx.SearchCtrl):
         # TEMP HACK
         self.FindService = parent.GetParent().nb.FindService
         self._flags      = wx.FR_DOWN
-        self._recent     = list()             # The History List
+        self._recent     = list()        # The History List
         self._last       = None
         self.rmenu       = wx.Menu()
-        self.max_menu    = menulen            # Max length of history menu
+        self.max_menu    = menulen + 2   # Max menu length + descript/separator
 
         # Make it look a little nicer on gtk
         if wx.Platform == '__WXGTK__':
@@ -463,7 +463,10 @@ class EdSearchCtrl(wx.SearchCtrl):
         # Check Menu Length
         m_len = self.rmenu.GetMenuItemCount()
         if m_len > self.max_menu:
-            self.rmenu.RemoveItem(m_items[-1])
+            try:
+                self.rmenu.RemoveItem(m_items[-1])
+            except IndexError, msg:
+                wx.GetApp().GetLog()("[searchbar] menu error: %s" % str(msg))
 
     def IsMatchCase(self):
         """Returns True if the search control is set to search
