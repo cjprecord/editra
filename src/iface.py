@@ -112,6 +112,7 @@ class Shelf(plugin.Plugin):
         """
         self._log = wx.GetApp().GetLog()
         self._shelf = None
+        self._parent = None
         self._open = dict()
 
     def _GetMenu(self):
@@ -143,9 +144,14 @@ class Shelf(plugin.Plugin):
         @param parent: Reference to MainWindow
 
         """
+        # First check if the parent has an instance already
+        self._parent = parent
+        mgr = parent.GetFrameManager()
+        if mgr.GetPane(self.__name__).IsOk():
+            return
+
         self._shelf = FNB.FlatNotebook(parent, 
                                        style=FNB.FNB_FF2 | FNB.FNB_X_ON_TAB)
-        mgr = parent.GetFrameManager()
         mgr.AddPane(self._shelf, wx.aui.AuiPaneInfo().Name(self.__name__).\
                             Caption("Shelf").Bottom().Layer(0).\
                             CloseButton(True).MaximizeButton(False).\
@@ -176,10 +182,9 @@ class Shelf(plugin.Plugin):
         @postcondition: Shelf is shown
 
         """
-        mainw = wx.GetApp().GetMainWindow()
-        if mainw is None:
+        if not hasattr(self._parent, 'GetFrameManager'):
             return
-        mgr = mainw.GetFrameManager()
+        mgr = self._parent.GetFrameManager()
         pane = mgr.GetPane(self.__name__)
         if not pane.IsShown():
             pane.Show()
