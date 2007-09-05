@@ -1245,7 +1245,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         self._vinormal = normal
         self._cmdcache = u''
-        mw = wx.GetApp().GetMainWindow()
+        mw = self.GetTopLevelParent()
         if normal:
             self.SetCaretWidth(10)
             if mw:
@@ -1272,7 +1272,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         self.recording = True
-        wx.GetApp().GetMainWindow().SetStatusText(_("Recording Macro") + \
+        self.GetTopLevelParent().SetStatusText(_("Recording Macro") + \
                                                   u"...", ed_glob.SB_INFO)
         wx.stc.StyledTextCtrl.StartRecord(self)
 
@@ -1283,8 +1283,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         self.recording = False
         wx.stc.StyledTextCtrl.StopRecord(self)
-        wx.GetApp().GetMainWindow().SetStatusText(_("Recording Finished"), \
-                                                  ed_glob.SB_INFO)
+        self.GetTopLevelParent().SetStatusText(_("Recording Finished"), \
+                                               ed_glob.SB_INFO)
         self._BuildMacro()
 
     def TrimWhitespace(self):
@@ -1331,7 +1331,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             cmd = self._vilast
         cpos = self.GetCurrentPos()
         cline = self.LineFromPosition(cpos)
-        mw = wx.GetApp().GetMainWindow()
+        mw = self.GetTopLevelParent()
         if u':' in cmd:
             self._cmdcache = u''
             mw.ShowCommandCtrl()
