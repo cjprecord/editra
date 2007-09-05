@@ -7,6 +7,24 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
+VERSION 0.1.xx
+DATE xx/xx/2007
+6th Alpha Release
+
+NEWS:
+
+
+NEW: [features/improvements]
++Ex Command mode for Vi emulation
+
+BUG FIXES:
++Fixed error raised when setting font from settings dialog.
++Fixed session loading loads files that have been deleted
++Ensure file handle valid when reloading files
+
+#-----------------------------------------------------------------------------#
+Changes since last release:
+
 VERSION 0.1.78
 DATE 09/01/2007
 5th Alpha Release
