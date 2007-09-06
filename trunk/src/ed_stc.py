@@ -1248,11 +1248,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         mw = self.GetTopLevelParent()
         if normal:
             self.SetCaretWidth(10)
-            if mw:
+            if hasattr(mw, '__name__') and mw.__name__ == 'MainWindow':
                 mw.SetStatusText('NORMAL', ed_glob.SB_BUFF)
         else:
             self.SetCaretWidth(1)
-            if mw:
+            if hasattr(mw, '__name__') and mw.__name__ == 'MainWindow':
                 mw.SetStatusText('INSERT', ed_glob.SB_BUFF)
 
     def SetViewEdgeGuide(self, switch=None):
@@ -1272,6 +1272,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         self.recording = True
+        #TODO dont assume top level parent as MainWindow
         self.GetTopLevelParent().SetStatusText(_("Recording Macro") + \
                                                   u"...", ed_glob.SB_INFO)
         wx.stc.StyledTextCtrl.StartRecord(self)
