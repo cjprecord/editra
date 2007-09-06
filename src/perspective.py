@@ -78,7 +78,7 @@ class PerspectiveManager(object):
         self._base = os.path.join(base, DATA_FILE)  # Path to config
         self._viewset = dict()                      # Set of Views
         self.LoadPerspectives()
-        self._menu = ed_menu.ED_Menu()               # Control menu
+        self._menu = ed_menu.ED_Menu()              # Control menu
         self._currview = None                       # Currently used view
 
         # Setup Menu
@@ -92,7 +92,7 @@ class PerspectiveManager(object):
         # Event Handlers
         self._window.Bind(wx.EVT_MENU, self.OnPerspectiveMenu)
 
-    def AddPerspective(self, name, p_data = None):
+    def AddPerspective(self, name, p_data=None):
         """Add a perspective to the view set. If the p_data parameter
         is not set then the current view will be added with the given name.
         @param name: name for new perspective
@@ -105,6 +105,7 @@ class PerspectiveManager(object):
             menu = False
         else:
             menu = True
+
         if not p_data:
             self._viewset[name.strip()] = self._mgr.SavePerspective()
         else:
@@ -174,6 +175,9 @@ class PerspectiveManager(object):
 
         """
         reader = util.GetFileReader(self._base)
+        if reader == -1:
+            return 0
+
         try:
             for line in reader.readlines():
                 label, val = line.split(u"=", 1)
@@ -201,16 +205,25 @@ class PerspectiveManager(object):
                 if name:
                     self.AddPerspective(name, p_data=None)
                     self.SavePerspectives()
+
+                    for mainw in wx.GetApp().GetMainWindows():
+                        mainw.AddPerspective(name, self._viewset[name])
+
             elif e_id == ID_DELETE_PERSPECTIVE:
                 name = wx.GetSingleChoice(_("Perspective to Delete"), 
                                           _("Delete Perspective"),
                                           self._viewset.keys())
-                if not len(name):
-                    return
-                self.RemovePerspective(name)
-                self.SavePerspectives()
+                if name:
+                    self.RemovePerspective(name)
+                    self.SavePerspectives()
+                    for mainw in wx.GetApp().GetMainWindows():
+                        mainw.RemovePerspective(name)
             else:
                 pass
+
+            # Update all windows data sets
+            for mainw in wx.GetApp().GetMainWindows():
+                mainw.LoadPerspectives()
         elif e_id in self._ids:
             self.SetPerspectiveById(e_id)
         else:
@@ -236,6 +249,9 @@ class PerspectiveManager(object):
 
         """
         writer = util.GetFileWriter(self._base)
+        if writer == -1:
+            return False
+
         try:
             self._viewset[LAST_KEY] = self._currview
             for perspect in self._viewset:
