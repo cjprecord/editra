@@ -19,7 +19,7 @@ if setup != None:
     sys.argv.append("--dist-dir=../.")
     setup(
         name='FileBrowser',
-        version='0.3',
+        version='0.4',
         description=__doc__,
         author=__author__,
     author_email="cprecord@editra.org",

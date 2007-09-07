@@ -259,17 +259,16 @@ class StyleEditor(wx.Dialog):
                 ss_c.SetItems(ss_lst)
                 ss_c.SetStringSelection(sel)
                 self.styles_orig = self.DuplicateStyleDict(self.styles_new)
-            except IOError,msg:
+            except IOError, msg:
                 self.LOG('[style_editor][err] Failed to export style sheet')
                 self.LOG('[style_editor][sys error] %s' % msg)
             else:
-                # Update editor to use new sheet
+                # Update editor windows to use new style sheet
                 sheet = os.path.basename(sheet_path).split(u'.')[0]
                 Profile_Set('SYNTHEME', sheet)
-                mainw = wx.GetApp().GetMainWindow()
-                if mainw is not None:
+                for mainw in wx.GetApp().GetMainWindows():
                     mainw.nb.UpdateTextControls()
-                    mainw.SetStatusText(_("Chaned color scheme to %s") % sheet,
+                    mainw.SetStatusText(_("Changed color scheme to %s") % sheet,
                                         ed_glob.SB_INFO)
         return result
 

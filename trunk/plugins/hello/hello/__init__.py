@@ -20,7 +20,7 @@
 ############################################################################
 """Adds Hello World to the View Menu"""
 __author__ = "Cody Precord"
-__version__ = "0.01"
+__version__ = "0.2"
 
 import wx
 import ed_main
@@ -32,23 +32,25 @@ class Hello(plugin.Plugin):
     """Adds Hello World to the View Menu"""
     plugin.Implements(ed_main.MainWindowI)
     def PlugIt(self, parent):
-       """Adds the view menu entry registers the event handler"""
-       mw = parent
-       self._log = wx.GetApp().GetLog()
-       if mw:
-           self._log("[hello] Installing Hello World")
-	   mb = mw.GetMenuBar()
-	   hm = mb.GetMenuByName("view")
-	   hm.Append(ID_HELLO, _("Hello World"), _("Open a Hello World Dialog"))
-	   mw.Bind(wx.EVT_MENU, self.OnHello, id=ID_HELLO)
-       else:
-           self._log("[hello][err] Failed to install hello plugin")
+        """Adds the view menu entry registers the event handler"""
+        mw = parent
+        if mw:
+            self._log = wx.GetApp().GetLog()
+            self._log("[hello] Installing Hello World")
+            mb = mw.GetMenuBar()
+            hm = mb.GetMenuByName("view")
+            hm.Append(ID_HELLO, _("Hello World"), 
+                      _("Open a Hello World Dialog"))
+            mw.Bind(wx.EVT_MENU, self.OnHello, id=ID_HELLO)
+        else:
+            self._log("[hello][err] Failed to install hello plugin")
 
     def OnHello(self, evt):
-       """Opens the hello dialog"""
-       e_id = evt.GetId()
-       if e_id == ID_HELLO:
-           dlg = wx.MessageBox(_("Hello World from the hello plugin"), _("Hello World"))
-       else:
-           evt.Skip()
+        """Opens the hello dialog"""
+        e_id = evt.GetId()
+        if e_id == ID_HELLO:
+            dlg = wx.MessageBox(_("Hello World from the hello plugin"), 
+                                _("Hello World"))
+        else:
+            evt.Skip()
 

@@ -58,7 +58,7 @@ __all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
             'ID_SYNTAX', 'ID_FOLDING', 'ID_BRACKETHL', 'ID_LEXER', 
             'ID_KWHELPER', 'ID_PLUGMGR', 'ID_STYLE_EDIT', 'ID_MACRO_START', 
             'ID_MACRO_STOP', 'ID_MACRO_PLAY', 'ID_ABOUT', 'ID_HOMEPAGE', 
-            'ID_CONTACT', 'ID_COMMAND_BAR' 
+            'ID_CONTACT', 'ID_COMMAND_BAR', 'ID_DOCUMENTATION' 
 ]
 
 #---- Project Info ----#
@@ -93,6 +93,7 @@ DEBUG = False
 #---- Object ID's ----#
 # File Menu IDs
 ID_NEW           = wx.ID_NEW
+ID_NEW_WINDOW    = wx.NewId()
 ID_OPEN          = wx.ID_OPEN
 ID_FHIST         = wx.NewId()
 ID_CLOSE         = wx.ID_CLOSE
@@ -216,6 +217,7 @@ ID_RTF_GEN       = wx.NewId()
 # Help Menu IDs
 ID_ABOUT         = wx.ID_ABOUT
 ID_HOMEPAGE      = wx.ID_HOME
+ID_DOCUMENTATION = wx.NewId()
 ID_CONTACT       = wx.NewId()
 
 # Misc IDs

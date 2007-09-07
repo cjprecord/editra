@@ -141,3 +141,51 @@ class MainWindowExitEvent(wx.PyCommandEvent):
 
         """
         return self._id
+
+#--------------------------------------------------------------------------#
+
+edEVT_STATUS = wx.NewEventType()
+EVT_STATUS = wx.PyEventBinder(edEVT_STATUS, 1)
+class StatusEvent(wx.PyCommandEvent):
+    """Event for posting status events"""
+    def __init__(self, etype, eid, msg=None, sec=0):
+        """Create the event
+        @param etype: The type of event to create
+        @param eid: The event id
+        @keyword msg: The status message to post with the event
+        @keyword sec: The section of the status bar to post message to
+
+        """
+        wx.PyCommandEvent.__init__(self, etype, eid)
+        self._etype = etype
+        self._id = eid
+        self._msg = msg
+        self._sec = sec
+
+    def GetEvtType(self):
+        """Returns the event type
+        @return: this events event type (ed_event)
+
+        """
+        return self._etype
+
+    def GetId(self):
+        """Returns the event id
+        @return: the identifier of this event
+
+        """
+        return self._id
+
+    def GetMessage(self):
+        """Returns the value from the event.
+        @return: the value of this event
+
+        """
+        return self._msg
+
+    def GetSection(self):
+        """Returns the messages posting section
+        @return: int zero based index of where to post to statusbar
+
+        """
+        return self._sec

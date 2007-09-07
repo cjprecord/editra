@@ -597,8 +597,9 @@ class EdPages(FNB.FlatNotebook):
             self.GoCurrentPage()
 
         # TODO this causes some flashing
+        frame = self.GetTopLevelParent()
         if not self.GetPageCount() and \
-           not wx.GetApp().GetMainWindow().IsExiting():
+           hasattr(frame, 'IsExiting') and not frame.IsExiting():
             self.NewPage()
         return result
 

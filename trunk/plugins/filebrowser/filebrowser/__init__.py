@@ -21,7 +21,7 @@
 # Plugin Meta
 """Adds a File Browser sidepanel"""
 __author__ = "Cody Precord"
-__version__ = "0.3"
+__version__ = "0.4"
 
 #-----------------------------------------------------------------------------#
 # Imports
@@ -50,13 +50,13 @@ class FileBrowserPanel(plugin.Plugin):
     plugin.Implements(ed_main.MainWindowI)
     def PlugIt(self, parent):
         """Adds the view menu entry and registers the event handler"""
-        mw = parent
+        self._mw = parent
         self._log = wx.GetApp().GetLog()
-        if mw != None:
+        if self._mw != None:
             self._log("[filebrowser] Installing filebrowser plugin")
             
             #---- Add Menu Items ----#
-            mb = mw.GetMenuBar()
+            mb = self._mw.GetMenuBar()
             vm = mb.GetMenuByName("view")
             self._mi = vm.InsertAlpha(ID_FILEBROWSE, _("File Browser"), 
                                       _("Open File Browser sidepanel"),
@@ -64,23 +64,23 @@ class FileBrowserPanel(plugin.Plugin):
                                       after=ed_glob.ID_PRE_MARK)
 
             #---- Create File Browser ----#
-            self._filebrowser = BrowserPane(mw, ID_BROWSERPANE)
-
-            mw._mgr.AddPane(self._filebrowser, wx.aui.AuiPaneInfo().Name(PANE_NAME).\
+            self._filebrowser = BrowserPane(self._mw, ID_BROWSERPANE)
+            mgr = self._mw.GetFrameManager()
+            mgr.AddPane(self._filebrowser, wx.aui.AuiPaneInfo().Name(PANE_NAME).\
                             Caption("Editra | File Browser").Left().Layer(1).\
                             CloseButton(True).MaximizeButton(False).\
                             BestSize(wx.Size(215, 350)))
             if Profile_Get('SHOW_FB', 'bool', False):
-                mw._mgr.GetPane(PANE_NAME).Show()
+                mgr.GetPane(PANE_NAME).Show()
                 self._mi.Check(True)
             else:
-                mw._mgr.GetPane(PANE_NAME).Hide()
+                mgr.GetPane(PANE_NAME).Hide()
                 self._mi.Check(False)
-            mw._mgr.Update()
+            mgr.Update()
 
             # Event Handlers
-            mw.Bind(wx.EVT_MENU, self.OnShowBrowser, id=ID_FILEBROWSE)
-            mw.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
+            self._mw.Bind(wx.EVT_MENU, self.OnShowBrowser, id=ID_FILEBROWSE)
+            self._mw.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
 
     def OnPaneClose(self, evt):
         """Handles when the pane is closed to update the profile"""
@@ -94,8 +94,8 @@ class FileBrowserPanel(plugin.Plugin):
     def OnShowBrowser(self, evt):
         """Shows the filebrowser"""
         if evt.GetId() == ID_FILEBROWSE:
-            mw = wx.GetApp().GetMainWindow().GetFrameManager()
-            pane = mw.GetPane(PANE_NAME).Hide()
+            mgr = self._mw.GetFrameManager()
+            pane = mgr.GetPane(PANE_NAME).Hide()
             if Profile_Get('SHOW_FB', 'bool', False) and pane.IsShown():
                 pane.Hide()
                 Profile_Set('SHOW_FB', False)
@@ -104,7 +104,7 @@ class FileBrowserPanel(plugin.Plugin):
                 pane.Show()
                 Profile_Set('SHOW_FB', True)
                 self._mi.Check(True)
-            mw.Update()
+            mgr.Update()
         else:
             evt.Skip()
 
@@ -456,7 +456,7 @@ class FileBrowser(wx.GenericDirCtrl):
                     to_open.append(fname)
             except:
                 pass
-        wx.GetApp().GetMainWindow().nb.OnDrop(to_open)
+        self.GetTopLevelParent().nb.OnDrop(to_open)
 
       # TODO implement drag and drop from the control to the editor
 #     def OnDragEnd(self, evt):
