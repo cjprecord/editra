@@ -648,11 +648,6 @@ class EdPages(FNB.FlatNotebook):
             if self.control.GetModify():
                 title = u"*" + title
             wx.CallAfter(self.SetPageText, pg_num, title)
-            wx.CallAfter(self.frame.SetTitle, ("%s - file://%s%s%s" % \
-                                               (self.control.filename,
-                                                self.control.dirname,
-                                                util.GetPathChar(),
-                                                self.control.filename)))
             
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have
