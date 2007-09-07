@@ -89,7 +89,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     """
     def __init__(self, parent, id_, wsize, title):
         """Initialiaze the Frame and Event Handlers.
-        @note: Automatically calls Show at the end of __init__
+        @
 
         """
         wx.Frame.__init__(self, parent, id_, title, size=wsize,
@@ -121,7 +121,12 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- Toolbar ----#
         self.toolbar = None
 
-        #---- Notebook to hold editor windows ----#
+        #---- Status bar on bottom of window ----#
+        self.CreateStatusBar(3, style = wx.ST_SIZEGRIP | wx.ST_DOTS_MIDDLE)
+        self.SetStatusWidths([-1, 120, 155])
+        #---- End Statusbar Setup ----#
+
+        #---- Notebook that contains the editting buffers ----#
         self.edit_pane = wx.Panel(self, wx.ID_ANY)
         self.nb = ed_pages.EdPages(self.edit_pane, wx.ID_ANY)
         self.edit_pane.nb = self.nb
@@ -140,11 +145,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- Command Bar ----#
         self._cmdbar = ed_cmdbar.CommandBar(self.edit_pane, ID_COMMAND_BAR)
         self._cmdbar.Hide()
-
-        #---- Status bar on bottom of window ----#
-        self.CreateStatusBar(3, style = wx.ST_SIZEGRIP | wx.ST_DOTS_MIDDLE)
-        self.SetStatusWidths([-1, 120, 155])
-        #---- End Statusbar Setup ----#
 
         #---- Create a toolbar ----#
         if _PGET('TOOLBAR'):
@@ -169,6 +169,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.editmenu = menbar.GetMenuByName("edit")
         self.viewmenu = menbar.GetMenuByName("view")
         self.vieweditmenu = menbar.GetMenuByName("viewedit")
+        # Todo this should not be hard coded
         self.viewmenu.InsertMenu(5, ID_PERSPECTIVES, _("Perspectives"), 
                                  self.GetPerspectiveControls())
         self.formatmenu = menbar.GetMenuByName("format")
@@ -238,6 +239,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # Help Menu Events
         self.Bind(wx.EVT_MENU, self.OnAbout, id=ID_ABOUT)
         self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_HOMEPAGE)
+        self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_DOCUMENTATION)
         self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_CONTACT)
 
         #---- End Menu Setup ----#
@@ -245,6 +247,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- Actions to Take on other Events ----#
         # Frame
         self.Bind(wx.EVT_CLOSE, self.OnExit)
+        self.Bind(ed_event.EVT_STATUS, self.OnStatus)
 
         # Find Dialog
         self.Bind(wx.EVT_FIND, self.nb.FindService.OnFind)
@@ -278,14 +281,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._generator = generator.Generator(plgmgr)
         self._generator.InstallMenu(self.toolsmenu)
 
-        # Load Session Data
-        if _PGET('SAVE_SESSION', 'bool', False):
+        # Load Session Data (only on first instance)
+        if _PGET('SAVE_SESSION', 'bool', False) and \
+           not len(wx.GetApp().GetMainWindows()):
             self.nb.LoadSessionFiles()
 
         # Set Perspective
         self.SetPerspective(_PGET('DEFAULT_VIEW'))
         self._mgr.Update()
-        self.Show(True)
 
     __name__ = u"MainWindow"
 
@@ -555,6 +558,15 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.nb.UpdateTextControls()
         else:
             evt.Skip()
+
+    def OnStatus(self, evt):
+        """Update status text with messages from other controls
+        @param evt: event that called this handler
+
+        """
+        msg = evt.GetMessage()
+        if msg and self.GetStatusBar():
+            self.PushStatusText(msg, evt.GetSection())
 
     def OnPrint(self, evt):
         """Handles sending the current document to the printer,
@@ -843,6 +855,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         e_id = evt.GetId()
         if e_id == ID_HOMEPAGE:
             webbrowser.open(home_page, 1)
+        elif e_id == ID_DOCUMENTATION:
+            webbrowser.open_new_tab(homepage + "/?page=documentation")
         elif e_id == ID_CONTACT:
             webbrowser.open(u'mailto:%s' % contact_mail)
         else:
@@ -1099,19 +1113,23 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 #-----------------------------------------------------------------------------#
 # Plugin interface's to the MainWindow
 class MainWindowI(plugin.Interface):
-    """Provides simple one method interface into adding extra
-    functionality to the main window. 
-    @note: The method in this interface called once at the end 
-           of the window's internationalization.
+    """The MainWindow Interface is intended as a simple general purpose
+    interface for adding functionality to the main window. It does little
+    managing of how object the implementing it is handled, most is left up to
+    the plugin. Some examples of plugins using this interface are the
+    FileBrowser and Calculator plugins.
 
     """
     def PlugIt(self, window):
-        """Do whatever is needed to integrate is plugin
-        into the editor.
+        """This method is called once and only once per window when it is 
+        created. It should typically be used to register menu entries, 
+        bind event handlers and other similar actions.
+
+        @param window: The parent window of the plugin
         @postcondition: The plugins controls are installed in the L{MainWindow}
 
         """
-        pass
+        raise NotImplementedError
 
 class MainWindowAddOn(plugin.Plugin):
     """Plugin that Extends the L{MainWindowI}"""

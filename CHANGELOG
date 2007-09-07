@@ -16,14 +16,16 @@ NEWS:
 
 NEW: [features/improvements]
 +Ex Command mode for Vi emulation
++Link to project documentation and help guides in Help Menu
 
 BUG FIXES:
-+Fixed error raised when setting font from settings dialog.
-+Fixed session loading loads files that have been deleted
++Fixed error raised when setting font from preferences dialog.
++Fixed session loading were files that had been deleted would be opened as new
+documents.
 +Ensure file handle valid when reloading files
++Many bug and behavior fixes in the Calculator plugin
 
 #-----------------------------------------------------------------------------#
-Changes since last release:
 
 VERSION 0.1.78
 DATE 09/01/2007

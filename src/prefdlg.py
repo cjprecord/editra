@@ -518,19 +518,15 @@ class DocGenPanel(wx.Panel):
         e_id = evt.GetId()
         if e_id in [self.ID_FONT_PICKER, self.ID_FONT_PICKER2]:
             font = evt.GetValue()
-            if not isinstance(font, wx.Font):
+            if not isinstance(font, wx.Font) or font.IsNull():
                 return
-            elif font.IsNull():
-                return
-            else:
-                pass
 
             if e_id == self.ID_FONT_PICKER:
                 Profile_Set('FONT1', font, 'font')
             else:
                 Profile_Set('FONT2', font, 'font')
-            main = wx.GetApp().GetMainWindow()
-            if main:
+
+            for main in wx.GetApp().GetMainWindows():
                 for stc in main.nb.GetTextControls():
                     stc.SetStyleFont(font, e_id == self.ID_FONT_PICKER)
                     stc.UpdateAllStyles()
@@ -551,8 +547,7 @@ class DocGenPanel(wx.Panel):
                     ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP,
                     ed_glob.ID_PREF_AALIAS]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-            mainw = wx.GetApp().GetMainWindow()
-            if mainw is not None:
+            for mainw in wx.GetApp().GetMainWindows():
                 mainw.nb.UpdateTextControls()
         else:
             evt.Skip()
@@ -635,8 +630,8 @@ class DocCodePanel(wx.Panel):
                     ed_glob.ID_AUTOCOMP, ed_glob.ID_AUTOINDENT,
                     ed_glob.ID_PREF_EDGE, ed_glob.ID_VI_MODE]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-            mainw = wx.GetApp().GetMainWindow()
-            if mainw is not None:
+
+            for mainw in wx.GetApp().GetMainWindows():
                 mainw.nb.UpdateTextControls()
         else:
             evt.Skip()
@@ -651,8 +646,8 @@ class DocCodePanel(wx.Panel):
         if e_id == ed_glob.ID_PREF_EDGE:
             val = e_obj.GetValue()
             Profile_Set(ed_glob.ID_2_PROF[e_id], val)
-            mainw = wx.GetApp().GetMainWindow()
-            if mainw is not None:
+
+            for mainw in wx.GetApp().GetMainWindows():
                 for stc in mainw.nb.GetTextControls():
                     stc.SetEdgeColumn(val)
         else:
@@ -745,8 +740,8 @@ class DocSyntaxPanel(wx.Panel):
         e_obj = evt.GetEventObject()
         if e_id in [ed_glob.ID_SYNTAX, ed_glob.ID_PREF_SYNTHEME]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-            mainw = wx.GetApp().GetMainWindow()
-            if mainw is not None:
+
+            for mainw in wx.GetApp().GetMainWindows():
                 mainw.nb.UpdateTextControls()
         else:
             evt.Skip()
@@ -890,15 +885,15 @@ class AppearancePanel(PrefPanelBase):
             if e_id == ed_glob.ID_PREF_ICONSZ:
                 val = (int(val), int(val))
             Profile_Set(ed_glob.ID_2_PROF[e_id], val)
-            toolbar = wx.GetApp().GetMainWindow().GetToolBar()
-            if toolbar is not None and \
-               (toolbar.GetToolTheme() != Profile_Get('ICONS')) \
-               or (toolbar.GetToolSize() != Profile_Get('ICON_SZ')):
-                toolbar.ReInit()
+            for mainw in wx.GetApp().GetMainWindows():
+                toolbar = mainw.GetToolBar()
+                if toolbar is not None and \
+                   (toolbar.GetToolTheme() != Profile_Get('ICONS')) \
+                   or (toolbar.GetToolSize() != Profile_Get('ICON_SZ')):
+                    toolbar.ReInit()
         elif e_id == ed_glob.ID_PERSPECTIVES:
             Profile_Set('DEFAULT_VIEW', e_obj.GetValue())
-            main_win = wx.GetApp().GetMainWindow()
-            if main_win is not None:
+            for main_win in wx.GetApp().GetMainWindows():
                 main_win.SetPerspective(Profile_Get('DEFAULT_VIEW'))
         else:
             evt.Skip()

@@ -4,7 +4,8 @@
 # the plugin directory
 """The hello plugin is a very simple plugin implimenting the well
 known hello world program for Editra. It does so by adding the
-words "Hello World" to the View Menu.
+words "Hello World" to the View Menu. Which in turn opens a dialog
+that says hello world again.
 
 """
 
@@ -21,17 +22,17 @@ if setup != None:
     sys.argv.append("bdist_egg")
     sys.argv.append("--dist-dir=../.")
     setup(
-        name='Hello',
-        version='0.1',
-        description=__doc__,
-        author=__author__,
-	author_email="cprecord@editra.org",
-	license="GPLv2",
-	url="editra.org",
-	platforms=["Linux", "OS X", "Windows"],
-        packages=['hello'],
-        entry_points='''
-        [Editra.plugins]
-	Hello = hello:Hello
-        '''
+            name='Hello',
+            version='0.2',
+            description=__doc__,
+            author=__author__,
+            author_email="cprecord@editra.org",
+            license="GPLv2",
+            url="http://editra.org",
+            platforms=["Linux", "OS X", "Windows"],
+            packages=['hello'],
+            entry_points='''
+            [Editra.plugins]
+            Hello = hello:Hello
+            '''
         )

@@ -1248,12 +1248,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         mw = self.GetTopLevelParent()
         if normal:
             self.SetCaretWidth(10)
-            if hasattr(mw, '__name__') and mw.__name__ == 'MainWindow':
-                mw.SetStatusText('NORMAL', ed_glob.SB_BUFF)
+            msg = 'NORMAL'
         else:
             self.SetCaretWidth(1)
-            if hasattr(mw, '__name__') and mw.__name__ == 'MainWindow':
-                mw.SetStatusText('INSERT', ed_glob.SB_BUFF)
+            msg = 'INSERT'
+
+        evt = ed_event.StatusEvent(ed_event.edEVT_STATUS, self.GetId(), 
+                                   msg, ed_glob.SB_BUFF)
+        wx.PostEvent(self.GetTopLevelParent(), evt)
 
     def SetViewEdgeGuide(self, switch=None):
         """Toggles the visibility of the edge guide
@@ -1272,9 +1274,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         self.recording = True
-        #TODO dont assume top level parent as MainWindow
-        self.GetTopLevelParent().SetStatusText(_("Recording Macro") + \
-                                                  u"...", ed_glob.SB_INFO)
+        evt = ed_event.StatusEvent(ed_event.edEVT_STATUS, self.GetId(),
+                                   _("Recording Macro") + u"...",
+                                   ed_glob.SB_INFO)
+        wx.PostEvent(self.GetTopLevelParent(), evt)
         wx.stc.StyledTextCtrl.StartRecord(self)
 
     def StopRecord(self):
@@ -1284,8 +1287,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         self.recording = False
         wx.stc.StyledTextCtrl.StopRecord(self)
-        self.GetTopLevelParent().SetStatusText(_("Recording Finished"), \
-                                               ed_glob.SB_INFO)
+        evt = ed_event.StatusEvent(ed_event.edEVT_STATUS, self.GetId(),
+                                   _("Recording Finished"),
+                                   ed_glob.SB_INFO)
+        wx.PostEvent(self.GetTopLevelParent(), evt)
         self._BuildMacro()
 
     def TrimWhitespace(self):
@@ -1613,7 +1618,10 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         # Update status bar
         if mw and self._vinormal:
-            mw.SetStatusText('NORMAL\t%s' % self._cmdcache, ed_glob.SB_BUFF)
+            evt = ed_event.StatusEvent(ed_event.edEVT_STATUS, self.GetId(),
+                                       'NORMAL\t%s' % self._cmdcache,
+                                        ed_glob.SB_BUFF)
+            wx.PostEvent(self.GetTopLevelParent(), evt)
         
     def FoldingOnOff(self, switch=None):
         """Turn code folding on and off

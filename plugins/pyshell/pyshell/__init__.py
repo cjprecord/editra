@@ -49,7 +49,7 @@ class PyShell(plugin.Plugin):
     def CreateItem(self, parent):
         """Returns a PyShell Panel"""
         self._log = wx.GetApp().GetLog()
-        self._log("[pyshell] Creating PyShell instance for Shelf")
+        self._log("[pyshell][info] Creating PyShell instance for Shelf")
         pyshell = shell.Shell(parent, locals=dict())
         return pyshell
 

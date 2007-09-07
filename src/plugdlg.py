@@ -798,8 +798,8 @@ class InstallPanel(wx.Panel):
 
         if not len(self._install.GetItems()):
             # All plugins installed correctly
-            grand_p = self.GetGrandParent()
-            grand_p.SetStatusText(_("Finished Installing Plugins"), 0)
+            grand_p = self.GetTopLevelParent()
+            grand_p.SetStatusText(_("Successfully Installed Plugins"), 0)
             dlg = wx.MessageDialog(self, _("Go to configuration page?"),
                                    _("Finished Installing Plugins"), 
                                    style=wx.YES_NO | wx.CENTER | \

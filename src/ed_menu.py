@@ -234,10 +234,9 @@ class EdMenuBar(wx.MenuBar):
         self._toolsmenu = self.GenToolsMenu()
         self._helpmenu = self.GenHelpMenu()
 
-    # TODO these Gen functions should be broken up to the components
+    # TODO these Gen* functions should be broken up to the components
     #      that supply the functionality and inserted in the menus on
-    #      init when the editor loads an associated widget. But this
-    #      is the first step to get there.
+    #      init when the editor loads an associated widget. 
     def GenFileMenu(self):
         """Makes and attaches the file menu
         @return: the default file menu
@@ -246,7 +245,10 @@ class EdMenuBar(wx.MenuBar):
         filemenu = ED_Menu()
         filehist = self._filehistorymenu
         filemenu.Append(ed_glob.ID_NEW, _("New") + u"\tCtrl+N", 
-                        _("Start a New File"))
+                        _("Start a new file in a new tab"))
+        filemenu.Append(ed_glob.ID_NEW_WINDOW, _("New Window") + \
+                        "\tCtrl+Shift+N", 
+                        _("Start a new file in a new window"))
         filemenu.Append(ed_glob.ID_OPEN, _("Open") + "\tCtrl+O", _("Open"))
         ## Setup File History in the File Menu
         filemenu.AppendMenu(ed_glob.ID_FHIST, _("Open Recent"), 
@@ -487,9 +489,11 @@ class EdMenuBar(wx.MenuBar):
         helpmenu.Append(ed_glob.ID_ABOUT, _("&About") + u"...", \
                         _("About") + u"...")
         helpmenu.Append(ed_glob.ID_HOMEPAGE, _("Project Homepage"), 
-                            _("Visit the project homepage %s") % ed_glob.home_page)
+                        _("Visit the project homepage %s") % ed_glob.home_page)
+        helpmenu.Append(ed_glob.ID_DOCUMENTATION, _("Online Documentation"),
+                        _("Online project documentation and help guides"))
         helpmenu.Append(ed_glob.ID_CONTACT, _("Feedback"),
-                            _("Send me bug reports and suggestions"))
+                        _("Send me bug reports and suggestions"))
         self.Append(helpmenu, _("Help"))
         return helpmenu
 

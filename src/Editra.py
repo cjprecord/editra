@@ -95,8 +95,23 @@ class Editra(wx.App):
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
+        self.Bind(wx.EVT_MENU, self.OnNewWindow, id=ed_glob.ID_NEW_WINDOW)
 
         return True
+
+    def OnNewWindow(self, evt):
+        """Create a new editing window
+        @param evt: wx.EVT_MENU
+
+        """
+        if evt.GetId() == ed_glob.ID_NEW_WINDOW:
+            frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
+                                       ed_glob.prog_name)
+            self.RegisterWindow(repr(frame), frame, True)
+            self.SetTopWindow(frame)
+            frame.Show(True)
+        else:
+            evt.Skip()
 
     def Exit(self):
         """Exit the program
@@ -121,12 +136,27 @@ class Editra(wx.App):
         @return: the L{MainWindow} of this app if it is open
         
         """
+        self._log("[app][warn] Editra::GetMainWindow is deprecated")
         for window in self._windows:
             if not hasattr(self._windows[window][0], '__name__'):
                 continue
             if self._windows[window][0].__name__ == "MainWindow":
                 return self._windows[window][0]
         return None
+
+    def GetMainWindows(self):
+        """Returns a list of all open main windows
+        @return: list of L{MainWindow} instances of this app (list may be empty)
+        
+        """
+        mainw = list()
+        for window in self._windows:
+            if not hasattr(self._windows[window][0], '__name__'):
+                continue
+            if self._windows[window][0].__name__ == "MainWindow":
+                mainw.append(self._windows[window][0])
+
+        return mainw
 
     def GetOpenWindows(self):
         """Returns a list of open windows
@@ -415,9 +445,10 @@ def Main():
         wx.FutureCall(3000, splash.Destroy)
 
     frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
-                                    ed_glob.prog_name)
+                               ed_glob.prog_name)
     editra_app.RegisterWindow(repr(frame), frame, True)
     editra_app.SetTopWindow(frame)
+    frame.Show(True)
 
     for arg in args:
         try:

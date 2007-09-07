@@ -73,6 +73,26 @@ HTML_TAGS = (0, "address applet area a base basefont big blockquote br caption "
                 "dtml-var dtml-if dtml-unless dtml-in dtml-with dtml-let "
                 "dtml-call dtml-raise dtml-try dtml-comment dtml-tree")
 
+#---- Extra defs ----#
+# ColdFusion
+CF_TAGS = ("cfabort cfapplet cfapplication cfargument cfassociate cfbreak "
+           "cfcache cfcalendar cfcase cfcatch cfchart cfchartdata "
+           "cfchartseries cfcol cfcollection cfcomponent cfcontent cfcookie "
+           "cfdefaultcase cfdirectory cfdocument cfdocumentitem "
+           "cfdocumentsection cfdump cfelse cfelseif cferror cfexecute cfexit "
+           "cffile cfflush cfform cfformgroup cfformitem cfftp cffunction "
+           "cfgrid cfgridcolumn cfgridrow cfgridupdate cfheader cfhtmlhead "
+           "cfhttp cfhttpparam cfif cfimport cfinclude cfindex cfinput "
+           "cfinsert cfinvoke cfinvokeargument cfldap cflocation cflock cflog "
+           "cflogin cfloginuser cflogout cfloop cfmail cfmailparam cfmailpart "
+           "cfmodule cfNTauthenticate cfobject cfobjectcache cfoutput cfparam "
+           "cfpop cfprocessingdirective cfprocparam cfprocresult cfproperty "
+           "cfquery cfqueryparam cfregistry cfreport cfreportparam cfrethrow "
+           "cfreturn cfsavecontent cfschedule cfscript cfsearch cfselect cfset "
+           "cfsetting cfsilent cfslider cfstoredproc cfswitch cftable "
+           "cftextarea cfthrow cftimer cftrace cftransaction cftree cftreeitem "
+           "cftry cfupdate cfwddx cfxml")
+
 # JavaScript Keywords (see javascript.py)
 import javascript
 JS_KEYWORDS = (1, javascript.KeywordString())
@@ -133,9 +153,9 @@ SYNTAX_ITEMS = [ ('STC_H_DEFAULT', 'default_style'),
                  ('STC_H_XMLEND', 'scalar_style'),
                  ('STC_H_XMLSTART', 'scalar_style'),
                  # Embedded JavaScript
-                 ('STC_HJ_COMMENT', 'default_style'), # STYLE ME
-                 ('STC_HJ_COMMENTDOC', 'default_style'), # STYLE ME
-                 ('STC_HJ_COMMENTLINE', 'default_style'), # STYLE ME
+                 ('STC_HJ_COMMENT', 'comment_style'),
+                 ('STC_HJ_COMMENTDOC', 'comment_style'),
+                 ('STC_HJ_COMMENTLINE', 'comment_style'),
                  ('STC_HJ_DEFAULT', 'default_style'),
                  ('STC_HJ_DOUBLESTRING', 'default_style'), # STYLE ME
                  ('STC_HJ_KEYWORD', 'default_style'), # STYLE ME
@@ -146,9 +166,9 @@ SYNTAX_ITEMS = [ ('STC_H_DEFAULT', 'default_style'),
                  ('STC_HJ_STRINGEOL', 'default_style'), # STYLE ME
                  ('STC_HJ_SYMBOLS', 'default_style'), # STYLE ME
                  ('STC_HJ_WORD', 'default_style'), # STYLE ME
-                 ('STC_HJA_COMMENT', 'default_style'), # STYLE ME
-                 ('STC_HJA_COMMENTDOC', 'default_style'), # STYLE ME
-                 ('STC_HJA_COMMENTLINE', 'default_style'), # STYLE ME
+                 ('STC_HJA_COMMENT', 'comment_style'),
+                 ('STC_HJA_COMMENTDOC', 'comment_style'),
+                 ('STC_HJA_COMMENTLINE', 'comment_style'),
                  ('STC_HJA_DEFAULT', 'default_style'),
                  ('STC_HJA_DOUBLESTRING', 'default_style'), # STYLE ME
                  ('STC_HJA_KEYWORD', 'default_style'), # STYLE ME
@@ -172,7 +192,10 @@ def Keywords(lang_id=0):
     @param lang_id: used to select specific subset of keywords
 
     """
-    return [HTML_TAGS, SGML_KEYWORDS]
+    if lang_id == synglob.ID_LANG_COLDFUSION:
+        return [(HTML_TAGS[0], HTML_TAGS[1] + " " + CF_TAGS), (1, javascript.KeywordString())]
+    else:
+        return [HTML_TAGS, SGML_KEYWORDS]
 
 def SyntaxSpec(lang_id=0):
     """Syntax Specifications
