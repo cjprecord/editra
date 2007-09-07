@@ -931,7 +931,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if line >= 0 and column >= 0:
             self.SetStatusText(_("Line: %d  Column: %d") % \
                                (line, column), SB_ROWCOL)
-            self.UpdateToolBar()
         evt.Skip()
 
     def OnMenuHighlight(self, evt):
