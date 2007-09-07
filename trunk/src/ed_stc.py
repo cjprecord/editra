@@ -177,7 +177,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # Events
         if self.brackethl:
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
-        self.Bind(wx.stc.EVT_STC_MACRORECORD, self.OnRecordMacro)
+#         self.Bind(wx.stc.EVT_STC_MACRORECORD, self.OnRecordMacro)
         self.Bind(wx.stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
         self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnModified)
         self.Bind(wx.EVT_CHAR, self.OnChar)
@@ -442,17 +442,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         pos = self.GetCurrentPos()
-        line = self.GetCurrentLine()
         column = self.GetColumn(pos)
         if (self.old_pos != pos):
             self.old_pos = pos
             if self._use_autocomp and key.GetEventType() != wx.wxEVT_LEFT_UP:
-                key_code = key.GetKeyCode()
-                if key_code == wx.WXK_RETURN:
+                if key.GetKeyCode() == wx.WXK_RETURN:
                     self._autocomp_svc.UpdateNamespace(True)
-            return (line + 1, column)
-        else:
-            return (-1, -1)
+            return (self.GetCurrentLine() + 1, column)
+        return (-1, -1)
 
     def GotoColumn(self, column):
         """Move caret to column of current line
