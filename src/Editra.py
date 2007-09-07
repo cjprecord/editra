@@ -151,11 +151,11 @@ class Editra(wx.App):
         """
         mainw = list()
         for window in self._windows:
-            if not hasattr(self._windows[window][0], '__name__'):
+            try:
+                if self._windows[window][0].__name__ == "MainWindow":
+                    mainw.append(self._windows[window][0])
+            except AttributeError:
                 continue
-            if self._windows[window][0].__name__ == "MainWindow":
-                mainw.append(self._windows[window][0])
-
         return mainw
 
     def GetOpenWindows(self):
