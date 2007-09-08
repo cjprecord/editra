@@ -326,7 +326,6 @@ def AddFileHistoryToProfile(file_history):
     for fnum in xrange(file_history.GetNoHistoryFiles()):
         files.append(file_history.GetHistoryFile(fnum))
     Profile_Set('FHIST', files)
-    return fnum
 
 def CalcVersionValue(ver_str="0.0.0"):
     """Calculates a version value from the provided dot-formated string
