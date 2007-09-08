@@ -58,7 +58,7 @@ __all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
             'ID_SYNTAX', 'ID_FOLDING', 'ID_BRACKETHL', 'ID_LEXER', 
             'ID_KWHELPER', 'ID_PLUGMGR', 'ID_STYLE_EDIT', 'ID_MACRO_START', 
             'ID_MACRO_STOP', 'ID_MACRO_PLAY', 'ID_ABOUT', 'ID_HOMEPAGE', 
-            'ID_CONTACT', 'ID_COMMAND_BAR', 'ID_DOCUMENTATION' 
+            'ID_CONTACT', 'ID_COMMAND_BAR', 'ID_DOCUMENTATION', 'ID_COMMAND' 
 ]
 
 #---- Project Info ----#
@@ -203,6 +203,7 @@ ID_BRACKETHL     = wx.NewId()
 ID_LEXER         = wx.NewId()
 
 # Tool Menu IDs
+ID_COMMAND       = wx.NewId()
 ID_KWHELPER      = wx.NewId()
 ID_PLUGMGR       = wx.NewId()
 ID_STYLE_EDIT    = wx.ID_EDIT
@@ -222,7 +223,7 @@ ID_CONTACT       = wx.NewId()
 
 # Misc IDs
 ID_APP_SPLASH        = wx.NewId()
-ID_BIN_FILE          = wx.NewId()
+ID_BIN_FILE          = ID_COMMAND
 ID_CDROM             = wx.NewId()
 ID_COMMAND_LINE_OPEN = wx.NewId()
 ID_COMMAND_BAR       = wx.NewId()

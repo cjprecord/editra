@@ -594,72 +594,73 @@ class CommandExecuter(wx.SearchCtrl):
         for x in xrange(do):
             frame.nb.AdvanceSelection(cmd == 'n')
 
+    def GetNextDir(self):
+        """Get the next directory path from the current cmd path
+        @note: used for tab completion of cd, completion is based off cwd
+
+        """
+        cmd = self.GetValue()
+        if not cmd.startswith('cd '):
+            return
+
+        cmd = cmd.replace('cd ', u'', 1).strip()
+        if not os.path.exists(self._curdir):
+            self._curdir = wx.GetHomeDir()
+
+        if len(cmd) and (cmd[0].isalnum() or cmd.startswith('.')):
+            path = self._curdir
+            cmd = os.path.join(path, cmd)
+        else:
+            path = os.path.abspath(cmd)
+            if (len(cmd) and cmd[-1] == os.sep) or not len(cmd):
+                path = path + os.sep
+
+        if not os.path.exists(path):
+            path = self._curdir
+
+        # Filter Directories
+        if path[-1] != os.sep:
+            path = os.path.join(*os.path.split(path)[:-1]) + os.sep
+            if not path.startswith(os.sep):
+                path = os.sep + path
+        dirs = [ os.path.join(path, x) \
+                 for x in os.listdir(path) \
+                 if os.path.isdir(os.path.join(path, x)) ]
+        dirs.sort()
+        if not len(dirs):
+            return
+
+        if len(cmd):
+            npath = None
+            for next in dirs:
+                if next.startswith(cmd):
+                    if cmd[-1] != os.path.sep and next == cmd:
+                        idx = dirs.index(next) + 1
+                    else:
+                        idx = dirs.index(next)
+                    
+                    if idx < len(dirs):
+                        npath = dirs[idx] #.replace(path, u'', 1)
+                    break
+            if npath:
+                return npath
+        else:
+            return dirs[0]
+
     def ListDir(self):
         """List the next directory from the current cmd path
         @note: used for tab completion of cd, completion is based off cwd
 
         """
-#         cmd = self.GetValue()
-#         if not cmd.startswith('cd '):
-#             return
-
-#         cmd = cmd.replace('cd ', u'', 1).strip()
-#         print "CPATH: ", self._curdir, "CMD: ", cmd
-#         if not os.path.exists(self._curdir):
-#             self._curdir = wx.GetHomeDir()
-
-#         if len(cmd) and (cmd[0].isalnum() or cmd.startswith('.')):
-#             path = self._curdir
-#             cmd = os.path.join(path, cmd)
-#         else:
-#             path = os.path.abspath(cmd)
-#             if (len(cmd) and cmd[-1] == os.sep) or not len(cmd):
-#                 path = path + os.sep
-
-#         if not os.path.exists(path):
-#             print "NO EXIST: ", path
-#             path = self._curdir
-
-#         # Filter Directories
-#         if path[-1] != os.sep:
-#             path = os.path.join(*os.path.split(path)[:-1]) + os.sep
-#             if not path.startswith(os.sep):
-#                 path = os.sep + path
-#         dirs = [ os.path.join(path, x) \
-#                  for x in os.listdir(path) \
-#                  if os.path.isdir(os.path.join(path, x)) ]
-#         dirs.sort()
-#         if not len(dirs):
-#             return
-
-#         print dirs
-#         if len(cmd):
-#             npath = None
-#             for next in dirs:
-#                 print "NVAL: ", next, "CMDVAL", cmd
-#                 if next.startswith(cmd):
-#                     print "NEXT: ", next
-#                     if cmd[-1] != os.path.sep and next == cmd:
-#                         idx = dirs.index(next) + 1
-#                     else:
-#                         idx = dirs.index(next)
-                    
-#                     print "INDEX: ", idx, "DIR NUM: ", len(dirs)
-#                     if idx < len(dirs):
-#                         print "INDEX OK: ", idx, "LEN: ", len(dirs)
-#                         npath = dirs[idx] #.replace(path, u'', 1)
-#                     break
-#             if npath:
-#                 self.SetValue('cd ' + npath)
-#         else:
-#             self.SetValue('cd ' + dirs[0])
+        path = self.GetNextDir()
+        if path:
+            self.SetValue('cd ' + path)
 
     def ListFile(self):
         """List the next file in the current cmd path
         @note: used for tab completion of e, completion is based off cwd
 
         """
-        
 
     def OnEnter(self, evt):
         """Get the currently entered command string and
