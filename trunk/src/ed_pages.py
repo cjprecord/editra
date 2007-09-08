@@ -312,10 +312,9 @@ class EdPages(FNB.FlatNotebook):
 
         """
         txt = FNB.FlatNotebook.GetPageText(self, pg_num)
-        if txt[0] != u"*":
+        if not txt or txt[0] != u"*":
             return txt
-        else:
-            return txt[1:]
+        return txt[1:]
 
     def GetTextControls(self):
         """Gets all the currently opened text controls
@@ -640,10 +639,8 @@ class EdPages(FNB.FlatNotebook):
         @type evt: ed_event.UpdateTextEvent
 
         """
-        if isinstance(self.control, ed_stc.EDSTC):
+        if hasattr(self.control, 'GetModify'):
             pg_num = self.GetSelection()
-#             title = self.control.filename
-#             if not title:
             title = self.GetPageText(pg_num)
             if self.control.GetModify():
                 title = u"*" + title

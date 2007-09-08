@@ -581,7 +581,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetViNormalMode(True)
             evt.Skip()
             return
-        if self._autoindent and k_code == wx.WXK_RETURN:
+        elif self._autoindent and k_code == wx.WXK_RETURN:
             if self.GetSelectedText():
                 self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
                 return
@@ -606,8 +606,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return
         if not self._use_autocomp:
             evt.Skip()
-            return True
-        if key_code in self._autocomp_svc.GetAutoCompKeys():
+            return
+        elif key_code in self._autocomp_svc.GetAutoCompKeys():
             if self.AutoCompActive():
                 self.AutoCompCancel()
             command = self.GetCommandStr() + chr(key_code)
