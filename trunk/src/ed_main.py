@@ -852,7 +852,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if e_id == ID_HOMEPAGE:
             webbrowser.open(home_page, 1)
         elif e_id == ID_DOCUMENTATION:
-            webbrowser.open_new_tab(homepage + "/?page=documentation")
+            webbrowser.open_new_tab(home_page + "/?page=doc")
         elif e_id == ID_CONTACT:
             webbrowser.open(u'mailto:%s' % contact_mail)
         else:
