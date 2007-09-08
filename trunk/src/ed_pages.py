@@ -640,11 +640,11 @@ class EdPages(FNB.FlatNotebook):
         @type evt: ed_event.UpdateTextEvent
 
         """
-        pg_num = self.GetSelection()
         if isinstance(self.control, ed_stc.EDSTC):
-            title = self.control.filename
-            if title == wx.EmptyString:
-                title = self.GetPageText(pg_num)
+            pg_num = self.GetSelection()
+#             title = self.control.filename
+#             if not title:
+            title = self.GetPageText(pg_num)
             if self.control.GetModify():
                 title = u"*" + title
             wx.CallAfter(self.SetPageText, pg_num, title)
