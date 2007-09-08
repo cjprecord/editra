@@ -66,6 +66,7 @@ _DEFAULTS = {
            'DEFAULT_VIEW' : 'Default',      # Default Perspective
            'EDGE'       : 80,               # Edge guide column
            'EOL'        : 'Unix (\\n)',     # EOL mode
+           'FHIST'      : list(),           # List of history files
            'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
            'FFILTER'    : 0,                # Last file filter used
            'GUIDES'     : True,             # Use Indentation guides
@@ -301,7 +302,7 @@ def _ToObject(index, val, fmt):
             else:
                 rval = _DEFAULTS.get(index, wx.DefaultSize)
         elif tmp == u'str':
-            rval = str(val)
+            rval = unicode(val)
         elif tmp == u'int':
             if isinstance(val, int):
                 rval = val
@@ -321,16 +322,11 @@ def AddFileHistoryToProfile(file_history):
     @param file_history: add saved files to history list
 
     """
-    size = file_history.GetNoHistoryFiles()
-    file_key = "FILE"
-    i = 0
-
-    while size > i:
-        key = file_key + str(i)
-        file_path = file_history.GetHistoryFile(i)
-        Profile_Set(key, file_path)
-        i += 1
-    return i
+    files = list()
+    for fnum in xrange(file_history.GetNoHistoryFiles()):
+        files.append(file_history.GetHistoryFile(fnum))
+    Profile_Set('FHIST', files)
+    return fnum
 
 def CalcVersionValue(ver_str="0.0.0"):
     """Calculates a version value from the provided dot-formated string
