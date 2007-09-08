@@ -15,7 +15,10 @@ NEWS:
 
 
 NEW: [features/improvements]
-+Ex Command mode for Vi emulation
++Opening multiple toplevel windows is now possible
++Command ctrl for sending commands to the editor, when using Vi emulation it
+acts like an Ex command mode.
++Some performance improvements
 +Link to project documentation and help guides in Help Menu
 
 BUG FIXES:
@@ -24,6 +27,7 @@ BUG FIXES:
 documents.
 +Ensure file handle valid when reloading files
 +Many bug and behavior fixes in the Calculator plugin
++Unicode handling error in file history loading
 
 #-----------------------------------------------------------------------------#
 

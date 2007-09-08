@@ -221,17 +221,18 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
         self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, 
                   id=ID_FIND_REPLACE)
-        self.Bind(wx.EVT_MENU, self.OnQuickFind, id=ID_QUICK_FIND)
+        self.Bind(wx.EVT_MENU, self.OnCommandBar, id=ID_QUICK_FIND)
         self.Bind(wx.EVT_MENU, self.OnPreferences, id=ID_PREF)
 
         # View Menu Events
-        self.Bind(wx.EVT_MENU, self.OnGoto, id=ID_GOTO_LINE)
+        self.Bind(wx.EVT_MENU, self.OnCommandBar, id=ID_GOTO_LINE)
         self.Bind(wx.EVT_MENU, self.OnViewTb, id=ID_VIEW_TOOL)
 
         # Format Menu Events
         self.Bind(wx.EVT_MENU, self.OnFont, id=ID_FONT)
 
         # Tool Menu
+        self.Bind(wx.EVT_MENU, self.OnCommandBar, id=ID_COMMAND)
         self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
         self.Bind(wx.EVT_MENU, self.OnPluginMgr, id=ID_PLUGMGR)
         self.Bind(wx.EVT_MENU, self.OnGenerate)
@@ -694,19 +695,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     #---- End Edit Menu Functions ----#
 
     #---- View Menu Functions ----#
-    def OnGoto(self, evt):
-        """Shows the Goto Line control
-        @param evt: Event fired that called this handler
-        @type evt: wxMenuEvent
-
-        """
-        e_id = evt.GetId()
-        if e_id == ID_GOTO_LINE:
-            self._cmdbar.Show(ed_cmdbar.ID_LINE_CTRL)
-            self.sizer.Layout()
-        else:
-            evt.Skip()
-
     def OnViewTb(self, evt):
         """Toggles visibility of toolbar
         @note: On OSX there is a frame button for hidding the toolbar
@@ -953,17 +941,22 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         for l_id in syntax.SyntaxIds():
             self.Bind(wx.EVT_MENU, self.DispatchToControl, id=l_id)
 
-    def OnQuickFind(self, evt):
-        """Open the Commandbar in Search mode.
+    def OnCommandBar(self, evt):
+        """Open the Commandbar
         @param evt: Event fired that called this handler
         @type evt: wxMenuEvent
 
         """
-        if evt.GetId() == ID_QUICK_FIND:
+        e_id = evt.GetId()
+        if e_id == ID_QUICK_FIND:
             self._cmdbar.Show(ed_cmdbar.ID_SEARCH_CTRL)
-            self.sizer.Layout()
+        elif e_id == ID_GOTO_LINE:
+            self._cmdbar.Show(ed_cmdbar.ID_LINE_CTRL)
+        elif e_id == ID_COMMAND:
+            self._cmdbar.Show(ed_cmdbar.ID_CMD_CTRL)
         else:
             evt.Skip()
+        self.sizer.Layout()
 
     def ShowCommandCtrl(self):
         """Open the Commandbar in command mode.
