@@ -355,19 +355,15 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @return: None
 
         """
-        file_key = "FILE"
-        keys = range(size - 1)
-        keys.reverse()
-        for i in keys:
-            key = file_key + str(i)
-            path = _PGET(key, "str")
-            if isinstance(path, basestring) and path != wx.EmptyString:
-                self.filehistory.AddFileToHistory(path)
-            else:
-                pass
+        try:
+            for fname in _PGET('FHIST'):
+                if isinstance(fname, basestring) and fname:
+                    self.filehistory.AddFileToHistory(fname)
+        except UnicodeEncodeError, msg:
+            self.LOG("[main][err] Filehistory load failed: %s" % str(msg))
 
     def OnNew(self, evt):
-        """Star a New File
+        """Star a New File in a new tab
         @param evt: Event fired that called this handler
         @type evt: wxMenuEvent
 
