@@ -535,6 +535,7 @@ class EdSearchCtrl(wx.SearchCtrl):
             e_key = evt.GetKeyCode()
             if e_key == wx.WXK_ESCAPE:
                 # HACK change to more safely determine the context
+                # Currently control is only used in command bar
                 self.GetParent().Hide()
             tmp = self.GetValue()
             # Dont do search 
