@@ -464,7 +464,7 @@ class EdMenuBar(wx.MenuBar):
 
         """
         toolsmenu = ED_Menu()
-        toolsmenu.Append(ed_glob.ID_COMMAND, _("Editor Command") + u'\tCtrl+:',
+        toolsmenu.Append(ed_glob.ID_COMMAND, _("Editor Command") + u'\tCtrl+E',
                          _("Goto command buffer"))
         toolsmenu.Append(ed_glob.ID_KWHELPER, _("Keyword Helper") + u'\tCtrl+K', 
                          _("Provides a Contextual Help Menu Listing Standard "
