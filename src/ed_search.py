@@ -533,6 +533,9 @@ class EdSearchCtrl(wx.SearchCtrl):
             self.FindService.OnFind(wx.FindDialogEvent(s_cmd))
         elif e_type == wx.wxEVT_KEY_UP:
             e_key = evt.GetKeyCode()
+            if e_key == wx.WXK_ESCAPE:
+                # HACK change to more safely determine the context
+                self.GetParent().Hide()
             tmp = self.GetValue()
             # Dont do search 
             if tmp == wx.EmptyString or \
