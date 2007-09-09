@@ -3460,7 +3460,6 @@ class FlatNotebook(wx.PyPanel):
 
         return self._windows[page]
 
-
     def GetPageIndex(self, win):
         """ Returns the index at which the window is found. """
 
@@ -3469,12 +3468,10 @@ class FlatNotebook(wx.PyPanel):
         except:
             return -1
 
-
     def GetSelection(self):
         """ Returns the currently selected page, or -1 if none was selected. """
         
         return self._pages.GetSelection()
-
 
     def AdvanceSelection(self, forward=True):
         """
