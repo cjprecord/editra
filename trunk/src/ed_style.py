@@ -295,6 +295,7 @@ class StyleMgr(object):
     @todo: dont load style sheet for every newly created instance
 
     """
+    styles         = dict()
     FONT_PRIMARY   = u"primary"
     FONT_SECONDARY = u"secondary"
     FONT_SIZE      = u"size"
@@ -310,7 +311,6 @@ class StyleMgr(object):
         # Attributes
         self.fonts = self.GetFontDictionary()
         self.style_set = custom
-        self.styles = dict()
         self.LOG = wx.GetApp().GetLog()
 
         # Get the Style Set
@@ -560,14 +560,17 @@ class StyleMgr(object):
         else:
             return False
 
-    def LoadStyleSheet(self, style_sheet):
+    def LoadStyleSheet(self, style_sheet, force=False):
         """Loads a custom style sheet and returns True on success
         @param style_sheet: path to style sheet to load
+        @keyword force: Force reparse of style sheet, default is to use cached
+                        data when available
         @return: whether style sheet was loaded or not
         @rtype: bool
 
         """
-        if os.path.exists(style_sheet):
+        if os.path.exists(style_sheet) and \
+           ((force or not len(self.styles)) or style_sheet != self.style_set):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
                 self.LOG("[styles][err] Failed to open style sheet: %s" % \
@@ -576,11 +579,14 @@ class StyleMgr(object):
             ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
             reader.close()
             return ret_val
-        else:
+        elif not len(self.styles):
             self.LOG("[styles] The style sheet %s does not exists" % \
                                                                     style_sheet)
             self.SetStyles(self.DefaultStyleDictionary())
             return False
+        else:
+            self.LOG("[styles][info] Using cached style data")
+            return True
 
     def MergeFonts(self, style_dict, font_dict):
         """Does any string substitution that the style dictionary
