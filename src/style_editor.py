@@ -48,6 +48,7 @@ import ed_glob
 from profiler import Profile_Get, Profile_Set
 import ed_stc
 from ed_style import StyleItem
+import ed_event
 import util
 import syntax.syntax as syntax
 
@@ -72,7 +73,7 @@ SETTINGS_IDS = [ ID_FORE_COLOR, ID_BACK_COLOR, ID_BOLD, ID_ITALIC,
 class StyleEditor(wx.Dialog):
     """This class creates the window that contains the controls
     for editing/configuring the syntax highlighting styles it acts
-    as a a graphical way to interact with the L{ed_style.StyleMgr}.
+    as a graphical way to interact with the L{ed_style.StyleMgr}.
 
     @see: ed_style.StyleMgr
     """
@@ -102,7 +103,7 @@ class StyleEditor(wx.Dialog):
         self.sizer.Add((10, 10)) # Spacer
 
         # Control Panel
-        self.ctrl_pane = wx.Panel(self, wx.ID_ANY, style=wx.RAISED_BORDER)
+        self.ctrl_pane = wx.Panel(self, wx.ID_ANY)
         ctrl_sizer = wx.BoxSizer(wx.HORIZONTAL)  # Main Control Sizer
         left_colum = wx.BoxSizer(wx.VERTICAL)    # Left Column
         right_colum = wx.BoxSizer(wx.VERTICAL)   # Right Column
@@ -141,9 +142,9 @@ class StyleEditor(wx.Dialog):
         # Create Buttons
         b_sizer = wx.BoxSizer(wx.HORIZONTAL)
         cancel_b = wx.Button(self, wx.ID_CANCEL, _("Cancel"))
-        cancel_b.SetDefault()
         save_b = wx.Button(self, wx.ID_SAVE, _("Export"))
         ok_b = wx.Button(self, wx.ID_OK, _("Ok"))
+        ok_b.SetDefault()
         b_sizer.AddMany([cancel_b, save_b, ok_b])
         self.sizer.Add(b_sizer, 0, wx.ALIGN_RIGHT | \
                                    wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
@@ -164,7 +165,7 @@ class StyleEditor(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_LISTBOX, self.OnListBox)
-        self.Bind(csel.EVT_COLOURSELECT, self.OnColor)
+        self.Bind(ed_event.EVT_NOTIFY, self.OnColor)
         self.preview.Bind(wx.EVT_LEFT_UP, self.OnTextRegion)
         self.preview.Bind(wx.EVT_KEY_UP, self.OnTextRegion)
     #--- End Init ---#
@@ -331,8 +332,7 @@ class StyleEditor(wx.Dialog):
         fground_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fground_lbl = wx.StaticText(self.ctrl_pane, 
                                     label=_("Foreground") + u": ")
-        fground_sel = csel.ColourSelect(self.ctrl_pane, ID_FORE_COLOR,
-                                        "#000000", (0, 0, 0), size=(80, 25))
+        fground_sel = ColourSetter(self.ctrl_pane, ID_FORE_COLOR, "#000000")
         fground_sizer.AddMany([((5, 5)), 
                                (fground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                                (fground_sel, 0, wx.ALIGN_CENTER_VERTICAL), 
@@ -343,9 +343,7 @@ class StyleEditor(wx.Dialog):
         bground_sizer = wx.BoxSizer(wx.HORIZONTAL)
         bground_lbl = wx.StaticText(self.ctrl_pane, 
                                     label=_("Background") + u": ")
-        bground_sel = csel.ColourSelect(self.ctrl_pane, ID_BACK_COLOR, 
-                                        "#FFFFFF", (255, 255, 255), 
-                                        size=(80, 25))
+        bground_sel = ColourSetter(self.ctrl_pane, ID_BACK_COLOR, "#FFFFFF")
         bground_sizer.AddMany([((5, 5)), 
                                (bground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                                (bground_sel, 0, wx.ALIGN_CENTER_VERTICAL), 
@@ -418,8 +416,10 @@ class StyleEditor(wx.Dialog):
         ss_lst.sort()
         ss_choice = wx.Choice(self.ctrl_pane, ed_glob.ID_PREF_SYNTHEME,
                               choices=ss_lst)
+        ss_choice.SetToolTip(wx.ToolTip(_("Base new theme of existing one")))
         ss_choice.SetStringSelection(Profile_Get('SYNTHEME', 'str'))
         ss_new = wx.CheckBox(self.ctrl_pane, wx.ID_NEW, _("New"))
+        ss_new.SetToolTip(wx.ToolTip(_("Start a blank new style")))
         ss_sizer.AddMany([((10, 10)), (ss_lbl, 0, wx.ALIGN_CENTER_VERTICAL), 
                           ((5, 0)),
                           (ss_choice, 0, wx.ALIGN_CENTER_VERTICAL), ((10, 0)), 
@@ -518,19 +518,8 @@ class StyleEditor(wx.Dialog):
         @param evt: event that called this handler
 
         """
-        e_id = evt.GetId()
-        e_obj = self.FindWindowById(e_id)
-        e_val = evt.GetValue()[0:3]
-        red = hex(e_val[0])
-        green = hex(e_val[1])
-        blue = hex(e_val[2])
-        hex_str = "#%s%s%s" % (red[2:].zfill(2).upper(),
-                               green[2:].zfill(2).upper(),
-                               blue[2:].zfill(2).upper())
-        e_obj.SetLabel(hex_str)
-        e_obj.SetValue(wx.Color(e_val[0], e_val[1], e_val[2]))
-
         # Update The Style data for current tag
+        e_id = evt.GetId()
         self.UpdateStyleSet(e_id)
 
     def OnTextRegion(self, evt):
@@ -647,7 +636,7 @@ class StyleEditor(wx.Dialog):
                 ctrl.SetValue(val_map[sid])
             elif c_type == "wxChoice":
                 ctrl.SetStringSelection(val_map[sid])
-            elif c_type == "wxBitmapButton":
+            elif isinstance(ctrl, ColourSetter):
                 # Note: must call set label before set value or the label
                 # is not redrawn
                 ctrl.SetLabel(val_map[sid][:7])
@@ -675,7 +664,7 @@ class StyleEditor(wx.Dialog):
             val = ctrl.GetValue()
         elif ctrl_t == 'wxChoice':
             val = ctrl.GetStringSelection()
-        elif ctrl_t == 'wxBitmapButton':
+        elif isinstance(ctrl, ColourSetter):
             val = ctrl.GetLabel()
         else:
             return False
@@ -701,3 +690,138 @@ class StyleEditor(wx.Dialog):
         # Update the Preview Area
         self.preview.SetStyleTag(tag, self.styles_new[tag])
         self.preview.RefreshStyles()
+
+#-----------------------------------------------------------------------------#
+class ColourSetter(wx.Panel):
+    """Control for setting and selecting a color to describe the
+    various styling of the text control.
+    
+    """
+    def __init__(self, parent, id_, label=wx.EmptyString):
+        """Create the control, it is a composite of a colourSelect and
+        and a text control.
+        @keyword label: the hex string value to go in the text portion
+
+        """
+        wx.Panel.__init__(self, parent, id_)
+
+        # Attributes
+        self._label = label
+        self._txt = wx.TextCtrl(self, value=label, style=wx.TE_CENTER)
+        txtheight = self._txt.GetTextExtent('#000000')[1]
+        txtheight = txtheight + 4
+        self._txt.SetMaxSize((-1, txtheight))
+        self._txt.SetToolTip(wx.ToolTip(_("Enter a hex color value")))
+        self._cbtn = csel.ColourSelect(self, colour=util.HexToRGB(label), 
+                                       size=(20, 20))
+
+        self._DoLayout()
+
+        # Event Handlers
+        self.Bind(csel.EVT_COLOURSELECT, self.OnColour)
+        self._txt.Bind(wx.EVT_KEY_UP, self.OnTextChange)
+        self._txt.Bind(wx.EVT_TEXT_PASTE, self.OnTextChange)
+        self._txt.Bind(wx.EVT_KEY_DOWN, self.OnValidateTxt)
+
+    def __PostEvent(self):
+        """Notify the parent window of any value changes to the control"""
+        evt = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY, self.GetId())
+        wx.PostEvent(self.GetParent(), evt)
+
+    def _DoLayout(self):
+        """Layout the controls"""
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self._txt, 0, wx.EXPAND)
+        sizer.Add((5, 5), 0)
+        sizer.Add(self._cbtn, 0, wx.ALIGN_LEFT)
+        self.SetSizer(sizer)
+
+    def GetColour(self):
+        """Returns the colour value of the control
+        @return: wxColour object
+
+        """
+        return self._cbtn.GetValue()
+
+    def GetLabel(self):
+        """Gets the hex value from the text control
+        @return: string '#123456'
+        @note: ensures a full 6 digit hex value is returned, padding
+               with zero's where necessary
+
+        """
+        hexstr = self._txt.GetValue()
+        hexstr = hexstr.replace('#', '')
+        hexstr = '#' + hexstr + ('0' * (6 - len(hexstr)))
+        return hexstr
+
+    def OnColour(self, evt):
+        """Update the button and text control value
+        when a choice is made in the colour dialog.
+        @param evt: EVT_COLOURSELECT
+
+        """
+        e_id = evt.GetId()
+        e_val = evt.GetValue()[0:3]
+        red = hex(e_val[0])
+        green = hex(e_val[1])
+        blue = hex(e_val[2])
+        hex_str = "#%s%s%s" % (red[2:].zfill(2).upper(),
+                               green[2:].zfill(2).upper(),
+                               blue[2:].zfill(2).upper())
+        self._txt.SetValue(hex_str)
+        self._cbtn.SetValue(wx.Color(e_val[0], e_val[1], e_val[2]))
+        self.__PostEvent()
+
+    def OnTextChange(self, evt=None):
+        """Catch when text changes in the text control and update
+        button accordingly.
+        @keyword evt: event that called this handler
+
+        """
+        if evt:
+            evt.Skip()
+        hexstr = self._txt.GetValue()
+        hexstr = hexstr.replace('#', '')
+        hexstr = '#' + hexstr + (u'0' * (6 - len(hexstr)))
+        colour = util.HexToRGB(hexstr)
+        self._cbtn.SetValue(colour)
+        self.__PostEvent()
+
+    def OnValidateTxt(self, evt):
+        """Validate text to ensure only valid hex characters are entered
+        @param evt: wxEVT_KEY_DOWN
+
+        """
+        code = evt.GetKeyCode()
+        if code in [wx.WXK_DELETE, wx.WXK_BACK, wx.WXK_LEFT, wx.WXK_RIGHT] or \
+           evt.CmdDown():
+            evt.Skip()
+            return
+
+        key = unichr(code)
+        if key in "0123456789ABCDEFabcdef#" and \
+           (len(self._txt.GetValue().lstrip("#")) < 6 or \
+            self._txt.GetStringSelection()):
+            evt.Skip()
+
+    def SetLabel(self, label):
+        """Set the label value of the text control
+        @param label: hex string to set label to
+
+        """
+        self._txt.SetValue(label)
+        self.OnTextChange()
+
+    def SetValue(self, colour):
+        """Set the color value of the button
+        @param colour: wxColour or 3 tuple to set colour value to
+
+        """
+        self._cbtn.SetValue(colour)
+        red, green, blue = colour[0:3]
+        hex_str = "#%s%s%s" % (hex(red)[2:].zfill(2).upper(),
+                               hex(green)[2:].zfill(2).upper(),
+                               hex(blue)[2:].zfill(2).upper())
+        self._txt.SetValue(hex_str)
+        self.__PostEvent()
