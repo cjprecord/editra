@@ -53,14 +53,11 @@ import re
 import wx
 import ed_glob
 from profiler import Profile_Get, Profile_Set
-import ed_event
 import ed_stc
 import syntax.synglob as synglob
 import ed_search
 import util
 import doctools
-# import wx.lib.flatnotebook as FNB
-# Use local copy until newer release of wxpython
 from extern import flatnotebook as FNB
 
 #--------------------------------------------------------------------------#
@@ -69,7 +66,7 @@ from extern import flatnotebook as FNB
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 class EdPages(FNB.FlatNotebook):
-    """Editras Notebook
+    """Editras editor buffer botebook
     @todo: allow for tab styles to be configurable (maybe)
 
     """
@@ -92,9 +89,9 @@ class EdPages(FNB.FlatNotebook):
         self.FindService = ed_search.TextFinder(self, self.GetCurrentCtrl)
         self.DocMgr = doctools.DocPositionMgr(ed_glob.CONFIG['CACHE_DIR'] + \
                                               util.GetPathChar() + u'positions')
-        self.pg_num = 0               # Track page numbers for ID creation
-        self.control = ed_stc.EDSTC   # Current Control page
-        self.frame = parent.GetParent() # MainWindow
+        self.pg_num = -1              # Track new pages (aka untitled docs)
+        self.control = None
+        self.frame = self.GetTopLevelParent() # MainWindow
         self._index = dict()          # image list index
 
         # Set Additional Style Parameters
@@ -113,7 +110,7 @@ class EdPages(FNB.FlatNotebook):
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSING, self.OnPageClosing)
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CLOSED, self.OnPageClosed)
-        self.Bind(ed_event.EVT_UPDATE_TEXT, self.OnUpdatePageText)
+        self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnUpdatePageText)
         self._pages.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
         self.Bind(wx.EVT_IDLE, self.OnIdle)
 
@@ -129,7 +126,6 @@ class EdPages(FNB.FlatNotebook):
         @param title: page title string
 
         """
-        self.pg_num += 1
         FNB.FlatNotebook.AddPage(self, control, title)
 
     def GetCurrentCtrl(self):
@@ -176,7 +172,8 @@ class EdPages(FNB.FlatNotebook):
         @postcondition: a new page with an untitled document is opened
 
         """
-        self.control = ed_stc.EDSTC(self, self.pg_num)
+        self.pg_num += 1
+        self.control = ed_stc.EDSTC(self, wx.ID_ANY)
         self.LOG("[nb_evt] Page Creation ID: %d" % self.control.GetId())
         self.AddPage(self.control, u"Untitled - %d" % self.pg_num)
         self.SetPageImage(self.GetSelection(), str(self.control.GetLangId()))
@@ -225,12 +222,12 @@ class EdPages(FNB.FlatNotebook):
         if self.GetPageCount():
             if self.control.GetModify() or self.control.GetLength() or \
                self.control.filename != u'':
-                control = ed_stc.EDSTC(self, self.pg_num)
+                control = ed_stc.EDSTC(self, wx.ID_ANY)
                 control.Hide()
             else:
                 new_pg = False
         else:
-            control = ed_stc.EDSTC(self, self.pg_num)
+            control = ed_stc.EDSTC(self, wx.ID_ANY)
             control.Hide()
 
         # Open file and get contents
@@ -494,6 +491,7 @@ class EdPages(FNB.FlatNotebook):
     def ChangePage(self, pgid):
         """Change the page and focus to the the given page id
         @param pgid: Page number to change to
+        @todo: generalize this to avoid expecting an edstc
 
         """
         window = self.GetPage(pgid) #returns current stc
@@ -501,7 +499,7 @@ class EdPages(FNB.FlatNotebook):
         self.control = window
 
         if self.control.filename == "":
-            self.control.filename = "Untitled - %d" % window.GetId()
+            self.control.filename = self.GetPageText(pgid)
 
         self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
                                                     self.control.dirname,
@@ -551,12 +549,6 @@ class EdPages(FNB.FlatNotebook):
 
         """
         self.LOG("[nb_evt] Closed Page: #%d" % self.GetSelection())
-        # wxMAC Bug? 
-        # Make sure tab area is refreshed mostly for when all pages have been
-        # closed to make sure that the last tab is removed from the view after
-        # deletion.
-        self.Update()
-        self.Refresh()
         evt.Skip()
     #---- End Event Handlers ----#
 
@@ -636,7 +628,10 @@ class EdPages(FNB.FlatNotebook):
     def OnUpdatePageText(self, evt):
         """Update the title text of the current page
         @param evt: event that called this handler
-        @type evt: ed_event.UpdateTextEvent
+        @type evt: stc.EVT_STC_MODIFY
+        @note: this method must complete its work very fast it gets
+               called everytime a character is entered or removed from
+               the document.
 
         """
         if hasattr(self.control, 'GetModify'):
@@ -644,7 +639,8 @@ class EdPages(FNB.FlatNotebook):
             title = self.GetPageText(pg_num)
             if self.control.GetModify():
                 title = u"*" + title
-            wx.CallAfter(self.SetPageText, pg_num, title)
+            if title != FNB.FlatNotebook.GetPageText(self, pg_num):
+                wx.CallAfter(self.SetPageText, pg_num, title)
             
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have

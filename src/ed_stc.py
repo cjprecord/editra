@@ -104,13 +104,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.SetModEventMask(wx.stc.STC_PERFORMED_UNDO | \
                              wx.stc.STC_PERFORMED_REDO | \
                              wx.stc.STC_MOD_DELETETEXT | \
-                             wx.stc.STC_MOD_INSERTTEXT | \
-                             wx.stc.STC_PERFORMED_USER)
+                             wx.stc.STC_MOD_INSERTTEXT)
 
         self.CmdKeyAssign(ord('-'), wx.stc.STC_SCMOD_CTRL, \
                           wx.stc.STC_CMD_ZOOMOUT)
         self.CmdKeyAssign(ord('+'), wx.stc.STC_SCMOD_CTRL | \
                           wx.stc.STC_SCMOD_SHIFT, wx.stc.STC_CMD_ZOOMIN)
+
         #---- Drop Target ----#
         if use_dt:
             self.SetDropTarget(util.DropTargetFT(self, None, parent.OnDrop))
@@ -603,8 +603,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if self._vimode and self._vinormal:
             self._cmdcache = self._cmdcache + unichr(key_code)
             self.ViCmdDispatch()
-            return
-        if not self._use_autocomp:
+        elif not self._use_autocomp:
             evt.Skip()
             return
         elif key_code in self._autocomp_svc.GetAutoCompKeys():
@@ -640,7 +639,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 lparm = evt.GetLParam()
             mac = (msg, evt.GetWParam(), lparm)
             self._macro.append(mac)
-            print mac
 #             if mac[0] != 2170:
 #                 self._macro.append(mac)
         else:
@@ -739,9 +737,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @type evt: wx.stc.StyledTextEvent
 
         """
-        mevt = ed_event.UpdateTextEvent(ed_event.edEVT_UPDATE_TEXT, \
-                                        self.GetId())
-        wx.PostEvent(self.GetParent(), mevt)
+        wx.PostEvent(self.GetParent(), evt)
 
     def OnUpdateUI(self, evt):
         """Check for matching braces
@@ -2122,7 +2118,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @postcondtion: style scheme is set to specified style
 
         """
-        self.LoadStyleSheet(self.GetStyleSheet(spec_style))
+        if spec_style != self.style_set:
+            self.LoadStyleSheet(self.GetStyleSheet(spec_style), force=True)
         self.UpdateBaseStyles()
         self.SetSyntax(self.syntax_set)
         self.DefineMarkers()
