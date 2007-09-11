@@ -16,10 +16,14 @@ NEWS:
 
 NEW: [features/improvements]
 +Opening multiple toplevel windows is now possible
-+Command ctrl for sending commands to the editor, when using Vi emulation it
-acts like an Ex command mode.
-+Some performance improvements
++Command Mode for sending commands to the editor, when using Vi emulation it
+acts like an Ex command mode. (see documentation page for description of
+available commands)
++Some substantial performance improvements for text input speed
++Faster file loading
 +Link to project documentation and help guides in Help Menu
++Shortcut to close quick find bar (ESC will hide the bar)
++Command bar now automatically hides it self after most actions
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.
