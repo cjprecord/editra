@@ -229,6 +229,32 @@ class Editra(wx.App):
             self._log("[app][info] Going to sleep")
         evt.Skip()
 
+    def OnExit(self, evt=None):
+        """Handle application exit request
+        @param evt: event that called this handler
+
+        """
+        e_id = -1
+        if evt:
+            e_id = evt.GetId()
+        if e_id == ed_glob.ID_EXIT:
+            # First loop is to ensure current top window is
+            # closed first
+            for win in self.GetMainWindows():
+                if win.IsActive():
+                    result = win.Close()
+                    if result:
+                        break
+                    return
+            for win in self.GetMainWindows():
+                win.Raise()
+                result = win.Close()
+                if not result:
+                    break
+        else:
+            if evt:
+                evt.Skip()
+
     def RegisterWindow(self, name, window, can_lock=False):
         """Registers winows with the app. The name should be the
         repr of window. The can_lock parameter is a boolean stating

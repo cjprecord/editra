@@ -58,12 +58,13 @@ __all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
             'ID_SYNTAX', 'ID_FOLDING', 'ID_BRACKETHL', 'ID_LEXER', 
             'ID_KWHELPER', 'ID_PLUGMGR', 'ID_STYLE_EDIT', 'ID_MACRO_START', 
             'ID_MACRO_STOP', 'ID_MACRO_PLAY', 'ID_ABOUT', 'ID_HOMEPAGE', 
-            'ID_CONTACT', 'ID_COMMAND_BAR', 'ID_DOCUMENTATION', 'ID_COMMAND' 
+            'ID_CONTACT', 'ID_COMMAND_BAR', 'ID_DOCUMENTATION', 'ID_COMMAND',
+            'ID_CLOSE_WINDOW' 
 ]
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.1.78'
+version = __version__ = u'0.1.80'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
@@ -98,6 +99,7 @@ ID_OPEN          = wx.ID_OPEN
 ID_FHIST         = wx.NewId()
 ID_CLOSE         = wx.ID_CLOSE
 ID_CLOSEALL      = wx.ID_CLOSE_ALL
+ID_CLOSE_WINDOW  = wx.NewId()
 ID_SAVE          = wx.ID_SAVE
 ID_SAVEAS        = wx.ID_SAVEAS
 ID_SAVEALL       = wx.NewId()

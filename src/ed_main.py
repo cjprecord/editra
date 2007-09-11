@@ -205,6 +205,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.Bind(wx.EVT_MENU, self.OnNew, id=ID_NEW)
         self.Bind(wx.EVT_MENU, self.OnOpen, id=ID_OPEN)
         self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSE)
+        self.Bind(wx.EVT_MENU, self.OnClose, id=ID_CLOSE_WINDOW)
         self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSEALL)
         self.Bind(wx.EVT_MENU, self.OnSave, id=ID_SAVE)
         self.Bind(wx.EVT_MENU, self.OnSaveAs, id=ID_SAVEAS)
@@ -212,7 +213,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.Bind(wx.EVT_MENU, self.OnSaveProfile, id=ID_SAVE_PROFILE)
         self.Bind(wx.EVT_MENU, self.OnLoadProfile, id=ID_LOAD_PROFILE)
         self.Bind(wx.EVT_MENU, self.OnPrint)
-        self.Bind(wx.EVT_MENU, self.OnExit, id=ID_EXIT)
+        self.Bind(wx.EVT_MENU, wx.GetApp().OnExit, id=ID_EXIT)
         self.Bind(wx.EVT_MENU_RANGE, self.OnFileHistory, 
                   id=wx.ID_FILE1, id2=wx.ID_FILE9)
 
@@ -247,7 +248,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Actions to Take on other Events ----#
         # Frame
-        self.Bind(wx.EVT_CLOSE, self.OnExit)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(ed_event.EVT_STATUS, self.OnStatus)
 
         # Find Dialog
@@ -585,19 +586,27 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         else:
             evt.Skip()
 
-    def OnExit(self, evt):
+    def Close(self, force=False):
+        """Close the window
+        @param force: force the closer by vetoing the event handler
+
+        """
+        if force:
+            return wx.Frame.Close(self, True)
+        else:
+            result = self.OnClose()
+            return not result
+
+    def OnClose(self, evt=None):
         """Close this frame and unregister it from the applications
         mainloop.
         @note: Closing the frame will write out all session data to the
                users configuration directory.
-        @param evt: Event fired that called this handler
+        @keyword evt: Event fired that called this handler
         @type evt: wxMenuEvent
+        @return: None on destroy, or True on cancel
 
         """
-        # This event is bound at two location need to unbind it to avoid fireing
-        # the event again
-        self.Unbind(wx.EVT_CLOSE)
-
         # Cleanup Controls
         controls = self.nb.GetPageCount()
         _PSET('LAST_SESSION', self.nb.GetFileNames())
@@ -606,7 +615,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._exiting = True
         while controls:
             if controls <= 0:
-                self.Close(True)
+                self.Close(True) # Force exit since there is a problem
 
             self.LOG("[main_evt] [exit] Requesting Page Close")
             result = self.nb.ClosePage()
@@ -621,8 +630,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             else:
                 # Rebind the event
                 self._exiting = False
-                self.Bind(wx.EVT_CLOSE, self.OnExit)
-                return
+                return True
         except UnboundLocalError:
             self.LOG("[main][exit][err] Trapped UnboundLocalError OnExit")
 

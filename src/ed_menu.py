@@ -256,6 +256,9 @@ class EdMenuBar(wx.MenuBar):
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_CLOSE, _("Close Page") + "\tCtrl+W", 
                         _("Close Current Page"))
+        filemenu.Append(ed_glob.ID_CLOSE_WINDOW, 
+                        _("Close Window") + "\tCtrl+Shift+W",
+                        _("Close the current window"))
         filemenu.Append(ed_glob.ID_CLOSEALL, _("Close All Pages"),
                         _("Close all open tabs"))
         filemenu.AppendSeparator()
