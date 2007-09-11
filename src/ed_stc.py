@@ -464,6 +464,19 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             column = linelen
         self.GotoPos(lstart + column)
 
+    def GotoLine(self, line):
+        """Move caret to begining given line number
+        @param line: line to go to
+
+        """
+        if line > self.GetLineCount():
+            line = self.GetLineCount()
+        elif line < 0:
+            line = 0
+        else:
+            pass
+        wx.stc.StyledTextCtrl.GotoLine(self, line)
+
     def SetCurrentCol(self, column):
         """Set the current column position on the currently line
         extending the selection.
