@@ -112,15 +112,23 @@ def EnvironmentInfo():
     info.append("#---- End System Information ----#")
     info.append("#---- Runtime Variables ----#")
     from profiler import Profile
+    ftypes = list()
     for key, val in Profile().iteritems():
         # Exclude "private" information
-        if key.startswith('FILE') or key == 'MYPROFILE':
+        if key == 'MYPROFILE' or key.startswith('FILE'):
             continue
+        elif key == 'LAST_SESSION' or key == 'FHIST':
+            for fname in val:
+                if u'.' in fname:
+                    ext = fname.split('.')[-1]
+                    if ext not in ftypes:
+                        ftypes.append(ext)
         else:
-            info.append("%s=%s" % (key, str(val)))
+            info.append(u"%s=%s" % (key, unicode(val)))
+    info.append(u"FTYPES=%s" % unicode(ftypes))
     info.append("#---- End Runtime Variables ----#")
 
-    return "\n".join(info)
+    return u"\n".join(info)
 
 def ExceptionHook(exctype, value, trace):
     """Handler for all unhandled exceptions
@@ -289,9 +297,10 @@ class ErrorDialog(wx.Dialog):
         if e_id == wx.ID_CLOSE:
             self.Close()
         elif e_id == ID_SEND:
-            msg = "mailto:%s?subject=Error Report&body=%s"
-            addr = "bugs@%s" % (ed_glob.home_page.lstrip("http://"))
+            msg = u"mailto:%s?subject=Error Report&body=%s"
+            addr = u"bugs@%s" % (ed_glob.home_page.lstrip("http://"))
             msg = msg % (addr, self.err_msg)
+            msg = msg.replace(u"'", u'')
             webbrowser.open(msg)
             self.Close()
         else:
