@@ -592,6 +592,8 @@ class DocCodePanel(wx.Panel):
                             0, 100, size=(-1, 15), style=wx.SL_HORIZONTAL | \
                             wx.SL_AUTOTICKS | wx.SL_LABELS)
         edge_sl.SetTickFreq(5, 1)
+        if wx.Platform == '__WXMAC__':
+            edge_sl.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
         ind_cb = wx.CheckBox(self, ed_glob.ID_INDENT_GUIDES, 
                              _("Indentation Guides"))
         ind_cb.SetValue(Profile_Get('GUIDES'))
