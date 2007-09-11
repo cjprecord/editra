@@ -409,11 +409,12 @@ class CommandBar(wx.Panel):
 class CommandExecuter(wx.SearchCtrl):
     """Part of the Vi emulation, opens a minibuffer to execute
     EX commands with.
-    @note: based on search ctrl so we get nice control with rounded
-           corners on wxmac.
+    @note: based on search ctrl so we get a more astetically pleasing control
+           on wxmac.
     
     """
     RE_GO_BUFFER = re.compile('[0-9]*[nN]{1,1}')
+    RE_GO_WIN = re.compile('[0-9]*n[wW]{1,1}')
     RE_WGO_BUFFER = re.compile('w[0-9]*[nN]')
     RE_NGO_LINE = re.compile('[+-][0-9]+')
     def __init__(self, parent, id_, size=wx.DefaultSize):
@@ -534,6 +535,8 @@ class CommandExecuter(wx.SearchCtrl):
                 self.Quit()
         elif cmd.startswith(u'e'):
             self.EditCommand(cmd)
+        elif self.RE_GO_WIN.match(cmd):
+            self.GoWindow(cmd)
         elif self.RE_GO_BUFFER.match(cmd):
             self.GoBuffer(cmd)
         elif cmd.isdigit() or self.RE_NGO_LINE.match(cmd):
@@ -594,6 +597,39 @@ class CommandExecuter(wx.SearchCtrl):
         for x in xrange(do):
             frame.nb.AdvanceSelection(cmd == 'n')
 
+    def GoWindow(self, cmd):
+        """Go to next/previous open window
+        @param cmd: cmd string [0-9]*n[wW]
+
+        """
+        do = cmd[0:-1]
+        cmd = cmd[-1]
+        if do.isdigit():
+            do = int(do)
+        else:
+            do = 1
+        wins = wx.GetApp().GetMainWindows()
+        pid = self.GetTopLevelParent().GetId()
+        widx = 0
+        for win in xrange(len(wins)):
+            if pid == wins[win].GetId():
+                widx = pid
+                break
+
+        if cmd == 'W':
+            widx = win + do
+        else:
+            widx = win - do
+
+        if widx < 0:
+            widx = 0
+        elif widx >= len(wins):
+            widx = len(wins) - 1
+        self.GetParent().Hide()
+        wins[widx].Raise()
+        wx.CallAfter(wins[widx].nb.GetCurrentCtrl().SetFocus)
+
+    # TODO fix and simplify this
     def GetNextDir(self):
         """Get the next directory path from the current cmd path
         @note: used for tab completion of cd, completion is based off cwd
@@ -778,6 +814,7 @@ class LineCtrl(wx.SearchCtrl):
             val = lines
         doc.GotoLine(val)
         doc.SetFocus()
+        self.GetParent().Hide()
         evt.Skip()
 
 #-----------------------------------------------------------------------------#
