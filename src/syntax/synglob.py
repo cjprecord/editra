@@ -77,6 +77,10 @@ LANG_KSH = u'Korn Shell Script'
 ID_LANG_CAML = wx.NewId()
 LANG_CAML = u'Caml'
 
+# Use LEX_CONF
+ID_LANG_APACHE = wx.NewId()
+LANG_APACHE = u'Apache Conf'
+
 # Use LEX_CPP
 ID_LANG_C    = wx.NewId()
 LANG_C = u'C'
@@ -220,6 +224,7 @@ LANG_YAML = u'YAML'
 EXT_MAP = {
            '68k'                : LANG_68K,
            'ada adb ads a'      : LANG_ADA,
+           'conf htaccess'      : LANG_APACHE,
            'bsh sh configure'   : LANG_BASH,
            'bat cmd'            : LANG_BATCH,
            'c h'                : LANG_C,
@@ -270,6 +275,7 @@ EXT_MAP = {
 # Maps file types to syntax definitions
 LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_ADA    : (ID_LANG_ADA,    stc.STC_LEX_ADA,      'ada'),
+            LANG_APACHE : (ID_LANG_APACHE, stc.STC_LEX_CONF,     'apache'),
             LANG_BASH   : (ID_LANG_BASH,   stc.STC_LEX_BASH,     'sh'),
             LANG_BATCH  : (ID_LANG_BATCH,  stc.STC_LEX_BATCH,    'batch'),
             LANG_C      : (ID_LANG_C,      stc.STC_LEX_CPP,      'cpp'),
@@ -319,9 +325,9 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
 
 # Maps language ID's to File Types
 # Used when manually setting lexer from a menu/dialog
-ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA, 
-          ID_LANG_ASM    : LANG_ASM,    ID_LANG_BASH  : LANG_BASH, 
-          ID_LANG_BATCH  : LANG_BATCH,  
+ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
+          ID_LANG_APACHE : LANG_APACHE, ID_LANG_ASM   : LANG_ASM,
+          ID_LANG_BASH  : LANG_BASH,    ID_LANG_BATCH : LANG_BATCH,  
           ID_LANG_C      : LANG_C,      ID_LANG_CAML  : LANG_CAML,
           ID_LANG_COLDFUSION : LANG_COLDFUSION,
           ID_LANG_CPP    : LANG_CPP,    ID_LANG_CSH   : LANG_CSH, 
