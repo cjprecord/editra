@@ -102,7 +102,6 @@ class AppEventHandlerMixin:
         if id in self.handlers:
             handler = self.handlers[id]
             if handler:
-                print "handler is: " + `handler`
                 return handler(event)
 
         return False
