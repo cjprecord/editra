@@ -55,14 +55,6 @@ class FileBrowserPanel(plugin.Plugin):
         if self._mw != None:
             self._log("[filebrowser] Installing filebrowser plugin")
             
-            #---- Add Menu Items ----#
-            mb = self._mw.GetMenuBar()
-            vm = mb.GetMenuByName("view")
-            self._mi = vm.InsertAlpha(ID_FILEBROWSE, _("File Browser"), 
-                                      _("Open File Browser sidepanel"),
-                                      wx.ITEM_CHECK,
-                                      after=ed_glob.ID_PRE_MARK)
-
             #---- Create File Browser ----#
             self._filebrowser = BrowserPane(self._mw, ID_BROWSERPANE)
             mgr = self._mw.GetFrameManager()
@@ -70,41 +62,26 @@ class FileBrowserPanel(plugin.Plugin):
                             Caption("Editra | File Browser").Left().Layer(1).\
                             CloseButton(True).MaximizeButton(False).\
                             BestSize(wx.Size(215, 350)))
+
             if Profile_Get('SHOW_FB', 'bool', False):
                 mgr.GetPane(PANE_NAME).Show()
-                self._mi.Check(True)
             else:
                 mgr.GetPane(PANE_NAME).Hide()
-                self._mi.Check(False)
             mgr.Update()
 
             # Event Handlers
-            self._mw.Bind(wx.EVT_MENU, self.OnShowBrowser, id=ID_FILEBROWSE)
             self._mw.Bind(wx.aui.EVT_AUI_PANE_CLOSE, self.OnPaneClose)
+
+    def GetMenuHandlers(self):
+        return [(ID_FILEBROWSE, self._filebrowser.OnShowBrowser)]
+
+    def GetUIHandlers(self):
+        return list()
 
     def OnPaneClose(self, evt):
         """Handles when the pane is closed to update the profile"""
-        pane = evt.GetPane()
-        if pane.name == PANE_NAME:
+        if evt.GetPane().pane.name == PANE_NAME:
             Profile_Set('SHOW_FB', False)
-            self._mi.Check(False)
-        else:
-            evt.Skip()
-
-    def OnShowBrowser(self, evt):
-        """Shows the filebrowser"""
-        if evt.GetId() == ID_FILEBROWSE:
-            mgr = self._mw.GetFrameManager()
-            pane = mgr.GetPane(PANE_NAME).Hide()
-            if Profile_Get('SHOW_FB', 'bool', False) and pane.IsShown():
-                pane.Hide()
-                Profile_Set('SHOW_FB', False)
-                self._mi.Check(False)
-            else:
-                pane.Show()
-                Profile_Set('SHOW_FB', True)
-                self._mi.Check(True)
-            mgr.Update()
         else:
             evt.Skip()
 
@@ -269,6 +246,14 @@ class BrowserPane(wx.Panel):
         self._showh_cb = wx.CheckBox(self, self.ID_SHOW_HIDDEN, _("Show Hidden Files"))
         self._showh_cb.SetValue(False)
 
+        #---- Add Menu Items ----#
+        mb = self.GetTopLevelParent().GetMenuBar()
+        vm = mb.GetMenuByName("view")
+        self._mi = vm.InsertAlpha(ID_FILEBROWSE, _("File Browser"), 
+                                  _("Open File Browser sidepanel"),
+                                  wx.ITEM_CHECK,
+                                  after=ed_glob.ID_PRE_MARK)
+
         # Layout Pane
         self._sizer.Add(self._menbar, 0, wx.EXPAND)
         self._sizer.Add(self._browser, 1, wx.EXPAND)
@@ -284,6 +269,7 @@ class BrowserPane(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
         self.Bind(wx.EVT_MENU, self.OnMenu)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
+        vm.Bind(wx.EVT_MENU_OPEN, self.UpdateMenuItem)
 
     def __del__(self):
         """Save the config before we get destroyed"""
@@ -353,6 +339,33 @@ class BrowserPane(wx.Panel):
         gc.DrawPath(path)
 
         evt.Skip()
+
+    def OnShowBrowser(self, evt):
+        """Shows the filebrowser"""
+        if evt.GetId() == ID_FILEBROWSE:
+            mgr = self.GetTopLevelParent().GetFrameManager()
+            pane = mgr.GetPane(PANE_NAME)
+            if pane.IsShown():
+                pane.Hide()
+                Profile_Set('SHOW_FB', False)
+            else:
+                pane.Show()
+                Profile_Set('SHOW_FB', True)
+            mgr.Update()
+        else:
+            evt.Skip()
+
+    def UpdateMenuItem(self, evt):
+        """Update the check mark for the menu item"""
+        mgr = self.GetTopLevelParent().GetFrameManager()
+        pane = mgr.GetPane(PANE_NAME)
+        if pane.IsShown():
+            self._mi.Check(True)
+        else:
+            self._mi.Check(False)
+        evt.Skip()
+
+#-----------------------------------------------------------------------------#
 
 class FileBrowser(wx.GenericDirCtrl):
     """A hack job done to make the genericdirctrl more useful
