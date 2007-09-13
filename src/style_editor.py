@@ -47,7 +47,7 @@ import wx.lib.colourselect as  csel
 import ed_glob
 from profiler import Profile_Get, Profile_Set
 import ed_stc
-from ed_style import StyleItem
+from ed_style import StyleItem, StyleMgr
 import ed_event
 import util
 import syntax.syntax as syntax
@@ -98,7 +98,6 @@ class StyleEditor(wx.Dialog):
         self.OpenPreviewFile('cpp')
 
         # Main Sizer
-        self.SetSizeHints(300, 250)
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.Add((10, 10)) # Spacer
 
@@ -455,6 +454,9 @@ class StyleEditor(wx.Dialog):
 
         """
         self.LOG('[style_editor] [cancel] Cancel Clicked Closing Window')
+        # HACK for some reason SetStyles isn't doing its job right now so
+        #      just set it directly for the time being.
+        StyleMgr.styles = self.styles_orig
         evt.Skip()
 
     def OnCheck(self, evt):
@@ -559,12 +561,13 @@ class StyleEditor(wx.Dialog):
         @param evt: event that called this handler
 
         """
-        self.LOG('[style_editor] [Ok] Ok Clicked Closing Window')
+        self.LOG('[style_editor][info] Ok Clicked Closing Window')
         result = self.DiffStyles()
         if result == wx.ID_NO:
+            StyleMgr.styles = self.styles_orig
             evt.Skip()
         elif result == wx.ID_CANCEL:
-            self.LOG('[style_editor] Info Canceled closer')
+            self.LOG('[style_editor][info] canceled closing')
         else:
             result = self.ExportStyleSheet()
             if result != wx.ID_CANCEL:
@@ -722,6 +725,7 @@ class ColourSetter(wx.Panel):
         self._txt.Bind(wx.EVT_KEY_UP, self.OnTextChange)
         self._txt.Bind(wx.EVT_TEXT_PASTE, self.OnTextChange)
         self._txt.Bind(wx.EVT_KEY_DOWN, self.OnValidateTxt)
+        self.Bind(wx.EVT_UPDATE_UI, self.OnUpdateUI)
 
     def __PostEvent(self):
         """Notify the parent window of any value changes to the control"""
@@ -751,7 +755,7 @@ class ColourSetter(wx.Panel):
 
         """
         hexstr = self._txt.GetValue()
-        hexstr = hexstr.replace('#', '')
+        hexstr = hexstr.replace('#', '').replace(' ', '')
         hexstr = '#' + hexstr + ('0' * (6 - len(hexstr)))
         return hexstr
 
@@ -779,14 +783,29 @@ class ColourSetter(wx.Panel):
         @keyword evt: event that called this handler
 
         """
-        if evt:
-            evt.Skip()
         hexstr = self._txt.GetValue()
         hexstr = hexstr.replace('#', '')
+        if len(hexstr) > 6:
+            hexstr = hexstr[:6]
+            self._txt.SetValue(u'#' + hexstr)
         hexstr = '#' + hexstr + (u'0' * (6 - len(hexstr)))
         colour = util.HexToRGB(hexstr)
         self._cbtn.SetValue(colour)
         self.__PostEvent()
+
+    def OnUpdateUI(self, evt):
+        """Cleanup any bad characters and formating in the display
+        @param evt: UpdateUI
+
+        """
+        txt = self._txt.GetValue().replace('#', '')
+        ret = u''
+        for char in txt:
+            if char not in '0123456789abcdefABCDEF':
+                continue
+            else:
+                ret = ret + char
+        self._txt.SetValue(u'#' + ret)
 
     def OnValidateTxt(self, evt):
         """Validate text to ensure only valid hex characters are entered
