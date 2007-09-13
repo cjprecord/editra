@@ -248,6 +248,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Actions to Take on other Events ----#
         # Frame
+        self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(ed_event.EVT_STATUS, self.OnStatus)
 
@@ -277,6 +278,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         plgmgr = wx.GetApp().GetPluginManager()
         addons = MainWindowAddOn(plgmgr)
         addons.Init(self)
+        self._handlers = dict()
+        self._handlers['menu'] = addons.GetEventHandlers()
+        self._handlers['ui'] = addons.GetEventHandlers(ui=True)
         self._shelf = iface.Shelf(plgmgr)
         self._shelf.Init(self)
         self.LOG("[main][info] Loading Generator plugins")
@@ -297,6 +301,27 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     ### End Private Member Functions/Variables ###
 
     ### Begin Public Function Definitions ###
+    def OnActivate(self, evt):
+        """Activation Event Handler
+        @param evt: event that called this handler
+        @type evt: wx.ActivateEvent
+
+        """
+        app = wx.GetApp()
+        if evt.GetActive():
+            for handler in self._handlers['menu']:
+                app.AddHandlerForID(*handler)
+
+            for handler in self._handlers['ui']:
+                app.AddUIHandlerForID(*handler)
+        else:
+            for handler in self._handlers['menu']:
+                app.RemoveHandlerForID(handler[0])
+
+            for handler in self._handlers['ui']:
+                app.RemoveUIHandlerForID(handler[0])
+        evt.Skip()
+
     def DoOpen(self, evt, fname=u''):
         """ Do the work of opening a file and placing it
         in a new notebook page.
@@ -1127,6 +1152,30 @@ class MainWindowI(plugin.Interface):
         """
         raise NotImplementedError
 
+    def GetMenuHandlers(self):
+        """Get menu event handlers/id pairs. This function should return a
+        list of tuples containing menu ids and their handlers. The handlers
+        should be not be a member of this class but a member of the ui component
+        that they handler acts upon.
+        
+        
+        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
+
+        """
+        raise NotImplementedError
+
+    def GetUIHandlers(self):
+        """Get update ui event handlers/id pairs. This function should return a
+        list of tuples containing object ids and their handlers. The handlers
+        should be not be a member of this class but a member of the ui component
+        that they handler acts upon.
+        
+        
+        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
+
+        """
+        raise NotImplementedError
+
 class MainWindowAddOn(plugin.Plugin):
     """Plugin that Extends the L{MainWindowI}"""
     observers = plugin.ExtensionPoint(MainWindowI)
@@ -1141,3 +1190,21 @@ class MainWindowAddOn(plugin.Plugin):
                 ob.PlugIt(window)
             except Exception, msg:
                 log("[main_addon][err] %s" % str(msg))
+
+    def GetEventHandlers(self, ui=False):
+        """Get Event handlers and Id's from all observers
+        @keyword ui: Get Update Ui handlers (default get menu handlers)
+        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
+
+        """
+        handlers = list()
+        for ob in self.observers:
+            try:
+                if ui:
+                    items = ob.GetUIHandlers()
+                else:
+                    items = ob.GetMenuHandlers()
+            except Exception, msg:
+                continue
+            handlers.extend(items)
+        return handlers
