@@ -55,13 +55,14 @@ import dev_tool
 import ed_main
 import ed_art
 import plugin
+import extern.events as events
 
 #--------------------------------------------------------------------------#
 # Global Variables
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
-class Editra(wx.App):
+class Editra(wx.App, events.AppEventHandlerMixin):
     """The Editra Application Object
     @see: L{wx.App}
 
@@ -72,7 +73,8 @@ class Editra(wx.App):
 
         """
         wx.App.__init__(self, *args, **kargs)
-        
+        events.AppEventHandlerMixin.__init__(self)
+
         # Attributes
         self._log = dev_tool.DEBUGP
         self._lock = False
