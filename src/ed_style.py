@@ -290,9 +290,6 @@ class StyleMgr(object):
     """Manages style definitions and provides them on request.
     Also provides functionality for loading custom style sheets and 
     modifying styles during run time.
-    @todo: possibly reimplement as a singleton to reduce the amout of duplicate
-           data that is stored for each control.
-    @todo: dont load style sheet for every newly created instance
 
     """
     styles         = dict()
@@ -331,7 +328,7 @@ class StyleMgr(object):
         def_dict = \
             {'brace_good' : StyleItem("#FFFFFF", "#0000FF,bold"),
              'brace_bad'  : StyleItem(back="#FF0000,bold"),
-             'calltip' : StyleItem("#404040", "#FFFFB8"),
+             'calltip'    : StyleItem("#404040", "#FFFFB8"),
              'ctrl_char'  : StyleItem(),
              'line_num'   : StyleItem(back="#C0C0C0", face="%(secondary)s", \
                                       size="%(size3)d"),
