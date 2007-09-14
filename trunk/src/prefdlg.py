@@ -818,7 +818,7 @@ class AppearancePanel(PrefPanelBase):
         # Activate Metal Style for OSX
         if wx.Platform == '__WXMAC__':
             m_cb = wx.CheckBox(self, ed_glob.ID_PREF_METAL, \
-                               _("Use Metal Style (OS X Only)"))
+                               _("Use Metal Style"))
             m_cb.SetValue(Profile_Get('METAL', 'bool', False))
         else:
             m_cb = (0, 0)

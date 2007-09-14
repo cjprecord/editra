@@ -126,7 +126,7 @@ class LangListCombo(wx.combo.BitmapComboBox):
         lang_items = langlist.CreateLanguagesResourceLists(langlist.LC_ONLY, \
                                                                lang_ids)
         wx.combo.BitmapComboBox.__init__(self, parent, id_, 
-                                         size=wx.Size(320, 26), 
+                                         size=wx.Size(250, 26), 
                                          style=wx.CB_READONLY)
         for lang_d in lang_items[1]:
             bit_m = lang_items[0].GetBitmap(lang_items[1].index(lang_d))
