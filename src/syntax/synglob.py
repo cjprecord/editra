@@ -213,6 +213,8 @@ ID_LANG_DIFF = wx.NewId()
 LANG_DIFF = u'Diff File'
 ID_LANG_MAKE  = wx.NewId()
 LANG_MAKE = u'Makefile'
+ID_LANG_PROPS = wx.NewId()
+LANG_PROPS = u'Properties'
 
 # Use LEX_YAML
 ID_LANG_YAML = wx.NewId()
@@ -259,6 +261,7 @@ EXT_MAP = {
            'dfm dpk dpr inc p pas pp' : LANG_PASCAL,
            'cgi pl pm pod'      : LANG_PERL,
            'php php3 phtml phtm' : LANG_PHP,
+           'ini inf reg url cfg cnf' : LANG_PROPS,
            'ai ps'              : LANG_PS,
            'py pyw python'      : LANG_PYTHON,
            'rb rbw rbx'         : LANG_RUBY,
@@ -310,6 +313,7 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
             LANG_PASCAL : (ID_LANG_PASCAL, stc.STC_LEX_PASCAL,   'pascal'),
             LANG_PERL   : (ID_LANG_PERL,   stc.STC_LEX_PERL,     'perl'),
             LANG_PHP    : (ID_LANG_PHP,    stc.STC_LEX_HTML,     'php'),
+            LANG_PROPS  : (ID_LANG_PROPS,  stc.STC_LEX_PROPERTIES, 'props'),
             LANG_PS     : (ID_LANG_PS,     stc.STC_LEX_PS,       'postscript'),
             LANG_PYTHON : (ID_LANG_PYTHON, stc.STC_LEX_PYTHON,   'python'),
             LANG_RUBY   : (ID_LANG_RUBY,   stc.STC_LEX_RUBY,     'ruby'),
@@ -325,6 +329,8 @@ LANG_MAP = {LANG_68K    : (ID_LANG_68K,    stc.STC_LEX_ASM,      'asm68k'),
 
 # Maps language ID's to File Types
 # Used when manually setting lexer from a menu/dialog
+# TODO maybe dynamically generate this on the fly to remove the need
+#      to update it for each new language.
 ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_APACHE : LANG_APACHE, ID_LANG_ASM   : LANG_ASM,
           ID_LANG_BASH  : LANG_BASH,    ID_LANG_BATCH : LANG_BATCH,  
@@ -345,6 +351,7 @@ ID_MAP = {ID_LANG_68K    : LANG_68K,    ID_LANG_ADA   : LANG_ADA,
           ID_LANG_NASM  : LANG_MASM,    ID_LANG_NSIS   : LANG_NSIS,   
           ID_LANG_OCTAVE : LANG_OCTAVE, ID_LANG_PASCAL : LANG_PASCAL, 
           ID_LANG_PERL   : LANG_PERL,   ID_LANG_PHP    : LANG_PHP,
+          ID_LANG_PROPS  : LANG_PROPS,
           ID_LANG_PS     : LANG_PS,     ID_LANG_PYTHON : LANG_PYTHON,
           ID_LANG_RUBY   : LANG_RUBY,   ID_LANG_SQL    : LANG_SQL,
           ID_LANG_ST     : LANG_ST,     ID_LANG_VB     : LANG_VB,
