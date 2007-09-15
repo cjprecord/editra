@@ -59,6 +59,7 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_COMPUTER : u'computer.png',
         ed_glob.ID_CUT    : u'cut.png',
         ed_glob.ID_DELETE : u'delete.png',
+        ed_glob.ID_DOCPROP : u'doc_props.png',
         ed_glob.ID_DOWN   : u'down.png',
         ed_glob.ID_EXIT   : u'quit.png',
         ed_glob.ID_FILE   : u'file.png',
@@ -75,6 +76,7 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_NEW_WINDOW: u'newwin.png',
         ed_glob.ID_NEXT_MARK : u'bmark_next.png',
         ed_glob.ID_OPEN    : u'open.png',
+        ed_glob.ID_PACKAGE : u'package.png',
         ed_glob.ID_PASTE   : u'paste.png',
         ed_glob.ID_PLUGMGR : u'plugin.png',
         ed_glob.ID_PRE_MARK : u'bmark_pre.png',
@@ -87,9 +89,11 @@ ART = { ed_glob.ID_ABOUT  : u'about.png',
         ed_glob.ID_SAVEAS  : u'saveas.png',
         ed_glob.ID_STYLE_EDIT : u'style_edit.png',
         ed_glob.ID_TEX_GEN : u'tex_gen.png',
+        ed_glob.ID_THEME  : u'theme.png',
         ed_glob.ID_UNDO   : u'undo.png',
         ed_glob.ID_UP     : u'up.png',
         ed_glob.ID_USB    : u'usb.png',
+        ed_glob.ID_WEB    : u'web.png',
         ed_glob.ID_ZOOM_IN : u'zoomi.png',
         ed_glob.ID_ZOOM_OUT : u'zoomo.png',
         ed_glob.ID_ZOOM_NORMAL : u'zoomd.png'
@@ -117,17 +121,7 @@ MIME_ART = { synglob.ID_LANG_BASH : u'shell.png',
  }
  
 # Map of non user definable art resources
-OTHER_ART = { ed_glob.ID_DOWNLOAD_DLG : catalog['editra_dl'],
-              ed_glob.ID_APP_SPLASH : catalog['splashwarn'],
-              ed_glob.ID_PLUGIN_CFG : catalog['plugin_cfg'],
-              ed_glob.ID_PLUGIN_DL : catalog['plugin_dl'],
-              ed_glob.ID_PLUGIN_INST : catalog['plugin_install'],
-              ed_glob.ID_PREF_ADVANCED : catalog['advanced'],
-              ed_glob.ID_PREF_APPEARANCE : catalog['appearance'],
-              ed_glob.ID_PREF_DOCUMENT : catalog['document'],
-              ed_glob.ID_PREF_GENERAL : catalog['general'],
-              ed_glob.ID_PREF_UPDATE : catalog['update']
-            }
+OTHER_ART = { ed_glob.ID_APP_SPLASH : catalog['splashwarn'] }
 
 # Map for default system/wx provided graphic resources.
 DEFAULT = { 
@@ -138,6 +132,7 @@ DEFAULT = {
             ed_glob.ID_CUT     : wx.ART_CUT,
             ed_glob.ID_DELETE  : wx.ART_DELETE,
             ed_glob.ID_DEL_BM  : wx.ART_DEL_BOOKMARK,
+            ed_glob.ID_DOCPROP : wx.ART_NORMAL_FILE,        # Bad match
             ed_glob.ID_DOWN    : wx.ART_GO_DOWN,
             ed_glob.ID_EXIT    : wx.ART_QUIT,
             ed_glob.ID_FILE    : wx.ART_NORMAL_FILE,
@@ -149,15 +144,19 @@ DEFAULT = {
             ed_glob.ID_NEW     : wx.ART_NEW,
             ed_glob.ID_NEXT_MARK : wx.ART_GO_FORWARD,
             ed_glob.ID_OPEN    : wx.ART_FILE_OPEN,
+            ed_glob.ID_PACKAGE : wx.ART_HARDDISK,           # Poor match
             ed_glob.ID_PASTE   : wx.ART_PASTE,
+            ed_glob.ID_PREF    : wx.ART_EXECUTABLE_FILE,    # Bad match
             ed_glob.ID_PRE_MARK : wx.ART_GO_BACK,
             ed_glob.ID_PRINT   : wx.ART_PRINT,
             ed_glob.ID_REDO    : wx.ART_REDO,
             ed_glob.ID_SAVE    : wx.ART_FILE_SAVE,
             ed_glob.ID_SAVEAS  : wx.ART_FILE_SAVE_AS,
+            ed_glob.ID_THEME   : wx.ART_INFORMATION,   # Bad match
             ed_glob.ID_UNDO    : wx.ART_UNDO,
             ed_glob.ID_UP      : wx.ART_GO_UP,
-            ed_glob.ID_USB     : wx.ART_REMOVABLE
+            ed_glob.ID_USB     : wx.ART_REMOVABLE,
+            ed_glob.ID_WEB     : wx.ART_HARDDISK       # Bad match
 }
 
 # Client Id Map

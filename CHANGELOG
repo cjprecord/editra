@@ -12,7 +12,18 @@ DATE xx/xx/2007
 6th Alpha Release
 
 NEWS:
+This release introduces a number of new features to the editor, the biggest
+change being that haveing multiple top level windows open at any given time is
+now supported. The second biggest addition is the addition of a control for
+sending commands to the editor, it only supports a small set of commands currently
+but will be extended in the future to allow as complete use of the editor without
+the mouse as possible.
 
+There have also been a number of fairly major performance improvements this round that
+should help to make Editra even faster than it previously was.
+
+In addition to these enhancements there were the usual bug fixes, details can
+be viewed in the below changelog.
 
 NEW: [features/improvements]
 +Opening multiple toplevel windows is now possible
@@ -21,9 +32,15 @@ acts like an Ex command mode. (see documentation page for description of
 available commands)
 +Some substantial performance improvements for text input speed
 +Faster file loading
++Bidirectional Search
++Highlighting support for [Apache Config files, ini files]
 +Link to project documentation and help guides in Help Menu
-+Shortcut to close quick find bar (ESC will hide the bar)
++Shortcut to close quick find bar (ESC will now hide the bar)
 +Command bar now automatically hides it self after most actions
++Improvements to the Style Editor
++Updates to all plugins to work with multiple windows
++Theme system extended to all program icons
++New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.
@@ -32,6 +49,7 @@ documents.
 +Ensure file handle valid when reloading files
 +Many bug and behavior fixes in the Calculator plugin
 +Unicode handling error in file history loading
++Plugins now properly show activation status in View Menu
 
 #-----------------------------------------------------------------------------#
 

@@ -145,6 +145,7 @@ src/extern/pkg_resources.py
 src/syntax/README
 src/syntax/__init__.py
 src/syntax/ada.py
+src/syntax/apache.py
 src/syntax/asm.py
 src/syntax/asm68k.py
 src/syntax/batch.py
@@ -175,6 +176,7 @@ src/syntax/pascal.py
 src/syntax/perl.py
 src/syntax/php.py
 src/syntax/postscript.py
+src/syntax/props.py
 src/syntax/python.py
 src/syntax/ruby.py
 src/syntax/sh.py
@@ -191,6 +193,7 @@ styles/default.ess
 styles/midnight.ess
 tests/68k_assembly.68k
 tests/ada.adb
+tests/apache_conf.conf
 tests/bash_shell_script.sh
 tests/c.c
 tests/c-shell_script.csh
@@ -223,6 +226,7 @@ tests/perl.pl
 tests/php.php
 tests/plain_text.txt
 tests/postscript.ps
+tests/properties.ini
 tests/python.python
 tests/ruby.rb
 tests/smalltalk.st
