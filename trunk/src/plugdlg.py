@@ -64,6 +64,29 @@ BASE_URL = "http://editra.org/"
 PLUGIN_REPO = "http://editra.org/plugins.php?list=True&py=" + PY_VER
 
 _ = wx.GetTranslation
+
+#--------------------------------------------------------------------------#
+
+def MakeThemeTool(tool_id):
+    """Makes a themed bitmap for the tool book of the plugin dialog.
+    @param tool_id: An art identifier id
+    @return: 32x32 bitmap
+    @todo: figure out cause of black artifacts on wxmac
+
+    """
+    base = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
+    over = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PLUGMGR), wx.ART_MENU)
+    if base.IsOk() and over.IsOk():
+        # Draw overlay onto button
+        mdc = wx.MemoryDC()
+        mdc.SelectObject(base)
+        mdc.SetBrush(wx.TRANSPARENT_BRUSH)
+        mdc.SetPen(wx.TRANSPARENT_PEN)
+        mdc.DrawBitmap(over, 15, 15, True)
+        return mdc.GetAsBitmap()
+    else:
+        return wx.ArtProvider.GetBitmap(wx.ART_WARNING, size=(32, 32))
+    
 #--------------------------------------------------------------------------#
 
 class PluginDialog(wx.Frame):
@@ -248,15 +271,9 @@ class PluginPages(wx.Toolbook):
         # Create Pages
         self._imglst = wx.ImageList(32, 32)
         self._imgind = dict()
-        self._imgind[CONFIG_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( 
-                                                   str(ed_glob.ID_PLUGIN_CFG), \
-                                                       wx.ART_OTHER))
-        self._imgind[DOWNLOAD_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap(
-                                                  str(ed_glob.ID_PLUGIN_DL), \
-                                                      wx.ART_OTHER))
-        self._imgind[INSTALL_PG] = self._imglst.Add(wx.ArtProvider.GetBitmap( 
-                                                  str(ed_glob.ID_PLUGIN_INST), \
-                                                      wx.ART_OTHER))
+        self._imgind[CONFIG_PG] = self._imglst.Add(MakeThemeTool(ed_glob.ID_PREF))
+        self._imgind[DOWNLOAD_PG] = self._imglst.Add(MakeThemeTool(ed_glob.ID_WEB))
+        self._imgind[INSTALL_PG] = self._imglst.Add(MakeThemeTool(ed_glob.ID_PACKAGE))
         self._config = ConfigPanel(self)
         self._download = DownloadPanel(self)
         self._install = InstallPanel(self)

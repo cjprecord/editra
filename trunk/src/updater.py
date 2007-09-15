@@ -524,8 +524,14 @@ class DownloadDialog(wx.Frame):
         #---- Layout ----#
         self.CreateStatusBar(2)
         self._sizer = wx.GridBagSizer()
-        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWNLOAD_DLG), 
-                                       wx.ART_OTHER)
+        bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_WEB), wx.ART_TOOLBAR)
+        mdc = wx.MemoryDC(bmp)
+        tmp_bmp = wx.Image(ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.png", 
+                           wx.BITMAP_TYPE_PNG)
+        tmp_bmp.Rescale(20, 20, wx.IMAGE_QUALITY_HIGH)
+        mdc.DrawBitmap(tmp_bmp.ConvertToBitmap(), 11, 11)
+        bmp = mdc.GetAsBitmap()
+        mdc.Destroy()
         bmp = wx.StaticBitmap(panel, wx.ID_ANY, bmp)
         self._sizer.AddMany([((10, 10), (0, 0)), (bmp, (1, 1), (3, 2)),
                              ((5, 5), (1, 3)),
