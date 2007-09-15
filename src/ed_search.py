@@ -108,31 +108,51 @@ class TextFinder(object):
         pool = self.FetchPool()
         query = self._data.GetFindString()
         if search_id in [wx.wxEVT_COMMAND_FIND, wx.wxEVT_COMMAND_FIND_NEXT]:
-            if search_id == wx.wxEVT_COMMAND_FIND_NEXT:#or wx.FR_DOWN & s_flags:
-                if self._last_found < 0:
-                    pool.SetCurrentPos(0) # Start at top again
+            if search_id == wx.wxEVT_COMMAND_FIND_NEXT:
+                if wx.FR_DOWN & s_flags:
+                    if self._last_found < 0:
+                        pool.SetCurrentPos(0) # Start at top again
+                    else:
+                        pool.SetCurrentPos(pool.GetCurrentPos() + len(query))
                 else:
-                    pool.SetCurrentPos(pool.GetCurrentPos() + len(query))
+                    # Searching previous
+                    if self._last_found < 0:
+                        pool.SetCurrentPos(pool.GetLength())
+                    else:
+                        pool.SetCurrentPos(pool.GetCurrentPos() - len(query))
 
             pool.SearchAnchor()
-            s_flags = flag_map[s_flags - wx.FR_DOWN]
-           # if not s_flags & wx.FR_DOWN:
-           #     found = pool.SearchPrev(flag_map[s_flags], query)
-           # else:
-            found = pool.SearchNext(s_flags | wx.stc.STC_FIND_REGEXP, query)
+            if not s_flags & wx.FR_DOWN:
+                found = pool.SearchPrev(flag_map[s_flags] | \
+                                        wx.stc.STC_FIND_REGEXP, query)
+            else:
+                found = pool.SearchNext(flag_map[s_flags - wx.FR_DOWN] | \
+                                        wx.stc.STC_FIND_REGEXP, query)
+
             if found > 0:
                 pool.SetCurrentPos(found)
                 # HACK to ensure selection is visible
                 sel = pool.GetSelection()
                 pool.SetSelection(sel[1], sel[0])
             else:
-                # Try search from top
+                # Try search from begining/end again
                 self.SetStart(pool)
                 self.SetScroll(pool)
-                pool.SetCurrentPos(0)
-                pool.SetSelection(0, 0)
+                if not s_flags & wx.FR_DOWN:
+                    pool.SetCurrentPos(pool.GetLength())
+                    pool.SetSelection(pool.GetLength(), pool.GetLength())
+                else:
+                    pool.SetCurrentPos(0)
+                    pool.SetSelection(0, 0)
                 pool.SearchAnchor()
-                found = pool.SearchNext(s_flags | wx.stc.STC_FIND_REGEXP, query)
+
+                if not s_flags & wx.FR_DOWN:
+                    found = pool.SearchPrev(flag_map[s_flags] | \
+                                            wx.stc.STC_FIND_REGEXP, query)
+                else:
+                    found = pool.SearchNext(flag_map[s_flags - wx.FR_DOWN] | \
+                                            wx.stc.STC_FIND_REGEXP, query)
+
             if found < 0:
                 # Couldnt find it anywhere so set screen back to start position
                 pool.ScrollToLine(self._scroll)
@@ -190,6 +210,13 @@ class TextFinder(object):
         """
         return self._last_found
 
+    def GetSearchFlags(self):
+        """Get the find services search flags
+        @return: bitmask of the set search flags
+
+        """
+        return self._data.GetFlags()
+
     def OnFindClose(self, evt):
         """Destroy Find Dialog After Cancel is clicked in it
         @param evt: event that called this handler
@@ -213,11 +240,10 @@ class TextFinder(object):
         if e_id == ed_glob.ID_FIND_REPLACE:
             self._find_dlg = wx.FindReplaceDialog(self._parent, self._data, \
                                                   _("Find/Replace"),
-                                                  wx.FR_REPLACEDIALOG | \
-                                                  wx.FR_NOUPDOWN)
+                                                  wx.FR_REPLACEDIALOG)
         elif e_id == ed_glob.ID_FIND:
             self._find_dlg = wx.FindReplaceDialog(self._parent, self._data, \
-                                                  _("Find"), wx.FR_NOUPDOWN)
+                                                  _("Find"))
         else:
             evt.Skip()
             return
@@ -367,7 +393,7 @@ class EdSearchCtrl(wx.SearchCtrl):
     """
     def __init__(self, parent, id_, value="", menulen=0, \
                  pos=wx.DefaultPosition, size=wx.DefaultSize, \
-                 style=wx.TE_PROCESS_ENTER | wx.TE_RICH2):
+                 style=wx.TE_RICH2):
         """Initializes the Search Control
         @param menulen: max length of history menu
 
@@ -377,7 +403,7 @@ class EdSearchCtrl(wx.SearchCtrl):
         # Attributes
         self._parent     = parent
         # TEMP HACK
-        self.FindService = parent.GetParent().nb.FindService
+        self.FindService = self.GetTopLevelParent().nb.FindService
         self._flags      = wx.FR_DOWN
         self._recent     = list()        # The History List
         self._last       = None
@@ -385,6 +411,7 @@ class EdSearchCtrl(wx.SearchCtrl):
         self.max_menu    = menulen + 2   # Max menu length + descript/separator
 
         # Make it look a little nicer on gtk
+        # NOTE: not tested
         if wx.Platform == '__WXGTK__':
             self.SetSearchBitmap(get_search_bitmap())
             self.SetCancelBitmap(get_search_close_bitmap())
@@ -402,7 +429,7 @@ class EdSearchCtrl(wx.SearchCtrl):
                 if isinstance(child, wx.TextCtrl):
                     child.Bind(wx.EVT_KEY_UP, self.ProcessEvent)
                     break
-        self.Bind(wx.EVT_TEXT_ENTER, self.ProcessEvent)
+
         self.Bind(wx.EVT_KEY_UP, self.ProcessEvent)
         self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
         self.Bind(wx.EVT_MENU, self.OnHistMenu)
@@ -481,6 +508,19 @@ class EdSearchCtrl(wx.SearchCtrl):
                 return True
         return False
 
+    def IsSearchPrevious(self):
+        """Returns True if the search control is set to search
+        in Previous mode.
+        @return: whether search is searchin up or not
+        @rtype: boolean
+
+        """
+        data = self.GetSearchData()
+        if data != None:
+            if wx.FR_DOWN & data.GetFlags():
+                return False
+        return True
+
     def IsWholeWord(self):
         """Returns True if the search control is set to search
         in Whole Word mode.
@@ -520,35 +560,50 @@ class EdSearchCtrl(wx.SearchCtrl):
 
         """
         e_type = evt.GetEventType()
-        if e_type == wx.wxEVT_COMMAND_TEXT_ENTER:
-            dev_tool.DEBUGP("[search_evt] Search Entered: %s" % self.GetValue())
-            self.InsertHistoryItem(self.GetValue())
-            self.FindService.SetQueryString(self.GetValue())
-            self.FindService.SetSearchFlags(self._flags)
-            if self.GetValue() != self._last:
-                s_cmd = wx.wxEVT_COMMAND_FIND
-            else:
-                s_cmd = wx.wxEVT_COMMAND_FIND_NEXT
-            self._last = self.GetValue()
-            self.FindService.OnFind(wx.FindDialogEvent(s_cmd))
-        elif e_type == wx.wxEVT_KEY_UP:
+        if e_type == wx.wxEVT_KEY_UP:
             e_key = evt.GetKeyCode()
             if e_key == wx.WXK_ESCAPE:
                 # HACK change to more safely determine the context
                 # Currently control is only used in command bar
                 self.GetParent().Hide()
+                return
+            elif e_key == wx.WXK_SHIFT:
+                self.SetSearchFlag(wx.FR_DOWN)
+                return
+            else:
+                pass
+
             tmp = self.GetValue()
             # Dont do search 
             if tmp == wx.EmptyString or \
                evt.CmdDown() or e_key == wx.WXK_COMMAND:
                 return
+
             if wx.Platform == '__WXMAC__' and len(self.GetValue()) > 0:
                 self.ShowCancelButton(True)
             else:
                 self.ShowCancelButton(False)
+
+            if e_key == wx.WXK_RETURN:
+                if evt.ShiftDown():
+                    if wx.FR_DOWN & self._flags:
+                        self.ClearSearchFlag(wx.FR_DOWN)
+                else:
+                    self.SetSearchFlag(wx.FR_DOWN)
+
+                if self.GetValue() != self._last:
+                    s_cmd = wx.wxEVT_COMMAND_FIND
+                else:
+                    s_cmd = wx.wxEVT_COMMAND_FIND_NEXT
+                self.InsertHistoryItem(self.GetValue())
+            else:
+                self.SetSearchFlag(wx.FR_DOWN)
+                s_cmd = wx.wxEVT_COMMAND_FIND
+
+            self._last = self.GetValue()
             self.FindService.SetQueryString(self.GetValue())
             self.FindService.SetSearchFlags(self._flags)
-            self.FindService.OnFind(wx.FindDialogEvent(wx.wxEVT_COMMAND_FIND))
+            self.FindService.OnFind(wx.FindDialogEvent(s_cmd))
         else:
             evt.Skip()
             return
