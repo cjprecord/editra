@@ -106,7 +106,8 @@ def GetXImage():
 # Globals
 ID_CLOSE_BUTTON = wx.NewId()
 ID_SEARCH_CTRL = wx.NewId()
-ID_SEARCH_WORD = wx.NewId()
+ID_SEARCH_NEXT = wx.NewId()
+ID_SEARCH_PRE = wx.NewId()
 ID_MATCH_CASE = wx.NewId()
 ID_FIND_LBL = wx.NewId()
 ID_LINE_CTRL = wx.NewId()
@@ -154,7 +155,7 @@ class CommandBar(wx.Panel):
 
         # Bind Events
         self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_BUTTON, self.OnClose, id=ID_CLOSE_BUTTON)
+        self.Bind(wx.EVT_BUTTON, self.OnButton)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
 
     def Hide(self):
@@ -200,9 +201,8 @@ class CommandBar(wx.Panel):
         go_lbl = wx.StaticText(self, ID_GOTO_LBL, _("Goto Line") + ": ")
         if wx.Platform == '__WXMAC__':
             go_lbl.SetFont(wx.SMALL_FONT)
-        h_sizer.Add(go_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        h_sizer.Add((5, 5))
-        h_sizer.Add(v_sizer)
+        h_sizer.AddMany([(go_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                         ((5, 5)), (v_sizer)])
         h_sizer.Layout()
         self._goto_sizer = h_sizer
         self._h_sizer.Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
@@ -219,9 +219,8 @@ class CommandBar(wx.Panel):
         cmd_lbl = wx.StaticText(self, ID_CMD_LBL, _("Command") + ": ")
         if wx.Platform == '__WXMAC__':
             cmd_lbl.SetFont(wx.SMALL_FONT)
-        h_sizer.Add(cmd_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        h_sizer.Add((5, 5))
-        h_sizer.Add(v_sizer)
+        h_sizer.AddMany([(cmd_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                         ((5, 5)), (v_sizer)])
         h_sizer.Layout()
         self._cmd_sizer = h_sizer
         self._h_sizer.Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
@@ -237,6 +236,8 @@ class CommandBar(wx.Panel):
         """
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         v_sizer = wx.BoxSizer(wx.VERTICAL)
+        t_sizer = wx.BoxSizer(wx.VERTICAL)
+
         v_sizer.Add((5, 5))
         ssize = wx.Size(180, 20)
         if wx.Platform == '__WXGTK__':
@@ -246,29 +247,38 @@ class CommandBar(wx.Panel):
         v_sizer.Add(search)
         v_sizer.Add((4, 4))
         f_lbl = wx.StaticText(self, ID_FIND_LBL, _("Find") + u": ")
-        mc_sizer = wx.BoxSizer(wx.VERTICAL)
-        mc_sizer.Add((7, 7))
+        ctrl_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
+        next_btn = wx.BitmapButton(self, ID_SEARCH_NEXT, 
+                                   t_bmp, style=wx.NO_BORDER)
+        nlbl = wx.StaticText(self, label=_("Next"))
+
+        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
+        pre_btn = wx.BitmapButton(self, ID_SEARCH_PRE, 
+                                  t_bmp, style=wx.NO_BORDER)
+        plbl = wx.StaticText(self, label=_("Previous"))
+
         match_case = wx.CheckBox(self, ID_MATCH_CASE, _("Match Case"))
         match_case.SetValue(search.IsMatchCase())
-        mc_sizer.Add(match_case)
-        mc_sizer.Add((4, 4))
-        ww_sizer = wx.BoxSizer(wx.VERTICAL)
-        ww_sizer.Add((7, 7))
-        ww_cb = wx.CheckBox(self, ID_SEARCH_WORD, _("Whole Word"))
-        ww_cb.SetValue(search.IsWholeWord())
-        ww_sizer.Add(ww_cb)
-        ww_sizer.Add((4, 4))
         if wx.Platform == '__WXMAC__':
             f_lbl.SetFont(wx.SMALL_FONT)
             match_case.SetFont(wx.SMALL_FONT)
-            ww_cb.SetFont(wx.SMALL_FONT)
-        h_sizer.Add(f_lbl, 0, wx.ALIGN_CENTER_VERTICAL)
-        h_sizer.Add((5, 5))
-        h_sizer.Add(v_sizer)
-        h_sizer.Add((10, 10))
-        h_sizer.Add(mc_sizer)
-        h_sizer.Add((10, 10))
-        h_sizer.Add(ww_sizer)
+            nlbl.SetFont(wx.SMALL_FONT)
+            plbl.SetFont(wx.SMALL_FONT)
+
+        ctrl_sizer.AddMany([(10, 10), (next_btn, 0, wx.ALIGN_CENTER_VERTICAL), 
+                            ((3, 3)), (nlbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                            ((10, 10)), (pre_btn, 0, wx.ALIGN_CENTER_VERTICAL), 
+                            ((3, 3)), (plbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                            ((10, 10)), (match_case)])
+
+        t_sizer.Add((7, 7))
+        t_sizer.Add(ctrl_sizer)
+        t_sizer.Add((4, 4))
+
+        h_sizer.AddMany([(f_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                         ((5, 5)), (v_sizer), 
+                         (ctrl_sizer, 0, wx.ALIGN_CENTER_VERTICAL)])
         self._search_sizer = h_sizer
         self._h_sizer.Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
         self._h_sizer.Layout()
@@ -281,30 +291,37 @@ class CommandBar(wx.Panel):
 
         """
         e_id = evt.GetId()
-        if e_id in [ID_MATCH_CASE, ID_SEARCH_WORD]:
-            flag_map = { ID_MATCH_CASE : wx.FR_MATCHCASE,
-                         ID_SEARCH_WORD : wx.FR_WHOLEWORD
-                        }
+        if e_id == ID_MATCH_CASE:
             ctrl = self.FindWindowById(e_id)
+            flag_map = { ID_MATCH_CASE : wx.FR_MATCHCASE }
             if ctrl != None:
-                val = ctrl.GetValue()
                 search = self.FindWindowById(ID_SEARCH_CTRL)
                 if search != None:
-                    if val:
+                    if ctrl.GetValue():
                         search.SetSearchFlag(flag_map[e_id])
                     else:
                         search.ClearSearchFlag(flag_map[e_id])
         else:
             evt.Skip()
 
-    def OnClose(self, evt):
-        """Closes the panel and cleans up the controls
+    def OnButton(self, evt):
+        """Handles events from the buttons on the bar
         @param evt: Event that called this handler
 
         """
         e_id = evt.GetId()
         if e_id == ID_CLOSE_BUTTON:
             self.Hide()
+        elif e_id in [ID_SEARCH_NEXT, ID_SEARCH_PRE]:
+            search = self.FindWindowById(ID_SEARCH_CTRL)
+            if search != None:
+                evt = wx.KeyEvent(wx.wxEVT_KEY_UP)
+                evt.m_keyCode = wx.WXK_RETURN
+                if e_id == ID_SEARCH_PRE:
+                    evt.m_shiftDown = True
+                else:
+                    evt.m_shiftDown = False
+                wx.PostEvent(search, evt)
         else:
             evt.Skip()
 
