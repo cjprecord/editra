@@ -346,14 +346,18 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 result = dlg.GetReturnCode()
 
             _PSET('FFILTER', dlg.GetFilterIndex())
+            o_win = _PGET('OPEN_NW', default=False)
             if result != wx.ID_CANCEL:
                 for path in paths:
-                    dirname = util.GetPathName(path)
-                    filename = util.GetFileName(path)
-                    self.nb.OpenPage(dirname, filename)		   
-                    self.SetTitle("%s - file://%s/%s" % \
-                                  (filename, dirname, filename))
-                    self.nb.GoCurrentPage()
+                    if o_win:
+                        wx.GetApp().OpenNewWindow(path)
+                    else:
+                        dirname = util.GetPathName(path)
+                        filename = util.GetFileName(path)
+                        self.nb.OpenPage(dirname, filename)		   
+                        self.SetTitle("%s - file://%s/%s" % \
+                                      (filename, dirname, filename))
+                        self.nb.GoCurrentPage()
             else:
                 pass
         else:
@@ -412,7 +416,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.DoOpen(evt)
             self.UpdateToolBar()
         else:
-            evt.SkipId()
+            evt.Skip()
 
     def OnFileHistory(self, evt):
         """Open a File from the File History

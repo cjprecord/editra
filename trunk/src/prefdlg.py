@@ -380,6 +380,9 @@ class GeneralPanel(PrefPanelBase):
                          default=Profile_Get('FHIST_LVL', 'str'))
         fhsizer = wx.BoxSizer(wx.HORIZONTAL)
         fhsizer.AddMany([(fh_lbl, 0), ((5, 5), 0), (fh_ch, 0)])
+        win_cb = wx.CheckBox(self, ed_glob.ID_NEW_WINDOW,
+                             _("Open files in new windows by default"))
+        win_cb.SetValue(Profile_Get('OPEN_NW'))
         pos_cb = wx.CheckBox(self, ed_glob.ID_PREF_SPOS, 
                              _("Remember File Position"))
         pos_cb.SetValue(Profile_Get('SAVE_POS'))
@@ -406,10 +409,11 @@ class GeneralPanel(PrefPanelBase):
                        (session_cb, (4, 2), (1, 2)),
                        (splash_cb, (5, 2), (1, 2))])
         sizer.AddMany([(file_lbl, (7, 1)),
-                       (fhsizer, (7, 2), (1, 2)), (pos_cb, (8, 2), (1, 3)),
-                       (chkmod_cb, (9, 2), (1, 2))])
-        sizer.AddMany([(locale, (11, 1)),
-                       (lsizer, (11, 2), (1, 3))])
+                       (fhsizer, (7, 2), (1, 2)), (win_cb, (8, 2), (1, 3)),
+                       (pos_cb, (9, 2), (1, 3)),
+                       (chkmod_cb, (10, 2), (1, 2))])
+        sizer.AddMany([(locale, (12, 1)),
+                       (lsizer, (12, 2), (1, 3))])
         self.SetSizer(sizer)
 
     def OnCheck(self, evt):
@@ -421,7 +425,8 @@ class GeneralPanel(PrefPanelBase):
         e_id = evt.GetId()
         e_obj = evt.GetEventObject()
         if e_id in [ed_glob.ID_APP_SPLASH, ed_glob.ID_PREF_SPOS,
-                    ed_glob.ID_PREF_CHKMOD, ed_glob.ID_SESSION]:
+                    ed_glob.ID_PREF_CHKMOD, ed_glob.ID_SESSION,
+                    ed_glob.ID_NEW_WINDOW]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
         elif e_id == ed_glob.ID_REPORTER:
             Profile_Set(ed_glob.ID_2_PROF[e_id], not e_obj.GetValue())

@@ -288,6 +288,7 @@ ID_2_PROF = {
              ID_PREF_ICONSZ       : 'ICON_SZ',
              ID_PREF_MODE         : 'MODE',
              ID_PRINT_MODE        : 'PRINT_MODE',
+             ID_NEW_WINDOW        : 'OPEN_NW',
              ID_VI_MODE           : 'VI_EMU'
 }
 
