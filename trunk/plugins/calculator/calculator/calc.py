@@ -42,6 +42,28 @@ import util
 
 ID_CALC = wx.NewId()
 #--------------------------------------------------------------------------#
+def ShowCalculator(evt):
+    """Shows the calculator"""
+    if evt.GetId() == ID_CALC:
+        if CalcFrame.INSTANCE is None:
+            cframe = CalcFrame(None, "Editra | Calculator")
+            UpdateMenu(True)
+            cframe.Show()
+        else:
+            UpdateMenu(False)
+            CalcFrame.INSTANCE.Destroy()
+            CalcFrame.INSTANCE = None
+    else:
+        evt.Skip()
+
+def UpdateMenu(val):
+    """Update the check mark in the menus of the windows"""
+    for win in wx.GetApp().GetMainWindows():
+        menub = win.GetMenuBar()
+        vm = menub.GetMenuByName("view")
+        mitem = vm.FindItemById(ID_CALC)
+        if mitem:
+            mitem.Check(val)
 
 class CalcFrame(wx.MiniFrame):
     """Create the calculator. Only a single instance can exist at
@@ -49,13 +71,12 @@ class CalcFrame(wx.MiniFrame):
 
     """
     INSTANCE = None
-    def __init__(self, parent, title, close_callback):
+    def __init__(self, parent, title): #, close_callback):
         """Initialize the calculator frame"""
         wx.MiniFrame.__init__(self, parent, title=title, 
                               style=wx.DEFAULT_DIALOG_STYLE)
         
         # Attributes
-        self.callback = close_callback
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(CalcPanel(self, ID_CALC), 1, wx.EXPAND)
         self.SetSizer(sizer)
@@ -79,7 +100,7 @@ class CalcFrame(wx.MiniFrame):
     def OnClose(self, evt):
         """Cleanup settings on close"""
         self.__class__.INSTANCE = None
-        self.callback()
+        UpdateMenu(False)
         evt.Skip()
 
 class CalcPanel(wx.Panel):

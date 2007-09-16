@@ -35,36 +35,21 @@ class Calculator(plugin.Plugin):
     plugin.Implements(ed_main.MainWindowI)
     def PlugIt(self, parent):
         """Hook the calculator into the menu and bind the event"""
-        self._mw = parent
         self._log = wx.GetApp().GetLog()
         self._log("[calc] Installing calculator plugin")
 
         # Add Menu
-        mb = self._mw.GetMenuBar()
+        mb = parent.GetMenuBar()
         vm = mb.GetMenuByName("view")
-        self._mi = vm.InsertAlpha(calc.ID_CALC, _("Calculator"), 
+        mi = vm.InsertAlpha(calc.ID_CALC, _("Calculator"), 
                                  ("Open Calculator"), wx.ITEM_CHECK, 
                                  after=ed_glob.ID_PRE_MARK)
 
-        # Event Handlers
-        self._mw.Bind(wx.EVT_MENU, self.OnShowCalc, id=calc.ID_CALC)
+        if calc.CalcFrame.INSTANCE is not None:
+            mi.Check(calc.CalcFrame.INSTANCE.IsShown())
 
-    def OnCalcClose(self):
-        """Called when calculator is closed to update menu"""
-        self._mi.Check(False)
+    def GetMenuHandlers(self):
+        return [(calc.ID_CALC, calc.ShowCalculator)]
 
-    def OnShowCalc(self, evt):
-        """Shows the calculator"""
-        if evt.GetId() == calc.ID_CALC:
-            self._log("[calc] Calculator opened")
-            if calc.CalcFrame.INSTANCE is None:
-                cframe = calc.CalcFrame(None, "Editra | Calculator", 
-                                                self.OnCalcClose)
-                self._mi.Check(True)
-                cframe.Show()
-            else:
-                self._mi.Check(False)
-                calc.CalcFrame.INSTANCE.Destroy()
-                calc.CalcFrame.INSTANCE = None
-        else:
-            evt.Skip()
+    def GetUIHandlers(self):
+        return list()
