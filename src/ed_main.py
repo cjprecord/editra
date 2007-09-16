@@ -325,8 +325,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     def DoOpen(self, evt, fname=u''):
         """ Do the work of opening a file and placing it
         in a new notebook page.
-        @param fname: can be optionally specified to open
-                      a file without opening a FileDialog
+        @keyword fname: can be optionally specified to open
+                        a file without opening a FileDialog
         @type fname: string
 
         """
