@@ -41,6 +41,7 @@ available commands)
 +Updates to all plugins to work with multiple windows
 +Theme system extended to all program icons
 +New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
++When only one file is open in a window the notebook is hidden to save screen space
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.

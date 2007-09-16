@@ -101,20 +101,6 @@ class Editra(wx.App, events.AppEventHandlerMixin):
 
         return True
 
-    def OnNewWindow(self, evt):
-        """Create a new editing window
-        @param evt: wx.EVT_MENU
-
-        """
-        if evt.GetId() == ed_glob.ID_NEW_WINDOW:
-            frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
-                                       ed_glob.prog_name)
-            self.RegisterWindow(repr(frame), frame, True)
-            self.SetTopWindow(frame)
-            frame.Show(True)
-        else:
-            evt.Skip()
-
     def Exit(self):
         """Exit the program
         @postcondition: If no toplevel windows are precent program will exit.
@@ -256,6 +242,29 @@ class Editra(wx.App, events.AppEventHandlerMixin):
         else:
             if evt:
                 evt.Skip()
+
+    def OnNewWindow(self, evt):
+        """Create a new editing window
+        @param evt: wx.EVT_MENU
+
+        """
+        if evt.GetId() == ed_glob.ID_NEW_WINDOW:
+            self.OpenNewWindow()
+        else:
+            evt.Skip()
+
+    def OpenNewWindow(self, fname=u''):
+        """Open a new window
+        @keyword fname: Open a file in the new window
+
+        """
+        frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
+                                   ed_glob.prog_name)
+        self.RegisterWindow(repr(frame), frame, True)
+        self.SetTopWindow(frame)
+        if isinstance(fname, basestring) and fname != u'':
+            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, fname)
+        frame.Show(True)
 
     def RegisterWindow(self, name, window, can_lock=False):
         """Registers winows with the app. The name should be the

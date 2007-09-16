@@ -81,7 +81,8 @@ class EdPages(FNB.FlatNotebook):
                                         FNB.FNB_X_ON_TAB | 
                                         FNB.FNB_SMART_TABS |
                                         FNB.FNB_BACKGROUND_GRADIENT |
-                                        FNB.FNB_DROPDOWN_TABS_LIST
+                                        FNB.FNB_DROPDOWN_TABS_LIST |
+                                        FNB.FNB_HIDE_ON_SINGLE_TAB
                             )
 
         # Notebook attributes

@@ -75,6 +75,7 @@ _DEFAULTS = {
            'LANG'       : 'Default',        # UI language
            'MODE'       : 'CODE',           # Overall editor mode
            'MYPROFILE'  : 'default.ppb',    # Path to profile file
+           'OPEN_NW'    : False,            # Open files in new window
            'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
            'REPORTER'   : True,             # Error Reporter is Active
            'SAVE_POS'   : True,             # Remember Carat positions
