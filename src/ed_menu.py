@@ -248,6 +248,7 @@ class EdMenuBar(wx.MenuBar):
                         _("Start a new file in a new tab"))
         filemenu.Append(ed_glob.ID_NEW_WINDOW, _("New Window") + \
                         "\tCtrl+Shift+N", _("Start a new file in a new window"))
+        filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_OPEN, _("Open") + "\tCtrl+O", _("Open"))
         ## Setup File History in the File Menu
         filemenu.AppendMenu(ed_glob.ID_FHIST, _("Open Recent"), 
