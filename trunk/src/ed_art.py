@@ -207,8 +207,13 @@ class EditraArt(wx.ArtProvider):
                 if ART.has_key(art_id):
                     art_src = resource_path + ART[art_id]
                 else:
+                    if Profile_Get('ICONS') == u'Default':
+                        return wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE,
+                                                        wx.ART_MENU, (16, 16))
                     mime_path = GetArtPath(client, mime=True)
                     art_src = mime_path + MIME_ART[art_id]
+                    if not os.path.exists(art_src):
+                        art_src = mime_path + MIME_ART[synglob.ID_LANG_TXT]
 
             if os.path.exists(art_src):
                 img = wx.Image(art_src, wx.BITMAP_TYPE_PNG)
@@ -254,7 +259,10 @@ def GetArtPath(client, mime = False):
         path = ed_glob.CONFIG['SYSPIX_DIR']
     else:
         if mime:
-            path = ed_glob.CONFIG['SYSPIX_DIR'] + util.GetPathChar() + \
+#             path = ed_glob.CONFIG['SYSPIX_DIR'] + util.GetPathChar() + \
+#                    u'mime' + util.GetPathChar()
+            path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
+                   Profile_Get('ICONS') + util.GetPathChar() + \
                    u'mime' + util.GetPathChar()
         else:
             path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
