@@ -254,13 +254,11 @@ def GetArtPath(client, mime = False):
         return wx.EmptyString
 
     # ART_OTHER is used for dialogs and other base icon that are
-    # not meant to be themeable by the user.
+    # not part of a theme.
     if client == wx.ART_OTHER:
         path = ed_glob.CONFIG['SYSPIX_DIR']
     else:
         if mime:
-#             path = ed_glob.CONFIG['SYSPIX_DIR'] + util.GetPathChar() + \
-#                    u'mime' + util.GetPathChar()
             path = ed_glob.CONFIG['THEME_DIR'] + util.GetPathChar() + \
                    Profile_Get('ICONS') + util.GetPathChar() + \
                    u'mime' + util.GetPathChar()
