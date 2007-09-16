@@ -41,16 +41,21 @@ class Hello(plugin.Plugin):
             hm = mb.GetMenuByName("view")
             hm.Append(ID_HELLO, _("Hello World"), 
                       _("Open a Hello World Dialog"))
-            mw.Bind(wx.EVT_MENU, self.OnHello, id=ID_HELLO)
         else:
             self._log("[hello][err] Failed to install hello plugin")
 
-    def OnHello(self, evt):
-        """Opens the hello dialog"""
-        e_id = evt.GetId()
-        if e_id == ID_HELLO:
-            dlg = wx.MessageBox(_("Hello World from the hello plugin"), 
-                                _("Hello World"))
-        else:
-            evt.Skip()
+    def GetMenuHandlers(self):
+        return [(ID_HELLO, SayHello)]
+
+    def GetUIHandlers(self):
+        return list()
+
+def SayHello(evt):
+    """Opens the hello dialog"""
+    e_id = evt.GetId()
+    if e_id == ID_HELLO:
+        dlg = wx.MessageBox(_("Editra's Hello Plugin Says Hello"), 
+                            _("Hello World"))
+    else:
+        evt.Skip()
 
