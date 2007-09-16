@@ -81,7 +81,6 @@ CONFIG = {
           'PIXMAPS_DIR' : "",   # Graphics Directory
           'PLUGIN_DIR'  : "",   # User Plugin Dir
           'SYSPIX_DIR'  : "",   # Editras non user graphics
-          'MIME_DIR'    : "",   # MIME type graphics
           'THEME_DIR'   : "",   # Theme Directory
           'LANG_DIR'    : "",   # Locale Data Directory
           'SYS_PLUGIN_DIR' : "", # Editra base plugin dir

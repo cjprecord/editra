@@ -373,8 +373,6 @@ def InitConfig():
     ed_glob.CONFIG['CONFIG_DIR'] = util.ResolvConfigDir("")
     ed_glob.CONFIG['PIXMAPS_DIR'] = util.ResolvConfigDir("pixmaps")
     ed_glob.CONFIG['SYSPIX_DIR'] = util.ResolvConfigDir("pixmaps", True)
-    ed_glob.CONFIG['MIME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", \
-                                                                  "mime"), True)
     ed_glob.CONFIG['PLUGIN_DIR'] = util.ResolvConfigDir("plugins")
     ed_glob.CONFIG['THEME_DIR'] = util.ResolvConfigDir(os.path.join("pixmaps", \
                                                                     "theme"))
