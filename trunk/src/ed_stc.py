@@ -309,6 +309,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if mark != -1:
             self.GotoLine(mark)
 
+    def GetBookmarks(self):
+        """Gets a list of all lines containing bookmarks
+        @return: list of line numbers
+
+        """
+        marks = [mark for mark in xrange(self.GetLineCount()) 
+                          if self.MarkerGet(mark)]
+        return marks
+
     def Configure(self):
         """Configures the editors settings by using profile values
         @postcondition: all profile dependant attributes are configured
@@ -1829,6 +1838,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         cfile = os.path.join(self.dirname, self.filename)
         if os.path.exists(cfile):
+            bmarks = self.GetBookmarks()
             try:
                 self.BeginUndoAction()
                 cpos = self.GetCurrentPos()
@@ -1836,6 +1846,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.SetText(reader.read())
                 reader.close()
                 self.modtime = util.GetFileModTime(cfile)
+                for mark in bmarks:
+                    self.MarkerAdd(mark, MARK_MARGIN)
                 self.EndUndoAction()
                 self.SetSavePoint()
             except (AttributeError, OSError, IOError), msg:
