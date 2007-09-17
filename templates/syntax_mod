@@ -35,6 +35,7 @@ __author__ = ""
 __svnid__ = "$Id: Exp $"
 __revision__ = "$Revision:  $"
 
+import synglob
 #-----------------------------------------------------------------------------#
 
 #---- Keyword Definitions ----#
