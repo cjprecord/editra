@@ -27,6 +27,7 @@ be viewed in the below changelog.
 
 NEW: [features/improvements]
 +Opening multiple toplevel windows is now possible
++Tabs can be dragged between windows
 +Command Mode for sending commands to the editor, when using Vi emulation it
 acts like an Ex command mode. (see documentation page for description of
 available commands)
@@ -41,7 +42,6 @@ available commands)
 +Updates to all plugins to work with multiple windows
 +Theme system extended to all program icons
 +New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
-+When only one file is open in a window the notebook is hidden to save screen space
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.
@@ -51,6 +51,7 @@ documents.
 +Many bug and behavior fixes in the Calculator plugin
 +Unicode handling error in file history loading
 +Plugins now properly show activation status in View Menu
++Dont lose bookmarks on file reload
 
 #-----------------------------------------------------------------------------#
 
