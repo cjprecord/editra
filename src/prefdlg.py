@@ -950,6 +950,7 @@ class AppearancePanel(PrefPanelBase):
                    (toolbar.GetToolTheme() != Profile_Get('ICONS')) \
                    or (toolbar.GetToolSize() != Profile_Get('ICON_SZ')):
                     toolbar.ReInit()
+                mainw.UpdateToolBar()
         elif e_id == ed_glob.ID_PERSPECTIVES:
             Profile_Set('DEFAULT_VIEW', e_obj.GetValue())
             for main_win in wx.GetApp().GetMainWindows():
