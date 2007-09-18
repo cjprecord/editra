@@ -150,13 +150,14 @@ class Shelf(plugin.Plugin):
         if mgr.GetPane(self.__name__).IsOk():
             return
 
-        self._shelf = FNB.FlatNotebook(parent, 
-                                       style=FNB.FNB_FF2 | FNB.FNB_X_ON_TAB |\
-                                             FNB.FNB_NODRAG)
+        self._shelf = FNB.FlatNotebook(parent, style=FNB.FNB_FF2 | \
+                                                     FNB.FNB_X_ON_TAB |\
+                                                     FNB.FNB_NODRAG)
         mgr.AddPane(self._shelf, wx.aui.AuiPaneInfo().Name(self.__name__).\
                             Caption("Shelf").Bottom().Layer(0).\
                             CloseButton(True).MaximizeButton(False).\
                             BestSize(wx.Size(500,250)))
+
         # Hide the pane and let the perspective manager take care of it
         mgr.GetPane(self.__name__).Hide()
         mgr.Update()
@@ -175,6 +176,10 @@ class Shelf(plugin.Plugin):
             if item.IsSeparator():
                 continue
             parent.Bind(wx.EVT_MENU, self.OnGetShelfItem, item)
+
+        if menu.GetMenuItemCount() < 3:
+            view.Enable(ed_glob.ID_SHELF, False)
+
         self.StockShelf(Profile_Get('SHELF_ITEMS', 'list', []))
 
     def EnsureShelfVisible(self):
