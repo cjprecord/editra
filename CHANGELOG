@@ -7,7 +7,7 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
-VERSION 0.1.xx
+VERSION 0.x.xx
 DATE xx/xx/2007
 6th Alpha Release
 
@@ -34,7 +34,7 @@ available commands)
 +Some substantial performance improvements for text input speed
 +Faster file loading
 +Bidirectional Search
-+Highlighting support for [Apache Config files, ini files]
++Highlighting support for (Apache Config files, ini files, Erlang)
 +Link to project documentation and help guides in Help Menu
 +Shortcut to close quick find bar (ESC will now hide the bar)
 +Command bar now automatically hides it self after most actions
@@ -52,6 +52,7 @@ documents.
 +Unicode handling error in file history loading
 +Plugins now properly show activation status in View Menu
 +Dont lose bookmarks on file reload
++Show Shelf is only enabled when their are shelf related plugins activated
 
 #-----------------------------------------------------------------------------#
 
