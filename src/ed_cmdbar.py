@@ -421,6 +421,22 @@ class CommandBar(wx.Panel):
             sizer.Hide(c_sizer, True)
             sizer.Layout()
 
+    def UpdateIcons(self):
+        """Refresh icons to current theme settings
+        @postcondition: all icons are updated
+
+        """
+        next = self.FindWindowById(ID_SEARCH_NEXT)
+        if next:
+            t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
+            next.SetBitmapLabel(t_bmp)
+            next.SetBitmapHover(t_bmp)
+        pre = self.FindWindowById(ID_SEARCH_PRE)
+        if pre:
+            t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
+            pre.SetBitmapLabel(t_bmp)
+            pre.SetBitmapHover(t_bmp)
+
 #-----------------------------------------------------------------------------#
 
 class CommandExecuter(wx.SearchCtrl):
