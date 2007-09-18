@@ -67,7 +67,7 @@ _DEFAULTS = {
            'EDGE'       : 80,               # Edge guide column
            'EOL'        : 'Unix (\\n)',     # EOL mode
            'FHIST'      : list(),           # List of history files
-           'FHIST_LVL'  : 5,                # Filehistory length (9 is max)
+           'FHIST_LVL'  : 9,                # Filehistory length (9 is max)
            'FFILTER'    : 0,                # Last file filter used
            'GUIDES'     : True,             # Use Indentation guides
            'ICONS'      : 'Nuovo',          # Icon Theme
@@ -75,7 +75,7 @@ _DEFAULTS = {
            'LANG'       : 'Default',        # UI language
            'MODE'       : 'CODE',           # Overall editor mode
            'MYPROFILE'  : 'default.ppb',    # Path to profile file
-           'OPEN_NW'    : False,            # Open files in new window
+           'OPEN_NW'    : False,            # Open files in new windows
            'PRINT_MODE' : 'BLACK/WHITE',    # Printer rendering mode
            'REPORTER'   : True,             # Error Reporter is Active
            'SAVE_POS'   : True,             # Remember Carat positions
@@ -114,8 +114,6 @@ class Profile(dict):
         """Initialize the profile"""
         if not self._created:
             dict.__init__(self)
-        
-            # Attributes
         else:
             pass
 
