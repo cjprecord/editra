@@ -431,11 +431,13 @@ class CommandBar(wx.Panel):
             t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
             next.SetBitmapLabel(t_bmp)
             next.SetBitmapHover(t_bmp)
+            next.Refresh()
         pre = self.FindWindowById(ID_SEARCH_PRE)
         if pre:
             t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
             pre.SetBitmapLabel(t_bmp)
             pre.SetBitmapHover(t_bmp)
+            pre.Refresh()
 
 #-----------------------------------------------------------------------------#
 
