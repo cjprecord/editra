@@ -28,6 +28,7 @@ __version__ = "0.4"
 import wx
 from wx.py import shell
 import iface
+from profiler import Profile_Get
 import plugin
 
 #-----------------------------------------------------------------------------#
@@ -42,6 +43,36 @@ class PyShell(plugin.Plugin):
     ID_PYSHELL = wx.NewId()
     __name__ = u'PyShell'
 
+    def __SetupFonts(self):
+        """Create the font settings for the shell"""
+        fonts = { 
+                  'size'      : 11,
+                  'lnsize'    : 10,
+                  'backcol'   : '#FFFFFF',
+                  'calltipbg' : '#FFFFB8',
+                  'calltipfg' : '#404040',
+        }
+
+        font = Profile_Get('FONT1', 'font', wx.Font(11, wx.FONTFAMILY_MODERN, 
+                                                        wx.FONTSTYLE_NORMAL, 
+                                                        wx.FONTWEIGHT_NORMAL))
+        if font.IsOk() and len(font.GetFaceName()):
+            fonts['mono'] = font.GetFaceName()
+            fonts['size'] = font.GetPointSize()
+            if fonts['size'] < 11:
+                fonts['size'] = 11
+            fonts['lnsize'] = fonts['size'] - 1
+
+        font = Profile_Get('FONT2', 'font', wx.Font(11, wx.FONTFAMILY_SWISS, 
+                                                        wx.FONTSTYLE_NORMAL, 
+                                                        wx.FONTWEIGHT_NORMAL))
+        if font.IsOk() and len(font.GetFaceName()):
+            fonts['times'] = font.GetFaceName()
+            fonts['helv'] = font.GetFaceName()
+            fonts['other'] = font.GetFaceName()
+
+        return fonts
+
     def AllowMultiple(self):
         """PyShell allows multiple instances"""
         return True
@@ -51,6 +82,7 @@ class PyShell(plugin.Plugin):
         self._log = wx.GetApp().GetLog()
         self._log("[pyshell][info] Creating PyShell instance for Shelf")
         pyshell = shell.Shell(parent, locals=dict())
+        pyshell.setStyles(self.__SetupFonts())
         return pyshell
 
     def GetId(self):
