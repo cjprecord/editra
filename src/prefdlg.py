@@ -953,6 +953,7 @@ class AppearancePanel(PrefPanelBase):
                 mainw.UpdateToolBar()
 
                 # Update Search Bar
+                # TODO for some reason this doesnt work with 2.8.5
                 sbar = mainw.FindWindowById(ed_glob.ID_COMMAND_BAR)
                 if sbar:
                     sbar.UpdateIcons()
