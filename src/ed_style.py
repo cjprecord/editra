@@ -53,6 +53,7 @@ import re
 import wx
 import util
 from profiler import Profile_Get as _PGET
+from profiler import Profile_Set as _PSET
 
 # Globals
 STY_ATTRIBUTES     = u"face fore back size"
@@ -398,12 +399,14 @@ class StyleMgr(object):
         else:
             mfont = wx.Font(10, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, 
                             wx.FONTWEIGHT_NORMAL)
+            _PSET('FONT1', mfont, 'font')
         primary = mfont.GetFaceName()
 
         font = _PGET('FONT2', 'font', None)
         if font is None:
             font = wx.Font(10, wx.FONTFAMILY_SWISS, wx.FONTSTYLE_NORMAL, 
                             wx.FONTWEIGHT_NORMAL)
+            _PSET('FONT2', font, 'font')
         secondary = font.GetFaceName()
         faces = { 
                   self.FONT_PRIMARY   : primary,
