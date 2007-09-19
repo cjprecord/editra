@@ -951,6 +951,12 @@ class AppearancePanel(PrefPanelBase):
                    or (toolbar.GetToolSize() != Profile_Get('ICON_SZ')):
                     toolbar.ReInit()
                 mainw.UpdateToolBar()
+
+                # Update Search Bar
+                sbar = mainw.FindWindowById(ed_glob.ID_COMMAND_BAR)
+                if sbar:
+                    sbar.UpdateIcons()
+
         elif e_id == ed_glob.ID_PERSPECTIVES:
             Profile_Set('DEFAULT_VIEW', e_obj.GetValue())
             for main_win in wx.GetApp().GetMainWindows():
