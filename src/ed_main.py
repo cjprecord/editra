@@ -322,6 +322,18 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 app.RemoveUIHandlerForID(handler[0])
         evt.Skip()
 
+    def AddFileToHistory(self, fname):
+        """Add a file to the windows file history as well as any
+        other open windows history.
+        @param fname: name of file to add
+        @todo: change the file history to a centrally manaaged object that
+               all windows pull from to avoid this quick solution.
+
+        """
+        for win in wx.GetApp().GetMainWindows():
+            if hasattr(win, 'filehistory'):
+                win.filehistory.AddFileToHistory(fname)
+        
     def DoOpen(self, evt, fname=u''):
         """ Do the work of opening a file and placing it
         in a new notebook page.
@@ -387,7 +399,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         try:
-            for fname in _PGET('FHIST'):
+            hist_list = _PGET('FHIST', default=list())
+            if len(hist_list) > size:
+                hist_list = hist_list[:size]
+
+            for fname in hist_list:
                 if isinstance(fname, basestring) and fname:
                     self.filehistory.AddFileToHistory(fname)
         except UnicodeEncodeError, msg:
@@ -496,7 +512,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 ret_val = self.OnSaveAs(ID_SAVEAS, ctrl[0], ctrl[1])
                 if ret_val:
                     fpath = os.path.join(ctrl[1].dirname, ctrl[1].filename)
-                    self.filehistory.AddFileToHistory(fpath)
+                    self.AddFileToHistory(fpath)
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt, title=u'', page=None):

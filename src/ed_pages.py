@@ -260,7 +260,7 @@ class EdPages(FNB.FlatNotebook):
         self.control.SetText(in_txt, enc)
         # Pass directory and file name info to control object to save reference
         self.control.dirname, self.control.filename = path, filename
-        self.frame.filehistory.AddFileToHistory(path2file)
+        self.frame.AddFileToHistory(path2file)
         self.control.modtime = util.GetFileModTime(path2file)
         if new_pg:
             self.AddPage(self.control, self.control.filename)
