@@ -249,17 +249,21 @@ class Editra(wx.App, events.AppEventHandlerMixin):
 
         """
         if evt.GetId() == ed_glob.ID_NEW_WINDOW:
-            self.OpenNewWindow()
+            frame = evt.GetEventObject().GetMenuBar().GetFrame()
+            self.OpenNewWindow(caller=frame)
         else:
             evt.Skip()
 
-    def OpenNewWindow(self, fname=u''):
+    def OpenNewWindow(self, fname=u'', caller=None):
         """Open a new window
         @keyword fname: Open a file in the new window
 
         """
         frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
                                    ed_glob.prog_name)
+        if caller:
+            pos = caller.GetPosition()
+            frame.SetPosition((pos.x + 22, pos.y + 22))
         self.RegisterWindow(repr(frame), frame, True)
         self.SetTopWindow(frame)
         if isinstance(fname, basestring) and fname != u'':
