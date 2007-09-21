@@ -269,6 +269,10 @@ class Editra(wx.App, events.AppEventHandlerMixin):
         if isinstance(fname, basestring) and fname != u'':
             frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, fname)
         frame.Show(True)
+        
+        # Ensure frame gets an Activate event when shown
+        # this doesn't happen automatically on windows
+        wx.PostEvent(frame, wx.ActivateEvent(wx.wxEVT_ACTIVATE, True))
 
     def RegisterWindow(self, name, window, can_lock=False):
         """Registers winows with the app. The name should be the
@@ -488,6 +492,7 @@ def Main():
     editra_app.RegisterWindow(repr(frame), frame, True)
     editra_app.SetTopWindow(frame)
     frame.Show(True)
+    wx.PostEvent(frame, wx.ActivateEvent(wx.wxEVT_ACTIVATE, True))
 
     for arg in args:
         try:
