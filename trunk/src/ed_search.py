@@ -250,7 +250,13 @@ class TextFinder(object):
         if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
             self._find_dlg.SetExtraStyle(wx.DIALOG_EX_METAL)
         self._find_dlg.CenterOnParent()
-        self._find_dlg.Show()
+        try:
+            self._find_dlg.Show()
+        except wx.PyAssertionError:
+            # Yes this is a bit strange but on windows if there was a find
+            # dialog prevously shown and destroyed then the second time through
+            # here will raise this assertion but not for any times after.
+            self._find_dlg.Show()
 
     def SetQueryString(self, query):
         """Sets the search query value
