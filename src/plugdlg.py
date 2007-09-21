@@ -49,7 +49,7 @@ import wx.lib.delayedresult as delayedresult
 # import wx.lib.mixins.listctrl as listmix
 import extern.listctrl as listmix
 import ed_glob
-from profiler import Profile_Get
+from profiler import Profile_Get, Profile_Set
 import ed_event
 import plugin
 import util
@@ -74,7 +74,10 @@ def MakeThemeTool(tool_id):
     @todo: figure out cause of black artifacts on wxmac
 
     """
+    osize = Profile_Get('ICON_SZ', 'size_tuple', (24, 24))
+    Profile_Set('ICON_SZ', (32, 32))
     base = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
+    Profile_Set('ICON_SZ', osize)
     over = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PLUGMGR), wx.ART_MENU)
     if base.IsOk() and over.IsOk():
         # Draw overlay onto button
