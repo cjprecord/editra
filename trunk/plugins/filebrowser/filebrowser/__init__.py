@@ -80,7 +80,7 @@ class FileBrowserPanel(plugin.Plugin):
 
     def OnPaneClose(self, evt):
         """Handles when the pane is closed to update the profile"""
-        if evt.GetPane().pane.name == PANE_NAME:
+        if evt.GetPane().name == PANE_NAME:
             Profile_Set('SHOW_FB', False)
         else:
             evt.Skip()
