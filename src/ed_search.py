@@ -582,7 +582,9 @@ class EdSearchCtrl(wx.SearchCtrl):
             tmp = self.GetValue()
             # Dont do search 
             if tmp == wx.EmptyString or \
-               evt.CmdDown() or e_key == wx.WXK_COMMAND:
+               evt.CmdDown() or \
+               e_key in [wx.WXK_COMMAND, wx.WXK_LEFT, wx.WXK_RIGHT, 
+                         wx.WXK_UP, wx.WXK_DOWN]:
                 return
 
             if wx.Platform == '__WXMAC__' and len(self.GetValue()) > 0:
