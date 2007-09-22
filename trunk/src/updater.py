@@ -448,8 +448,13 @@ class UpdateProgress(wx.Gauge, UpdateService):
         
         """
         jid = delayedResult.getJobID()
-        self.LOG("[updateprog][info] Worker thread exited. ID = %d" % jid)
-        self._checking = self._downloading = False # Work has finished
+
+        try:
+            self.LOG("[updateprog][info] Worker thread exited. ID = %d" % jid)
+            self._checking = self._downloading = False # Work has finished
+        except wx.PyDeadObjectError:
+            return
+
         try:
             result = delayedResult.get()
             if jid == self.ID_CHECKING:
