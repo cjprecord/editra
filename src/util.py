@@ -219,15 +219,13 @@ def SetClipboardText(txt):
 BOM = { 'utf-8' : codecs.BOM_UTF8,
         'utf-16-be' : codecs.BOM_UTF16_BE,
         'utf-16-le' : codecs.BOM_UTF16_LE,
-#        (codecs.BOM_UTF32_BE, 'utf-32-be'),
-#        (codecs.BOM_UTF32_LE, 'utf-32-le'),
         'utf-7' : '+\v8-',
         'latin-1' : '',
         'ascii' : '' }
 
-ENC = [ 'utf-8', 'utf-16-be', 'utf-16-le', 
+# When no BOM is present this determines decode test order
+ENC = [ 'utf-8', 'utf-7', 'latin-1', 'utf-16-be', 'utf-16-le', 'ascii']
   #      'utf-32-be', 'utf-32-le', 
-        'utf-7', 'latin-1', 'ascii']
 
 def GetDecodedText(fname):
     """Gets the text from a file and decodes the text using
@@ -245,6 +243,19 @@ def GetDecodedText(fname):
         return -1
     else:
         decoded = None
+
+        # First look for a bom byte
+        bbyte = None
+        for e, b in BOM.iteritems():
+            if txt.startswith(b) and e not in ['ascii', 'latin-1']:
+                bbyte = e
+
+        tenc = ENC
+        if bbyte:
+            if bbyte in tenc:
+                tenc.remove(bbyte)
+            tenc.insert(0, bbyte)
+
         for enc in ENC:
             try:
                 decoded = txt.decode(enc)
@@ -252,6 +263,7 @@ def GetDecodedText(fname):
                 continue
             else:
                 break
+
         if 'enc' not in locals():
             enc = u''
         if decoded:
