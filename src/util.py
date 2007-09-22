@@ -227,6 +227,22 @@ BOM = { 'utf-8' : codecs.BOM_UTF8,
 ENC = [ 'utf-8', 'utf-7', 'latin-1', 'utf-16-be', 'utf-16-le', 'ascii']
   #      'utf-32-be', 'utf-32-le', 
 
+def DecodeString(string):
+    """Decode a given string if possible and return that string
+    @param string: the string to decode
+
+    """
+    decoded = string
+    for enc in ENC:
+        try:
+            decoded = txt.decode(string)
+        except (UnicodeDecodeError, UnicodeWarning):
+            continue
+        else:
+            break
+
+    return decoded
+
 def GetDecodedText(fname):
     """Gets the text from a file and decodes the text using
     a compatible decoder. Returns a tuple of the text and the
