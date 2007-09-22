@@ -132,6 +132,24 @@ class Editra(wx.App, events.AppEventHandlerMixin):
                 return self._windows[window][0]
         return None
 
+    def GetActiveWindow(self):
+        """Returns the active main window if there is one else it will
+        just return some main window or none if there are no main windows
+        @return: frame instance or None
+
+        """
+        awin = None
+        for win in self.GetMainWindows():
+            if win.IsActive():
+                awin = win
+                break
+
+        if awin is None:
+            if len(self.GetMainWindows()):
+                awin = self.GetMainWindows()[0]
+
+        return awin
+
     def GetMainWindows(self):
         """Returns a list of all open main windows
         @return: list of L{MainWindow} instances of this app (list may be empty)
