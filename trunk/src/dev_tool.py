@@ -140,7 +140,10 @@ def ExceptionHook(exctype, value, trace):
     ftrace = FormatTrace(exctype, value, trace)
     # Ensure that error gets raised to console as well
     print ftrace
-    ErrorDialog(ftrace)
+
+    # Prevent multiple reporter dialogs from opening at once
+    if not REPORTER_ACTIVE and not ABORT:
+        ErrorDialog(ftrace)
 
 def FormatTrace(etype, value, trace):
     """Formats the given traceback
@@ -217,10 +220,12 @@ class ErrorReporter(object):
         """
         if len(self._sessionerr):
             return self._sessionerr[-1]
-
+        
 #-----------------------------------------------------------------------------#
 
 ID_SEND = wx.NewId()
+ABORT = False
+REPORTER_ACTIVE = False
 class ErrorDialog(wx.Dialog):
     """Dialog for showing and and notifying Editra.org should the
     user choose so.
@@ -231,6 +236,7 @@ class ErrorDialog(wx.Dialog):
         @param message: Error message to display
 
         """
+        REPORTER_ACTIVE = True
         wx.Dialog.__init__(self, None, title="Error/Crash Reporter", 
                            style=wx.DEFAULT_DIALOG_STYLE)
         
@@ -269,6 +275,7 @@ class ErrorDialog(wx.Dialog):
         t_lbl = wx.StaticText(self, label=_("Error Traceback:"))
         tctrl = wx.TextCtrl(self, value=self.err_msg, style=wx.TE_MULTILINE | 
                                                             wx.TE_READONLY)
+        abort_b = wx.Button(self, wx.ID_ABORT, _("Abort"))
         send_b = wx.Button(self, ID_SEND, _("Report Error"))
         send_b.SetDefault()
         close_b = wx.Button(self, wx.ID_CLOSE)
@@ -278,9 +285,9 @@ class ErrorDialog(wx.Dialog):
         sizer.AddMany([(icon, (1, 1)), (mainmsg, (1, 2), (1, 2)), 
                        ((2, 2), (3, 0)), (t_lbl, (3, 1), (1, 2)),
                        (tctrl, (4, 1), (8, 5), wx.EXPAND), ((5, 5), (4, 6)),
-                       ((2, 2), (12, 0)), 
-                       (send_b, (13, 3), (1, 1), wx.ALIGN_RIGHT),
-                       ((3, 3), (13, 4)),
+                       ((2, 2), (12, 0)),
+                       (abort_b, (13, 1), (1, 1), wx.ALIGN_LEFT),
+                       (send_b, (13, 3), (1, 2), wx.ALIGN_RIGHT),
                        (close_b, (13, 5), (1, 1), wx.ALIGN_RIGHT),
                        ((2, 2), (14, 0))])
         self.SetSizer(sizer)
@@ -303,6 +310,12 @@ class ErrorDialog(wx.Dialog):
             msg = msg.replace(u"'", u'')
             webbrowser.open(msg)
             self.Close()
+        elif e_id == wx.ID_ABORT:
+            ABORT = True
+            for win in wx.GetApp().GetMainWindows():
+                wx.PostEvent(win, wx.MenuEvent(wx.wxEVT_MENU_OPEN, 
+                                               ed_glob.ID_CLOSE_WINDOW))
+            self.Close()
         else:
             evt.Skip()
 
@@ -311,6 +324,6 @@ class ErrorDialog(wx.Dialog):
         @param evt: Event that called this handler
 
         """
+        REPORTER_ACTIVE = False
         self.Destroy()
         evt.Skip()
-
