@@ -250,13 +250,20 @@ class PrefTools(wx.Toolbook):
     def OnPaint(self, evt):
         """Paint the toolbar's background
         @todo: it would be nice to use a unified toolbar style on osx
+        @note: unified toolbar is available in 2.8.5+ maybe create custom
+               window using native toolbar to accomidate this.
 
         """
+        # This is odd but I have recieved a number of error reports where
+        # wx is being reported as None in this function
+        if 'wx' not in globals() or wx is None:
+            evt.Skip()
+            return
+
         dc = wx.PaintDC(self)
         gc = wx.GraphicsContext.Create(dc)
         col1 = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
         col2 = util.AdjustColour(col1, -20)
-#         col1 = util.AdjustColour(col1, -20)
         rect = self.GetToolBar().GetRect()
 
         # Create the background path
@@ -265,18 +272,9 @@ class PrefTools(wx.Toolbook):
 
         gc.SetPen(wx.Pen(col1, 1))
         grad = gc.CreateLinearGradientBrush(0, 0, 0, rect.height, col1, col2)
-#         grad = gc.CreateBrush(wx.Brush(col1))
         gc.SetBrush(grad)
         gc.DrawPath(path)
 
-#         path = gc.CreatePath()
-#         gc.SetPen(wx.Pen(col1, 1, wx.TRANSPARENT))
-#         path.AddRectangle(0, rect.height/2, rect.width, 
-#                           int((rect.height + 3)/2))
-#         grad = gc.CreateLinearGradientBrush(0, rect.height, 0, 
-#                                             int(rect.height/2), col1, col2)
-#         gc.SetBrush(grad)
-#         gc.DrawPath(path)
         evt.Skip()
 
 class PrefPanelBase(wx.Panel):
@@ -300,6 +298,13 @@ class PrefPanelBase(wx.Panel):
         @param evt: Event that called this handler
 
         """
+        # This is odd but I have recieved a number of error reports where
+        # wx is being reported as None in this function requires more 
+        # investigation as I cannot reproduce
+        if 'wx' not in globals() or wx is None:
+            evt.Skip()
+            return
+
         dc = wx.PaintDC(self)
         gc = wx.GraphicsContext.Create(dc)
         col1 = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
@@ -544,14 +549,17 @@ class DocGenPanel(wx.Panel):
         ww_cb.SetValue(Profile_Get('WRAP'))
 
         # Font Options
-        main = wx.GetApp().GetMainWindow()
         font_lbl = wx.StaticText(self, label=_("Primary Font") + u": ")
-        fnt = main.nb.GetCurrentCtrl().GetStyleFont()
+        fnt = Profile_Get('FONT1', 'font', wx.Font(10, wx.FONTFAMILY_MODERN, 
+                                                   wx.FONTSTYLE_NORMAL, 
+                                                   wx.FONTWEIGHT_NORMAL))
         fpicker = PyFontPicker(self, self.ID_FONT_PICKER, fnt)
         tt = wx.ToolTip(_("Sets the main/default font of the document"))
         fpicker.SetToolTip(tt)
         font_lbl2 = wx.StaticText(self, label=_("Secondary Font") + u": ")
-        fnt = main.nb.GetCurrentCtrl().GetStyleFont(False)
+        fnt = Profile_Get('FONT2', 'font', wx.Font(10, wx.FONTFAMILY_SWISS,
+                                                   wx.FONTSTYLE_NORMAL, 
+                                                   wx.FONTWEIGHT_NORMAL))
         fpicker2 = PyFontPicker(self, self.ID_FONT_PICKER2, fnt)
         tt = wx.ToolTip(_("Sets a secondary font used for special regions "
                           "when syntax highlighting is in use"))
@@ -852,7 +860,7 @@ class AppearancePanel(PrefPanelBase):
         # Layout Section
         perspect_lbl = wx.StaticText(self, wx.ID_ANY, \
                                      _("Default Perspective") + u": ")
-        mainw = wx.GetApp().GetMainWindow()
+        mainw = wx.GetApp().GetActiveWindow()
         if mainw is not None:
             pchoices = mainw.GetPerspectiveList()
         else:
