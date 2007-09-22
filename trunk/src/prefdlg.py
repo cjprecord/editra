@@ -881,6 +881,7 @@ class AppearancePanel(PrefPanelBase):
             m_cb = wx.CheckBox(self, ed_glob.ID_PREF_METAL, \
                                _("Use Metal Style"))
             m_cb.SetValue(Profile_Get('METAL', 'bool', False))
+            m_cb.SetToolTip(wx.ToolTip(_("Restart Required")))
         else:
             m_cb = (0, 0)
 
@@ -915,24 +916,6 @@ class AppearancePanel(PrefPanelBase):
         elif e_id == ed_glob.ID_PREF_METAL:
             windows = wx.GetApp().GetOpenWindows()
             Profile_Set(ed_glob.ID_2_PROF[e_id], val)
-            for window in windows.values():
-                sty = None
-                if isinstance(window[0], wx.Frame):
-                    if not val:
-                        sty = ~wx.FRAME_EX_METAL
-                    else:
-                        sty = wx.FRAME_EX_METAL
-                elif isinstance(window[0], wx.Dialog):
-                    if not val:
-                        sty = ~wx.DIALOG_EX_METAL
-                    else:
-                        sty = wx.DIALOG_EX_METAL
-                else:
-                    pass
-                if sty is not None:
-                    window[0].SetExtraStyle(sty)
-                    window[0].Refresh()
-                    window[0].Update()
         else:
             evt.Skip()
 
