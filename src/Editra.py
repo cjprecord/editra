@@ -239,6 +239,7 @@ class Editra(wx.App, events.AppEventHandlerMixin):
                 result = win.Close()
                 if not result:
                     break
+            self.Exit()
         else:
             if evt:
                 evt.Skip()
