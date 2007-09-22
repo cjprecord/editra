@@ -227,15 +227,15 @@ BOM = { 'utf-8' : codecs.BOM_UTF8,
 ENC = [ 'utf-8', 'utf-7', 'latin-1', 'utf-16-be', 'utf-16-le', 'ascii']
   #      'utf-32-be', 'utf-32-le', 
 
-def DecodeString(string):
+def DecodeString(str2decode):
     """Decode a given string if possible and return that string
-    @param string: the string to decode
+    @param str2decode: the string to decode
 
     """
-    decoded = string
+    decoded = str2decode
     for enc in ENC:
         try:
-            decoded = txt.decode(string)
+            decoded = str2decode.decode(enc)
         except (UnicodeDecodeError, UnicodeWarning):
             continue
         else:
