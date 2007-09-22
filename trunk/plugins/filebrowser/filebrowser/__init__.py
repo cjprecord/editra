@@ -232,6 +232,7 @@ class BrowserPane(wx.Panel):
         wx.Panel.__init__(self, parent, id, pos, size, style)
         
         # Attributes
+        self._mw = parent
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         ff = "".join(syntax.syntax.GenFileFilters())
         self._menbar = BrowserMenuBar(self, self.ID_BROWSE_MENU)
@@ -247,7 +248,7 @@ class BrowserPane(wx.Panel):
         self._showh_cb.SetValue(False)
 
         #---- Add Menu Items ----#
-        mb = self.GetTopLevelParent().GetMenuBar()
+        mb = self._mw.GetMenuBar()
         vm = mb.GetMenuByName("view")
         self._mi = vm.InsertAlpha(ID_FILEBROWSE, _("File Browser"), 
                                   _("Open File Browser sidepanel"),
@@ -343,7 +344,7 @@ class BrowserPane(wx.Panel):
     def OnShowBrowser(self, evt):
         """Shows the filebrowser"""
         if evt.GetId() == ID_FILEBROWSE:
-            mgr = self.GetTopLevelParent().GetFrameManager()
+            mgr = self._mw.GetFrameManager()
             pane = mgr.GetPane(PANE_NAME)
             if pane.IsShown():
                 pane.Hide()
@@ -357,7 +358,7 @@ class BrowserPane(wx.Panel):
 
     def UpdateMenuItem(self, evt):
         """Update the check mark for the menu item"""
-        mgr = self.GetTopLevelParent().GetFrameManager()
+        mgr = self._mw.GetFrameManager()
         pane = mgr.GetPane(PANE_NAME)
         if pane.IsShown():
             self._mi.Check(True)
@@ -469,7 +470,9 @@ class FileBrowser(wx.GenericDirCtrl):
                     to_open.append(fname)
             except:
                 pass
-        self.GetTopLevelParent().nb.OnDrop(to_open)
+        win = wx.GetApp().GetActiveWindow()
+        if win:
+            win.nb.OnDrop(to_open)
 
       # TODO implement drag and drop from the control to the editor
 #     def OnDragEnd(self, evt):
