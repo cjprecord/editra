@@ -312,9 +312,8 @@ class ErrorDialog(wx.Dialog):
             self.Close()
         elif e_id == wx.ID_ABORT:
             ABORT = True
-            for win in wx.GetApp().GetMainWindows():
-                wx.PostEvent(win, wx.MenuEvent(wx.wxEVT_MENU_OPEN, 
-                                               ed_glob.ID_CLOSE_WINDOW))
+            wx.CallLater(500, wx.GetApp().OnExit, 
+                         (wx.MenuEvent(wx.wxEVT_MENU_OPEN, ed_glob.ID_EXIT)))
             self.Close()
         else:
             evt.Skip()
