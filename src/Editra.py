@@ -499,8 +499,7 @@ def Main():
         try:
             if not os.path.isabs(arg):
                 arg = os.path.abspath(arg)
-            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, \
-                         unicode(arg.decode('utf-8')))
+            frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, util.DecodeString(arg))
         except IndexError:
             dev_tool.DEBUGP("[main][err] IndexError on commandline args")
 
