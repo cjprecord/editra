@@ -7,7 +7,7 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
-VERSION 0.x.xx
+VERSION 0.2.0
 DATE xx/xx/2007
 6th Alpha Release
 
@@ -43,7 +43,8 @@ available commands)
 +Theme system extended to all program icons
 +New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
 +Improved file encoding detection and unicode handling
-+Shelf visibilty can be toggled with Alt+S
++Shelf visibilty can be toggled with Ctrl+Alt+S
++Shelf Items are automatically assigned hotkeys Ctrl+Alt+(0-9)
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.
