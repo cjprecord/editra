@@ -121,7 +121,8 @@ class Shelf(plugin.Plugin):
 
         """
         menu = ed_menu.ED_Menu()
-        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf"), _("Show the Shelf"))
+        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf") + "\tAlt+S", 
+                    _("Show the Shelf"))
         menu.AppendSeparator()
         menu_items = list()
         for observer in self.observers:
@@ -235,6 +236,33 @@ class Shelf(plugin.Plugin):
                         self._shelf.GetPageText(page), 1))
         return rval
 
+    def Hide(self):
+        """Hide the shelf
+        @postcondition: Shelf is hidden by aui manager
+
+        """
+        if not hasattr(self._parent, 'GetFrameManager'):
+            return
+        mgr = self._parent.GetFrameManager()
+        pane = mgr.GetPane(self.__name__)
+        if pane.IsOk():
+            pane.Hide()
+            mgr.Update()
+
+    def IsShown(self):
+        """Is the shelf visible?
+        @return: bool
+
+        """
+        if not hasattr(self._parent, 'GetFrameManager'):
+            return
+        mgr = self._parent.GetFrameManager()
+        pane = mgr.GetPane(self.__name__)
+        if pane.IsOk():
+            return pane.IsShown()
+        else:
+            return False
+
     def OnGetShelfItem(self, evt):
         """Handles menu events that have been registered
         by the Shelf Items on the Shelf.
@@ -243,7 +271,10 @@ class Shelf(plugin.Plugin):
         """
         e_id = evt.GetId()
         if e_id == ed_glob.ID_SHOW_SHELF:
-            self.EnsureShelfVisible()
+            if self.IsShown():
+                self.Hide()
+            else:
+                self.EnsureShelfVisible()
         else:
             self.PutItemOnShelf(evt.GetId())
 
