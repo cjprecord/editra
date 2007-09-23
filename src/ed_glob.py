@@ -64,7 +64,7 @@ __all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
 
 #---- Project Info ----#
 Author = __Author__  = u'Cody Precord'
-version = __version__ = u'0.1.85'
+version = __version__ = u'0.2.0'
 prog_name = u'Editra'
 home_page = u"http://editra.org"
 contact_mail = u"staff@editra.org"
