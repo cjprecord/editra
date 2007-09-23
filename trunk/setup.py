@@ -176,7 +176,7 @@ NAME = "Editra"
 
 URL = "http://editra.org"
 
-VERSION = ed_glob.__version__
+VERSION = ed_glob.version
 
 MANIFEST_TEMPLATE = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
