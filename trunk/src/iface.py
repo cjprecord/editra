@@ -121,7 +121,7 @@ class Shelf(plugin.Plugin):
 
         """
         menu = ed_menu.ED_Menu()
-        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf") + "\tAlt+S", 
+        menu.Append(ed_glob.ID_SHOW_SHELF, _("Show Shelf") + "\tCtrl+Alt+S", 
                     _("Show the Shelf"))
         menu.AppendSeparator()
         menu_items = list()
@@ -135,8 +135,12 @@ class Shelf(plugin.Plugin):
             except Exception, msg:
                 self._log("[shelf][err] %s" % str(msg))
         menu_items.sort()
+
         genmenu = ed_menu.ED_Menu()
+        combo = 0
         for item in menu_items:
+            combo += 1
+            item[1].SetText(item[1].GetText() + "\tCtrl+Alt+" + str(combo))
             menu.AppendItem(item[1])
         return menu
 
