@@ -42,14 +42,18 @@ available commands)
 +Updates to all plugins to work with multiple windows
 +Theme system extended to all program icons
 +New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
++Improved file encoding detection and unicode handling
++Shelf visibilty can be toggled with Alt+S
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.
 +Fixed session loading were files that had been deleted would be opened as new
 documents.
++Fixed bug with find dialog on windows that arose under certain usage cases
 +Ensure file handle valid when reloading files
 +Many bug and behavior fixes in the Calculator plugin
 +Unicode handling error in file history loading
++Filename decoding bug in MacOpenFile handler
 +Plugins now properly show activation status in View Menu
 +Dont lose bookmarks on file reload
 +Show Shelf is only enabled when their are shelf related plugins activated
