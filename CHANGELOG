@@ -58,6 +58,8 @@ documents.
 +Plugins now properly show activation status in View Menu
 +Dont lose bookmarks on file reload
 +Show Shelf is only enabled when their are shelf related plugins activated
++Check that Editra is not running before starting installation on Windows to
+avoid faulty installs from files that aren't able to be overwritten.
 
 #-----------------------------------------------------------------------------#
 
