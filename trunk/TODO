@@ -8,7 +8,6 @@ Planned Features:
 
 Core:
 - Full command mode to remove need for mouse interaction (initial basic version to be available after 0.1.78)
-- Multiple Top level windows (Staged for version after 0.1.78)
 - Builtin help/documentation browser
 - Extensions to current syntax stylesheet language to allow for per language style definitions
 - Configurable keybindings
