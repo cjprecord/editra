@@ -50,6 +50,14 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "MainSection" SEC01
+  FindProcDLL::FindProc "Editra.exe"
+  StrCmp $R0 0 continueInstall
+    MessageBox MB_ICONSTOP|MB_OK "${PRODUCT_NAME} is still running please close all running instances and try to install again"
+    Abort
+  continueInstall:
+SectionEnd
+
+Section "MainSection" SEC02
   SetOverwrite try
   SetOutPath "$INSTDIR\"
   File /r ".\*.*"
