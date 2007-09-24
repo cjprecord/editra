@@ -43,8 +43,12 @@ try:
 except ImportError:
     try:
         import Editra.src as esrc
-    except ImportError:
-        print "Can not find the package directory for Editra!!!"
+    except ImportError, msg:
+        print "There was an error while tring to import Editra"
+        print ("Make sure that Editra is on your PYTHONPATH and that "
+               "you have wxpython installed.")
+        print "ERROR MSG: "
+        print str(msg)
         exit()
 
 #--------------------------------------------------------------------------#
