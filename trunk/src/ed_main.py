@@ -93,7 +93,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         wx.Frame.__init__(self, parent, id_, title, size=wsize,
-                          style=wx.DEFAULT_FRAME_STYLE)
+                          style=wx.DEFAULT_FRAME_STYLE | \
+                                wx.NO_FULL_REPAINT_ON_RESIZE)
 
         self._mgr = wx.aui.AuiManager(flags=wx.aui.AUI_MGR_DEFAULT | \
                                       wx.aui.AUI_MGR_TRANSPARENT_DRAG | \
