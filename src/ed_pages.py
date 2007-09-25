@@ -511,9 +511,6 @@ class EdPages(FNB.FlatNotebook):
         if matchstrn.match(self.control.filename):
             self.control.filename = ""
 
-        self.control.Bind(wx.EVT_KEY_UP, self.frame.OnKeyUp)
-        self.control.Bind(wx.EVT_LEFT_UP, self.frame.OnKeyUp)
-
     def OnPageChanged(self, evt):
         """Actions to do after a page change
         @param evt: event that called this handler
@@ -558,7 +555,7 @@ class EdPages(FNB.FlatNotebook):
         @postcondition: all pages in the notebook are closed
 
         """
-        for page in range(self.GetPageCount()):
+        for page in xrange(self.GetPageCount()):
             result = self.ClosePage()
             if result == wx.ID_CANCEL:
                 self.LOG("[nb][closeall] Canceled on page %d" % page)
@@ -635,14 +632,13 @@ class EdPages(FNB.FlatNotebook):
                the document.
 
         """
-        if hasattr(self.control, 'GetModify'):
-            pg_num = self.GetSelection()
-            title = self.GetPageText(pg_num)
-            if self.control.GetModify():
-                title = u"*" + title
-            if title != FNB.FlatNotebook.GetPageText(self, pg_num):
-                wx.CallAfter(self.SetPageText, pg_num, title)
-            
+        pg_num = self.GetSelection()
+        title = self.GetPageText(pg_num)
+        if self.control.GetModify():
+            title = u"*" + title
+        if title != FNB.FlatNotebook.GetPageText(self, pg_num):
+            wx.CallAfter(self.SetPageText, pg_num, title)
+        
     def UpdateTextControls(self):
         """Updates all text controls to use any new settings that have
         been changed since initialization.

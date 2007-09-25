@@ -182,6 +182,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnModified)
         self.Bind(wx.EVT_CHAR, self.OnChar)
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_KEY_UP, self.GetTopLevelParent().OnKeyUp)
+        self.Bind(wx.EVT_LEFT_UP, self.GetTopLevelParent().OnKeyUp)
        #---- End Init ----#
 
     __name__ = u"EditraTextCtrl"
@@ -445,20 +447,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             mid = (fline + (self.GetLineCount() / 2))
         return mid
 
-    def GetPos(self, key):
+    def GetPos(self):
         """Update Line/Column information
-        @param key: KeyEvent object
+        @return: tuple (line, column)
 
         """
-        pos = self.GetCurrentPos()
-        column = self.GetColumn(pos)
-        if (self.old_pos != pos):
-            self.old_pos = pos
-            if self._use_autocomp and key.GetEventType() != wx.wxEVT_LEFT_UP:
-                if key.GetKeyCode() == wx.WXK_RETURN:
-                    self._autocomp_svc.UpdateNamespace(True)
-            return (self.GetCurrentLine() + 1, column)
-        return (-1, -1)
+        self.old_pos = self.GetCurrentPos()
+        return (self.GetCurrentLine() + 1, self.GetColumn(self.old_pos))
 
     def GotoColumn(self, column):
         """Move caret to column of current line
@@ -603,11 +598,20 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.SetViNormalMode(True)
             evt.Skip()
             return
-        elif self._autoindent and k_code == wx.WXK_RETURN:
-            if self.GetSelectedText():
-                self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
-                return
-            self.AutoIndent()
+        elif k_code == wx.WXK_RETURN:
+
+            if self._autoindent:
+                if self.GetSelectedText():
+                    self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
+                    return
+                self.AutoIndent()
+            else:
+                evt.Skip()
+
+            if self._use_autocomp:
+                if self.CallTipActive():
+                    self.CallTipCancel()
+                self._autocomp_svc.UpdateNamespace(True)
         else:
             evt.Skip()
 
@@ -632,7 +636,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if self.AutoCompActive():
                 self.AutoCompCancel()
             command = self.GetCommandStr() + chr(key_code)
-            self.AddText(chr(key_code))
+            self.AddText(unichr(key_code))
             if self._use_autocomp:
                 self.ShowAutoCompOpt(command)
         elif key_code in self._autocomp_svc.GetCallTipKeys():
@@ -702,13 +706,15 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         col = self.GetColumn(curr_pos)
         cmd_lmt = list(self._autocomp_svc.GetAutoCompStops())
         for key in self._autocomp_svc.GetAutoCompKeys():
-            if chr(key) in cmd_lmt:
-                cmd_lmt.remove(chr(key))
+            kval = chr(key)
+            if kval in cmd_lmt:
+                cmd_lmt.remove(kval)
+
         while self.GetTextRange(start, curr_pos)[0] not in cmd_lmt \
               and col - (curr_pos - start) > 0:
             start -= 1
-        s_col = self.GetColumn(start)
-        if s_col != 0:
+
+        if self.GetColumn(start) != 0:
             start += 1
         cmd = self.GetTextRange(start, curr_pos)
         return cmd.strip()
