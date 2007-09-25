@@ -972,10 +972,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wx.KeyEvent(EVT_KEY_UP)
 
         """
-        line, column = self.nb.GetCurrentCtrl().GetPos(evt)
-        if line >= 0 and column >= 0:
-            self.SetStatusText(_("Line: %d  Column: %d") % \
-                               (line, column), SB_ROWCOL)
+        self.SetStatusText(_("Line: %d  Column: %d") % \
+                           self.nb.GetCurrentCtrl().GetPos(), SB_ROWCOL)
         evt.Skip()
 
     def OnMenuHighlight(self, evt):
