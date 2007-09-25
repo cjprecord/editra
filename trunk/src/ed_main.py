@@ -104,7 +104,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         self.SetTitle()
         self.LOG = wx.GetApp().GetLog()
-  
+        self._handlers = dict()
+        self._handlers['menu'] = list()
+        self._handlers['ui'] = list()
+
         # Try and set an app icon 
         util.SetWindowIcon(self)
 
@@ -194,7 +197,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Actions to take on menu events ----#
         self.Bind(wx.EVT_MENU_OPEN, self.UpdateMenu)
-        self.BindLangMenu()
         if wx.Platform == '__WXGTK__':
             self.Bind(wx.EVT_MENU_HIGHLIGHT, \
                       self.OnMenuHighlight, id=ID_LEXER)
@@ -202,47 +204,53 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                       self.OnMenuHighlight, id=ID_EOL_MODE)
 
         # File Menu Events
-        self.Bind(wx.EVT_MENU, self.OnNew, id=ID_NEW)
-        self.Bind(wx.EVT_MENU, self.OnOpen, id=ID_OPEN)
-        self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSE)
-        self.Bind(wx.EVT_MENU, self.OnClose, id=ID_CLOSE_WINDOW)
-        self.Bind(wx.EVT_MENU, self.OnClosePage, id=ID_CLOSEALL)
-        self.Bind(wx.EVT_MENU, self.OnSave, id=ID_SAVE)
-        self.Bind(wx.EVT_MENU, self.OnSaveAs, id=ID_SAVEAS)
-        self.Bind(wx.EVT_MENU, self.OnSave, id=ID_SAVEALL)
-        self.Bind(wx.EVT_MENU, self.OnSaveProfile, id=ID_SAVE_PROFILE)
-        self.Bind(wx.EVT_MENU, self.OnLoadProfile, id=ID_LOAD_PROFILE)
-        self.Bind(wx.EVT_MENU, self.OnPrint)
-        self.Bind(wx.EVT_MENU, wx.GetApp().OnExit, id=ID_EXIT)
+        self._handlers['menu'].extend([(ID_NEW, self.OnNew),
+                                       (ID_OPEN, self.OnOpen),
+                                       (ID_CLOSE, self.OnClosePage),
+                                       (ID_CLOSE_WINDOW, self.OnClose),
+                                       (ID_CLOSEALL, self.OnClosePage),
+                                       (ID_SAVE, self.OnSave),
+                                       (ID_SAVEAS, self.OnSaveAs),
+                                       (ID_SAVEALL, self.OnSave),
+                                       (ID_SAVE_PROFILE, self.OnSaveProfile),
+                                       (ID_LOAD_PROFILE, self.OnLoadProfile),
+                                       (ID_EXIT, wx.GetApp().OnExit),
+                                       (ID_PRINT, self.OnPrint),
+                                       (ID_PRINT_PRE, self.OnPrint),
+                                       (ID_PRINT_SU, self.OnPrint)])
+
         self.Bind(wx.EVT_MENU_RANGE, self.OnFileHistory, 
                   id=wx.ID_FILE1, id2=wx.ID_FILE9)
 
         # Edit Menu Events
+        self._handlers['menu'].extend([(ID_FIND, self.nb.FindService.OnShowFindDlg),
+                                       (ID_FIND_REPLACE, self.nb.FindService.OnShowFindDlg),
+                                       (ID_QUICK_FIND, self.OnCommandBar),
+                                       (ID_PREF, self.OnPreferences)])
         self.Bind(wx.EVT_MENU, self.DispatchToControl)
-        self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
-        self.Bind(wx.EVT_MENU, self.nb.FindService.OnShowFindDlg, 
-                  id=ID_FIND_REPLACE)
-        self.Bind(wx.EVT_MENU, self.OnCommandBar, id=ID_QUICK_FIND)
-        self.Bind(wx.EVT_MENU, self.OnPreferences, id=ID_PREF)
-
+        
         # View Menu Events
-        self.Bind(wx.EVT_MENU, self.OnCommandBar, id=ID_GOTO_LINE)
-        self.Bind(wx.EVT_MENU, self.OnViewTb, id=ID_VIEW_TOOL)
-
+        self._handlers['menu'].extend([(ID_GOTO_LINE, self.OnCommandBar),
+                                       (ID_VIEW_TOOL, self.OnViewTb)])
+        
         # Format Menu Events
-        self.Bind(wx.EVT_MENU, self.OnFont, id=ID_FONT)
+        self._handlers['menu'].append((ID_FONT, self.OnFont))
 
         # Tool Menu
-        self.Bind(wx.EVT_MENU, self.OnCommandBar, id=ID_COMMAND)
-        self.Bind(wx.EVT_MENU, self.OnStyleEdit, id=ID_STYLE_EDIT)
-        self.Bind(wx.EVT_MENU, self.OnPluginMgr, id=ID_PLUGMGR)
+        self._handlers['menu'].extend([(ID_COMMAND, self.OnCommandBar),
+                                       (ID_STYLE_EDIT, self.OnStyleEdit),
+                                       (ID_PLUGMGR, self.OnPluginMgr)])
+
+        for l_id in syntax.SyntaxIds():
+            self._handlers['menu'].append((l_id, self.DispatchToControl))
+
         self.Bind(wx.EVT_MENU, self.OnGenerate)
 
         # Help Menu Events
-        self.Bind(wx.EVT_MENU, self.OnAbout, id=ID_ABOUT)
-        self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_HOMEPAGE)
-        self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_DOCUMENTATION)
-        self.Bind(wx.EVT_MENU, self.OnHelp, id=ID_CONTACT)
+        self._handlers['menu'].extend([(ID_ABOUT, self.OnAbout),
+                                       (ID_HOMEPAGE, self.OnHelp),
+                                       (ID_DOCUMENTATION, self.OnHelp),
+                                       (ID_CONTACT, self.OnHelp)])
 
         #---- End Menu Setup ----#
 
@@ -278,9 +286,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         plgmgr = wx.GetApp().GetPluginManager()
         addons = MainWindowAddOn(plgmgr)
         addons.Init(self)
-        self._handlers = dict()
-        self._handlers['menu'] = addons.GetEventHandlers()
-        self._handlers['ui'] = addons.GetEventHandlers(ui=True)
+        self._handlers['menu'].extend(addons.GetEventHandlers())
+        self._handlers['ui'].extend(addons.GetEventHandlers(ui=True))
         self._shelf = iface.Shelf(plgmgr)
         self._shelf.Init(self)
         self.LOG("[main][info] Loading Generator plugins")
@@ -984,15 +991,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.UpdateMenu(self.lineformat)
         else:
             evt.Skip()
-
-    def BindLangMenu(self):
-        """Binds Language Menu Ids to event handler
-        @note: This menu is dynamically generated based on the 
-               available file types and lexer configurations. 
-               
-        """
-        for l_id in syntax.SyntaxIds():
-            self.Bind(wx.EVT_MENU, self.DispatchToControl, id=l_id)
 
     def OnCommandBar(self, evt):
         """Open the Commandbar
