@@ -400,8 +400,8 @@ class EdPages(FNB.FlatNotebook):
         @type evt: wx.IdleEvent
 
         """
-        if Profile_Get('CHECKMOD') and \
-           wx.GetApp().IsActive() and self.GetPageCount():
+        if wx.GetApp().IsActive() and \
+           Profile_Get('CHECKMOD') and self.GetPageCount():
             cfile = os.path.join(self.control.dirname, self.control.filename)
             lmod = util.GetFileModTime(cfile)
             if self.control.modtime and not lmod and not os.path.exists(cfile):
