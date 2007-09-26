@@ -483,7 +483,7 @@ def HasConfigDir(loc=u""):
     """
     pchar = GetPathChar()
     if os.path.exists(u"%s%s.%s%s%s" % (wx.GetHomeDir(), pchar,
-                                        ed_glob.prog_name, pchar, loc)):
+                                        ed_glob.PROG_NAME, pchar, loc)):
         return True
     else:
         return False
@@ -493,7 +493,7 @@ def MakeConfigDir(name):
     @param name: name of config directory to make in user config dir
 
     """
-    config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.prog_name
+    config_dir = wx.GetHomeDir() + GetPathChar() + u"." + ed_glob.PROG_NAME
     try:
         os.mkdir(config_dir + GetPathChar() + name)
     finally:
@@ -508,7 +508,7 @@ def CreateConfigDir():
     #---- Resolve Paths ----#
     pchar = GetPathChar()
     prof_dir = ed_glob.CONFIG['PROFILE_DIR']
-    config_dir = u"%s%s.%s" % (wx.GetHomeDir(), pchar, ed_glob.prog_name)
+    config_dir = u"%s%s.%s" % (wx.GetHomeDir(), pchar, ed_glob.PROG_NAME)
     profile_dir = u"%s%sprofiles" % (config_dir, pchar)
     config_file = u"%sdefault.ppb" % prof_dir
     loader =  u"%s.loader2" % prof_dir
@@ -548,7 +548,7 @@ def ResolvConfigDir(config_dir, sys_only=False):
     if not sys_only:
         # Try to look for a user dir
         user_config = u"%s%s.%s%s%s" % (wx.GetHomeDir(), path_char,
-                                        ed_glob.prog_name, path_char, 
+                                        ed_glob.PROG_NAME, path_char, 
                                         config_dir)
         if os.path.exists(user_config):
             return user_config + path_char
@@ -594,7 +594,7 @@ def ResolvConfigDir(config_dir, sys_only=False):
         elif pro_path == "":
             pro_path = os.getcwd()
             pieces = pro_path.split(path_char)
-            if pieces[-1] not in [ed_glob.prog_name.lower(), ed_glob.prog_name]:
+            if pieces[-1] not in [ed_glob.PROG_NAME.lower(), ed_glob.PROG_NAME]:
                 pro_path = path_char.join(pieces[:-1])
         else:
             pro_path = ResolvAbsPath(pro_path)

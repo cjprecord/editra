@@ -207,7 +207,7 @@ class Html(plugin.Plugin):
                "<meta name=\"Generator\" content=\"Editra/%s\">\n" \
                "<meta http-equiv=\"content-type\" content=\"text/html; " \
                "charset=utf-8\">" \
-               "\n</head>" % (self.stc.filename, ed_glob.version)
+               "\n</head>" % (self.stc.filename, ed_glob.VERSION)
 
     def GenerateBody(self):
         """Generates the body of the html from the stc's content. To do
@@ -628,7 +628,7 @@ class LaTeX(plugin.Plugin):
 #               "\\usepackage[utf8]{inputenc}\n"
                "\\usepackage{color}\n"
                "\\usepackage{alltt}\n"
-               "\\usepackage{times}\n") % ed_glob.version
+               "\\usepackage{times}\n") % ed_glob.VERSION
         pre += ("\\pagecolor[rgb]{%s}\n" % \
                 self.HexToRGB(self._dstyle.GetBack()))
         pre += "\\parindent=0in\n\n"

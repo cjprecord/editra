@@ -70,7 +70,7 @@ def GetAvailLocales():
     avail_loc = list()
     loc = glob.glob(os.path.join(ed_glob.CONFIG['LANG_DIR'], "*"))
     for path in loc:
-        the_path = os.path.join(path, "LC_MESSAGES", ed_glob.prog_name + ".mo")
+        the_path = os.path.join(path, "LC_MESSAGES", ed_glob.PROG_NAME + ".mo")
         if os.path.exists(the_path):
             avail_loc.append(os.path.basename(path))
     return avail_loc

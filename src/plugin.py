@@ -564,7 +564,7 @@ class PluginManager(object):
         if writer == -1:
             self.LOG("[plugin_mgr][exception] Failed to write plugin config")
             return
-        writer.write("# Editra %s Plugin Config\n#\n" % ed_glob.version)
+        writer.write("# Editra %s Plugin Config\n#\n" % ed_glob.VERSION)
         for item in self._config:
             writer.write("%s=%s\n" % (item, str(self._config[item])))
         writer.write("\n# EOF\n")

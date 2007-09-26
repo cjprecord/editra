@@ -25,15 +25,12 @@
 # AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
 # SUMMARY:                                                                 #
-#   This module defines and manages the theme of the editor. By default    #
-# This doesnt do very much as it lets the system handle themeing so that   #
-# the app will look and appear as natural as possible on the host system.  #
-# The theme module is only here for those that wish to customize the       #
-# appearance of the editor to there own liking.                            #
+#   Provide an interface for creating icon themes for Editra. This will    #
+#  allow for themes to be created, installed, and managed as plugins,      #
+#  which means that they can be installed as single file instead of        #
+#  dozens of individual image files.                                       #
 #                                                                          #
-#
-#
-# METHODS:
+# METHODS:                                                                 #
 #
 #--------------------------------------------------------------------------#
 """
@@ -46,18 +43,17 @@ __revision__ = "$Revision$"
 # Dependancies
 import wx
 import ed_glob
+import plugin
 
 #--------------------------------------------------------------------------#
 
-class ED_Theme(wx.FileConfig):
-    """Creates a Theme Object which is to be used as an
-    information provider to the the art provider. It is derived
-    from FileConfig so that themes will be defined using ini like
-    text files in the base directory of each theme.
-    
-    """
-    def __init__():
-        """Initializes the object
-        @note: unimplemented
+class ThemeI(plugin.Interface):
+    """Interface for defining a theme
 
-        """
+    """
+
+class IconProvider(plugin.Plugin):
+    """Plugin that fetches requested icons from the current active theme.
+
+    """
+    observers = plugin.ExtensionPoint(ThemeI)

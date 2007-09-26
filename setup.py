@@ -176,7 +176,7 @@ NAME = "Editra"
 
 URL = "http://editra.org"
 
-VERSION = ed_glob.version
+VERSION = ed_glob.VERSION
 
 MANIFEST_TEMPLATE = '''
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -245,12 +245,12 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
     ez_setup.use_setuptools()
     from setuptools import setup
 
-    PLIST = dict(CFBundleName = ed_glob.prog_name,
+    PLIST = dict(CFBundleName = ed_glob.PROG_NAME,
              CFBundleIconFile = 'Editra.icns',
-             CFBundleShortVersionString = ed_glob.version,
-             CFBundleGetInfoString = ed_glob.prog_name + " " + ed_glob.version,
-             CFBundleExecutable = ed_glob.prog_name,
-             CFBundleIdentifier = "org.editra.%s" % ed_glob.prog_name.title(),
+             CFBundleShortVersionString = ed_glob.VERSION,
+             CFBundleGetInfoString = ed_glob.PROG_NAME + " " + ed_glob.VERSION,
+             CFBundleExecutable = ed_glob.PROG_NAME,
+             CFBundleIdentifier = "org.editra.%s" % ed_glob.PROG_NAME.title(),
              CFBundleDocumentTypes = [dict(CFBundleTypeExtensions=syntax.GetFileExtensions(),
                                            CFBundleTypeIconFile='editra_doc',
                                            CFBundleTypeRole="Editor"

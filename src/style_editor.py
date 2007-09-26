@@ -227,7 +227,7 @@ class StyleEditor(wx.Dialog):
         """
         if ed_glob.CONFIG['STYLES_DIR'] == ed_glob.CONFIG['SYS_STYLES_DIR']:
             user_config = os.path.join(wx.GetHomeDir(), 
-                                        "." + ed_glob.prog_name, 'styles')
+                                        "." + ed_glob.PROG_NAME, 'styles')
             if not os.path.exists(user_config):
                 try:
                     os.mkdir(user_config)

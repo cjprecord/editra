@@ -836,7 +836,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             if win is not None:
                 win.Raise()
                 return
-            dlg = plugdlg.PluginDialog(self, wx.ID_ANY, prog_name + " " \
+            dlg = plugdlg.PluginDialog(self, wx.ID_ANY, PROG_NAME + " " \
                                         + _("Plugin Manager"), \
                                         size=wx.Size(500, 350))
             dlg.CenterOnParent()
@@ -874,7 +874,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             year = time.localtime()
             desc = ["Editra is a programmers text editor.",
                     "Written in 100%% Python.",
-                    "Homepage: " + home_page + "\n",
+                    "Homepage: " + HOME_PAGE + "\n",
                     "Platform Info: (python %s,%s)", 
                     "License: GPL v2 (see COPYING.txt for full license)"]
             desc = "\n".join(desc)
@@ -883,9 +883,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             platform[0] += (" " + wx.VERSION_STRING)
             wx_info = ", ".join(platform)
             info.SetCopyright("Copyright(C) 2005-%d Cody Precord" % year[0])
-            info.SetName(prog_name.title())
+            info.SetName(PROG_NAME.title())
             info.SetDescription(desc % (py_version, wx_info))
-            info.SetVersion(version)
+            info.SetVersion(VERSION)
             wx.AboutBox(info)
         else:
             evt.Skip()
@@ -899,11 +899,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         import webbrowser
         e_id = evt.GetId()
         if e_id == ID_HOMEPAGE:
-            webbrowser.open(home_page, 1)
+            webbrowser.open(HOME_PAGE, 1)
         elif e_id == ID_DOCUMENTATION:
-            webbrowser.open_new_tab(home_page + "/?page=doc")
+            webbrowser.open_new_tab(HOME_PAGE + "/?page=doc")
         elif e_id == ID_CONTACT:
-            webbrowser.open(u'mailto:%s' % contact_mail)
+            webbrowser.open(u'mailto:%s' % CONTACT_MAIL)
         else:
             evt.Skip()
 
@@ -1141,7 +1141,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type title: string
 
         """
-        name = "%s v%s" % (prog_name, version)
+        name = "%s v%s" % (PROG_NAME, VERSION)
         if len(title):
             name = u' - ' + name
         wx.Frame.SetTitle(self, title + name)

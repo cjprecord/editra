@@ -61,7 +61,7 @@ from profiler import CalcVersionValue
 import util
 #--------------------------------------------------------------------------#
 # Globals
-DL_REQUEST = ed_glob.home_page + "/?page=download&dist=%s"
+DL_REQUEST = ed_glob.HOME_PAGE + "/?page=download&dist=%s"
 DL_LIN = 'SRC'          # This may need to change in future
 DL_MAC = 'Macintosh'
 DL_SRC = 'SRC'
@@ -128,7 +128,7 @@ class UpdateService(object):
         
         """
         version = re.compile('<\s*a id\="VERSION"[^>]*>(.*?)<\s*/a\s*>')
-        page = self.GetPageText(ed_glob.home_page)
+        page = self.GetPageText(ed_glob.HOME_PAGE)
         found = re.findall(version, page)
         if len(found):
             return found[0] # Should be the first/only match found
@@ -187,7 +187,7 @@ class UpdateService(object):
         if not re.match(verpat, current):
             return False
 
-        if CalcVersionValue(ed_glob.version) < CalcVersionValue(current):
+        if CalcVersionValue(ed_glob.VERSION) < CalcVersionValue(current):
             dl_path = self.GetCurrFileURL()
             dl_file = dl_path.split('/')[-1]
             dl_to = dl_to + dl_file
@@ -358,7 +358,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         
         """
         if self._status[0].isdigit():
-            return CalcVersionValue(self._status) > CalcVersionValue(ed_glob.version)
+            return CalcVersionValue(self._status) > CalcVersionValue(ed_glob.VERSION)
         else:
             return False
 
@@ -485,7 +485,7 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self._status = ret
         self.LOG("[updateprog][evt] Update Check Finished: result = " + ret)
         if ret[0].isdigit() and \
-           CalcVersionValue(ret) > CalcVersionValue(ed_glob.version):
+           CalcVersionValue(ret) > CalcVersionValue(ed_glob.VERSION):
             ret = True
         else:
             ret = False
