@@ -95,7 +95,7 @@ def EnvironmentInfo():
     """
     info = list()
     info.append("#---- System Information ----#")
-    info.append("%s Version: %s" % (ed_glob.prog_name, ed_glob.version))
+    info.append("%s Version: %s" % (ed_glob.PROG_NAME, ed_glob.VERSION))
     info.append("Operating System: %s" % wx.GetOsDescription())
     if sys.platform == 'darwin':
         info.append("Mac OSX: %s" % platform.mac_ver()[0])
@@ -305,7 +305,7 @@ class ErrorDialog(wx.Dialog):
             self.Close()
         elif e_id == ID_SEND:
             msg = u"mailto:%s?subject=Error Report&body=%s"
-            addr = u"bugs@%s" % (ed_glob.home_page.lstrip("http://"))
+            addr = u"bugs@%s" % (ed_glob.HOME_PAGE.lstrip("http://"))
             msg = msg % (addr, self.err_msg)
             msg = msg.replace(u"'", u'')
             webbrowser.open(msg)

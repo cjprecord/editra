@@ -46,7 +46,7 @@ __revision__ = "$Revision$"
 import os
 import cPickle
 import wx
-from ed_glob import CONFIG, prog_name, version
+from ed_glob import CONFIG, PROG_NAME, VERSION
 import util
 import dev_tool
 
@@ -350,7 +350,7 @@ def CalcVersionValue(ver_str="0.0.0"):
 def GetLoader():
     """Finds the loader to use"""
     user_home = wx.GetHomeDir() + util.GetPathChar()
-    rel_prof_path = ("." + prog_name + util.GetPathChar() + 
+    rel_prof_path = ("." + PROG_NAME + util.GetPathChar() + 
                      "profiles" + util.GetPathChar() + ".loader2")
 
     if os.path.exists(user_home + rel_prof_path):
@@ -397,7 +397,7 @@ def ProfileIsCurrent():
     @return: whether profile on disk was written with current program version
 
     """
-    if CalcVersionValue(ProfileVersionStr()) >= CalcVersionValue(version):
+    if CalcVersionValue(ProfileVersionStr()) >= CalcVersionValue(VERSION):
         return True
     else:
         return False
@@ -447,6 +447,6 @@ def UpdateProfileLoader():
         conv = unicode
 
     writer.write(conv(Profile_Get('MYPROFILE')))
-    writer.write(u"\nVERSION\t" + version)
+    writer.write(u"\nVERSION\t" + VERSION)
     writer.close()
     return 0

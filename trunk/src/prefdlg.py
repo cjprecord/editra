@@ -1007,7 +1007,7 @@ class UpdatePanel(PrefPanelBase):
         cur_box = wx.StaticBox(self, ID_CURR_BOX, _("Installed Version"))
         cur_sz = wx.StaticBoxSizer(cur_box, wx.HORIZONTAL)
         cur_sz.SetMinSize(wx.Size(150, 40))
-        cur_ver = wx.StaticText(self, wx.ID_ANY,  ed_glob.version)
+        cur_ver = wx.StaticText(self, wx.ID_ANY,  ed_glob.VERSION)
         cur_sz.Add(cur_ver, 0, wx.ALIGN_CENTER_HORIZONTAL)
         e_update = updater.UpdateProgress(self, ed_glob.ID_PREF_UPDATE_BAR)
         upd_box = wx.StaticBox(self, ID_LATE_BOX, _("Latest Version"))

@@ -87,7 +87,7 @@ class Editra(wx.App, events.AppEventHandlerMixin):
         @postcondition: custom artprovider and plugins are loaded
 
         """
-        self.SetAppName(ed_glob.prog_name)
+        self.SetAppName(ed_glob.PROG_NAME)
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
@@ -279,7 +279,7 @@ class Editra(wx.App, events.AppEventHandlerMixin):
 
         """
         frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
-                                   ed_glob.prog_name)
+                                   ed_glob.PROG_NAME)
         if caller:
             pos = caller.GetPosition()
             frame.SetPosition((pos.x + 22, pos.y + 22))
@@ -458,11 +458,11 @@ def Main():
                    "  --help     Show this help message\n"
                    "  --oldPath  Don't use this!!\n"
                    "  --version  Print version number and exit\n"
-                  ) % ed_glob.version
+                  ) % ed_glob.VERSION
             exit(0)
         if True in [x[0] in ['-v', '--version'] for x in opts]:
-            print "%s - v%s - Developers Editor" % (ed_glob.prog_name, \
-                                                    ed_glob.version)
+            print "%s - v%s - Developers Editor" % (ed_glob.PROG_NAME, \
+                                                    ed_glob.VERSION)
             exit(0)
         if True in [x[0] in ['-d', '--debug'] for x in opts]:
             ed_glob.DEBUG = True
@@ -481,8 +481,8 @@ def Main():
     langid = ed_i18n.GetLangId(Profile_Get('LANG'))
     the_locale = wx.Locale(langid)
     the_locale.AddCatalogLookupPathPrefix(ed_glob.CONFIG['LANG_DIR'])
-    the_locale.AddCatalog(ed_glob.prog_name)
-    language = gettext.translation(ed_glob.prog_name, 
+    the_locale.AddCatalog(ed_glob.PROG_NAME)
+    language = gettext.translation(ed_glob.PROG_NAME, 
                                    ed_glob.CONFIG['LANG_DIR'],
                                    [the_locale.GetCanonicalName()], 
                                    fallback=True)
@@ -498,7 +498,7 @@ def Main():
                       _("Profile Updated"))
 
     # Splash a warning if version is not a final version
-    if Profile_Get('APPSPLASH') and int(ed_glob.version[0]) < 1:
+    if Profile_Get('APPSPLASH') and int(ed_glob.VERSION[0]) < 1:
         splash_img = wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
                                               wx.ART_OTHER)
         splash = wx.SplashScreen(splash_img, wx.SPLASH_CENTRE_ON_PARENT | \
@@ -507,7 +507,7 @@ def Main():
         wx.FutureCall(3000, splash.Destroy)
 
     frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
-                               ed_glob.prog_name)
+                               ed_glob.PROG_NAME)
     editra_app.RegisterWindow(repr(frame), frame, True)
     editra_app.SetTopWindow(frame)
     frame.Show(True)

@@ -39,15 +39,15 @@ __author__ = "Cody Precord <cprecord@editra.org>"
 __svnid__ = "$Id$"
 __revision__ = "$Revision$"
 
-__all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
-            'ID_NEW', 'ID_OPEN', 'ID_CLOSE', 'ID_CLOSEALL', 'ID_SAVE', 
-            'ID_SAVEAS', 'ID_SAVEALL', 'ID_SAVE_PROFILE', 'ID_LOAD_PROFILE', 
-            'ID_PRINT', 'ID_PRINT_PRE', 'ID_PRINT_SU', 'ID_EXIT', 'ID_UNDO', 
-            'ID_REDO', 'ID_CUT', 'ID_COPY', 'ID_PASTE', 'ID_SELECTALL', 
-            'ID_ADD_BM', 'ID_DEL_BM',  'ID_DEL_ALL_BM', 'ID_LINE_AFTER', 
-            'ID_LINE_BEFORE', 'ID_CUT_LINE', 'ID_COPY_LINE', 'ID_JOIN_LINES', 
-            'ID_TRANSPOSE', 'ID_FIND', 'ID_FIND_REPLACE', 'ID_QUICK_FIND', 
-            'ID_PREF', 'ID_ZOOM_OUT', 'home_page', 'contact_mail',
+__all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'VERSION', 'PROG_NAME',
+            'ID_NEW', 'ID_OPEN', 'ID_CLOSE', 'ID_CLOSEALL', 'ID_SAVE',
+            'ID_SAVEAS', 'ID_SAVEALL', 'ID_SAVE_PROFILE', 'ID_LOAD_PROFILE',
+            'ID_PRINT', 'ID_PRINT_PRE', 'ID_PRINT_SU', 'ID_EXIT', 'ID_UNDO',
+            'ID_REDO', 'ID_CUT', 'ID_COPY', 'ID_PASTE', 'ID_SELECTALL',
+            'ID_ADD_BM', 'ID_DEL_BM',  'ID_DEL_ALL_BM', 'ID_LINE_AFTER',
+            'ID_LINE_BEFORE', 'ID_CUT_LINE', 'ID_COPY_LINE', 'ID_JOIN_LINES',
+            'ID_TRANSPOSE', 'ID_FIND', 'ID_FIND_REPLACE', 'ID_QUICK_FIND',
+            'ID_PREF', 'ID_ZOOM_OUT', 'HOME_PAGE', 'CONTACT_MAIL',
             'ID_ZOOM_IN', 'ID_ZOOM_NORMAL', 'ID_SHOW_EDGE', 'ID_SHOW_EOL',
             'ID_SHOW_LN', 'ID_SHOW_WS', 'ID_PERSPECTIVES', 'ID_INDENT_GUIDES', 
             'ID_VIEW_TOOL', 'ID_GOTO_LINE', 'ID_NEXT_MARK', 'ID_PRE_MARK', 
@@ -63,11 +63,11 @@ __all__ = [ 'CONFIG', 'SB_INFO', 'SB_ROWCOL', 'version', 'prog_name',
 ]
 
 #---- Project Info ----#
-Author = u'Cody Precord'
-version = u'0.2.0'
-prog_name = u'Editra'
-home_page = u"http://editra.org"
-contact_mail = u"staff@editra.org"
+AUTHOR = u'Cody Precord'
+VERSION = u'0.2.0'
+PROG_NAME = u'Editra'
+HOME_PAGE = u"http://editra.org"
+CONTACT_MAIL = u"staff@editra.org"
 #---- End Project Info ----#
 
 #---- Imported Libs/Objects ----#

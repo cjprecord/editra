@@ -494,7 +494,7 @@ class EdMenuBar(wx.MenuBar):
         helpmenu.Append(ed_glob.ID_ABOUT, _("&About") + u"...", \
                         _("About") + u"...")
         helpmenu.Append(ed_glob.ID_HOMEPAGE, _("Project Homepage"), 
-                        _("Visit the project homepage %s") % ed_glob.home_page)
+                        _("Visit the project homepage %s") % ed_glob.HOME_PAGE)
         helpmenu.Append(ed_glob.ID_DOCUMENTATION, _("Online Documentation"),
                         _("Online project documentation and help guides"))
         helpmenu.Append(ed_glob.ID_CONTACT, _("Feedback"),
