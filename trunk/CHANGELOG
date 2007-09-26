@@ -19,11 +19,12 @@ sending commands to the editor, it only supports a small set of commands current
 but will be extended in the future to allow as complete use of the editor without
 the mouse as possible.
 
-There have also been a number of fairly major performance improvements this round that
-should help to make Editra even faster than it previously was.
+There have also been a number of fairly major and minor performance improvements 
+made to various parts of the editor in this round round of development that should 
+help to make Editra even faster than it previously was.
 
-In addition to these enhancements there were the usual bug fixes, details can
-be viewed in the below changelog.
+In addition to these enhancements there were also a number bug fixes, thanks again to
+all who reported errors. More details can be viewed in the below changelog.
 
 NEW: [features/improvements]
 +Opening multiple toplevel windows is now possible
@@ -45,6 +46,8 @@ available commands)
 +Improved file encoding detection and unicode handling
 +Shelf visibilty can be toggled with Ctrl+Alt+S
 +Shelf Items are automatically assigned hotkeys Ctrl+Alt+(0-9)
++Added Abort button to the Error Reporter
++Spanish Translation of interface from Raul Gonzalez Duque.
 
 BUG FIXES:
 +Fixed error raised when setting font from preferences dialog.
