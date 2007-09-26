@@ -55,7 +55,7 @@ _ = wx.GetTranslation
 # Globals
 _DEFAULTS = {
            'ALPHA'      : 255,              # Transparency level
-           'AALIASING'  : True,             # Use Anti-Aliasing if availble
+           'AALIASING'  : False,            # Use Anti-Aliasing if availble
            'APPSPLASH'  : True,             # Show splash at startup
            'AUTO_COMP'  : True,             # Use Auto-comp if available
            'AUTO_INDENT': True,             # Use Auto Indent
