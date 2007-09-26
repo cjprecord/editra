@@ -256,7 +256,7 @@ elif __platform__ == "darwin" and 'py2app' in sys.argv:
                                            CFBundleTypeRole="Editor"
                                           ),
                                      ],
-             NSAppleScriptEnabled="YES",
+       #      NSAppleScriptEnabled="YES",
              NSHumanReadableCopyright = u"Copyright %s 2005-%d" % (AUTHOR, YEAR)
              )
  
