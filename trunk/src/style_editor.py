@@ -334,9 +334,10 @@ class StyleEditor(wx.Dialog):
         fground_sel = ColourSetter(self.ctrl_pane, ID_FORE_COLOR, "#000000")
         fground_sizer.AddMany([((5, 5)), 
                                (fground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                               ((2, 2), 1, wx.EXPAND),
                                (fground_sel, 0, wx.ALIGN_CENTER_VERTICAL), 
                                ((5, 5))])
-        cbox_sizer.Add(fground_sizer, 0, wx.ALIGN_CENTER_VERTICAL)
+        cbox_sizer.Add(fground_sizer, 0, wx.ALIGN_LEFT | wx.EXPAND)
         cbox_sizer.Add((10, 10))
         # Background
         bground_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -345,9 +346,10 @@ class StyleEditor(wx.Dialog):
         bground_sel = ColourSetter(self.ctrl_pane, ID_BACK_COLOR, "#FFFFFF")
         bground_sizer.AddMany([((5, 5)), 
                                (bground_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                               ((2, 2), 1, wx.EXPAND),
                                (bground_sel, 0, wx.ALIGN_CENTER_VERTICAL), 
                                ((5, 5))])
-        cbox_sizer.Add(bground_sizer, 0, wx.ALIGN_LEFT)
+        cbox_sizer.Add(bground_sizer, 0, wx.ALIGN_LEFT | wx.EXPAND)
         setting_top.Add(cbox_sizer, 0, wx.ALIGN_TOP)
         # Attrib Box
         setting_top.Add((10, 10))
