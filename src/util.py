@@ -411,6 +411,26 @@ def GetPathChar():
     else:
         return u"/"
 
+def GetUniqueName(path, name):
+    """Make a file name that will be unique in case a file of the
+    same name already exists at that path.
+    @param path: Root path to download folder
+    @param name: desired file name base
+    @return: string
+
+    """
+    tmpname = os.path.join(path, name)
+    if os.path.exists(tmpname):
+        ext = name.split('.')[-1]
+        fbase = name[:-1 * len(ext) - 1]
+        inc = len([x for x in os.listdir(path) if x.startswith(fbase)])
+        tmpname = os.path.join(path, "%s-%d.%s" % (fbase, inc, ext))
+        while os.path.exists(tmpname):
+            inc = inc + 1
+            tmpname = os.path.join(path, "%s-%d.%s" % (fbase, inc, ext))
+
+    return tmpname
+
 def GetPathName(path):
     """Gets the path minus filename
     @param path: full path to get base of
