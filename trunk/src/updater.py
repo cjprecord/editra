@@ -171,7 +171,7 @@ class UpdateService(object):
 
         """
         return self._progress
-
+            
     def GetUpdateFiles(self, dl_to=wx.GetHomeDir()):
         """Gets the requested version of the program from the website
         if possible. It will download the current files for the host system to
@@ -190,10 +190,10 @@ class UpdateService(object):
         if CalcVersionValue(ed_glob.VERSION) < CalcVersionValue(current):
             dl_path = self.GetCurrFileURL()
             dl_file = dl_path.split('/')[-1]
-            dl_to = dl_to + dl_file
+            dl_to = util.GetUniqueName(dl_to, dl_file)
+            blk_sz = 4096
+            read = 0
             try:
-                blk_sz = 4096
-                read = 0
                 webfile = urllib.urlopen(dl_path)
                 fsize = int(webfile.info()['Content-Length'])
                 locfile = open(dl_to, 'wb')
