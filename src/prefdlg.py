@@ -1129,7 +1129,7 @@ class ProfileListCtrl(wx.ListCtrl,
 class ExtListCtrl(wx.ListCtrl, 
                   listmix.ListCtrlAutoWidthMixin, 
                   listmix.TextEditMixin):
-    """Class to manage the profile editor
+    """Class to manage the file extension associations
     @summary: Creates a list control for showing file type to file extension
               associations as well as providing an interface to editing these
               associations
