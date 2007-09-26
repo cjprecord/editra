@@ -174,9 +174,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         ### Folder Marker Styles
         self.DefineMarkers()
 
-        # Events
-        if self.brackethl:
-            self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
 #         self.Bind(wx.stc.EVT_STC_MACRORECORD, self.OnRecordMacro)
         self.Bind(wx.stc.EVT_STC_MARGINCLICK, self.OnMarginClick)
         self.Bind(wx.stc.EVT_STC_MODIFIED, self.OnModified)
@@ -1698,7 +1695,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             self.LOG("[stc_evt] Bracket Highlighting Turned Off")
             self.brackethl = False
-            self.Unbind(wx.stc.EVT_STC_UPDATEUI)
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
 
     def ToggleLineNumbers(self, switch=None):
