@@ -13,6 +13,8 @@ Core:
 - Configurable keybindings
 - Extend plugin manager to manage theme related extensions
 - Runtime loading/unloading of plugins
+- Figure out how to get carat in stc to move during drag and drop like it does when
+  not using a custom drop target.
 
 Plugin:
 - Project management / source control front end (near ready for deployment see http://editra-plugins.googlecode.com)
