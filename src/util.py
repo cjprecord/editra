@@ -462,12 +462,10 @@ def GetIds(obj_lst):
     """Gets a list of IDs from a list of objects
     @param obj_lst: list of objects to get ids from
     @return: list of ids
+    @note: I believe this is no longer used anywhere and may be removed soon
 
     """
-    id_list = []
-    for obj in obj_lst:
-        id_list.append(obj.GetId())
-    return id_list
+    return [obj.GetId() for obj in obj_lst]
 
 def ResolvAbsPath(rel_path):
     """Takes a relative path and converts it to an
