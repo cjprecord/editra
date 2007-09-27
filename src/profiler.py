@@ -377,21 +377,6 @@ def GetProfileStr():
     reader.close()
     return profile
 
-def LoadProfile():
-    """Loads Last Used Profile
-    @return: whether load was succesfull or not
-
-    """
-    profile = GetProfileStr()
-    if profile == "":
-        profile = "default.pp"
-
-    if os.path.isabs(profile):
-        retval = Profile().Load(profile)
-    else:
-        retval = Profile().Load(CONFIG['PROFILE_DIR'] + profile)
-    return retval
-
 def ProfileIsCurrent():
     """Checks if profile is compatible with current editor version
     and returns a bool stating if it is or not.
