@@ -442,14 +442,14 @@ class StyleEditor(wx.Dialog):
                                   _("Style Tags") + u": ")
         style_tags = self.styles_orig.keys()
         style_tags.sort()
-        style_lst = wx.ListBox(self.ctrl_pane, ID_STYLES, size = (150, 100),
-                               choices = style_tags, style = wx.LB_SINGLE)
+        style_lst = wx.ListBox(self.ctrl_pane, ID_STYLES, size=(150, 100),
+                               choices=style_tags, style=wx.LB_SINGLE)
         style_sizer2.AddMany([(style_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                              (style_lst, 0, wx.ALIGN_CENTER_VERTICAL)])
-        style_sizer.AddMany([((10, 10)), 
+        style_sizer.AddMany([((10, 10), 0), 
                              (style_sizer2, 0, 
                               wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND), 
-                             ((10, 10))])
+                             ((10, 10), 0)])
         return style_sizer
 
     def OnCancel(self, evt):
