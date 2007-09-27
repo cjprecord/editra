@@ -754,6 +754,9 @@ class DocSyntaxPanel(wx.Panel):
         @note: Controls are layed out using L{wx.GridBagSizer}
 
         """
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        
+
         # Syntax Settings
         syn_cb = wx.CheckBox(self, ed_glob.ID_SYNTAX, _("Syntax Highlighting"))
         syn_cb.SetValue(Profile_Get('SYNTAX'))
@@ -761,32 +764,42 @@ class DocSyntaxPanel(wx.Panel):
                             choices=util.GetResourceFiles(u'styles', 
                                                           get_all=True),
                             default=Profile_Get('SYNTHEME', 'str'))
+
         line = wx.StaticLine(self, size=(-1, 2))
         lsizer = wx.BoxSizer(wx.VERTICAL)
         lsizer.Add(line, 0, wx.EXPAND)
         lst_lbl = wx.StaticText(self, label=_("Filetype Associations") + u": ")
 
         # Layout the controls
-        sizer = wx.GridBagSizer()
-        sizer.Add((5, 5), (0, 0))
         hsizer = wx.BoxSizer(wx.HORIZONTAL)
         hsizer.AddMany([(syn_cb, 0, wx.ALIGN_LEFT), ((5, 5), 1, wx.EXPAND),
                         (wx.StaticText(self, label=_("Color Scheme") + u": "), \
                         0, wx.ALIGN_LEFT),
-                        (syntheme, 1, wx.EXPAND)])
-        sizer.AddMany([(hsizer, (1, 1), (1, 4), wx.EXPAND), 
-                       (lsizer, (3, 1), (1, 4), wx.EXPAND),
-                       (lst_lbl, (4, 1))])
-        if wx.Platform == '__WXMAC__':
-            # For some reason the list control flows out of bounds if this is 
-            # not added on OS X
-            sizer.Add((5, 5), (1, 5), (1, 3), wx.EXPAND)
-        sizer.Add(self._elist, (5, 1), (10, 4), wx.EXPAND)
-        sizer.Add((1, 1), (15, 1))
+                        (syntheme, 0, wx.EXPAND), ((5, 5), 0)])
+
+        sizer.AddMany([((15, 15), 0), 
+                       (hsizer, 0, wx.EXPAND),
+                       ((5, 5), 0),
+                       (lsizer, 0, wx.EXPAND),
+                       ((15, 15), 0),
+                       (lst_lbl, 0, wx.ALIGN_LEFT)])
+
+
+        hsizer2 = wx.BoxSizer(wx.HORIZONTAL)
+        hsizer2.Add((5, 5), 0)
+        hsizer2.Add(self._elist, 1, wx.EXPAND)
+        hsizer2.Add((5, 5), 0)
+
+        sizer.Add((10, 10), 0)
+        sizer.Add(hsizer2, 1, wx.EXPAND)
+        sizer.Add((20, 20), 0)
         sizer.Add(wx.Button(self, wx.ID_DEFAULT, 
-                  _("Revert to Default")), (16, 1))
-        sizer.Add((2, 2), (17, 1))
-        self.SetSizer(sizer)
+                  _("Revert to Default")), 0, wx.ALIGN_LEFT)
+        sizer.Add((10, 10), 0)
+
+        msizer = wx.BoxSizer(wx.HORIZONTAL)
+        msizer.AddMany([((5, 5), 0), (sizer, 1, wx.EXPAND), ((5, 5), 0)])
+        self.SetSizer(msizer)
 
     def OnButton(self, evt):
         """Reset button handler
@@ -1145,7 +1158,7 @@ class ExtListCtrl(wx.ListCtrl,
         wx.ListCtrl.__init__(self, parent, wx.ID_ANY, 
                              wx.DefaultPosition, wx.DefaultSize, 
                              style=wx.LC_REPORT | wx.LC_SORT_ASCENDING | \
-                                   wx.LC_VRULES)
+                                   wx.LC_VRULES | wx.BORDER)
 
         listmix.ListCtrlAutoWidthMixin.__init__(self)
         listmix.TextEditMixin.__init__(self)
