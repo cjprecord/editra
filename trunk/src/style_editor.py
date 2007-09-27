@@ -121,10 +121,12 @@ class StyleEditor(wx.Dialog):
         ctrl_sizer.Add(wx.StaticLine(self.ctrl_pane, size=(-1, 2), 
                                      style = wx.LI_VERTICAL), 
                        0, wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND)
+        ctrl_sizer.Add((5, 5), 0)
 
         # Control Panel Right Column
-        right_colum.Add(self.Settings(), 0, wx.ALIGN_LEFT)
-        ctrl_sizer.Add(right_colum, 0, wx.ALIGN_RIGHT)
+        right_colum.Add(self.Settings(), 1, wx.ALIGN_LEFT | wx.EXPAND)
+        ctrl_sizer.Add(right_colum, 1, wx.ALIGN_RIGHT | wx.EXPAND)
+        ctrl_sizer.Add((5, 5), 0)
 
         # Finish Control Panel Setup
         self.ctrl_pane.SetSizer(ctrl_sizer)
@@ -132,7 +134,7 @@ class StyleEditor(wx.Dialog):
 
         # Preview Area
         pre_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        pre_sizer.AddMany([(10, 10), 
+        pre_sizer.AddMany([((10, 10), 0), 
                            (wx.StaticText(self, label=_("Preview") + u": "), 
                             0, wx.ALIGN_LEFT)])
         self.sizer.AddMany([((10, 10), 0), (pre_sizer, 0, wx.ALIGN_LEFT),
@@ -370,6 +372,7 @@ class StyleEditor(wx.Dialog):
         fh_sizer = wx.BoxSizer(wx.HORIZONTAL)
         font_box = wx.StaticBox(self.ctrl_pane, label=_("Font Settings") + u":")
         fbox_sizer = wx.StaticBoxSizer(font_box, wx.VERTICAL)
+
         # Font Face Name
         fsizer = wx.BoxSizer(wx.HORIZONTAL)
         flbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Font") + u": ")
@@ -380,27 +383,27 @@ class StyleEditor(wx.Dialog):
         font_lst = ["%(primary)s", "%(secondary)s"]
         font_lst.extend(f_lst)
         fchoice = wx.Choice(self.ctrl_pane, ID_FONT, choices=font_lst)
-        fsizer.AddMany([((5, 5)), (flbl, 0, wx.ALIGN_CENTER_VERTICAL),
+        fsizer.AddMany([((5, 5), 0), (flbl, 0, wx.ALIGN_CENTER_VERTICAL),
                         (fchoice, 0, wx.ALIGN_CENTER_VERTICAL), ((5, 5))])
         fbox_sizer.Add(fsizer, 0, wx.ALIGN_LEFT)
+
         # Font Size
         fsize_sizer = wx.BoxSizer(wx.HORIZONTAL)
         fsize_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Size") + u": ")
         fsizes = ['%(size)d', '%(size2)d']
-        for num in range(4, 21):
-            fsizes.append(str(num))
+        fsizes.extend([ str(x) for x in xrange(4, 21)])
         fs_choice = wx.Choice(self.ctrl_pane, ID_FONT_SIZE, 
                               choices = fsizes)
-        fsize_sizer.AddMany([((5, 5)), (fsize_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                             (fs_choice, 0, wx.ALIGN_CENTER_VERTICAL), 
-                             ((5, 5))])
-        fbox_sizer.AddMany([((5, 5)), (fsize_sizer, 0, wx.ALIGN_LEFT)])
-        fh_sizer.AddMany([((10, 10)), 
-                          (fbox_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL),
+        fsize_sizer.AddMany([((5, 5), 0), (fsize_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
+                             (fs_choice, 1, wx.EXPAND | wx.ALIGN_RIGHT), 
+                             ((5, 5), 0)])
+        fbox_sizer.AddMany([((5, 5)), (fsize_sizer, 0, wx.ALIGN_LEFT | wx.EXPAND)])
+        fh_sizer.AddMany([(fbox_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL),
                           ((10, 10))])
 
         # Build Section
-        setting_sizer.AddMany([(setting_top, 0, wx.ALIGN_CENTER_HORIZONTAL), 
+        setting_sizer.AddMany([(setting_top, 0, wx.ALIGN_CENTER_HORIZONTAL),
+                               ((10, 10), 1, wx.EXPAND),
                                (fh_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)])
         return setting_sizer
 
