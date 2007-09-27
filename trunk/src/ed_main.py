@@ -773,6 +773,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             else:
                 self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
                 self.SetToolBar(self.toolbar)
+                self.SendSizeEvent()
+                self.RefreshRect(self.GetRect())
+                self.Update()
+                self.Refresh()
                 _PSET('TOOLBAR', True)
                 self.UpdateToolBar()
         else:
