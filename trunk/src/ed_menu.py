@@ -275,7 +275,7 @@ class EdMenuBar(wx.MenuBar):
         pmenu.Append(ed_glob.ID_LOAD_PROFILE, _("Load Profile"), 
                      _("Load a Custom Profile"))
         filemenu.AppendSubMenu(pmenu, _("Profile"), 
-                               _("Load and save custom rofiles"))
+                               _("Load and save custom Profiles"))
         filemenu.AppendSeparator()
         filemenu.Append(ed_glob.ID_PRINT_SU, _("Page Setup") + "\tCtrl+Shift+P",
                         _("Configure Printer"))
