@@ -44,6 +44,7 @@ __revision__ = "$Revision$"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
+import sys
 import cPickle
 import wx
 from ed_glob import CONFIG, PROG_NAME, VERSION
@@ -441,12 +442,13 @@ def UpdateProfileLoader():
     if writer == -1:
         return 1
 
-    if isinstance(writer, file):
-        conv = str
-    else:
-        conv = unicode
+    prof_name = Profile_Get('MYPROFILE')
+    if not prof_name:
+        prof_name = CONFIG['PROFILE_DIR'] + 'default.ppb'
 
-    writer.write(conv(Profile_Get('MYPROFILE')))
+    prof_name = prof_name.encode(sys.getfilesystemencoding())
+    writer.write(prof_name)
     writer.write(u"\nVERSION\t" + VERSION)
     writer.close()
     return 0
+
