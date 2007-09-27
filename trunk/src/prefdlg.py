@@ -578,7 +578,8 @@ class DocGenPanel(wx.Panel):
                        (font_lbl, (11, 1)), 
                        (fpicker, (11, 2), (1, 3), wx.EXPAND), 
                        (font_lbl2, (12, 1)),
-                       (fpicker2, (12, 2), (1, 3), wx.EXPAND)
+                       (fpicker2, (12, 2), (1, 3), wx.EXPAND),
+                       ((5, 5), (13, 0))
                        ])
         self.SetSizer(sizer)
 
