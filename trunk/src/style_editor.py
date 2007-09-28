@@ -265,13 +265,15 @@ class StyleEditor(wx.Dialog):
                 self.LOG('[style_editor][err] Failed to export style sheet')
                 self.LOG('[style_editor][sys error] %s' % msg)
             else:
-                # Update editor windows to use new style sheet
-                sheet = os.path.basename(sheet_path).split(u'.')[0]
-                Profile_Set('SYNTHEME', sheet)
-                for mainw in wx.GetApp().GetMainWindows():
-                    mainw.nb.UpdateTextControls()
-                    mainw.SetStatusText(_("Changed color scheme to %s") % sheet,
-                                        ed_glob.SB_INFO)
+                if sheet_path.startswith(ed_glob.CONFIG['STYLES_DIR']) or \
+                   sheet_path.startswith(ed_glob.CONFIG['SYS_STYLES_DIR']):
+                    # Update editor windows to use new style sheet
+                    sheet = os.path.basename(sheet_path).split(u'.')[0]
+                    Profile_Set('SYNTHEME', sheet)
+                    for mainw in wx.GetApp().GetMainWindows():
+                        mainw.nb.UpdateTextControls()
+                        mainw.SetStatusText(_("Changed color scheme to %s") % \
+                                            sheet, ed_glob.SB_INFO)
         return result
 
     def GenerateStyleSheet(self):
