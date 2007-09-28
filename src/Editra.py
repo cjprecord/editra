@@ -101,14 +101,14 @@ class Editra(wx.App, events.AppEventHandlerMixin):
 
         return True
 
-    def Exit(self):
+    def Exit(self, force=False):
         """Exit the program
         @postcondition: If no toplevel windows are precent program will exit.
         @postcondition: Program may remain open if an open window is locking.
 
         """
         self._pluginmgr.WritePluginConfig()
-        if not self._lock:
+        if not self._lock or force:
             wx.App.Exit(self)
 
     def GetLog(self):
@@ -235,7 +235,7 @@ class Editra(wx.App, events.AppEventHandlerMixin):
             self._log("[app][info] Going to sleep")
         evt.Skip()
 
-    def OnExit(self, evt=None):
+    def OnExit(self, evt=None, force=False):
         """Handle application exit request
         @param evt: event that called this handler
 
@@ -257,7 +257,7 @@ class Editra(wx.App, events.AppEventHandlerMixin):
                 result = win.Close()
                 if not result:
                     break
-            self.Exit()
+            self.Exit(force)
         else:
             if evt:
                 evt.Skip()
