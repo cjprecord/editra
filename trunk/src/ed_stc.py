@@ -1477,6 +1477,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.Cut()
             elif rcmd == u'J':
                 self.SetTargetStart(cpos)
+                if repeat == 1:
+                    repeat = 2
                 self.SetTargetEnd(self.PositionFromLine(cline + repeat - 1))
                 self.LinesJoin()
             elif rcmd == u'G':
