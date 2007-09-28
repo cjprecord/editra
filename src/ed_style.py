@@ -569,7 +569,7 @@ class StyleMgr(object):
         @rtype: bool
 
         """
-        if os.path.exists(style_sheet) and \
+        if isinstance(style_sheet, basestring) and os.path.exists(style_sheet) and \
            ((force or not len(self.styles)) or style_sheet != self.style_set):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
