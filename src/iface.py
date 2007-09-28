@@ -28,7 +28,7 @@
 # that they extend.
 #
 # Intefaces:
-#   * ToolBoxI: Interface into the L{ToolBox}
+#   * ShelfI: Interface into the L{Shelf}
 #
 #
 #--------------------------------------------------------------------------#
