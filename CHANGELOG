@@ -32,9 +32,9 @@ NEW: [features/improvements]
 +Command Mode for sending commands to the editor, when using Vi emulation it
 acts like an Ex command mode. (see documentation page for description of
 available commands)
-+Some substantial performance improvements for text input speed
 +Faster file loading
-+Bidirectional Search
++Bidirectional Text Search
++Some performance improvements for text input speed
 +Highlighting support for (Apache Config files, ini files, Erlang)
 +Link to project documentation and help guides in Help Menu
 +Shortcut to close quick find bar (ESC will now hide the bar)
@@ -44,7 +44,7 @@ available commands)
 +Theme system extended to all program icons
 +New icon theme available, derived from the Tango icon set (http://tango.freedesktop.org)
 +Improved file encoding detection and unicode handling
-+Shelf visibilty can be toggled with Ctrl+Alt+S
++Shelf visibility can be toggled with Ctrl+Alt+S
 +Shelf Items are automatically assigned hotkeys Ctrl+Alt+(0-9)
 +Added Abort button to the Error Reporter
 +Spanish Translation of interface from Raul Gonzalez Duque.
@@ -59,10 +59,14 @@ documents.
 +Unicode handling error in file history loading
 +Filename decoding bug in MacOpenFile handler
 +Plugins now properly show activation status in View Menu
-+Dont lose bookmarks on file reload
++Don't lose bookmarks on file reload
 +Show Shelf is only enabled when their are shelf related plugins activated
 +Check that Editra is not running before starting installation on Windows to
 avoid faulty installs from files that aren't able to be overwritten.
++Updater makes sure download file has a unique filename to avoid overwriting
+existing files.
++Fixed a bug that could crash the editor when style sheets are exported to a 
+location outside of where Edira can load them from.
 
 #-----------------------------------------------------------------------------#
 
