@@ -8,23 +8,15 @@ Change Log:
 Changes since last release:
 
 VERSION 0.2.0
-DATE xx/xx/2007
+DATE 09/29/2007
 6th Alpha Release
 
 NEWS:
-This release introduces a number of new features to the editor, the biggest
-change being that haveing multiple top level windows open at any given time is
-now supported. The second biggest addition is the addition of a control for
-sending commands to the editor, it only supports a small set of commands currently
-but will be extended in the future to allow as complete use of the editor without
-the mouse as possible.
-
-There have also been a number of fairly major and minor performance improvements 
-made to various parts of the editor in this round round of development that should 
-help to make Editra even faster than it previously was.
-
-In addition to these enhancements there were also a number bug fixes, thanks again to
-all who reported errors. More details can be viewed in the below changelog.
+This is the second major alpha release of Editra. It introduces a number of new 
+features to the editor, the biggest change being that having multiple top level 
+windows running under a single instance is now supported. In addition to the 
+enhancements there have been a fair number bug fixes, thanks again to all who 
+reported errors. More details can be viewed in the below changelog.
 
 NEW: [features/improvements]
 +Opening multiple toplevel windows is now possible
