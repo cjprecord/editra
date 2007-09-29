@@ -959,7 +959,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             # the events from the toolbar do not propagate to the control.
             if e_obj.GetClassName() == "wxToolBar" or \
                e_id in [ID_REDO, ID_UNDO] \
-               or wx.Platform == '__WXMSW__':
+               or wx.Platform in ['__WXMSW__', '__WXGTK__']:
                 ctrl.ControlDispatch(evt)
                 self.UpdateToolBar()
             else:
