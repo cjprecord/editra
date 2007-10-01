@@ -78,17 +78,20 @@ def MakeThemeTool(tool_id):
     Profile_Set('ICON_SZ', (32, 32))
     base = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
     Profile_Set('ICON_SZ', osize)
+    if not base.IsOk():
+        base = wx.ArtProvider.GetBitmap(wx.ART_WARNING, wx.ART_TOOLBAR, size=(32, 32))
+
     over = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PLUGMGR), wx.ART_MENU)
-    if base.IsOk() and over.IsOk():
+    if over.IsOk():
         # Draw overlay onto button
         mdc = wx.MemoryDC()
         mdc.SelectObject(base)
         mdc.SetBrush(wx.TRANSPARENT_BRUSH)
         mdc.SetPen(wx.TRANSPARENT_PEN)
         mdc.DrawBitmap(over, 15, 15, True)
-        return mdc.GetAsBitmap()
-    else:
-        return wx.ArtProvider.GetBitmap(wx.ART_WARNING, size=(32, 32))
+        mdc.SelectObject(wx.NullBitmap)
+
+    return base
     
 #--------------------------------------------------------------------------#
 
