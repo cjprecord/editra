@@ -143,9 +143,10 @@ class CommandBar(wx.Panel):
         self._h_sizer.Add((8, 8))
         bstyle = wx.BU_EXACTFIT
         if wx.Platform == '__WXGTK__':
-            bstyle = bstyle | wx.NO_BORDER
-        self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, GetXBitmap(), \
-                                      size=(14, 14), style=bstyle)
+            bstyle = wx.NO_BORDER
+
+        self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, \
+                                       GetXBitmap(), style=bstyle)
         self._h_sizer.Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
         self._h_sizer.Add((12, 12))
         v_sizer.Add((2, 2))
