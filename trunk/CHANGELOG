@@ -7,6 +7,25 @@ Change Log:
 #-----------------------------------------------------------------------------#
 Changes since last release:
 
+VERSION 0.2.xx
+DATE xx/xx/2007
+7th Alpha Release
+
+NEWS:
+
+
+NEW: [features/improvements]
+
+
+BUG FIXES:
++Clipboard related keybindings on GTK version
++Fixed command bar close button display when running on GTK
++Fixed a bug in adjusting theme colors for systems using themes that have lots
+of black in them.
+
+#-----------------------------------------------------------------------------#
+Changes since last release:
+
 VERSION 0.2.0
 DATE 09/29/2007
 6th Alpha Release
