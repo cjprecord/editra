@@ -195,6 +195,8 @@ class EditraArt(wx.ArtProvider):
         # If using default theme let the system provide the art when possible
         if Profile_Get('ICONS', 'str').lower() == u'default' and \
            DEFAULT.has_key(art_id):
+            if client == wx.ART_MENU:
+                size = (16, 16)
             return wx.ArtProvider.GetBitmap(DEFAULT[art_id], client, size)
         if CLIENTS.has_key(client) and \
            (ART.has_key(art_id) or \
@@ -239,7 +241,7 @@ class EditraArt(wx.ArtProvider):
         return wx.NullBitmap
 
 #-----------------------------------------------------------------------------#
-def GetArtPath(client, mime = False):
+def GetArtPath(client, mime=False):
     """Gets the path of the resource directory to get
     the bitmaps from.
     @return: path of art resource
