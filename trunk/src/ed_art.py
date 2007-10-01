@@ -197,6 +197,8 @@ class EditraArt(wx.ArtProvider):
            DEFAULT.has_key(art_id):
             if client == wx.ART_MENU:
                 size = (16, 16)
+            elif client == wx.ART_TOOLBAR:
+                size = Profile_Get('ICON_SZ', default=(24, 24))
             return wx.ArtProvider.GetBitmap(DEFAULT[art_id], client, size)
         if CLIENTS.has_key(client) and \
            (ART.has_key(art_id) or \
