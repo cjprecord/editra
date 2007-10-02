@@ -691,9 +691,9 @@ def AdjustColour(color, percent, alpha=wx.ALPHA_OPAQUE):
     high = 100
 
     # We take the percent way of the color from color -. white
-    red = color.Red() + ((percent * rdif * 100) / high) / 100
-    green = color.Green() + ((percent * gdif * 100) / high) / 100
-    blue = color.Blue() + ((percent * bdif * 100) / high) / 100
+    red = color.Red() + ((percent * rdif) / high)
+    green = color.Green() + ((percent * gdif) / high)
+    blue = color.Blue() + ((percent * bdif) / high)
     return wx.Colour(max(red, 0), max(green, 0), max(blue, 0), alpha)
 
 def HexToRGB(hex_str):
