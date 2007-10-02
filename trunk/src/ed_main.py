@@ -295,11 +295,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._generator = generator.Generator(plgmgr)
         self._generator.InstallMenu(self.toolsmenu)
 
-        # Load Session Data (only on first instance)
-        if _PGET('SAVE_SESSION', 'bool', False) and \
-           not len(wx.GetApp().GetMainWindows()):
-            self.nb.LoadSessionFiles()
-
         # Set Perspective
         self.SetPerspective(_PGET('DEFAULT_VIEW'))
         self._mgr.Update()
@@ -879,10 +874,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             desc = ["Editra is a programmers text editor.",
                     "Written in 100%% Python.",
                     "Homepage: " + HOME_PAGE + "\n",
-                    "Platform Info: (python %s,%s)", 
+                    "Platform Info: (%s,%s)", 
                     "License: GPL v2 (see COPYING.txt for full license)"]
             desc = "\n".join(desc)
-            py_version = sys.version.split()[0]
+            py_version = sys.platform + ", python " + sys.version.split()[0]
             platform = list(wx.PlatformInfo[1:])
             platform[0] += (" " + wx.VERSION_STRING)
             wx_info = ", ".join(platform)

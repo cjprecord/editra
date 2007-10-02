@@ -161,9 +161,9 @@ class EdPages(FNB.FlatNotebook):
         """
         files = Profile_Get('LAST_SESSION')
         if files is not None:
-            for file in files:
-                if os.path.exists(file):
-                    self.OpenPage(os.path.dirname(file), os.path.basename(file))
+            for fname in files:
+                if os.path.exists(fname) and os.access(fname, os.R_OK):
+                    self.OpenPage(os.path.dirname(fname), os.path.basename(fname))
 
         if self.GetPageCount() == 0:
             self.NewPage()
@@ -241,6 +241,7 @@ class EdPages(FNB.FlatNotebook):
             except (UnicodeDecodeError, IOError, OSError), msg:
                 self.LOG(("[ed_pages][err] Failed to open file %s\n"
                           "[ed_pages][err] %s") % (path2file, msg))
+
                 # File could not be opened/read give up
                 err = wx.MessageDialog(self, _("Editra could not properly "
                                                "open %s\n") \
