@@ -71,7 +71,7 @@ def MakeThemeTool(tool_id):
     """Makes a themed bitmap for the tool book of the plugin dialog.
     @param tool_id: An art identifier id
     @return: 32x32 bitmap
-    @todo: figure out cause of black artifacts on wxmac
+    @todo: why does drawing a bitmap overlay on gtk not draw on transparent area
 
     """
     osize = Profile_Get('ICON_SZ', 'size_tuple', (24, 24))
@@ -88,7 +88,7 @@ def MakeThemeTool(tool_id):
         mdc.SelectObject(base)
         mdc.SetBrush(wx.TRANSPARENT_BRUSH)
         mdc.SetPen(wx.TRANSPARENT_PEN)
-        mdc.DrawBitmap(over, 15, 15, True)
+        mdc.DrawBitmap(over, 15, 15, False)
         mdc.SelectObject(wx.NullBitmap)
 
     return base
@@ -176,7 +176,7 @@ class DownloadStatusBar(wx.StatusBar):
         @param parent: Frame this status bar belongs to
 
         """
-        wx.StatusBar.__init__(self, parent)
+        wx.StatusBar.__init__(self, parent, style=wx.SB_FLAT)
   
         # Attributes
         self._changed = False
