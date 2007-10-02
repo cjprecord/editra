@@ -271,7 +271,8 @@ class CommandBar(wx.Panel):
                             ((3, 3)), (nlbl, 0, wx.ALIGN_CENTER_VERTICAL),
                             ((10, 10)), (pre_btn, 0, wx.ALIGN_CENTER_VERTICAL), 
                             ((3, 3)), (plbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                            ((10, 10)), (match_case)])
+                            ((10, 10)), 
+                            (match_case, 0, wx.ALIGN_CENTER_VERTICAL)])
 
         t_sizer.Add((7, 7))
         t_sizer.Add(ctrl_sizer)
@@ -336,17 +337,14 @@ class CommandBar(wx.Panel):
         gc = wx.GraphicsContext.Create(dc)
         col1 = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
         col2 = util.AdjustColour(col1, 50)
-        col1 = util.AdjustColour(col1, -50)
+        col1 = util.AdjustColour(col1, -60)
         grad = gc.CreateLinearGradientBrush(0, 1, 0, 29, col2, col1)
-        rect = self.GetRect()
+        rect = self.GetClientRect()
 
-        # Create the background path
-        path = gc.CreatePath()
-        path.AddRectangle(0, 0, rect.width - 0.5, rect.height - 0.5)
-
-        gc.SetPen(wx.Pen(util.AdjustColour(col1, -60), 1))
+        pen_col = tuple([min(190, x) for x in util.AdjustColour(col1, -60)])
+        gc.SetPen(gc.CreatePen(wx.Pen(pen_col, 1)))
         gc.SetBrush(grad)
-        gc.DrawPath(path)
+        gc.DrawRectangle(0, 1, rect.width - 0.5, rect.height - 0.5)
 
         evt.Skip()
 
