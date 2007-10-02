@@ -19,9 +19,11 @@ NEW: [features/improvements]
 
 BUG FIXES:
 +Clipboard related keybindings on GTK version
-+Fixed command bar close button display when running on GTK
++Many UI fixes for when running on GTK
 +Fixed a bug in adjusting theme colors for systems using themes that have lots
 of black in them.
++Fixed error when loading files was raised when trying to open files that don't
+have read permission.
 
 #-----------------------------------------------------------------------------#
 Changes since last release:
