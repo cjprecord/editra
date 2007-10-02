@@ -248,15 +248,17 @@ def GetDecodedText(fname):
     a compatible decoder. Returns a tuple of the text and the
     encoding it was decoded from.
     @param fname: name of file to open and get text from
+    @return: tuple of (text, encoding string)
 
     """
     try:
         f_handle = file(fname, 'rb')
         txt = f_handle.read()
         f_handle.close()
-    except (IOError, OSError):
-        f_handle.close()
-        return -1
+    except IOError, msg:
+        raise IOError, msg
+    except OSError, msg:
+        raise OSError, msg
     else:
         decoded = None
 
@@ -331,18 +333,6 @@ def FilterFiles(file_list):
                 if not len(tmp) or (float(bad)/float(len(tmp))) < 0.1:
                     good.append(path)
     return good
-
-def CanWrite(path):
-    """Returns whether the user has write permissions
-    to the given path.
-    @param path: path to check for writability
-
-    """
-    writable = False
-    if os.path.exists(path):
-        mode = os.stat(path)[stat.ST_MODE]
-        writable = bool(stat.S_IMODE(mode) & stat.S_IWRITE)
-    return writable
 
 def GetFileModTime(file_name):
     """Returns the time that the given file was last modified on

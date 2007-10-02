@@ -758,7 +758,7 @@ class InstallPanel(wx.Panel):
         toolt = wx.ToolTip(_("Install the plugins for all users\n"
                              " **requires administrative privileges**"))
         self._syscb.SetToolTip(toolt)
-        if not util.CanWrite(ed_glob.CONFIG['SYS_PLUGIN_DIR']):
+        if not os.access(ed_glob.CONFIG['SYS_PLUGIN_DIR'], os.R_OK | os.W_OK):
             self._syscb.Disable()
 
         # Layout Panel
