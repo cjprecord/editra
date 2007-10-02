@@ -170,6 +170,7 @@ class PreferencesDialog(wx.Frame):
         sizer.Add(hsizer, 0, wx.ALIGN_BOTTOM)
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
+        self.Fit()
         wx.GetApp().RegisterWindow(repr(self), self, True)
 
     def OnClose(self, evt):
@@ -657,9 +658,12 @@ class DocCodePanel(wx.Panel):
         fold_cb.SetValue(Profile_Get('CODE_FOLD'))
         edge_cb = wx.CheckBox(self, ed_glob.ID_SHOW_EDGE, _("Edge Guide"))
         edge_cb.SetValue(Profile_Get('SHOW_EDGE'))
-        
+
+        edge_size = (-1, -1)
+        if wx.Platform == '__WXGTK__':
+            edge_size = (150, 15)
         edge_sl = wx.Slider(self, ed_glob.ID_PREF_EDGE, Profile_Get('EDGE'),
-                            0, 100, size=(-1, 15), style=wx.SL_HORIZONTAL | \
+                            0, 100, size=edge_size, style=wx.SL_HORIZONTAL | \
                             wx.SL_AUTOTICKS | wx.SL_LABELS)
         edge_sl.SetTickFreq(5, 1)
         if wx.Platform == '__WXMAC__':
@@ -890,9 +894,12 @@ class AppearancePanel(PrefPanelBase):
         wp_cb.SetValue(Profile_Get('SET_WPOS'))
 
         # Misc
+        trans_size = (-1, -1)
+        if wx.Platform == '__WXGTK__':
+            trans_size = (200, 15)
         trans_lbl = wx.StaticText(self, wx.ID_ANY, _("Transparency") + u": ")
         trans = wx.Slider(self, ed_glob.ID_TRANSPARENCY, 
-                          Profile_Get('ALPHA'), 100, 255, 
+                          Profile_Get('ALPHA'), 100, 255, size=trans_size,
                           style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | 
                                 wx.SL_LABELS)
         tsizer = wx.BoxSizer(wx.HORIZONTAL)
