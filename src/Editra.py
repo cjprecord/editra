@@ -504,18 +504,21 @@ def Main():
         splash = wx.SplashScreen(splash_img, wx.SPLASH_CENTRE_ON_PARENT | \
                                  wx.SPLASH_NO_TIMEOUT, 0, None, wx.ID_ANY)
         splash.Show()
-        wx.FutureCall(2500, splash.Destroy)
 
     frame = ed_main.MainWindow(None, wx.ID_ANY, Profile_Get('WSIZE'), 
                                ed_glob.PROG_NAME)
     editra_app.RegisterWindow(repr(frame), frame, True)
     editra_app.SetTopWindow(frame)
-    frame.Show(True)
-    wx.PostEvent(frame, wx.ActivateEvent(wx.wxEVT_ACTIVATE, True))
 
     # Load Session Data
     if Profile_Get('SAVE_SESSION', 'bool', False):
         frame.nb.LoadSessionFiles()
+
+    frame.Show(True)
+    wx.PostEvent(frame, wx.ActivateEvent(wx.wxEVT_ACTIVATE, True))
+
+    if 'splash' in locals():
+        splash.Destroy()
 
     for arg in args:
         try:
