@@ -548,6 +548,8 @@ class DocGenPanel(wx.Panel):
         sws_cb.SetValue(Profile_Get('SHOW_WS'))
         ww_cb = wx.CheckBox(self, ed_glob.ID_WORD_WRAP, _("Word Wrap"))
         ww_cb.SetValue(Profile_Get('WRAP'))
+        if wx.Platform == '__WXMAC__':
+            ww_cb.SetToolTip(wx.ToolTip(_("Turn off for better performance")))
 
         # Font Options
         font_lbl = wx.StaticText(self, label=_("Primary Font") + u": ")
@@ -618,8 +620,7 @@ class DocGenPanel(wx.Panel):
                     ed_glob.ID_SHOW_WS, ed_glob.ID_WORD_WRAP,
                     ed_glob.ID_PREF_AALIAS]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-            for mainw in wx.GetApp().GetMainWindows():
-                mainw.nb.UpdateTextControls()
+            wx.CallLater(25, DoUpdates)
         else:
             evt.Skip()
 
@@ -706,9 +707,7 @@ class DocCodePanel(wx.Panel):
                     ed_glob.ID_AUTOCOMP, ed_glob.ID_AUTOINDENT,
                     ed_glob.ID_PREF_EDGE, ed_glob.ID_VI_MODE]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], e_obj.GetValue())
-
-            for mainw in wx.GetApp().GetMainWindows():
-                mainw.nb.UpdateTextControls()
+            wx.CallLater(25, DoUpdates)
         else:
             evt.Skip()
 
@@ -943,7 +942,6 @@ class AppearancePanel(PrefPanelBase):
         if e_id in [ed_glob.ID_PREF_WPOS, ed_glob.ID_PREF_WSIZE]:
             Profile_Set(ed_glob.ID_2_PROF[e_id], val)
         elif e_id == ed_glob.ID_PREF_METAL:
-            windows = wx.GetApp().GetOpenWindows()
             Profile_Set(ed_glob.ID_2_PROF[e_id], val)
         else:
             evt.Skip()
@@ -1376,3 +1374,11 @@ class PyFontPicker(wx.Panel):
         self._button.SetToolTip(tip)
         tip = wx.ToolTip(tip.GetTip())
         wx.Panel.SetToolTip(self, tip)
+
+#-----------------------------------------------------------------------------#
+# Utility Functions
+
+def DoUpdates():
+    """Update all open text controls"""
+    for mainw in wx.GetApp().GetMainWindows():
+        mainw.nb.UpdateTextControls()
