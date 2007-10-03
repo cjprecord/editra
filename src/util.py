@@ -50,6 +50,7 @@ import stat
 import codecs
 import mimetypes
 import wx
+import ed_event
 import ed_glob
 from syntax.syntax import GetFileExtensions
 import dev_tool
@@ -121,11 +122,14 @@ class DropTargetFT(wx.PyDropTarget):
         @return: result of drop object entering window
 
         """
-        if self.GetData():
-            files = self.file_data_obj.GetFilenames()
-            text = self.text_data_obj.GetText()
-        else:
-            return drag_result
+        try:
+            if self.GetData():
+                files = self.file_data_obj.GetFilenames()
+                text = self.text_data_obj.GetText()
+            else:
+                return drag_result
+        except wx.PyAssertionError:
+            return wx.DragError
 
         self._lastp = (x_cord, y_cord)
         if len(files):
@@ -175,7 +179,17 @@ class DropTargetFT(wx.PyDropTarget):
 
         """
         self.window.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
-        if self.GetData():
+        try:
+            data = self.GetData()
+        except wx.PyAssertionError:
+            wx.PostEvent(self.window.GetTopLevelParent(), \
+                        ed_event.StatusEvent(ed_event.edEVT_STATUS, -1,
+                                             _("Unable to open dropped file or "
+                                               "text")))
+            data = False
+            drag_result = wx.DragError
+
+        if data:
             files = self.file_data_obj.GetFilenames()
             text = self.text_data_obj.GetText()
             if len(files) > 0 and self._fcallb is not None:
