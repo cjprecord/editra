@@ -89,16 +89,17 @@ class Editra(wx.App, events.AppEventHandlerMixin):
         """
         self.SetAppName(ed_glob.PROG_NAME)
         self._log = dev_tool.DEBUGP
+        self._log("[app][info] Editra is Initializing")
         self._log("[app][info] Registering Editra's ArtProvider")
         wx.ArtProvider.PushProvider(ed_art.EditraArt())
-        self._log("[app][info] Editra is Initializing")
+
         if Profile_Get('REPORTER', 'bool', True):
             sys.excepthook = dev_tool.ExceptionHook
 
         #---- Bind Events ----#
         self.Bind(wx.EVT_ACTIVATE_APP, self.OnActivate)
         self.Bind(wx.EVT_MENU, self.OnNewWindow, id=ed_glob.ID_NEW_WINDOW)
-
+ 
         return True
 
     def Exit(self, force=False):
@@ -511,7 +512,8 @@ def Main():
     editra_app.SetTopWindow(frame)
 
     # Load Session Data
-    if Profile_Get('SAVE_SESSION', 'bool', False):
+    # But not if there are command line args for files to open
+    if Profile_Get('SAVE_SESSION', 'bool', False) and not len(args):
         frame.nb.LoadSessionFiles()
 
     frame.Show(True)
