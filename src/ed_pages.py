@@ -406,58 +406,12 @@ class EdPages(FNB.FlatNotebook):
             cfile = os.path.join(self.control.dirname, self.control.filename)
             lmod = util.GetFileModTime(cfile)
             if self.control.modtime and not lmod and not os.path.exists(cfile):
-                def PromptToReSave(cfile):
-                    """Show a dialog prompting to resave the current file
-                    @param cfile: the file in question
-
-                    """
-                    mdlg = wx.MessageDialog(self.frame,
-                                            _("%s has been deleted since its "
-                                              "last save point.\n\nWould you "
-                                              "like to save it again?") % cfile,
-                                            _("Resave File?"), 
-                                            wx.YES_NO | wx.ICON_INFORMATION)
-                    mdlg.CenterOnParent()
-                    result = mdlg.ShowModal()
-                    mdlg.Destroy()
-                    if result == wx.ID_YES:
-                        self.control.SaveFile(cfile)
-                    else:
-                        self.control.modtime = 0
-                wx.CallAfter(PromptToReSave, cfile)
-
+                wx.CallAfter(PromptToReSave, self, cfile)
             elif self.control.modtime < lmod:
-                def AskToReload(cfile):
-                    """Show a dialog asking if the file should be reloaded
-                    @param cfile: the file to prompt for a reload of
-
-                    """
-                    mdlg = wx.MessageDialog(self.frame, 
-                                            _("%s has been modified by another "
-                                              "application.\n\nWould you like "
-                                              "to Reload it?") % cfile, 
-                                              _("Reload File?"),
-                                              wx.YES_NO | wx.ICON_INFORMATION)
-                    mdlg.CenterOnParent()
-                    result = mdlg.ShowModal()
-                    mdlg.Destroy()
-                    if result == wx.ID_YES:
-                        ret, rmsg = self.control.ReloadFile()
-                        if not ret:
-                            mdlg = wx.MessageDialog(self.frame, 
-                                                    _("Failed to reload %s:\n"
-                                                      "Error: %s") % \
-                                                      (cfile, rmsg),
-                                                    _("Error"),
-                                                    wx.OK | wx.ICON_ERROR)
-                            mdlg.ShowModal()
-                            mdlg.Destroy()
-                    else:
-                        self.control.modtime = util.GetFileModTime(cfile)
-                wx.CallAfter(AskToReload, cfile)
+                wx.CallAfter(AskToReload, self, cfile)
             else:
-                evt.Skip()
-                                          
+                return False
+                        
     def OnLeftUp(self, evt):
         """Traps clicks sent to page close buttons and 
         redirects the action to the ClosePage function
@@ -487,8 +441,8 @@ class EdPages(FNB.FlatNotebook):
         @type evt: flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGING
 
         """
-        self.LOG("[nb_evt] Page Changed to %d" % evt.GetSelection())
         evt.Skip()
+        self.LOG("[nb_evt] Page Changed to %d" % evt.GetSelection())
 
     def ChangePage(self, pgid):
         """Change the page and focus to the the given page id
@@ -652,3 +606,52 @@ class EdPages(FNB.FlatNotebook):
             control.Configure()
 
 #---- End Function Definitions ----#
+
+#---- Utility Function Definitions ----#
+def PromptToReSave(win, cfile):
+    """Show a dialog prompting to resave the current file
+    @param cfile: the file in question
+
+    """
+    mdlg = wx.MessageDialog(win.frame,
+                            _("%s has been deleted since its "
+                              "last save point.\n\nWould you "
+                              "like to save it again?") % cfile,
+                            _("Resave File?"), 
+                            wx.YES_NO | wx.ICON_INFORMATION)
+    mdlg.CenterOnParent()
+    result = mdlg.ShowModal()
+    mdlg.Destroy()
+    if result == wx.ID_YES:
+        win.control.SaveFile(cfile)
+    else:
+        win.control.modtime = 0
+
+def AskToReload(win, cfile):
+    """Show a dialog asking if the file should be reloaded
+    @param cfile: the file to prompt for a reload of
+
+    """
+    mdlg = wx.MessageDialog(win.frame, 
+                            _("%s has been modified by another "
+                              "application.\n\nWould you like "
+                              "to Reload it?") % cfile, 
+                              _("Reload File?"),
+                              wx.YES_NO | wx.ICON_INFORMATION)
+    mdlg.CenterOnParent()
+    result = mdlg.ShowModal()
+    mdlg.Destroy()
+    if result == wx.ID_YES:
+        ret, rmsg = win.control.ReloadFile()
+        if not ret:
+            mdlg = wx.MessageDialog(win.frame, 
+                                    _("Failed to reload %s:\n"
+                                      "Error: %s") % \
+                                      (cfile, rmsg),
+                                    _("Error"),
+                                    wx.OK | wx.ICON_ERROR)
+            mdlg.ShowModal()
+            mdlg.Destroy()
+    else:
+        win.control.modtime = util.GetFileModTime(cfile)
+
