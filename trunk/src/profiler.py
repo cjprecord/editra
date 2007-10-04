@@ -225,9 +225,11 @@ class Profile(dict):
 
         """
         try:
+            self.Set('MYPROFILE', path)
             fhandle = open(path, 'wb')
             cPickle.dump(self, fhandle, cPickle.HIGHEST_PROTOCOL)
             fhandle.close()
+            UpdateProfileLoader()
         except (IOError, cPickle.PickleError), msg:
             dev_tool.DEBUGP("[profile][err] %s" % str(msg))
             return False

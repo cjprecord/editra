@@ -325,7 +325,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @postcondition: all profile dependant attributes are configured
 
         """
-        self.SetWrapMode(_PGET('WRAP', 'bool')) 
+        self.SetWrapMode(_PGET('WRAP', 'bool'))
         self.SetViewWhiteSpace(_PGET('SHOW_WS', 'bool'))
         self.SetUseAntiAliasing(_PGET('AALIASING'))
         self.SetUseTabs(_PGET('USETABS'))
@@ -369,13 +369,14 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     lend = self.GetLineEndPosition(line_num)
                     text = self.GetTextRange(lstart, lend)
                     if len(text.strip()):
-                        if not uncomment:
-                            text = c_start + text + c_end
-                            nchars = nchars + len(c_start + c_end)
-                        else:
+                        if uncomment:
                             text = text.replace(c_start, u'', 1)
                             text = text.replace(c_end, u'', 1)
                             nchars = nchars - len(c_start + c_end)
+                        else:
+                            text = c_start + text + c_end
+                            nchars = nchars + len(c_start + c_end)
+
                         self.SetTargetStart(lstart)
                         self.SetTargetEnd(lend)
                         self.ReplaceTarget(text)
@@ -388,13 +389,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                         nchars = nchars - len(self._comment[1])
                     self.GotoPos(sel[0] + nchars)
 
-    def ConvertCase(self, to_upper=False):
+    def ConvertCase(self, upper=False):
         """Converts the case of the selected text to either all lower
         case(default) or all upper case.
-        @keyword to_upper: Flag whether conversion is to upper case or not.
+        @keyword upper: Flag whether conversion is to upper case or not.
 
         """
-        if to_upper:
+        if upper:
             self.UpperCase()
         else:
             self.LowerCase()
@@ -405,10 +406,9 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         text = self.GetSelectedText()
-        if len(text) > 0:
-            text = text.swapcase()
+        if len(text):
             self.BeginUndoAction()
-            self.ReplaceSelection(text)
+            self.ReplaceSelection(text.swapcase())
             self.EndUndoAction()
 
     def GetAutoIndent(self):
@@ -432,8 +432,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: int
 
         """
-        fline = self.GetFirstVisibleLine()
-        return fline + self.LinesOnScreen() - 1
+        return self.GetFirstVisibleLine() + self.LinesOnScreen() - 1
 
     def GetMiddleVisibleLine(self):
         """Return the number of the line that is in the middle of the display
@@ -576,11 +575,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         else:
             style = _PGET('SYNTHEME', 'str').lower()
         user = os.path.join(ed_glob.CONFIG['STYLES_DIR'], style)
-        sys = os.path.join(ed_glob.CONFIG['SYS_STYLES_DIR'], style)
+        sysp = os.path.join(ed_glob.CONFIG['SYS_STYLES_DIR'], style)
         if os.path.exists(user):
             return user
-        elif os.path.exists(sys):
-            return sys
+        elif os.path.exists(sysp):
+            return sysp
         else:
             return None
 
@@ -741,8 +740,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             curr_pos = self.GetCurrentPos()
             tip_pos = curr_pos - (len(command) + 1)
             fail_safe = curr_pos - self.GetColumn(curr_pos)
-            tip_pos = max(tip_pos, fail_safe)
-            self.CallTipShow(tip_pos, tip)
+            self.CallTipShow(max(tip_pos, fail_safe), tip)
 
     def ShowKeywordHelp(self):
         """Displays the keyword helper
@@ -754,8 +752,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         elif len(self.keywords) > 1:
             pos = self.GetCurrentPos()
             pos2 = self.WordStartPosition(pos, True)
-            context = pos - pos2
-            self.AutoCompShow(context, self.keywords)
+            self.AutoCompShow(pos - pos2, self.keywords)
         return
 
     def OnModified(self, evt):
@@ -856,8 +853,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
                 if expanding:
                     self.SetFoldExpanded(line_num, True)
-                    line_num = self.Expand(line_num, True)
-                    line_num = line_num - 1
+                    line_num = self.Expand(line_num, True) - 1
             else:
                 last_child = self.GetLastChild(line_num, -1)
                 self.SetFoldExpanded(line_num, False)
@@ -1100,15 +1096,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.GotoPos(len(part1))
             self.SetUseTabs(tabs)
             self.EndUndoAction()
-            del part1
 
     def GetCurrentLineNum(self):
         """Return the number of the line that the caret is currently at
         @return: Line number (int)
 
         """
-        cpos = self.GetCurrentPos()
-        return self.LineFromPosition(cpos)
+        return self.LineFromPosition(self.GetCurrentPos())
 
     def GetEOLChar(self):
         """Gets the eol character used in document
@@ -1266,7 +1260,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         self._vinormal = normal
         self._cmdcache = u''
-        mw = self.GetTopLevelParent()
         if normal:
             self.SetCaretWidth(10)
             msg = 'NORMAL'
@@ -1341,12 +1334,11 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             txt = txt + tmp.rstrip() + eol
         self.SetText(txt)
         self.GotoPos(cpos)
-        del txt
 
     def ViCmdDispatch(self):
         """Processes vi commands
-        @todo: complete rewrite, this was initially intended for testing but
-               now has implemented everything.
+        @todo: complete rewrite, this was initially intended as a quick hack
+               put together for testing but now has implemented everything.
 
         """
         if not len(self._cmdcache):
@@ -1845,7 +1837,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         cfile = os.path.join(self.dirname, self.filename)
         if os.path.exists(cfile):
-            bmarks = self.GetBookmarks()
             try:
                 self.BeginUndoAction()
                 cpos = self.GetCurrentPos()
@@ -1853,7 +1844,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.SetText(reader.read())
                 reader.close()
                 self.modtime = util.GetFileModTime(cfile)
-                for mark in bmarks:
+                for mark in self.GetBookmarks():
                     self.MarkerAdd(mark, MARK_MARGIN)
                 self.EndUndoAction()
                 self.SetSavePoint()
@@ -1883,13 +1874,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 bom = u''
             writer.write(bom + self.GetText())
             writer.close()
-        except IOError, msg:
-            writer.close()
-            result = False
-            self.LOG("[stc][err]There was an error saving %s" % path)
-            self.LOG("[stc][err] ERROR: %s" % str(msg))
-        except AttributeError, msg:
-            # Failed to open writer
+        except (AttributeError, IOError), msg:
             result = False
             self.LOG("[stc][err]There was an error saving %s" % path)
             self.LOG("[stc][err] ERROR: %s" % str(msg))
@@ -1947,10 +1932,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         self.AutoCompSetAutoHide(False)
         self._autocomp_svc.LoadCompProvider(self.GetLexer())
-        case = self._autocomp_svc.GetIgnoreCase()
-        self.AutoCompSetIgnoreCase(case)
-        stops = self._autocomp_svc.GetAutoCompStops()
-        self.AutoCompStops(stops)
+        self.AutoCompSetIgnoreCase(self._autocomp_svc.GetIgnoreCase())
+        self.AutoCompStops(self._autocomp_svc.GetAutoCompStops())
         self._autocomp_svc.UpdateNamespace(True)
 
     def ConfigureLexer(self, file_ext):
@@ -2031,9 +2014,8 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if len(keyw) != 2:
                 continue
             else:
-                if not isinstance(keyw[0], int):
-                    continue
-                elif not isinstance(keyw[1], basestring):
+                if not isinstance(keyw[0], int) or \
+                   not isinstance(keyw[1], basestring):
                     continue
                 else:
                     self.keywords += keyw[1]

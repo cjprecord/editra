@@ -96,7 +96,7 @@ class EdPages(FNB.FlatNotebook):
         self._index = dict()          # image list index
 
         # Set Additional Style Parameters
-        self.SetNonActiveTabTextColour(wx.ColourRGB(long("666666", 16)))
+        self.SetNonActiveTabTextColour(wx.Colour(102, 102, 102))
         ed_icon = ed_glob.CONFIG['SYSPIX_DIR'] + u"editra.png"
         self.SetNavigatorIcon(wx.Bitmap(ed_icon, wx.BITMAP_TYPE_PNG))
 
@@ -265,11 +265,11 @@ class EdPages(FNB.FlatNotebook):
         self.control.modtime = util.GetFileModTime(path2file)
         if new_pg:
             self.AddPage(self.control, self.control.filename)
-        else:
-            self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
-                                                        self.control.dirname, 
-                                                        util.GetPathChar(), 
-                                                        self.control.filename))
+
+        self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
+                                                    self.control.dirname, 
+                                                    util.GetPathChar(), 
+                                                    self.control.filename))
         self.SetPageText(self.GetSelection(), self.control.filename)
         self.LOG("[nb_evt] Opened Page: ID = %d" % self.GetSelection())
 

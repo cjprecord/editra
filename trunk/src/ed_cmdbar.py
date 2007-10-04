@@ -295,14 +295,13 @@ class CommandBar(wx.Panel):
         e_id = evt.GetId()
         if e_id == ID_MATCH_CASE:
             ctrl = self.FindWindowById(e_id)
-            flag_map = { ID_MATCH_CASE : wx.FR_MATCHCASE }
             if ctrl != None:
                 search = self.FindWindowById(ID_SEARCH_CTRL)
                 if search != None:
                     if ctrl.GetValue():
-                        search.SetSearchFlag(flag_map[e_id])
+                        search.SetSearchFlag(wx.FR_MATCHCASE)
                     else:
-                        search.ClearSearchFlag(flag_map[e_id])
+                        search.ClearSearchFlag(wx.FR_MATCHCASE)
         else:
             evt.Skip()
 
@@ -394,31 +393,6 @@ class CommandBar(wx.Panel):
             if ctrl != None:
                 ctrl.SetFocus()
                 ctrl.SelectAll()
-
-    def Uninstall(self):
-        """Uninstalls self from parent control
-        @postcondition: removes self from parent sizer
-
-        """
-        for item in self.GetChildren():
-            item.Destroy()
-        self._psizer.Remove(self)
-        self._psizer.Layout()
-        self._parent.SendSizeEvent()
-        self.Destroy()
-
-    def UninstallCtrl(self, id_):
-        """Hides the sizer object holding the control with the passed in id
-        @param obId: id of control to remove
-        @postcondition: control is removed from bar
-
-        """
-        ctrl = self.FindWindowById(id_)
-        if ctrl != None:
-            c_sizer = ctrl.GetContainingSizer()
-            sizer = self.GetSizer()
-            sizer.Hide(c_sizer, True)
-            sizer.Layout()
 
     def UpdateIcons(self):
         """Refresh icons to current theme settings
@@ -733,9 +707,8 @@ class CommandExecuter(wx.SearchCtrl):
         """
 
     def OnEnter(self, evt):
-        """Get the currently entered command string and
-        execute it.
-        @status: not implemented
+        """Get the currently entered command string and execute it.
+        @postcondition: ctrl is cleared and command is executed
         
         """
         cmd = self.GetValue()
@@ -849,8 +822,5 @@ class LineCtrl(wx.SearchCtrl):
         doc.GotoLine(val)
         doc.SetFocus()
         self.GetParent().Hide()
-        evt.Skip()
 
 #-----------------------------------------------------------------------------#
-
-

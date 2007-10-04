@@ -140,7 +140,7 @@ class PreferencesDialog(wx.Frame):
     """
     __name__ = u'PreferencesDialog'
 
-    def __init__(self, parent, id_=wx.ID_ANY, title=u'',
+    def __init__(self, parent, id_=wx.ID_ANY,
                  style=wx.DEFAULT_DIALOG_STYLE | wx.TAB_TRAVERSAL):
         """Initialises the preference dialog
         @param parent: The parent window of this window
@@ -148,7 +148,7 @@ class PreferencesDialog(wx.Frame):
         @param title: The title of the dialog
 
         """
-        wx.Frame.__init__(self, parent, id_, title, style=style)
+        wx.Frame.__init__(self, parent, id_, _("Preferences - Editra"), style=style)
         util.SetWindowIcon(self)
 
         # Extra Styles

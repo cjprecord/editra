@@ -82,7 +82,7 @@ class EdToolBar(wx.ToolBar):
         @param toolId: toolbar id
 
         """
-        sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER | wx.TB_FLAT
+        sstyle = wx.TB_HORIZONTAL | wx.NO_BORDER
         if wx.Platform == '__WXGTK__':
             sstyle = sstyle | wx.TB_DOCKABLE
         wx.ToolBar.__init__(self, parent, id_, style = sstyle)
