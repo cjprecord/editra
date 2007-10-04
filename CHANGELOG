@@ -24,6 +24,15 @@ BUG FIXES:
 of black in them.
 +Fixed error when loading files was raised when trying to open files that don't
 have read permission.
++Fixed laggy checkboxes in Preferences Dialog
++Fixed errors that are caused when trying to drop some data type objects on the
+text control for drag and drop open, such as Mac OSX textClippings.
++Fixed a bug in that could cause a crash when opening the file dialog
++Fixed a number of bugs related to saving and loading custom user profiles
+during run time.
++Toolbar items status is now properly shown at all times
++Fixed an issue where the style editor would not update its current theme info
+after an export.
 
 #-----------------------------------------------------------------------------#
 Changes since last release:

@@ -8,8 +8,12 @@ setuptools 0.6 or higher (http://peak.telecommunity.com/DevCenter/setuptools)
 #--------------------------------------------------------------------------#
 Option 1) Install Editra as a source package: [Linux/Macintosh/Unix/Windows]
 
-To install Editra as a python source package just do the usual python thing
-and type:
+When using the source scripts Editra doesn't actually need to be installed it
+can be run by un-tarring the source package and executing the script called 
+"Editra" in the the root of the un-tarred directory. Alternatively however, if 
+you want the setup.py script will allow you to install it using distutils.
+
+To install Editra using distutils just do the usual python thing and type:
 
 python setup.py install
 
