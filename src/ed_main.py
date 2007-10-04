@@ -143,6 +143,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                           Name("EditPane").Center().Layer(1).Dockable(False). \
                           CloseButton(False).MaximizeButton(False). \
                           CaptionVisible(False))
+
         #---- Setup Printer ----#
         self.printer = ed_print.EdPrinter(self, self.nb.GetCurrentCtrl)
 
@@ -154,17 +155,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         if _PGET('TOOLBAR'):
             self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
             self.SetToolBar(self.toolbar)
-
-        # Toolbar Event Handlers
-        # TODO move to toolbar module
-        self.Bind(wx.EVT_TOOL, self.DispatchToControl)
-        self.Bind(wx.EVT_TOOL, self.OnNew, id=ID_NEW)
-        self.Bind(wx.EVT_TOOL, self.OnOpen, id=ID_OPEN)
-        self.Bind(wx.EVT_TOOL, self.OnSave, id=ID_SAVE)
-        self.Bind(wx.EVT_TOOL, self.OnPrint, id=ID_PRINT)
-        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, id=ID_FIND)
-        self.Bind(wx.EVT_TOOL, self.nb.FindService.OnShowFindDlg, \
-                  id=ID_FIND_REPLACE)
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
@@ -355,26 +345,22 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             dlg = wx.FileDialog(self, _("Choose a File"), '', "", 
                                 self.MenuFileTypes(), wx.OPEN | wx.MULTIPLE)
             dlg.SetFilterIndex(_PGET('FFILTER', 'int', 0))
-            if dlg.ShowModal() == wx.ID_OK:
-                paths = dlg.GetPaths()
-                dlg.Destroy()
-                result = dlg.GetReturnCode()
-
+            result = dlg.ShowModal()
             _PSET('FFILTER', dlg.GetFilterIndex())
-            o_win = _PGET('OPEN_NW', default=False)
-            if result != wx.ID_CANCEL:
+            paths = dlg.GetPaths()
+            dlg.Destroy()
+
+            if result != wx.ID_OK:
+                self.LOG('[mainw][info] Canceled Opening File')
+            else:
                 for path in paths:
-                    if o_win:
+                    if _PGET('OPEN_NW', default=False):
                         wx.GetApp().OpenNewWindow(path)
                     else:
                         dirname = util.GetPathName(path)
                         filename = util.GetFileName(path)
-                        self.nb.OpenPage(dirname, filename)		   
-                        self.SetTitle("%s - file://%s/%s" % \
-                                      (filename, dirname, filename))
+                        self.nb.OpenPage(dirname, filename)   
                         self.nb.GoCurrentPage()
-            else:
-                pass
         else:
             self.LOG("[main_info] CMD Open File: %s" % fname)
             filename = util.GetFileName(fname)
@@ -488,7 +474,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             ctrls = [(self.nb.GetPageText(self.nb.GetSelection()), 
                      self.nb.GetCurrentCtrl())]
         elif e_id == ID_SAVEALL:
-            for page in range(self.nb.GetPageCount()):
+            for page in xrange(self.nb.GetPageCount()):
                 if issubclass(self.nb.GetPage(page).__class__, 
                                            wx.stc.StyledTextCtrl):
                     ctrls.append((self.nb.GetPageText(page), 
@@ -496,6 +482,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         else:
             evt.Skip()
             return
+
         for ctrl in ctrls:
             fname = ctrl[1].filename
             if fname != '':
@@ -567,14 +554,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                                 wx.SAVE | wx.OVERWRITE_PROMPT)
 
             result = dlg.ShowModal()
-            if result == wx.ID_OK: 
-                profile = dlg.GetFilename()
-                path = dlg.GetPath()
-                profiler.Profile().Write(path)
-                self.PushStatusText(_("Profile Saved as: %s") % profile, SB_INFO)
-                dlg.Destroy()
-            else:
-                pass
+            if result == wx.ID_OK:
+                profiler.Profile().Write(dlg.GetPath())
+                self.PushStatusText(_("Profile Saved as: %s") % \
+                                    dlg.GetFilename(), SB_INFO)
+            dlg.Destroy()
         else:
             evt.Skip()
 
@@ -592,16 +576,16 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
             result = dlg.ShowModal()
             if result == wx.ID_OK: 
-                profile = dlg.GetFilename()
-                path = dlg.GetPath()
-                profiler.Profile().Load()(path)
-                self.PushStatusText(_("Loaded Profile: %s") % profile, SB_INFO)
+                profiler.Profile().Load(dlg.GetPath())
+                self.PushStatusText(_("Loaded Profile: %s") % \
+                                    dlg.GetFilename(), SB_INFO)
                 dlg.Destroy()
             else:
                 pass
 
             # Update editor to reflect loaded profile
-            self.nb.UpdateTextControls()
+            for win in wx.GetApp().GetMainWindows():
+                win.nb.UpdateTextControls()
         else:
             evt.Skip()
 
@@ -610,9 +594,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @param evt: event that called this handler
 
         """
-        msg = evt.GetMessage()
-        if msg and self.GetStatusBar():
-            self.PushStatusText(msg, evt.GetSection())
+        if self.GetStatusBar():
+            self.PushStatusText(evt.GetMessage(), evt.GetSection())
 
     def OnPrint(self, evt):
         """Handles sending the current document to the printer,
@@ -623,8 +606,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         e_id = evt.GetId()
-        pmode = _PGET('PRINT_MODE', "str").replace(u'/', u'_').lower()
-        self.printer.SetColourMode(pmode)
+        self.printer.SetColourMode(_PGET('PRINT_MODE', "str").\
+                                   replace(u'/', u'_').lower())
         if e_id == ID_PRINT:
             self.printer.Print()
         elif e_id == ID_PRINT_PRE:
@@ -656,34 +639,26 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         # Cleanup Controls
-        controls = self.nb.GetPageCount()
         _PSET('LAST_SESSION', self.nb.GetFileNames())
-        self.LOG("[main_evt] [exit] Number of controls: %d" % controls)
-
         self._exiting = True
+        controls = self.nb.GetPageCount()
+        self.LOG("[main_evt][exit] Number of controls: %d" % controls)
         while controls:
             if controls <= 0:
                 self.Close(True) # Force exit since there is a problem
 
-            self.LOG("[main_evt] [exit] Requesting Page Close")
+            self.LOG("[main_evt][exit] Requesting Page Close")
             result = self.nb.ClosePage()
             if result == wx.ID_CANCEL:
                 break
             controls -= 1
 
-        try:
-            if result != wx.ID_CANCEL:
-                # We are exiting so continue finish cleanup
-                pass
-            else:
-                # Rebind the event
-                self._exiting = False
-                return True
-        except UnboundLocalError:
-            self.LOG("[main][exit][err] Trapped UnboundLocalError OnExit")
+        if result == wx.ID_CANCEL:
+            self._exiting = False
+            return True
 
         ### If we get to here there is no turning back so cleanup
-        ### additional items and save the user settings
+        ### additional items and save user settings
 
         # Write out saved document information
         self.nb.DocMgr.WriteBook()
@@ -693,7 +668,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         _PSET('SHELF_ITEMS', self._shelf.GetItemStack())
 
         # Save Window Size/Position for next launch
-        # XXX workaround for possible bug in wxPython 2.8
+        # XXX On wxMac the window size doesnt seem to take the toolbar
+        #     into account so destroy it so that the window size is accurate.
         if wx.Platform == '__WXMAC__' and self.GetToolBar():
             self.toolbar.Destroy()
         _PSET('WSIZE', self.GetSizeTuple())
@@ -702,7 +678,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                  (_PGET('WPOS', 'str'), _PGET('WSIZE', 'str')))
         
         # Update profile
-        profiler.UpdateProfileLoader()
         profiler.AddFileHistoryToProfile(self.filehistory)
         profiler.Profile().Write(_PGET('MYPROFILE'))
 
@@ -720,7 +695,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         for pane in panes:
             wx.PostEvent(pane.window, exit_evt)
 
-        # Finally close the application
+        # Finally close the window
         self.LOG("[main_info] Closing Main Frame")
         wx.GetApp().UnRegisterWindow(repr(self))
         self.Destroy()
@@ -742,8 +717,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             if win is not None:
                 win.Raise()
                 return
-            dlg = prefdlg.PreferencesDialog(None, 
-                                            title=_("Preferences - Editra"))
+            dlg = prefdlg.PreferencesDialog(None)
             dlg.CenterOnParent()
             dlg.Show()
         else:
@@ -837,7 +811,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 return
             dlg = plugdlg.PluginDialog(self, wx.ID_ANY, PROG_NAME + " " \
                                         + _("Plugin Manager"), \
-                                        size=wx.Size(500, 350))
+                                        size=wx.Size(550, 350))
             dlg.CenterOnParent()
             dlg.Show()
         else:
@@ -918,9 +892,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                  and extensions.
 
         """
-        filefilters = syntax.GenFileFilters()
-        typestr = ''.join(filefilters)
-        return typestr
+        return ''.join(syntax.GenFileFilters())
 
     def DispatchToControl(self, evt):
         """Catches events that need to be passed to the current
@@ -947,20 +919,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                          ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB,
                          ID_TRIM_WS, ID_SHOW_EDGE, ID_MACRO_START, 
                          ID_MACRO_STOP, ID_MACRO_PLAY, ID_TO_LOWER, 
-                         ID_TO_UPPER])
-        ctrl = self.nb.GetCurrentCtrl()
-        if e_id in [ID_UNDO, ID_REDO, ID_CUT, ID_COPY, ID_PASTE, ID_SELECTALL]:
-            # If event is from the toolbar manually send it to the control as
-            # the events from the toolbar do not propagate to the control.
-            if e_obj.GetClassName() == "wxToolBar" or \
-               e_id in [ID_REDO, ID_UNDO] \
-               or wx.Platform in ['__WXMSW__', '__WXGTK__']:
-                ctrl.ControlDispatch(evt)
-                self.UpdateToolBar()
-            else:
-                evt.Skip()
-        elif e_id in menu_ids:
-            ctrl.ControlDispatch(evt)
+                         ID_TO_UPPER, ID_UNDO, ID_REDO, ID_CUT, ID_COPY,
+                         ID_PASTE, ID_SELECTALL])
+        if e_id in menu_ids:
+            self.nb.GetCurrentCtrl().ControlDispatch(evt)
+            self.UpdateToolBar()
         else:
             evt.Skip()
         return

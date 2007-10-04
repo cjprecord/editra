@@ -48,7 +48,7 @@ import plugin
 #--------------------------------------------------------------------------#
 
 class ThemeI(plugin.Interface):
-    """Interface for defining a theme
+    """Interface for defining an icon theme in Editra
 
     """
 

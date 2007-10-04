@@ -18,7 +18,7 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 #
-# Some of the code in this document is directly derived from trac
+# Some of the code in this document was derived from trac's plugin architecture
 #
 # Copyright (C) 2003-2006 Edgewall Software
 # All rights reserved.
