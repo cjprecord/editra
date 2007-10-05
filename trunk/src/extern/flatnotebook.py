@@ -4949,9 +4949,11 @@ class PageContainer(wx.Panel):
 
     def SetPageText(self, page, text):
         """ Sets the tab caption of the page. """
-
-        self._pagesInfoVec[page].SetCaption(text)
-        return True 
+        if page < len(self._pagesInfoVec):
+            self._pagesInfoVec[page].SetCaption(text)
+            return True
+        else:
+            return False
 
 
     def DrawDragHint(self):
