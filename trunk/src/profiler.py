@@ -71,7 +71,7 @@ _DEFAULTS = {
            'FHIST_LVL'  : 9,                # Filehistory length (9 is max)
            'FFILTER'    : 0,                # Last file filter used
            'GUIDES'     : True,             # Use Indentation guides
-           'ICONS'      : 'Nuovo',          # Icon Theme
+           'ICONS'      : 'Tango',          # Icon Theme
            'ICON_SZ'    : (24, 24),         # Toolbar Icon Size
            'LANG'       : 'Default',        # UI language
            'MODE'       : 'CODE',           # Overall editor mode
