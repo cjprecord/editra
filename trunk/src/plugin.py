@@ -115,6 +115,8 @@ class Interface(object):
     """
     pass
 
+#-----------------------------------------------------------------------------#
+
 class ExtensionPoint(property):
     """Declares what L{Interface} a plugin is extending"""
     def __init__(self, interface):
@@ -130,13 +132,15 @@ class ExtensionPoint(property):
         return '<ExtensionPoint %s>' % self.interface.__name__
 
     def Extensions(self, component):
-        """@return a list of plugins that declare to impliment the
+        """@return: a list of plugins that declare to impliment the
         given extension point.
 
         """
         component = wx.GetApp().GetPluginManager()
         extensions = PluginMeta._registry.get(self.interface, [])
         return filter(None, [component[cls] for cls in extensions])
+
+#-----------------------------------------------------------------------------#
 
 class PluginMeta(type):
     """Acts as the registration point for plugin entrypoint objects.
@@ -166,6 +170,8 @@ class PluginMeta(type):
                 PluginMeta._registry.setdefault(interface, []).append(new_obj)
         return new_obj
 
+#-----------------------------------------------------------------------------#
+
 class Plugin(object):
     """Base class for all plugin type objects"""
     __metaclass__ = PluginMeta
@@ -190,6 +196,8 @@ class Plugin(object):
             self = super(Plugin, cls).__new__(cls)
             self.pluginmgr = pluginmgr
         return self
+
+#-----------------------------------------------------------------------------#
 
 class PluginData(object):
     """A storage class for representing data about a Plugin
@@ -273,6 +281,8 @@ class PluginData(object):
             except (ValueError, TypeError):
                 ver = u''
         self._version = ver
+
+#-----------------------------------------------------------------------------#
 
 def Implements(*interfaces):
     """Used by L{Plugin}s to declare the interface that they
