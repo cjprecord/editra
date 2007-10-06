@@ -152,7 +152,6 @@ class PreferencesDialog(wx.Frame):
         util.SetWindowIcon(self)
 
         # Extra Styles
-        self.SetExtraStyle(wx.FRAME_EX_CONTEXTHELP)
         self.SetTransparent(Profile_Get('ALPHA', 'int', 255))
         if wx.Platform == '__WXMAC__' and Profile_Get('METAL', 'bool', False):
             self.SetExtraStyle(wx.DIALOG_EX_METAL)
@@ -160,18 +159,17 @@ class PreferencesDialog(wx.Frame):
         # Attributes
         self._tbook = PrefTools(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        hsizer = wx.BoxSizer(wx.HORIZONTAL)
-
-        # Bind Events
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         # Layout
         sizer.Add(self._tbook, 1, wx.EXPAND)
-        sizer.Add(hsizer, 0, wx.ALIGN_BOTTOM)
         self.SetSizer(sizer)
         self.SetAutoLayout(True)
-        self.Fit()
+        self.SetInitialSize()
         wx.GetApp().RegisterWindow(repr(self), self, True)
+
+        # Bind Events
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_SHOW, self.OnShow)
 
     def OnClose(self, evt):
         """Hanles the window closer event
@@ -180,6 +178,16 @@ class PreferencesDialog(wx.Frame):
         """
         wx.GetApp().UnRegisterWindow(repr(self))
         evt.Skip()
+
+    def OnShow(self, evt):
+        """Hanles the window closer event
+        @param evt: Event that called this handler
+
+        """
+        self._tbook.OnPageChanged()
+        evt.Skip()
+
+#-----------------------------------------------------------------------------#
 
 class PrefTools(wx.Toolbook):
     """Main sections of the configuration pages
@@ -205,8 +213,6 @@ class PrefTools(wx.Toolbook):
         """
         wx.Toolbook.__init__(self, parent, tbid, style=style)
 
-#         toolb = self.GetToolBar()
-#         toolb.SetWindowStyle(toolb.GetWindowStyle() | wx.TB_NODIVIDER)
         # Attributes
         self.LOG = wx.GetApp().GetLog()
         self._imglst = wx.ImageList(32, 32)
@@ -231,22 +237,23 @@ class PrefTools(wx.Toolbook):
         self.Bind(wx.EVT_TOOLBOOK_PAGE_CHANGED, self.OnPageChanged)
         self.Bind(wx.EVT_PAINT, self.OnPaint)
 
-    def OnPageChanged(self, evt):
+    def OnPageChanged(self, evt=None):
         """Resizes the dialog based on the pages size
         @todo: animate the resizing so its smoother
 
         """
         self.LOG("[prefdlg][toolbook][evt] page changed")
-        page = evt.GetSelection()
+        page = self.GetSelection()
         page = self.GetPage(page)
         page.SetInitialSize()
         parent = self.GetParent()
         psz = page.GetSize()
         tbh = self.GetToolBar().GetSize().GetHeight()
-        parent.SetClientSize((psz.GetWidth() + 10, psz.GetHeight() + tbh + 15))
+        parent.SetClientSize((psz.GetWidth(), psz.GetHeight() + tbh))
         parent.SendSizeEvent()
         parent.Layout()
-        evt.Skip()
+        if evt is not None:
+            evt.Skip()
 
     def OnPaint(self, evt):
         """Paint the toolbar's background
@@ -423,7 +430,8 @@ class GeneralPanel(PrefPanelBase):
                        (pos_cb, (9, 2), (1, 3)),
                        (chkmod_cb, (10, 2), (1, 2))])
         sizer.AddMany([(locale, (12, 1)),
-                       (lsizer, (12, 2), (1, 3))])
+                       (lsizer, (12, 2), (1, 3)),
+                       ((15, 15), (13, 0))])
         self.SetSizer(sizer)
 
     def OnCheck(self, evt):
@@ -490,6 +498,7 @@ class DocumentPanel(PrefPanelBase):
         self._nb.AddPage(DocCodePanel(self._nb), _("Code"))
         self._nb.AddPage(DocSyntaxPanel(self._nb), _("Syntax Highlighting"))
         sizer.Add(self._nb, (1, 1))
+        sizer.Add((5, 5), (2, 2))
         self.SetSizer(sizer)
 
 class DocGenPanel(wx.Panel):
@@ -930,7 +939,8 @@ class AppearancePanel(PrefPanelBase):
         sizer.Add((5, 5), (8, 0))
         sizer.Add(wx.StaticText(self, label=_("Misc") + u": "), (8, 1))
         sizer.AddMany([(tsizer, (8, 2), (1, 2)),
-                       (m_cb, (9, 2), (1, 2))])
+                       (m_cb, (9, 2), (1, 2)),
+                       ((15, 15), (10, 2))])
         self.SetSizer(sizer)
 
     def OnCheck(self, evt):
@@ -1044,14 +1054,17 @@ class UpdatePanel(PrefPanelBase):
         dl_b.Disable()
 
         # Layout Controls
+        statsz = wx.BoxSizer(wx.HORIZONTAL)
+        statsz.AddMany([((15, 15), 0),
+                        (cur_sz, 0),
+                        ((20, 10), 1),
+                        (upd_bsz, 0),
+                        ((15, 15), 0)])
         sizer = wx.GridBagSizer()
-        sizer.Add((5, 5), (0, 0))
-        sizer.AddMany([(cur_sz, (1, 2), (1, 3), wx.ALIGN_RIGHT),
-                       (upd_bsz, (1, 6), (1, 3)),
-                       (e_update, (3, 3), (1, 5), wx.EXPAND),
-                       ((5, 5), (4, 0)),
-                       (check_b, (5, 4)), (dl_b, (5, 6)),
-                       ((5, 5), (6, 0))])
+        sizer.AddMany([(statsz, (1, 1), (2, 5), wx.EXPAND),
+                       (e_update, (4, 1), (1, 5), wx.EXPAND),
+                       (check_b, (6, 2), (1, 1)), (dl_b, (6, 4), (1, 1)),
+                       ((15, 15), (7, 2)), ((5, 5), (7, 7))])
         self.SetSizer(sizer)
 
     def OnButton(self, evt):
@@ -1103,6 +1116,7 @@ class UpdatePanel(PrefPanelBase):
         nbevt = wx.NotebookEvent(wx.wxEVT_COMMAND_TOOLBOOK_PAGE_CHANGED, 
                                  0, curr_pg, curr_pg)
         wx.PostEvent(self.GetParent(), nbevt)
+        self.Refresh()
 
 #----------------------------------------------------------------------------#
 # Custom controls for the Preference dialog

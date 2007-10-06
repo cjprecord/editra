@@ -248,6 +248,10 @@ class UpdateProgress(wx.Gauge, UpdateService):
         self._status = _("Status Unknown")
         self._timer = wx.Timer(self, id=self.ID_TIMER)
 
+        #---- Layout ----#
+        if wx.Platform == '__WXMAC__':
+            self.SetWindowVariant(wx.WINDOW_VARIANT_LARGE)
+
         #---- Bind Events ----#
         self.Bind(wx.EVT_TIMER, self.OnUpdate, id = self.ID_TIMER)
         
@@ -535,34 +539,28 @@ class DownloadDialog(wx.Frame):
                            wx.BITMAP_TYPE_PNG)
         tmp_bmp.Rescale(20, 20, wx.IMAGE_QUALITY_HIGH)
         mdc.DrawBitmap(tmp_bmp.ConvertToBitmap(), 11, 11)
-        bmp = mdc.GetAsBitmap()
-        mdc.Destroy()
+        mdc.SelectObject(wx.NullBitmap)
         bmp = wx.StaticBitmap(panel, wx.ID_ANY, bmp)
-        self._sizer.AddMany([((10, 10), (0, 0)), (bmp, (1, 1), (3, 2)),
-                             ((5, 5), (1, 3)),
+        self._sizer.AddMany([(bmp, (1, 1), (3, 2)),
                              (dl_file, (1, 4), (1, 4)),
-                             ((5, 5), (1, 9)), 
-                             (dl_loc, (2, 4), (1, 4)), 
-                             ((20, 20), (4, 1), (1, 2)),
-                             (self._progress, (5, 2), (1, 6), 
-                              wx.EXPAND | wx.ALIGN_CENTER_HORIZONTAL),
-                             (self._cancel_bt, (6, 2), (1, 6), wx.ALIGN_CENTER),
-                             ((5, 5), (7, 1))])
+                             (dl_loc, (2, 4), (1, 4))])
+
+        self._sizer.Add(self._progress, (4, 1), (1, 10), wx.EXPAND)
+
+        bsizer = wx.BoxSizer(wx.HORIZONTAL)
+        bsizer.AddStretchSpacer()
+        bsizer.Add(self._cancel_bt, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        bsizer.AddStretchSpacer()
+
+        self._sizer.Add(bsizer, (6, 1), (1, 10), wx.EXPAND)
+        self._sizer.Add((5, 5), (7, 1))
+        self._sizer.Add((5, 5), (7, 11))
         panel.SetSizer(self._sizer)
-        mwsz = wx.BoxSizer(wx.VERTICAL)
+        mwsz = wx.BoxSizer(wx.HORIZONTAL)
         mwsz.Add(panel, 1, wx.EXPAND)
         self.SetSizer(mwsz)
         self.SetInitialSize()
 
-        # Adjust progress bar and status widths
-        size = self.GetSize()
-        if wx.Platform == '__WXMSW__':
-            width = size.GetWidth()
-            if width < 375:
-                width = 375
-            self.SetSize(wx.Size(width, size.GetHeight()))
-            self.SendSizeEvent()
-        self._progress.SetSize(wx.Size(int(size[0] * .80), 15))
         self.SetStatusWidths([-1, 100])
         self.SetStatusText(_("Downloading..."), self.SB_INFO)
 
