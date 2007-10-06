@@ -63,7 +63,7 @@ class NuovoTheme(plugin.Plugin):
                 return bmp
             else:
                 # Fail back to plain text bitmap
-                bmp = self.__LoadBitmapData(path)
+                bmp = self.__LoadBitmapData(bkup)
                 if bmp is not None:
                     return bmp
 
