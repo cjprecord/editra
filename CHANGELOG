@@ -1,6 +1,7 @@
-Editra 
-Cody Precord 2005-2007
-LICENSE: GPLv2
+Editra
+Author: Cody Precord
+Copyright: (c) Cody Precord 2005-2007
+Licence: GPLv2
 
 Change Log:
 
@@ -15,6 +16,8 @@ NEWS:
 
 
 NEW: [features/improvements]
++Icon themes are now part of the plugin system so themes can be created and
+installed through the plugin manager using python eggs.
 
 
 BUG FIXES:
