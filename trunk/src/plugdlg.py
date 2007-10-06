@@ -78,7 +78,7 @@ def MakeThemeTool(tool_id):
     Profile_Set('ICON_SZ', (32, 32))
     base = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
     Profile_Set('ICON_SZ', osize)
-    if not base.IsOk():
+    if not base.IsOk() or base.GetSize() != (32, 32):
         base = wx.ArtProvider.GetBitmap(wx.ART_WARNING, 
                                         wx.ART_TOOLBAR, 
                                         size=(32, 32))
