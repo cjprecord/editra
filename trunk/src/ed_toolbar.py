@@ -171,7 +171,6 @@ class EdToolBar(wx.ToolBar):
         tools = list()
         pos = -1
         lastpos = 0
-        wx.GetApp().ReloadArtProvider()
         self.tool_size = Profile_Get('ICON_SZ', 'size_tuple')
         self._theme = Profile_Get('ICONS')
         self.SetToolBitmapSize(self.tool_size)
