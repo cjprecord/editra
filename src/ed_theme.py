@@ -284,9 +284,13 @@ class TangoTheme(plugin.Plugin):
         if MIME_ART.has_key(bmp_id):
             path = self.__GetArtPath(wx.ART_MENU, mime=True)
             if path is not None:
+                bkup = path + MIME_ART[synglob.ID_LANG_TXT]
                 path = path + MIME_ART[bmp_id]
+                print path, bkup
                 if os.path.exists(path):
                     return wx.Bitmap(path, wx.BITMAP_TYPE_PNG)
+                elif os.path.exists(bkup):
+                    return wx.Bitmap(bkup, wx.BITMAP_TYPE_PNG)
 
         return wx.NullBitmap
 

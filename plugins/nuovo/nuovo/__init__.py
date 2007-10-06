@@ -57,9 +57,15 @@ class NuovoTheme(plugin.Plugin):
     def GetFileBitmap(self, bmp_id):
         if ed_theme.MIME_ART.has_key(bmp_id):
             path = MIME_PATH + ed_theme.MIME_ART[bmp_id]
+            bkup = path + MIME_ART[synglob.ID_LANG_TXT]
             bmp = self.__LoadBitmapData(path)
             if bmp is not None:
                 return bmp
+            else:
+                # Fail back to plain text bitmap
+                bmp = self.__LoadBitmap(path)
+                if bmp is not None:
+                    return bmp
 
         return wx.NullBitmap
 
