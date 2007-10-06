@@ -19,7 +19,6 @@
 ############################################################################
 
 """
-@summary: mostly unimplemented
 #--------------------------------------------------------------------------#
 # FILE: ed_theme.py                                                        #
 # AUTHOR: Cody Precord                                                     #
@@ -30,8 +29,6 @@
 #  which means that they can be installed as single file instead of        #
 #  dozens of individual image files.                                       #
 #                                                                          #
-# METHODS:                                                                 #
-#
 #--------------------------------------------------------------------------#
 """
 

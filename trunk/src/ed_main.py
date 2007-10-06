@@ -21,31 +21,13 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_main.py                                                         #
-# @author: Cody Precord                                                    #
+# AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # @summary:                                                                #
-#   This module impliments the main window class of the editor. The        #
-#  MainWindow consists of a a WxFrame that contains the interface to the   #
-#  editor.                                                                 #
+#  This module provides the class for the main window as well as the       #
+# plugin interface to interact with the window.                            #
 #                                                                          #
-# METHODS:                                                                 #
-# - __init__: Initializes the frame/menu/toolbar/statusbar/event handlers  #
-# - OnNew: Handles "New" event by asking the notebook to open a new blank  #
-#          page.                                                           #
-# - OnOpen: Catches Open event and passes it to DoOpen                     #
-# - DoOpen: Does work of opening pages/files in Frame                      #
-# - OnClosePage: Handles close page event by asking notebook to close the  #
-#                Currently selected page.                                  #
-# - ModifySave: Called when closing page / program to prompt user and ask  #
-#               if they want to save or not.                               #
-# - OnSave: Saves control text to acutal file by asking the control to     #
-#           write the data out to file, unless the document does not have  #
-#           a name which in that case it will in turn call SaveAs          #
-# - OnSaveAs: Saves current document to the file specified in the dialog.  #
-# - OnPrint: Sends current controls text to printer device                 #
-# - OnExit: Closes all windows, and shuts the program down.                #
-# - 
 #--------------------------------------------------------------------------#
 """
 
