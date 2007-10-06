@@ -230,7 +230,8 @@ MIME_ART = { synglob.ID_LANG_BASH : u'shell.png',
              synglob.ID_LANG_RUBY : u'ruby.png',
              synglob.ID_LANG_TCL : u'tcl.png',
              synglob.ID_LANG_TEX : u'tex.png',
-             synglob.ID_LANG_TXT : u'text.png'
+             synglob.ID_LANG_TXT : u'text.png',
+             synglob.ID_LANG_XML : u'xml.png'
  }
 
 #-----------------------------------------------------------------------------#
