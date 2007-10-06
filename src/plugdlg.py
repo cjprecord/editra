@@ -79,7 +79,9 @@ def MakeThemeTool(tool_id):
     base = wx.ArtProvider.GetBitmap(str(tool_id), wx.ART_TOOLBAR)
     Profile_Set('ICON_SZ', osize)
     if not base.IsOk():
-        base = wx.ArtProvider.GetBitmap(wx.ART_WARNING, wx.ART_TOOLBAR, size=(32, 32))
+        base = wx.ArtProvider.GetBitmap(wx.ART_WARNING, 
+                                        wx.ART_TOOLBAR, 
+                                        size=(32, 32))
 
     over = wx.ArtProvider.GetBitmap(str(ed_glob.ID_PLUGMGR), wx.ART_MENU)
     if over.IsOk():

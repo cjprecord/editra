@@ -1,0 +1,4 @@
+Name=Nuovo
+Author=Cody Precord
+Description=Nuovo icon theme for Editra
+Version=0.1

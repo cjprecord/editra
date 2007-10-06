@@ -862,11 +862,12 @@ class AppearancePanel(PrefPanelBase):
 
         """
         # Icons Section
+        from ed_theme import BitmapProvider
+        icons = ['Default']
+        icons.extend(BitmapProvider(wx.GetApp().GetPluginManager()).GetThemes())
         tb_icont = wx.StaticText(self, wx.ID_ANY, _("Icon Theme") + u": ")
         tb_icon = ExChoice(self, ed_glob.ID_PREF_ICON,
-                            choices=util.GetResources(u"pixmaps" + \
-                                                      util.GetPathChar() + \
-                                                      u"theme"), 
+                            choices=icons, 
                             default=Profile_Get('ICONS', 'str').title())
         tb_isz_lbl = wx.StaticText(self, wx.ID_ANY, \
                                    _("Toolbar Icon Size") + u": ")
@@ -958,6 +959,7 @@ class AppearancePanel(PrefPanelBase):
             if e_id == ed_glob.ID_PREF_ICONSZ:
                 val = (int(val), int(val))
             Profile_Set(ed_glob.ID_2_PROF[e_id], val)
+            wx.GetApp().ReloadArtProvider()
             for mainw in wx.GetApp().GetMainWindows():
                 toolbar = mainw.GetToolBar()
                 if toolbar is not None and \

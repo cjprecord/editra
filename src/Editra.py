@@ -81,6 +81,9 @@ class Editra(wx.App, events.AppEventHandlerMixin):
         self._windows = dict()
         self._pluginmgr = plugin.PluginManager()
 
+        self._log("[app][info] Registering Editra's ArtProvider")
+        wx.ArtProvider.PushProvider(ed_art.EditraArt())
+
     def OnInit(self):
         """Initialize the Editor
         @note: this gets called before __init__
@@ -90,8 +93,6 @@ class Editra(wx.App, events.AppEventHandlerMixin):
         self.SetAppName(ed_glob.PROG_NAME)
         self._log = dev_tool.DEBUGP
         self._log("[app][info] Editra is Initializing")
-        self._log("[app][info] Registering Editra's ArtProvider")
-        wx.ArtProvider.PushProvider(ed_art.EditraArt())
 
         if Profile_Get('REPORTER', 'bool', True):
             sys.excepthook = dev_tool.ExceptionHook
@@ -500,8 +501,8 @@ def Main():
 
     # Splash a warning if version is not a final version
     if Profile_Get('APPSPLASH') and int(ed_glob.VERSION[0]) < 1:
-        splash_img = wx.ArtProvider.GetBitmap(str(ed_glob.ID_APP_SPLASH), 
-                                              wx.ART_OTHER)
+        import edimage
+        splash_img = edimage.getsplashwarnBitmap()
         splash = wx.SplashScreen(splash_img, wx.SPLASH_CENTRE_ON_PARENT | \
                                  wx.SPLASH_NO_TIMEOUT, 0, None, wx.ID_ANY)
         splash.Show()

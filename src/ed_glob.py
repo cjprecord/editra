@@ -294,4 +294,4 @@ ID_2_PROF = {
 
 # Default Plugins
 DEFAULT_PLUGINS = ("generator.Html", "generator.LaTeX", "generator.Rtf",
-                   "iface.Shelf")
+                   "iface.Shelf", "ed_theme.TangoTheme")
