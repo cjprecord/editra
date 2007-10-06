@@ -86,12 +86,14 @@ class AppEventHandlerMixin:
             self.RemoveHandlerForID(eventID)
 
     def RemoveHandlerForID(self, eventID):
+        self.Unbind(wx.EVT_MENU, id=eventID)
         self.handlers[eventID] = None
 
         if eventID in self.pushed_handlers:
             self.handlers[eventID] = self.pushed_handlers[eventID]
 
     def RemoveUIHandlerForID(self, eventID):
+        self.Unbind(wx.EVT_UPDATE_UI, id=eventID)
         self.uihandlers[eventID] = None
 
         if eventID in self.pushed_handlers:
