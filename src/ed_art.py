@@ -129,6 +129,10 @@ class EditraArt(wx.ArtProvider):
                 if size[0] < img_sz[0]:
                     img.Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH)
                 bmp = wx.BitmapFromImage(img)
+            elif client == wx.ART_MENU and bmp.GetSize() != (16, 16):
+                img = wx.ImageFromBitmap(bmp)
+                img.Rescale(16, 16, wx.IMAGE_QUALITY_HIGH)
+                bmp = wx.BitmapFromImage(img)
         elif client == wx.ART_TOOLBAR:
             bmp = wx.ArtProvider.GetBitmap(wx.ART_WARNING, client, size)
         elif art_id in syntax.SyntaxIds():
