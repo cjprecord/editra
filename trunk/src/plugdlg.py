@@ -504,6 +504,8 @@ class DownloadPanel(wx.Panel):
             h_file = urllib.urlopen(url)
             egg = h_file.read()
             h_file.close()
+        except (IOError, OSError), msg:
+            util.Log("[plugdlg][err] %s" % str(msg))
         finally:
             return (url.split("/")[-1], True, egg)
 
@@ -522,6 +524,8 @@ class DownloadPanel(wx.Panel):
             h_file = urllib.urlopen(url)
             text = h_file.read()
             h_file.close()
+        except (IOError, OSError), msg:
+            util.Log("[plugdlg][err] %s" % str(msg))
         finally:
             return text.split("###")
 
