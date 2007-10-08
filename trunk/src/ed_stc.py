@@ -1682,7 +1682,6 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     def ToggleBracketHL(self, switch=None):
         """Toggle Bracket Highlighting On and Off
         @keyword switch: force a particular setting
-        @todo: Why must the UI event be unbound twice
 
         """
         if (switch is None and not self.brackethl) or switch:
