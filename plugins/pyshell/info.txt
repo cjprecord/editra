@@ -1,4 +1,4 @@
 Name=PyShell
 Author=Cody Precord
-Description=Adds a PyShell to the View Menu
+Description=Adds a PyShell to the Shelf Menu
 Version=0.4
