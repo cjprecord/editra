@@ -115,14 +115,6 @@ class EdPages(FNB.FlatNotebook):
     #---- End Init ----#
 
     #---- Function Definitions ----#
-    def AddPage(self, control, title):
-        """Adds a page to the notebook
-        @param control: control panel to add to notebook
-        @param title: page title string
-
-        """
-        FNB.FlatNotebook.AddPage(self, control, title)
-
     def GetCurrentCtrl(self):
         """Returns the control of the currently selected
         page in the notebook.
@@ -172,14 +164,6 @@ class EdPages(FNB.FlatNotebook):
         self.LOG("[nb_evt] Page Creation ID: %d" % self.control.GetId())
         self.AddPage(self.control, u"Untitled - %d" % self.pg_num)
         self.SetPageImage(self.GetSelection(), str(self.control.GetLangId()))
-
-    def OpenPageType(self, page, title):
-        """A Generic Page open Function to allow pages to contain
-        any type of widget.
-        @status: currently incomplete
-
-        """
-        self.AddPage(page, title)
 
     def OpenPage(self, path, filename):
         """Open a File Inside of a New Page
@@ -315,25 +299,18 @@ class EdPages(FNB.FlatNotebook):
                  notebook.
 
         """
-        children = self.GetChildren()
-        controls = list()
-        for child in children:
-            if hasattr(child, '__name__') and \
-               child.__name__ == u"EditraTextCtrl":
-                controls.append(child)
+        controls = [self.GetPage(page) for page in xrange(self.GetPageCount())]
         return controls
 
     def HasFileOpen(self, fpath):
         """Checks if one of the currently active buffers has
         the named file in it.
         @param fpath: full path of file to check
-        @return: whether file is currently open or not
-        @rtype: boolean
+        @return: bool indicating whether file is currently open or not
 
         """
-        ctrls = self.GetTextControls()
-        for ctrl in ctrls:
-            if fpath == os.path.join(ctrl.dirname, ctrl.filename):
+        for ctrl in self.GetTextControls():
+            if fpath == ctrl.GetFileName():
                 return True
         return False
 
@@ -441,7 +418,6 @@ class EdPages(FNB.FlatNotebook):
     def ChangePage(self, pgid):
         """Change the page and focus to the the given page id
         @param pgid: Page number to change to
-        @todo: generalize this to avoid expecting an edstc
 
         """
         window = self.GetPage(pgid) #returns current stc
@@ -465,8 +441,7 @@ class EdPages(FNB.FlatNotebook):
         @type evt: wx.lib.flatnotebook.EVT_FLATNOTEBOOK_PAGE_CHANGED
 
         """
-        current = evt.GetSelection()
-        self.ChangePage(current)
+        self.ChangePage(evt.GetSelection())
         self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
                  "[nb_info] It has file named: %s\n"
                  "[nb_info] In DIR: %s") % (evt.GetOldSelection(), 
@@ -517,12 +492,8 @@ class EdPages(FNB.FlatNotebook):
         self.GoCurrentPage()
         pg_num = self.GetSelection()
         result = wx.ID_OK
-        try:
-            act = self.control.GetModify()
-        except AttributeError:
-            act = False
 
-        if act:
+        if self.control.GetModify():
             result = self.frame.ModifySave()
             if result != wx.ID_CANCEL:
                 self.DeletePage(pg_num)
@@ -599,6 +570,8 @@ class EdPages(FNB.FlatNotebook):
             control.Configure()
 
 #---- End Function Definitions ----#
+
+#-----------------------------------------------------------------------------#
 
 #---- Utility Function Definitions ----#
 def PromptToReSave(win, cfile):
