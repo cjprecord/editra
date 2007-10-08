@@ -270,10 +270,9 @@ def _FromObject(val, fmt):
     @param val: value to convert
     @param fmt: Format to convert to
     @type fmt: string
-    @todo: exception handling, 
 
     """
-    if fmt == u'font':
+    if fmt == u'font' and isinstance(val, wx.Font):
         return "%s,%s" % (val.GetFaceName(), val.GetPointSize())
     else:
         return val
