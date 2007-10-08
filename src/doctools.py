@@ -41,9 +41,8 @@ __revision__ = "$Revision$"
 #--------------------------------------------------------------------------#
 # Dependancies
 import os
-import profiler
 import util
-import dev_tool
+from profiler import Profile_Get
 
 #--------------------------------------------------------------------------#
 
@@ -62,11 +61,8 @@ class DocPositionMgr(object):
         object.__init__(self)
         self._book = book_path
         self._records = dict()
-        if profiler.Profile_Get('SAVE_POS'):
-            if self.LoadBook(book_path):
-                dev_tool.DEBUGP("[docpositionmgr] successfully loaded book")
-            else:
-                dev_tool.DEBUGP("[docpositionmgr] failed to load book")
+        if Profile_Get('SAVE_POS'):
+            self.LoadBook(book_path)
 
     def AddRecord(self, vals):
         """Adds a record to the dictionary from a list of the
@@ -113,6 +109,7 @@ class DocPositionMgr(object):
                 tfile = util.GetFileWriter(book)
                 tfile.close()
             except (IOError, OSError):
+                util.Log("[docpositionmgr] failed to load book")
                 return False
 
         reader = util.GetFileReader(book)
@@ -126,10 +123,12 @@ class DocPositionMgr(object):
             try:
                 vals[1] = int(vals[1])
             except (TypeError, ValueError), msg:
-                dev_tool.DEBUGP("[docpositionmgr] %s" % str(msg))
+                util.Log("[docpositionmgr] %s" % str(msg))
                 continue
             else:
                 self.AddRecord(vals)
+
+        util.Log("[docpositionmgr] successfully loaded book")
         return True
 
     def WriteBook(self):
@@ -143,5 +142,5 @@ class DocPositionMgr(object):
                 writer.write(u"%s=%d\n" % (key, self._records[key]))
             writer.close()
         except (IOError, AttributeError), msg:
-            dev_tool.DEBUGP("[docpositionmgr] %s" % str(msg))
+            util.Log("[docpositionmgr] %s" % str(msg))
 
