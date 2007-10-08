@@ -282,16 +282,17 @@ class TangoTheme(plugin.Plugin):
         return wx.NullBitmap
 
     def GetFileBitmap(self, bmp_id):
-        if MIME_ART.has_key(bmp_id):
-            path = self.__GetArtPath(wx.ART_MENU, mime=True)
-            if path is not None:
-                bkup = path + MIME_ART[synglob.ID_LANG_TXT]
-                path = path + MIME_ART[bmp_id]
-                print path, bkup
-                if os.path.exists(path):
-                    return wx.Bitmap(path, wx.BITMAP_TYPE_PNG)
-                elif os.path.exists(bkup):
-                    return wx.Bitmap(bkup, wx.BITMAP_TYPE_PNG)
+        path = self.__GetArtPath(wx.ART_MENU, mime=True)
+        if path is not None:
+            if MIME_ART.has_key(bmp_id):
+                req = path + MIME_ART[bmp_id]
+                if os.path.exists(req):
+                    return wx.Bitmap(req, wx.BITMAP_TYPE_PNG)
+
+            # Try to fall back to bmp for plain text when above is not found
+            bkup = path + MIME_ART[synglob.ID_LANG_TXT]
+            if os.path.exists(bkup):
+                return wx.Bitmap(bkup, wx.BITMAP_TYPE_PNG)
 
         return wx.NullBitmap
 
