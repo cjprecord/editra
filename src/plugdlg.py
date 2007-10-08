@@ -515,8 +515,6 @@ class DownloadPanel(wx.Panel):
         """Gets the list of plugins and their related meta data
         as a string and returns it.
         @return: list of data of available plugins from website
-        @todo: possibly process this on a separate thread to keep the 
-               gui responsive when switching to this panel.
         
         """
         text = u''
