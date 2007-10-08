@@ -24,20 +24,14 @@
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # SUMMARY:                                                                 #
-# This file contains the definition of the class to handle the tabbed text #
-# controls and all functions relating to the subpanel of the MainWindow    #
-# class implimented in MainWindow.py. It will also manage and create the   #
-# editra controls for the MainWindow.                                      #
+# This file defines the notebook for containing the text controls for      #
+# for editing text in Editra. The note book is a custom sublclass of       #
+# FlatNotebook that allow for automatic page images and drag and dropping  #
+# of tabs between open editor windows. The notebook is also primarly in    #
+# charge of opening files that are requested by the user and setting up the#
+# text control to use them. For more information on the text controls used #
+# in the notebook see ed_stc.py                                            #
 #                                                                          #
-# METHODS:                                                                 #
-# - EdPages: Main instance of class. tracks page numbers                   #
-# - NewPage: Creates a new empty page w/text control                       #
-# - OpenPage: Opens a new page with an existing file                       #
-# - GoCurrentPage: Sets focus to currentyl selected page                   #
-# - OnPageChanging:                                                        #
-# - OnPageChanged: Captures page change and switches context to the        #
-#                  new page                                                #
-# - ClosePage: Closes a page in the notebook                               #
 #--------------------------------------------------------------------------#
 """
 
@@ -462,8 +456,7 @@ class EdPages(FNB.FlatNotebook):
                                                     util.GetPathChar(),
                                                     self.control.filename))
 
-        matchstrn = re.compile('Untitled*')
-        if matchstrn.match(self.control.filename):
+        if re.compile('Untitled*').match(self.control.filename):
             self.control.filename = ""
 
     def OnPageChanged(self, evt):
