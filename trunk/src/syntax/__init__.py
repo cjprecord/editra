@@ -1,3 +1,10 @@
+###############################################################################
+# Name: __init__.py                                                           #
+# Purpose: initialize the syntax package                                      #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
+# Licence: wxWindows Licence                                                  #
+###############################################################################
 """Syntax data package
 1) Provides
    - keyword data

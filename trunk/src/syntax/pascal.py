@@ -1,21 +1,9 @@
 ###############################################################################
-#    Copyright (C) 2007 Editra Development Team                               #
-#    staff@editra.org                                                         #
-#                                                                             #
-#    This program is free software; you can redistribute it and#or modify     #
-#    it under the terms of the GNU General Public License as published by     #
-#    the Free Software Foundation; either version 2 of the License, or        #
-#    (at your option) any later version.                                      #
-#                                                                             #
-#    This program is distributed in the hope that it will be useful,          #
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of           #
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            #
-#    GNU General Public License for more details.                             #
-#                                                                             #
-#    You should have received a copy of the GNU General Public License        #
-#    along with this program; if not, write to the                            #
-#    Free Software Foundation, Inc.,                                          #
-#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.                #
+# Name: pascal.py                                                             #
+# Purpose: Define Pascal syntax for highlighting and other features           #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
+# Licence: wxWindows Licence                                                  #
 ###############################################################################
 
 """
@@ -85,6 +73,7 @@ SYNTAX_ITEMS = [ ('STC_C_DEFAULT', 'default_style'),
                  ('STC_C_WORD2', 'keyword2_style') ]
 
 #---- Extra Properties ----#
+FOLD = ("fold", "1")
 FLD_COMMENT = ("fold.comment", "1")
 
 #-----------------------------------------------------------------------------#
@@ -109,7 +98,7 @@ def Properties(lang_id=0):
     @param lang_id: used to select a specific set of properties
 
     """
-    return [FLD_COMMENT]
+    return [FOLD, FLD_COMMENT]
 
 def CommentPattern(lang_id=0):
     """Returns a list of characters used to comment a block of code
