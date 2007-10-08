@@ -1,7 +1,9 @@
 Syntax Plugin Specifications
 
 Included in this document are the specifications of what is needed to write a 
-plugin to extend the syntax highlighting functionality of the editor.
+plugin to extend the syntax highlighting functionality of the editor. TO add a
+new syntax file grab the syntax_mod template from the templates directory and fill
+it out to match the specs of the language you want to provide highlighting for.
 
 0: Before you begin
     - Editra uses Scintilla for its text control. Since documentation is not
@@ -11,8 +13,6 @@ plugin to extend the syntax highlighting functionality of the editor.
 1: File Specifications
     - The plugin file is a python module that provides the editor with the 
       information that it needs to properly setup the lexer.
-
-    - The files name is used to 
 
 2: What the plugin needs to provide
 
