@@ -591,7 +591,7 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         k_code = evt.GetKeyCode()
-        if self._vimode and k_code == wx.WXK_ESCAPE:
+        if not evt.ShiftDown() and self._vimode and k_code == wx.WXK_ESCAPE:
             # If Vi emulation is active go into Normal mode and
             # pass the key event to OnChar
             self.SetViNormalMode(True)
