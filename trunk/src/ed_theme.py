@@ -45,6 +45,7 @@ import util
 import plugin
 from profiler import Profile_Get, Profile_Set
 import syntax.synglob as synglob
+from syntax.syntax import SyntaxIds
 
 #--------------------------------------------------------------------------#
 
@@ -283,7 +284,7 @@ class TangoTheme(plugin.Plugin):
 
     def GetFileBitmap(self, bmp_id):
         path = self.__GetArtPath(wx.ART_MENU, mime=True)
-        if path is not None:
+        if path is not None and bmp_id in SyntaxIds():
             if MIME_ART.has_key(bmp_id):
                 req = path + MIME_ART[bmp_id]
                 if os.path.exists(req):
