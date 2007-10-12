@@ -158,7 +158,11 @@ ICON = { 'Win' : "pixmaps/editra.ico",
          'Mac' : "pixmaps/Editra.icns"
 }
 
+# Excplicitly include some libraries that are either loaded dynamically
+# or otherwise not able to be found by py2app/exe
 INCLUDES = ['syntax.*']
+if not sys.platform.startswith('win'):
+    INCLUDES.extend(['pty', 'tty'])
 
 LICENSE = "GPLv2"
 
