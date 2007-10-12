@@ -92,8 +92,9 @@ class StyleEditor(wx.Dialog):
         self.LOG = wx.GetApp().GetLog()
         self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size=(-1, 200),
                                     style=wx.SUNKEN_BORDER, use_dt=False)
-        self.styles_new = self.preview.GetStyleSet()
-        self.styles_orig = self.DuplicateStyleDict(self.styles_new)
+        self.styles_orig = self.preview.GetStyleSet()
+        self.styles_new = self.DuplicateStyleDict(self.styles_orig)
+        self.preview.SetStyles('preview', self.styles_new, True)
         self.settings_enabled = True
         self.OpenPreviewFile('cpp')
 
@@ -413,14 +414,15 @@ class StyleEditor(wx.Dialog):
                 writer.close()
             except (AttributeError, IOError), msg:
                 self.LOG('[style_editor][err] Failed to export style sheet')
-                self.LOG('[style_editor][sys error] %s' % msg)
+                self.LOG('[style_editor][err] %s' % msg)
             else:
                 # Update Style Sheet Control
                 sheet = os.path.basename(sheet_path).split(u'.')[0]
                 ss_c = self.FindWindowById(ed_glob.ID_PREF_SYNTHEME)
                 ss_c.SetItems(util.GetResourceFiles(u'styles', get_all=True))
                 ss_c.SetStringSelection(sheet)
-                self.styles_orig = self.DuplicateStyleDict(self.styles_new)
+                self.styles_orig = self.styles_new
+                self.styles_new = self.DuplicateStyleDict(self.styles_orig)
 
                 if sheet_path.startswith(ed_glob.CONFIG['STYLES_DIR']) or \
                    sheet_path.startswith(ed_glob.CONFIG['SYS_STYLES_DIR']):
@@ -455,14 +457,11 @@ class StyleEditor(wx.Dialog):
 
     def OnCancel(self, evt):
         """Catches the cancel button clicks and checks if anything
-        needs to be done before closing the window.
+        needs to be done before closing the window on a cancel.
         @param evt: event that called this handler
 
         """
-        self.LOG('[style_editor] [cancel] Cancel Clicked Closing Window')
-        # HACK for some reason SetStyles isn't doing its job right now so
-        #      just set it directly for the time being.
-        StyleMgr.styles = self.styles_orig
+        self.LOG('[style_editor][cancel] Cancel Clicked Closing Window')
         evt.Skip()
 
     def OnCheck(self, evt):
@@ -478,9 +477,9 @@ class StyleEditor(wx.Dialog):
             choice.Enable(not val)
             if val:
                 self.preview.StyleDefault()
-                self.styles_new = self.preview.BlankStyleDictionary()
-                self.styles_orig = self.DuplicateStyleDict(self.styles_new)
-                self.preview.SetStyles(self.styles_new, nomerge=True)
+                self.styles_orig = self.preview.BlankStyleDictionary()
+                self.styles_new = self.DuplicateStyleDict(self.styles_orig)
+                self.preview.SetStyles('preview', self.styles_new, nomerge=True)
                 self.preview.DefineMarkers()
             else:
                 scheme = choice.GetStringSelection().lower()
@@ -519,6 +518,7 @@ class StyleEditor(wx.Dialog):
         @param evt: event that called this handler
 
         """
+        self.LOG("[style_editor][evt] Dialog closing...")
         self.OnOk(evt)
 
     def OnColor(self, evt):
@@ -540,7 +540,7 @@ class StyleEditor(wx.Dialog):
         style_id = self.preview.GetStyleAt(self.preview.GetCurrentPos())
         tag_lst = self.FindWindowById(ID_STYLES)
         data = self.preview.FindTagById(style_id)
-        if data != wx.EmptyString:
+        if data != wx.EmptyString and self.styles_new.has_key(data):
             tag_lst.SetStringSelection(data)
             if wx.Platform == '__WXGTK__':
                 tag_lst.SetFirstItemStr(data)
@@ -550,14 +550,14 @@ class StyleEditor(wx.Dialog):
 
     def OnListBox(self, evt):
         """Catches the selection of a style tag in the listbox
-        and updates the style window appropriatly.
+        and updates the style window appropriately.
         @param evt: event that called this handler
 
         """
         e_id = evt.GetId()
         e_obj = self.FindWindowById(e_id)
         tag = e_obj.GetStringSelection()
-        if tag != wx.EmptyString:
+        if tag != wx.EmptyString and self.styles_new.has_key(tag):
             self.UpdateSettingsPane(self.styles_new[tag])
             self.EnableSettings()
         else:
@@ -572,7 +572,6 @@ class StyleEditor(wx.Dialog):
         self.LOG('[style_editor][info] Ok Clicked Closing Window')
         result = self.DiffStyles()
         if result == wx.ID_NO:
-            StyleMgr.styles = self.styles_orig
             evt.Skip()
         elif result == wx.ID_CANCEL:
             self.LOG('[style_editor][info] canceled closing')

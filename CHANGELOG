@@ -13,14 +13,18 @@ DATE xx/xx/2007
 7th Alpha Release
 
 NEWS:
-
+This is mostly a bug fix release that resolves a number of issues throughout the
+editor. Most notably are a correction to some performance issues on Mac OSX,
+a number of UI related issues on Linux, and a fair number of fixes to the
+Style Editor.
 
 NEW: [features/improvements]
 +Icon themes are now part of the plugin system so themes can be created and
 installed through the plugin manager using python eggs.
-
++New icon theme based on Humility icons available through plugin manager.
 
 BUG FIXES:
++Fixed a performance related bug for the OSX version of Editra.
 +Clipboard related keybindings on GTK version
 +Many UI fixes for when running on GTK
 +Fixed a bug in adjusting theme colors for systems using themes that have lots
@@ -34,11 +38,14 @@ text control for drag and drop open, such as Mac OSX textClippings.
 +Fixed a number of bugs related to saving and loading custom user profiles
 during run time.
 +Toolbar items status is now properly shown at all times
-+Fixed an issue where the style editor would not update its current theme info
-after an export.
++Fixed a number of bugs related to the style editors behavior and how it affects
+the editor when changes are made.
++Fixed some layout issues with the update checker/downloader
++Fixed code folding for Pascal and Shell script files
++Fixed Editra Style Sheet parser error for style sheets that have Windows eol
+characters in them.
 
 #-----------------------------------------------------------------------------#
-Changes since last release:
 
 VERSION 0.2.0
 DATE 09/29/2007
