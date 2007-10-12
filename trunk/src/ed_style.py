@@ -293,7 +293,7 @@ class StyleMgr(object):
     modifying styles during run time.
 
     """
-    STYLES        = dict()
+    STYLES         = dict()         # Cache for loaded style set(s)
     FONT_PRIMARY   = u"primary"
     FONT_SECONDARY = u"secondary"
     FONT_SIZE      = u"size"
@@ -306,6 +306,7 @@ class StyleMgr(object):
 
         """
         object.__init__(self)
+
         # Attributes
         self.fonts = self.GetFontDictionary()
         self.style_set = custom
@@ -321,7 +322,6 @@ class StyleMgr(object):
         """This is the default style values that are used for styling
         documents. Its used as a fallback for undefined values in a 
         style sheet.
-        @note: used as a fallback in case loading style sheet fails
         @note: incomplete style sheets are merged against this set to ensure
                a full set of definitions is avaiable
 
@@ -378,9 +378,10 @@ class StyleMgr(object):
                  as keys.
 
         """
-        sty_dict = self.DefaultStyleDictionary()
-        for key in sty_dict:
-            sty_dict[key] = StyleItem(face="%(primary)s", size="%(size)d")
+        sty_dict = dict()
+        for key in self.GetStyleSet().keys():
+            sty_dict[key] = StyleItem("#000000", "#FFFFFF", 
+                                      "%(primary)s", "%(size)d")
         return sty_dict
 
     def GetFontDictionary(self, default=True):
@@ -393,6 +394,7 @@ class StyleMgr(object):
         """
         if hasattr(self, 'fonts') and not default:
             return self.fonts
+
         font = _PGET('FONT1', 'font', None)
         if font is not None:
             mfont = font
@@ -424,8 +426,8 @@ class StyleMgr(object):
         @rtype: wx.Font
 
         """
-        if hasattr(self, "STYLES") and self.STYLES.has_key("default_style"):
-            style_item = self.STYLES['default_style']
+        if self.HasNamedStyle('default_style'):
+            style_item = self.GetItemByName('default_style')
             face = style_item.GetFace()
             if face[0] == u"%":
                 face = face % self.fonts
@@ -447,16 +449,11 @@ class StyleMgr(object):
         @rtype: wx.Colour or string
 
         """
-        if self.HasNamedStyle(u'default_style'):
-            fore = self.STYLES[u'default_style'].GetFore()
-            if fore == wx.EmptyString:
-                fore = u"#000000"
-            if not as_hex:
-                fore = wx.ColourRGB(int(fore[1:], 16))
-        else:
+        fore = self.GetItemByName('default_style').GetFore()
+        if fore == wx.EmptyString:
             fore = u"#000000"
-            if not as_hex:
-                fore = wx.NamedColor("black")
+        if not as_hex:
+            fore = wx.ColourRGB(int(fore[1:], 16))
         return fore
 
     def GetDefaultBackColour(self, as_hex=False):
@@ -469,16 +466,11 @@ class StyleMgr(object):
         @rtype: wx.Colour or string 
 
         """
-        if self.HasNamedStyle(u'default_style'):
-            back = self.STYLES[u'default_style'].GetBack()
-            if back == wx.EmptyString:
-                back = u"#FFFFFF"
-            if not as_hex:
-                back = wx.ColourRGB(int(back[1:], 16))
-        else:
+        back = self.GetItemByName('default_style').GetBack()
+        if back == wx.EmptyString:
             back = u"#FFFFFF"
-            if not as_hex:
-                back = wx.NamedColor("white")
+        if not as_hex:
+            back = wx.ColourRGB(int(back[1:], 16))
         return back
 
     def GetItemByName(self, name):
@@ -489,13 +481,13 @@ class StyleMgr(object):
 
         """
         if self.HasNamedStyle(name):
-            if u"%" in unicode(self.STYLES[name]):
-                val = unicode(self.STYLES[name]) % self.fonts
+            if u"%" in unicode(self.STYLES[self.style_set][name]):
+                val = unicode(self.STYLES[self.style_set][name]) % self.fonts
                 item = StyleItem()
                 item.SetAttrFromStr(val)
                 return item
             else:
-                return self.STYLES[name]
+                return self.STYLES[self.style_set][name]
         else:
             return StyleItem()
 
@@ -522,30 +514,18 @@ class StyleMgr(object):
 
         """
         if self.HasNamedStyle(name):
-            try:
-                if u"%" in unicode(self.STYLES[name]):
-                    style = unicode(self.STYLES[name]) % self.fonts
-                else:
-                    style = unicode(self.STYLES[name])
-            except KeyError, msg:
-                self.LOG("[styles][err] Bad Format Value %s in def of %s" % \
-                         (str(msg), name))
-                style = wx.EmptyString
-            return style
+            return str(self.GetItemByName(name))
         else:
             return wx.EmptyString
 
     def GetStyleSet(self):
-        """Returns the current set of styles or the
-        default set if there is no current set.
+        """Returns the current set of styles or the default set if 
+        there is no current set.
         @return: current style set dictionary
         @rtype: dict
 
         """
-        if hasattr(self, "STYLES"):
-            return self.STYLES
-        else:
-            return self.DefaultStyleDictionary()
+        return self.STYLES.get(self.style_set, self.DefaultStyleDictionary())
 
     def HasNamedStyle(self, name):
         """Checks if a style has been set/loaded or not
@@ -553,12 +533,7 @@ class StyleMgr(object):
         @return: whether item is in style set or not
 
         """
-        if not hasattr(self, 'STYLES'):
-            return False
-        elif self.STYLES.has_key(name):
-            return True
-        else:
-            return False
+        return self.GetStyleSet().has_key(name)
 
     def LoadStyleSheet(self, style_sheet, force=False):
         """Loads a custom style sheet and returns True on success
@@ -570,19 +545,17 @@ class StyleMgr(object):
 
         """
         if isinstance(style_sheet, basestring) and os.path.exists(style_sheet) and \
-           ((force or not len(self.STYLES)) or style_sheet != self.style_set):
+           ((force or not self.STYLES.has_key(style_sheet)) or style_sheet != self.style_set):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
-                self.LOG("[styles][err] Failed to open style sheet: %s" % \
-                                                                    style_sheet)
+                self.LOG("[styles][err] Failed to open style sheet: %s" % style_sheet)
                 return False
-            ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
+            ret_val = self.SetStyles(style_sheet, self.ParseStyleData(reader.read()))
             reader.close()
             return ret_val
-        elif not len(self.STYLES):
-            self.LOG("[styles] The style sheet %s does not exists" % \
-                                                                    style_sheet)
-            self.SetStyles(self.DefaultStyleDictionary())
+        elif not self.STYLES.has_key(style_sheet):
+            self.LOG("[styles] The style sheet %s does not exists" % style_sheet)
+            self.SetStyles('default', self.DefaultStyleDictionary())
             return False
         else:
             self.LOG("[styles][info] Using cached style data")
@@ -832,10 +805,11 @@ class StyleMgr(object):
         @param value: style item to set tag to
 
         """
-        self.STYLES[style_tag] = value
+        self.STYLES[self.style_set][style_tag] = value
 
-    def SetStyles(self, style_dict, nomerge=False):
+    def SetStyles(self, name, style_dict, nomerge=False):
         """Sets the managers style data and returns True on success.
+        @param name: name to store dictionary in cache under
         @param style_dict: dictionary of style items to use as managers style
                            set.
         @keyword nomerge: merge against default set or not
@@ -843,27 +817,24 @@ class StyleMgr(object):
 
         """
         if nomerge:
-            self.STYLES = self.PackStyleSet(style_dict)
+            self.style_set = name
+            self.STYLES[name] = self.PackStyleSet(style_dict)
             return True
 
         # Merge the given style set with the default set to fill in any
         # unset attributes/tags
         if isinstance(style_dict, dict):
             # Check for bad data
-            for style in style_dict:
-                try:
-                    style_dict[style].GetFore()
-                except AttributeError:
-                    self.LOG("[styles] [error] Invalid data " \
-                             "in style dictionary")
+            for style in style_dict.values():
+                if not isinstance(style, StyleItem):
+                    self.LOG("[styles][error] Invalid data in style dictionary")
                     return False
 
-            if not hasattr(self, "STYLES"):
-                self.STYLES = self.DefaultStyleDictionary()
-            self.STYLES = self.MergeStyles(self.STYLES, style_dict)
-            self.STYLES = self.PackStyleSet(self.STYLES)
+            self.style_set = name
+            tmp = self.MergeStyles(self.DefaultStyleDictionary(), style_dict)
+            self.STYLES[name] = self.PackStyleSet(tmp)
             return True
         else:
-            self.LOG("[styles] [error] SetStyles expects a " \
+            self.LOG("[styles][error] SetStyles expects a " \
                      "dictionary of StyleItems")
             return False
