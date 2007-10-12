@@ -293,7 +293,7 @@ class StyleMgr(object):
     modifying styles during run time.
 
     """
-    styles         = dict()
+    STYLES        = dict()
     FONT_PRIMARY   = u"primary"
     FONT_SECONDARY = u"secondary"
     FONT_SIZE      = u"size"
@@ -424,8 +424,8 @@ class StyleMgr(object):
         @rtype: wx.Font
 
         """
-        if hasattr(self, "styles") and self.styles.has_key("default_style"):
-            style_item = self.styles['default_style']
+        if hasattr(self, "STYLES") and self.STYLES.has_key("default_style"):
+            style_item = self.STYLES['default_style']
             face = style_item.GetFace()
             if face[0] == u"%":
                 face = face % self.fonts
@@ -448,7 +448,7 @@ class StyleMgr(object):
 
         """
         if self.HasNamedStyle(u'default_style'):
-            fore = self.styles[u'default_style'].GetFore()
+            fore = self.STYLES[u'default_style'].GetFore()
             if fore == wx.EmptyString:
                 fore = u"#000000"
             if not as_hex:
@@ -470,7 +470,7 @@ class StyleMgr(object):
 
         """
         if self.HasNamedStyle(u'default_style'):
-            back = self.styles[u'default_style'].GetBack()
+            back = self.STYLES[u'default_style'].GetBack()
             if back == wx.EmptyString:
                 back = u"#FFFFFF"
             if not as_hex:
@@ -489,13 +489,13 @@ class StyleMgr(object):
 
         """
         if self.HasNamedStyle(name):
-            if u"%" in unicode(self.styles[name]):
-                val = unicode(self.styles[name]) % self.fonts
+            if u"%" in unicode(self.STYLES[name]):
+                val = unicode(self.STYLES[name]) % self.fonts
                 item = StyleItem()
                 item.SetAttrFromStr(val)
                 return item
             else:
-                return self.styles[name]
+                return self.STYLES[name]
         else:
             return StyleItem()
 
@@ -523,10 +523,10 @@ class StyleMgr(object):
         """
         if self.HasNamedStyle(name):
             try:
-                if u"%" in unicode(self.styles[name]):
-                    style = unicode(self.styles[name]) % self.fonts
+                if u"%" in unicode(self.STYLES[name]):
+                    style = unicode(self.STYLES[name]) % self.fonts
                 else:
-                    style = unicode(self.styles[name])
+                    style = unicode(self.STYLES[name])
             except KeyError, msg:
                 self.LOG("[styles][err] Bad Format Value %s in def of %s" % \
                          (str(msg), name))
@@ -542,8 +542,8 @@ class StyleMgr(object):
         @rtype: dict
 
         """
-        if hasattr(self, "styles"):
-            return self.styles
+        if hasattr(self, "STYLES"):
+            return self.STYLES
         else:
             return self.DefaultStyleDictionary()
 
@@ -553,9 +553,9 @@ class StyleMgr(object):
         @return: whether item is in style set or not
 
         """
-        if not hasattr(self, 'styles'):
+        if not hasattr(self, 'STYLES'):
             return False
-        elif self.styles.has_key(name):
+        elif self.STYLES.has_key(name):
             return True
         else:
             return False
@@ -570,7 +570,7 @@ class StyleMgr(object):
 
         """
         if isinstance(style_sheet, basestring) and os.path.exists(style_sheet) and \
-           ((force or not len(self.styles)) or style_sheet != self.style_set):
+           ((force or not len(self.STYLES)) or style_sheet != self.style_set):
             reader = util.GetFileReader(style_sheet)
             if reader == -1:
                 self.LOG("[styles][err] Failed to open style sheet: %s" % \
@@ -579,7 +579,7 @@ class StyleMgr(object):
             ret_val = self.SetStyles(self.ParseStyleData(reader.read()))
             reader.close()
             return ret_val
-        elif not len(self.styles):
+        elif not len(self.STYLES):
             self.LOG("[styles] The style sheet %s does not exists" % \
                                                                     style_sheet)
             self.SetStyles(self.DefaultStyleDictionary())
@@ -651,6 +651,7 @@ class StyleMgr(object):
 
         """
         # Compact data into a contiguous string
+        style_data = style_data.replace(u"\r\n", u"")
         style_data = style_data.replace(u"\n", u"")
         style_data = style_data.replace(u"\t", u"")
 
@@ -831,7 +832,7 @@ class StyleMgr(object):
         @param value: style item to set tag to
 
         """
-        self.styles[style_tag] = value
+        self.STYLES[style_tag] = value
 
     def SetStyles(self, style_dict, nomerge=False):
         """Sets the managers style data and returns True on success.
@@ -842,7 +843,7 @@ class StyleMgr(object):
 
         """
         if nomerge:
-            self.styles = self.PackStyleSet(style_dict)
+            self.STYLES = self.PackStyleSet(style_dict)
             return True
 
         # Merge the given style set with the default set to fill in any
@@ -857,10 +858,10 @@ class StyleMgr(object):
                              "in style dictionary")
                     return False
 
-            if not hasattr(self, "styles"):
-                self.styles = self.DefaultStyleDictionary()
-            self.styles = self.MergeStyles(self.styles, style_dict)
-            self.styles = self.PackStyleSet(self.styles)
+            if not hasattr(self, "STYLES"):
+                self.STYLES = self.DefaultStyleDictionary()
+            self.STYLES = self.MergeStyles(self.STYLES, style_dict)
+            self.STYLES = self.PackStyleSet(self.STYLES)
             return True
         else:
             self.LOG("[styles] [error] SetStyles expects a " \

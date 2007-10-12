@@ -542,6 +542,8 @@ class StyleEditor(wx.Dialog):
         data = self.preview.FindTagById(style_id)
         if data != wx.EmptyString:
             tag_lst.SetStringSelection(data)
+            if wx.Platform == '__WXGTK__':
+                tag_lst.SetFirstItemStr(data)
             self.UpdateSettingsPane(self.styles_new[data])
             self.EnableSettings()
         evt.Skip()
