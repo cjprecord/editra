@@ -1838,12 +1838,13 @@ class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if os.path.exists(cfile):
             try:
                 self.BeginUndoAction()
+                marks = self.GetBookmarks()
                 cpos = self.GetCurrentPos()
                 reader = util.GetFileReader(cfile, self.encoding)
                 self.SetText(reader.read())
                 reader.close()
                 self.modtime = util.GetFileModTime(cfile)
-                for mark in self.GetBookmarks():
+                for mark in marks:
                     self.MarkerAdd(mark, MARK_MARGIN)
                 self.EndUndoAction()
                 self.SetSavePoint()
