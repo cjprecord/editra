@@ -43,10 +43,9 @@ __revision__ = "$Revision$"
 # Dependancies
 import os
 import glob
-import re
 import wx
 import ed_glob
-from profiler import Profile_Get, Profile_Set
+from profiler import Profile_Get
 import ed_stc
 import syntax.synglob as synglob
 import ed_search
@@ -115,6 +114,39 @@ class EdPages(FNB.FlatNotebook):
     #---- End Init ----#
 
     #---- Function Definitions ----#
+    def _NeedOpen(self, path):
+        """Check if a file needs to be opened. If the file is already open in
+        the notebook a dialog will be opened to ask if the user wants to reopen
+        the file again. If the file is not open and exists or the user chooses 
+        to reopen the file again the function will return True else it will 
+        return False.
+        @param path: file to check for
+
+        """
+        result = wx.ID_YES
+        if self.HasFileOpen(path):
+            mdlg = wx.MessageDialog(self,
+                                    _("File is already open in an existing "
+                                      "page.\nDo you wish to open it again?"),
+                                    _("Open File") + u"?", 
+                                    wx.YES_NO | wx.NO_DEFAULT | \
+                                    wx.ICON_INFORMATION)
+            result = mdlg.ShowModal()
+            mdlg.Destroy()
+            if result == wx.ID_NO:
+                for page in xrange(self.GetPageCount()):
+                    ctrl = self.GetPage(page)
+                    if path == ctrl.GetFileName():
+                        self.SetSelection(page)
+                        self.ChangePage(page)
+                        break
+        elif os.path.exists(path) and not os.path.isfile(path):
+            result = wx.ID_NO
+        else:
+            pass
+
+        return result == wx.ID_YES
+
     def GetCurrentCtrl(self):
         """Returns the control of the currently selected
         page in the notebook.
@@ -174,28 +206,9 @@ class EdPages(FNB.FlatNotebook):
         """
         path2file = os.path.join(path, filename)
 
-        # If file is non-existant or not a file give up
-        if os.path.exists(path2file) and (not os.path.isfile(path2file)):
+        # Check if file needs to be opened
+        if not self._NeedOpen(path2file):
             return
-
-        # Check if file is open already and ask if it should be opened again
-        if self.HasFileOpen(path2file):
-            mdlg = wx.MessageDialog(self,
-                                    _("File is already open in an existing "
-                                      "page.\nDo you wish to open it again?"),
-                                    _("Open File") + u"?", 
-                                    wx.YES_NO | wx.NO_DEFAULT | \
-                                    wx.ICON_INFORMATION)
-            result = mdlg.ShowModal()
-            mdlg.Destroy()
-            if result == wx.ID_NO:
-                for page in xrange(self.GetPageCount()):
-                    ctrl = self.GetPage(page)
-                    if path2file == ctrl.GetFileName():
-                        self.SetSelection(page)
-                        self.ChangePage(page)
-                        break
-                return
 
         # Create new control to place text on if necessary
         new_pg = True
@@ -375,7 +388,8 @@ class EdPages(FNB.FlatNotebook):
            Profile_Get('CHECKMOD') and self.GetPageCount():
             cfile = self.control.GetFileName()
             lmod = util.GetFileModTime(cfile)
-            if self.control.GetModTime() and not lmod and not os.path.exists(cfile):
+            if self.control.GetModTime() and \
+               not lmod and not os.path.exists(cfile):
                 wx.CallAfter(PromptToReSave, self, cfile)
             elif self.control.GetModTime() < lmod:
                 wx.CallAfter(AskToReload, self, cfile)
@@ -437,9 +451,9 @@ class EdPages(FNB.FlatNotebook):
         """
         self.ChangePage(evt.GetSelection())
         self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
-                 "[nb_info] It has file named: %s" % (evt.GetOldSelection(), 
-                                                      evt.GetSelection(), 
-                                                      self.control.GetFileName())))
+                  "[nb_info] It has file named: %s" % (evt.GetOldSelection(), 
+                                                       evt.GetSelection(), 
+                                                       self.control.GetFileName())))
         self.frame.UpdateToolBar()
         evt.Skip()
 
