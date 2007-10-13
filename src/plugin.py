@@ -446,8 +446,9 @@ class PluginManager(object):
                 try:
                     entry_point = egg.get_entry_info(ENTRYPOINT, name)
                     cls = entry_point.load()
-                except ImportError, msg:
-                    self.LOG("[pluginmgr][err] %s" % str(msg))
+                except Exception, msg:
+                    self.LOG("[pluginmgr][err] Couldn't Load %s: %s" % \
+                                                          (str(name), str(msg)))
                 else:
                     try:
                         self._plugins[cls] = cls(self)
