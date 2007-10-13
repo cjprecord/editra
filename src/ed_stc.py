@@ -25,21 +25,11 @@
 # AUTHOR: Cody Precord                                                        #
 #                                                                             #
 # SUMMARY:                                                                    #
-# This file contains the definition of the text control class                 #
-# The text control is responsible for keeping reference to the file that      #
-# is currently being edited in it.                                            #
-#                                                                             #
-# The class also contains the definitions of all the styles for fonts and     #
-# highlighting in the context of code editing.                                #
-#                                                                             #
-# METHODS:                                                                    #
-# - ED_STC: Main class object definition, based on wx.stc                     #
-# - GetPos: Returns line and column information of carat                      #
-# - OnUpdateUI: Checks brackets after each change to the screen.              #
-# - OnMarginClick: Margin Event handler                                       #
-# - OnFoldAll: Opens or closes a folder tree                                  #
-# - Expand: Opens margin folders                                              #
-# - FindLexer: Finds the approriate lexer based on file extentsion            #
+#  This is the main component of the editor that manages all the information  #
+# of the on disk file that it represents in memory. It works with the style   #
+# manager and syntax manager to provide an editing pane that auto detects and #
+# configures itself for type of file that is in buffer to do highlighting and #
+# other language specific options such as commenting code.                    #
 #                                                                             #
 #-----------------------------------------------------------------------------#
 """
@@ -81,9 +71,9 @@ NONSPACE = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
 SPACECHARS = " \t\r\n"
 
 #-------------------------------------------------------------------------#
-class EDSTC(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
+class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
     """Defines a styled text control for editing text
-    @summary: Custom subclass of L{wx.stc.StyledTextCtrl} and
+    @summary: Subclass of L{wx.stc.StyledTextCtrl} and
               L{ed_style.StyleMgr}. Manages the documents display
               and input.
 

@@ -20,13 +20,14 @@
 
 """
 #----------------------------------------------------------------------------#
-# FILE: prefdlg.py
-# LANGUAGE: Python							   
-#
-# SUMMARY:
-#     The classes and functions contained in this file are used for creating
-#     the preference dialog.
-#
+# FILE: prefdlg.py                                                           #
+# LANGUAGE: Python							                                 #
+#                                                                            #
+# SUMMARY:                                                                   #
+#   The classes and functions contained in this file are used for creating   #
+#  the preference dialog that allows for dynamically configuring most of the #
+#  options and setting of the program by setting values in the Profile.      #
+#                                                                            #
 #----------------------------------------------------------------------------#
 """
 
@@ -60,17 +61,8 @@ ID_LATE_BOX     = wx.NewId()
 _ = wx.GetTranslation
 #----------------------------------------------------------------------------#
 # Class Globals
-# def ProfilePage(self):
-#     """Creates the profile editor page"""
-#     prof_panel = wx.Panel(self, wx.ID_ANY)
-#     border = wx.BoxSizer(wx.VERTICAL)
-#     # Add Profile Viewer to Panel
-#     plist = ProfileListCtrl(prof_panel)
-#     border.Add(plist, 1, wx.EXPAND)
-#     prof_panel.SetSizer(border)
 from wx import ImageFromStream, BitmapFromImage, EmptyIcon
 import cStringIO, zlib
-
 
 def getData():
     """Gets the data of the button background"""
@@ -473,7 +465,7 @@ class DocumentPanel(PrefPanelBase):
     """Creates a panel with controls for Editra's editing settings
     @summary: Conatains a L{wx.Notebook} that contains a number of pages
               with setting controls for how documents are handled by the
-              L{ed_stc.EDSTC} text control.
+              L{ed_stc.EditraStc} text control.
 
     """
     def __init__(self, parent):

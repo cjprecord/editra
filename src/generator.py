@@ -25,12 +25,13 @@
 # LANGUAGE: Python                                                         #
 # SUMMARY:                                                                 #
 #    Provides various methods and classes for generating code and          #
-# transforming code to different formats such as html, latex, rtf          #
+# transforming code to different formats such as html, latex, rtf with all #
+# the styling and formating intact from how the view is shown in the       #
+# editor.                                                                  #
 #                                                                          #
-# METHODS:                                                                 #
-#
-#
-#
+#    It also provides a plugin interface that allows for plugins that wish #
+# to provide similar services for manipulating and transforming text.      #
+#                                                                          #
 #--------------------------------------------------------------------------#
 """
 
@@ -126,7 +127,7 @@ class Generator(plugin.Plugin):
         generator id and contents of the given ED_STC text control.
         @param e_id: event id originating from menu entry
         @param txt_ctrl: reference document to generate from
-        @type txt_ctrl: EDSTC
+        @type txt_ctrl: EditraStc
         @return: the generated text
         @rtype: string
         
