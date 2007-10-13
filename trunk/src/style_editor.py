@@ -24,13 +24,11 @@
 # AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
 # SUMMARY:                                                                 #
-#    Provides an editor dialog for editing styles and generating style     #
-# sheets to use with editra's styled text controls.                        #
+#    Provides an editor dialog for graphically editing how the text is     #
+# presented in the editor when syntax highlighting is turned on. It does   #
+# this by taking the data from the controls and formating it into an Editra#
+# Style Sheet that the editor can load to configure the styles of the text.#
 #                                                                          #
-# METHODS:
-#
-#
-#
 #--------------------------------------------------------------------------#
 """
 
@@ -90,8 +88,8 @@ class StyleEditor(wx.Dialog):
 
         # Attributes
         self.LOG = wx.GetApp().GetLog()
-        self.preview = ed_stc.EDSTC(self, wx.ID_ANY, size=(-1, 200),
-                                    style=wx.SUNKEN_BORDER, use_dt=False)
+        self.preview = ed_stc.EditraStc(self, wx.ID_ANY, size=(-1, 200),
+                                        style=wx.SUNKEN_BORDER, use_dt=False)
         self.styles_orig = self.preview.GetStyleSet()
         self.styles_new = DuplicateStyleDict(self.styles_orig)
         self.preview.SetStyles('preview', self.styles_new, True)
