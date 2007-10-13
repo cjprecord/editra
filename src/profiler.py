@@ -94,7 +94,7 @@ _DEFAULTS = {
            'TOOLBAR'    : True,             # Show Toolbar
            'USETABS'    : True,             # Use tabs instead of spaces
            'VI_EMU'     : False,            # Use Vi emulation mode 
-           'WRAP'       : True,             # Use Wordwrap
+           'WRAP'       : False,             # Use Wordwrap
            'WSIZE'      : (700, 450)        # Mainwindow size
           #FONT1 created at runtime by ed_styles as primary font           
           #FONT2 created at runtime by ed_styles as secondary font
