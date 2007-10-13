@@ -149,7 +149,8 @@ class EdPages(FNB.FlatNotebook):
         if files is not None:
             for fname in files:
                 if os.path.exists(fname) and os.access(fname, os.R_OK):
-                    self.OpenPage(os.path.dirname(fname), os.path.basename(fname))
+                    self.OpenPage(os.path.dirname(fname), 
+                                  os.path.basename(fname))
 
         if self.GetPageCount() == 0:
             self.NewPage()
@@ -190,7 +191,7 @@ class EdPages(FNB.FlatNotebook):
             if result == wx.ID_NO:
                 for page in xrange(self.GetPageCount()):
                     ctrl = self.GetPage(page)
-                    if path2file == os.path.join(ctrl.dirname, ctrl.filename):
+                    if path2file == ctrl.GetFileName():
                         self.SetSelection(page)
                         self.ChangePage(page)
                         break
@@ -200,7 +201,7 @@ class EdPages(FNB.FlatNotebook):
         new_pg = True
         if self.GetPageCount():
             if self.control.GetModify() or self.control.GetLength() or \
-               self.control.filename != u'':
+               self.control.GetFileName() != u'':
                 control = ed_stc.EditraStc(self, wx.ID_ANY)
                 control.Hide()
             else:
@@ -236,19 +237,18 @@ class EdPages(FNB.FlatNotebook):
         if new_pg:
             control.Show()
             self.control = control
-        self.control.SetText(in_txt, enc)
-        # Pass directory and file name info to control object to save reference
-        self.control.dirname, self.control.filename = path, filename
-        self.frame.AddFileToHistory(path2file)
-        self.control.modtime = util.GetFileModTime(path2file)
-        if new_pg:
-            self.AddPage(self.control, self.control.filename)
 
-        self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename, 
-                                                    self.control.dirname, 
-                                                    util.GetPathChar(), 
-                                                    self.control.filename))
-        self.SetPageText(self.GetSelection(), self.control.filename)
+        # Pass directory and file name info to control object to save reference
+        self.control.SetText(in_txt, enc)
+        self.control.SetFileName(path2file)
+        self.control.SetModTime(util.GetFileModTime(path2file))
+        self.frame.AddFileToHistory(path2file)
+        if new_pg:
+            self.AddPage(self.control, filename)
+
+        self.frame.SetTitle("%s - file://%s" % (filename, 
+                                                self.control.GetFileName()))
+        self.SetPageText(self.GetSelection(), filename)
         self.LOG("[nb_evt] Opened Page: ID = %d" % self.GetSelection())
 
         # Setup Document
@@ -299,8 +299,7 @@ class EdPages(FNB.FlatNotebook):
                  notebook.
 
         """
-        controls = [self.GetPage(page) for page in xrange(self.GetPageCount())]
-        return controls
+        return [self.GetPage(page) for page in xrange(self.GetPageCount())]
 
     def HasFileOpen(self, fpath):
         """Checks if one of the currently active buffers has
@@ -374,11 +373,11 @@ class EdPages(FNB.FlatNotebook):
         """
         if wx.GetApp().IsActive() and \
            Profile_Get('CHECKMOD') and self.GetPageCount():
-            cfile = os.path.join(self.control.dirname, self.control.filename)
+            cfile = self.control.GetFileName()
             lmod = util.GetFileModTime(cfile)
-            if self.control.modtime and not lmod and not os.path.exists(cfile):
+            if self.control.GetModTime() and not lmod and not os.path.exists(cfile):
                 wx.CallAfter(PromptToReSave, self, cfile)
-            elif self.control.modtime < lmod:
+            elif self.control.GetModTime() < lmod:
                 wx.CallAfter(AskToReload, self, cfile)
             else:
                 return False
@@ -420,20 +419,15 @@ class EdPages(FNB.FlatNotebook):
         @param pgid: Page number to change to
 
         """
-        window = self.GetPage(pgid) #returns current stc
+        window = self.GetPage(pgid) # returns current stc
         window.SetFocus()
         self.control = window
+        fname = self.control.GetFileName()
 
-        if self.control.filename == "":
-            self.control.filename = self.GetPageText(pgid)
+        if fname == "":
+            fname = self.GetPageText(pgid)
 
-        self.frame.SetTitle("%s - file://%s%s%s" % (self.control.filename,
-                                                    self.control.dirname,
-                                                    util.GetPathChar(),
-                                                    self.control.filename))
-
-        if re.compile('Untitled*').match(self.control.filename):
-            self.control.filename = ""
+        self.frame.SetTitle("%s - file://%s" % (util.GetFileName(fname), fname))
 
     def OnPageChanged(self, evt):
         """Actions to do after a page change
@@ -443,11 +437,9 @@ class EdPages(FNB.FlatNotebook):
         """
         self.ChangePage(evt.GetSelection())
         self.LOG(("[nb_evt] Control Changing from Page: %d to Page: %d\n"
-                 "[nb_info] It has file named: %s\n"
-                 "[nb_info] In DIR: %s") % (evt.GetOldSelection(), 
-                                            evt.GetSelection(), 
-                                            self.control.filename, 
-                                            self.control.dirname))
+                 "[nb_info] It has file named: %s" % (evt.GetOldSelection(), 
+                                                      evt.GetSelection(), 
+                                                      self.control.GetFileName())))
         self.frame.UpdateToolBar()
         evt.Skip()
 
@@ -537,7 +529,7 @@ class EdPages(FNB.FlatNotebook):
 
         """
         pg_num = self.GetSelection()
-        ftype = self.control.filename.split(".")
+        ftype = util.GetExtension(self.control.GetFileName())
         ftype = ftype[-1].upper()
         self.LOG("[nb_info] Updating Page Image: Page %d" % pg_num)
         self.SetPageImage(pg_num, str(self.control.GetLangId()))
@@ -591,7 +583,7 @@ def PromptToReSave(win, cfile):
     if result == wx.ID_YES:
         win.control.SaveFile(cfile)
     else:
-        win.control.modtime = 0
+        win.control.SetModTime(0)
 
 def AskToReload(win, cfile):
     """Show a dialog asking if the file should be reloaded
@@ -619,5 +611,4 @@ def AskToReload(win, cfile):
             mdlg.ShowModal()
             mdlg.Destroy()
     else:
-        win.control.modtime = util.GetFileModTime(cfile)
-
+        win.control.SetModTime(util.GetFileModTime(cfile))

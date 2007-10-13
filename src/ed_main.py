@@ -344,7 +344,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                         self.nb.OpenPage(dirname, filename)   
                         self.nb.GoCurrentPage()
         else:
-            self.LOG("[main_info] CMD Open File: %s" % fname)
+            self.LOG("[mainw][info] CMD Open File: %s" % fname)
             filename = util.GetFileName(fname)
             dirname = util.GetPathName(fname)
             self.nb.OpenPage(dirname, filename)
@@ -466,9 +466,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             return
 
         for ctrl in ctrls:
-            fname = ctrl[1].filename
+            fname = util.GetFileName(ctrl[1].GetFileName())
             if fname != '':
-                fpath = os.path.join(ctrl[1].dirname, ctrl[1].filename)
+                fpath = ctrl[1].GetFileName()
                 result = ctrl[1].SaveFile(fpath)
                 if result:
                     self.PushStatusText(_("Saved File: %s") % fname, SB_INFO)
@@ -483,8 +483,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             else:
                 ret_val = self.OnSaveAs(ID_SAVEAS, ctrl[0], ctrl[1])
                 if ret_val:
-                    fpath = os.path.join(ctrl[1].dirname, ctrl[1].filename)
-                    self.AddFileToHistory(fpath)
+                    self.AddFileToHistory(ctrl[1].GetFileName())
         self.UpdateToolBar()
 
     def OnSaveAs(self, evt, title=u'', page=None):
@@ -503,8 +502,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 ctrl = page
             else:
                 ctrl = self.nb.GetCurrentCtrl()
+
             result = ctrl.SaveFile(path)
-            fname = ctrl.filename
+            fname = util.GetFileName(ctrl.GetFileName())
             if not result:
                 dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
                                                 (fname, result), _("Save Error"),
@@ -514,8 +514,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
             else:
                 self.PushStatusText(_("Saved File As: %s") % fname, SB_INFO)
-                self.SetTitle(u"%s - file://%s%s%s" % \
-                              (fname, ctrl.dirname, util.GetPathChar(), fname))
+                self.SetTitle(u"%s - file://%s" % (fname, ctrl.GetFileName()))
                 self.nb.SetPageText(self.nb.GetSelection(), fname)
                 self.nb.GetCurrentCtrl().FindLexer()
                 self.nb.UpdatePageImage()
@@ -1059,10 +1058,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @return: Result value of whether the file was saved or not
 
         """
-        if self.nb.GetCurrentCtrl().filename == u"":
+        if self.nb.GetCurrentCtrl().GetFileName() == u"":
             name = self.nb.GetPageText(self.nb.GetSelection())
         else:
-            name = self.nb.GetCurrentCtrl().filename
+            name = self.nb.GetCurrentCtrl().GetFileName()
 
         dlg = wx.MessageDialog(self, 
                                 _("The file: \"%s\" has been modified since "
