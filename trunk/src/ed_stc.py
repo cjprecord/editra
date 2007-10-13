@@ -124,7 +124,6 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.recording = False
 
         # Command/Settings Attributes
-        self.old_pos = -1
         self._autocomp_svc = autocomp.AutoCompService(self)
         self._use_autocomp = _PGET('AUTO_COMP')
         self._autoindent = _PGET('AUTO_INDENT')
@@ -445,8 +444,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: tuple (line, column)
 
         """
-        self.old_pos = self.GetCurrentPos()
-        return (self.GetCurrentLine() + 1, self.GetColumn(self.old_pos))
+        return (self.GetCurrentLine() + 1, self.GetColumn(self.GetCurrentPos()))
 
     def GotoColumn(self, column):
         """Move caret to column of current line
