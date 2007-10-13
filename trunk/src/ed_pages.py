@@ -160,7 +160,7 @@ class EdPages(FNB.FlatNotebook):
 
         """
         self.pg_num += 1
-        self.control = ed_stc.EDSTC(self, wx.ID_ANY)
+        self.control = ed_stc.EditraStc(self, wx.ID_ANY)
         self.LOG("[nb_evt] Page Creation ID: %d" % self.control.GetId())
         self.AddPage(self.control, u"Untitled - %d" % self.pg_num)
         self.SetPageImage(self.GetSelection(), str(self.control.GetLangId()))
@@ -201,12 +201,12 @@ class EdPages(FNB.FlatNotebook):
         if self.GetPageCount():
             if self.control.GetModify() or self.control.GetLength() or \
                self.control.filename != u'':
-                control = ed_stc.EDSTC(self, wx.ID_ANY)
+                control = ed_stc.EditraStc(self, wx.ID_ANY)
                 control.Hide()
             else:
                 new_pg = False
         else:
-            control = ed_stc.EDSTC(self, wx.ID_ANY)
+            control = ed_stc.EditraStc(self, wx.ID_ANY)
             control.Hide()
 
         # Open file and get contents
