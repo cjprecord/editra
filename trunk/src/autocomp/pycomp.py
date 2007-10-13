@@ -26,6 +26,7 @@ __revision__ = "$Revision$"
 #--------------------------------------------------------------------------#
 # Dependancies
 import sys
+import os
 import imp
 from wx.py import introspect
 
@@ -70,7 +71,7 @@ class Completer(object):
         self._modules = sys.modules.keys()
         self._syspath = sys.path[:]
         # Adjust working path to documents path
-        self._syspath.insert(0, self._buffer.dirname)
+        self._syspath.insert(0, os.path.dirname(self._buffer.GetFileName()))
         while True:
             try:
                 self._syspath.remove('')
@@ -206,13 +207,15 @@ class Completer(object):
             if not hasattr(self._buffer, 'GetText'):
                 return False
             text = self._buffer.GetText()
-        if self._buffer.dirname not in self._syspath:
-            self._syspath.insert(0, self._buffer.dirname)
+
+        dirname, filename = os.path.split(self._buffer.GetFileName())
+        if dirname not in self._syspath:
+            self._syspath.insert(0, dirname)
         syspath = sys.path
         sys.path = self._syspath
         text = text.replace('\r\n', '\n')
         text = text.replace('\r', '\n')
-        name = self._buffer.dirname or self._buffer.filename
+        name = dirname or filename
         module = imp.new_module(name)
         newspace = module.__dict__.copy()
         try:

@@ -113,11 +113,11 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self._cmdcache = u''
 
         # File Attributes
-        self.filename = ''	                # This controls File
-        self.dirname = ''                   # Files Directory
-        self.encoding = u'utf-8'            # Default Encoding
-        self._hasbom = False                # Write BOM bit or not
-        self.modtime = 0
+        self._finfo = dict(filename='',
+                           dirname='',
+                           encoding='utf-8',
+                           hasbom=False,
+                           modtime=0)
 
         # Macro Attributes
         self._macro = list()
@@ -436,6 +436,10 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             mid = (fline + (self.GetLineCount() / 2))
         return mid
 
+    def GetModTime(self):
+        """Get the value of the buffers file last modtime"""
+        return self._finfo['modtime']
+
     def GetPos(self):
         """Update Line/Column information
         @return: tuple (line, column)
@@ -541,7 +545,9 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: full path name of document
 
         """
-        fname = "".join([self.dirname, util.GetPathChar(), self.filename])
+        fname = "".join([self._finfo['dirname'], 
+                         util.GetPathChar(), 
+                         self._finfo['filename']])
         if fname == util.GetPathChar():
             return wx.EmptyString
         else:
@@ -895,7 +901,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if set_ext != u'':
             ext = set_ext.lower()
         else:
-            ext = util.GetExtension(self.filename).lower()
+            ext = util.GetExtension(self._finfo['filename']).lower()
         self.ClearDocumentStyle()
 
         # Configure Lexer from File Extension
@@ -1122,7 +1128,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: the encoding of the document
 
         """
-        return self.encoding
+        return self._finfo['encoding']
 
     def GetEOLModeId(self):
         """Gets the id of the eol format
@@ -1140,7 +1146,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: whether file had a bom byte or not
 
         """
-        return self._hasbom
+        return self._finfo['hasbom']
 
     def IsBracketHlOn(self):
         """Returns whether bracket highlighting is being used by this
@@ -1216,7 +1222,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @param enc: encoding to set for document
 
         """
-        self.encoding = enc
+        self._finfo['encoding'] = enc
 
     def SetEOLFromString(self, mode_str):
         """Sets the EOL mode from a string descript
@@ -1230,6 +1236,15 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                    }
         mode = mode_map.get(mode_str, wx.stc.STC_EOL_LF)
         self.SetEOLMode(mode)
+
+    def SetFileName(self, path):
+        """Set the buffers filename attributes from the given path"""
+        self._finfo['dirname'] = util.GetPathName(path)
+        self._finfo['filename'] = util.GetFileName(path)
+
+    def SetModTime(self, modtime):
+        """Set the value of the files last modtime"""
+        self._finfo['modtime'] = modtime
 
     def SetViEmulationMode(self, use_vi):
         """Activate/Deactivate Vi eumulation mode
@@ -1824,16 +1839,16 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @rtype: bool
 
         """
-        cfile = os.path.join(self.dirname, self.filename)
+        cfile = os.path.join(self._finfo['dirname'], self._finfo['filename'])
         if os.path.exists(cfile):
             try:
                 self.BeginUndoAction()
                 marks = self.GetBookmarks()
                 cpos = self.GetCurrentPos()
-                reader = util.GetFileReader(cfile, self.encoding)
+                reader = util.GetFileReader(cfile, self._finfo['encoding'])
                 self.SetText(reader.read())
                 reader.close()
-                self.modtime = util.GetFileModTime(cfile)
+                self._finfo['modtime'] = util.GetFileModTime(cfile)
                 for mark in marks:
                     self.MarkerAdd(mark, MARK_MARGIN)
                 self.EndUndoAction()
@@ -1857,9 +1872,10 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         result = True
         try:
-            writer = util.GetFileWriter(path, enc=self.encoding)
+            writer = util.GetFileWriter(path, enc=self._finfo['encoding'])
             if self.HasBom():
-                bom = unicode(util.BOM.get(self.encoding, u''), self.encoding)
+                bom = unicode(util.BOM.get(self._finfo['encoding'], u''), 
+                              self._finfo['encoding'])
             else:
                 bom = u''
             writer.write(bom + self.GetText())
@@ -1871,10 +1887,9 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         if result:
             self.SetSavePoint()
-            self.modtime = util.GetFileModTime(path)
+            self._finfo['modtime'] = util.GetFileModTime(path)
             self.OnModified(wx.stc.StyledTextEvent(wx.stc.wxEVT_STC_MODIFIED))
-            self.filename = util.GetFileName(path)
-            self.dirname = util.GetPathName(path)
+            self.SetFileName(path)
         return result
 
     # With utf-16 encoded text need to remove the BOM prior to setting
@@ -1891,10 +1906,10 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if len(txt) > len(bom):
             if txt[:len(bom)] == bom:
                 self.LOG("[stc][info] Stripped BOM from text")
-                self._hasbom = True
+                self._finfo['hasbom'] = True
                 txt = txt.replace(bom, u'', 1)
         wx.stc.StyledTextCtrl.SetText(self, txt)
-        self.encoding = enc
+        self._finfo['encoding'] = enc
 
     def DoZoom(self, mode):
         """Zoom control in or out

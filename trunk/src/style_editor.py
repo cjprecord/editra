@@ -267,8 +267,7 @@ class StyleEditor(wx.Dialog):
         fsize_lbl = wx.StaticText(self.ctrl_pane, wx.ID_ANY, _("Size") + u": ")
         fsizes = ['%(size)d', '%(size2)d']
         fsizes.extend([ str(x) for x in xrange(4, 21)])
-        fs_choice = wx.Choice(self.ctrl_pane, ID_FONT_SIZE, 
-                              choices = fsizes)
+        fs_choice = wx.Choice(self.ctrl_pane, ID_FONT_SIZE, choices=fsizes)
         fsize_sizer.AddMany([((5, 5), 0), 
                              (fsize_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                              (fs_choice, 1, wx.EXPAND | wx.ALIGN_RIGHT), 
@@ -595,8 +594,7 @@ class StyleEditor(wx.Dialog):
         if fname == '' or fname == None:
             return False
 
-        self.preview.dirname = util.GetPathName(fname)
-        self.preview.filename = util.GetFileName(fname)
+        self.preview.SetFileName(fname)
         self.preview.ClearAll()
         self.preview.LoadFile(fname)
         self.preview.FindLexer()

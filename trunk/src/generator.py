@@ -208,7 +208,8 @@ class Html(plugin.Plugin):
                "<meta name=\"Generator\" content=\"Editra/%s\">\n" \
                "<meta http-equiv=\"content-type\" content=\"text/html; " \
                "charset=utf-8\">" \
-               "\n</head>" % (self.stc.filename, ed_glob.VERSION)
+               "\n</head>" % (util.GetFileName(self.stc.GetFileName()), 
+                              ed_glob.VERSION)
 
     def GenerateBody(self):
         """Generates the body of the html from the stc's content. To do
