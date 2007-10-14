@@ -38,6 +38,7 @@ __revision__ = "$Revision:  $"
 # Dependancies
 import sys
 import os
+
 try:
     import src as esrc
 except ImportError:
