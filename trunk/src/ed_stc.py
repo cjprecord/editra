@@ -54,8 +54,9 @@ import ed_style
 
 #-------------------------------------------------------------------------#
 # Globals
-
 _ = wx.GetTranslation
+
+# Margin Positions
 MARK_MARGIN = 0
 NUM_MARGIN  = 1
 FOLD_MARGIN = 2
@@ -102,7 +103,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                           wx.stc.STC_SCMOD_SHIFT, wx.stc.STC_CMD_ZOOMIN)
 
         #---- Drop Target ----#
-        if use_dt:
+        if use_dt and hasattr(parent, 'OnDrop'):
             self.SetDropTarget(util.DropTargetFT(self, None, parent.OnDrop))
 
         # Attributes
@@ -113,23 +114,20 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self._cmdcache = u''
 
         # File Attributes
-        self._finfo = dict(filename='',
-                           dirname='',
-                           encoding='utf-8',
-                           hasbom=False,
-                           modtime=0)
+        self._finfo = dict(filename='', encoding='utf-8', 
+                           hasbom=False, modtime=0)
 
         # Macro Attributes
         self._macro = list()
         self.recording = False
 
         # Command/Settings Attributes
+        self._config = dict(autocomp=_PGET('AUTO_COMP'),
+                            autoindent=_PGET('AUTO_INDENT'),
+                            brackethl=_PGET("BRACKETHL"),
+                            folding=_PGET('CODE_FOLD'),
+                            highlight=_PGET("SYNTAX"))
         self._autocomp_svc = autocomp.AutoCompService(self)
-        self._use_autocomp = _PGET('AUTO_COMP')
-        self._autoindent = _PGET('AUTO_INDENT')
-        self.brackethl = _PGET("BRACKETHL")
-        self.folding = _PGET('CODE_FOLD')
-        self.highlight = _PGET("SYNTAX")
         self._synmgr = syntax.SyntaxMgr(ed_glob.CONFIG['CACHE_DIR'])
         self.keywords = [ ' ' ]		# Keywords list
         self.syntax_set = list()
@@ -157,7 +155,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         # Configure Autocompletion
         # NOTE: must be done after syntax configuration
-        if self._use_autocomp:
+        if self._config['autocomp']:
             self.ConfigureAutoComp()
 
         ### Folder Marker Styles
@@ -239,9 +237,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         line = self.LineFromPosition(self.GetCurrentPos())
         if before:
-            line = line - 1
-            if line < 0:
-                line = 0
+            line = max(line - 1, 0)
+
         if line or not before:
             pos = self.GetLineEndPosition(line)
             curr = len(self.GetEOLChar())
@@ -305,9 +302,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: list of line numbers
 
         """
-        marks = [mark for mark in xrange(self.GetLineCount()) 
-                          if self.MarkerGet(mark)]
-        return marks
+        return [mark for mark in xrange(self.GetLineCount()) if self.MarkerGet(mark)]
 
     def Configure(self):
         """Configures the editors settings by using profile values
@@ -406,7 +401,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @rtype: bool
 
         """
-        return self._autoindent
+        return self._config['autoindent']
 
     def GetLangId(self):
         """Returns the language identifer of this control
@@ -536,20 +531,14 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: whether autocomp is active or not
 
         """
-        return self._use_autocomp
+        return self._config['autocomp']
 
     def GetFileName(self):
         """Returns the full path name of the current file
         @return: full path name of document
 
         """
-        fname = "".join([self._finfo['dirname'], 
-                         util.GetPathChar(), 
-                         self._finfo['filename']])
-        if fname == util.GetPathChar():
-            return wx.EmptyString
-        else:
-            return fname
+        return self._finfo['filename']
 
     def GetStyleSheet(self, sheet_name=None):
         """Finds the current style sheet and returns its path. The
@@ -593,7 +582,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             return
         elif k_code == wx.WXK_RETURN:
 
-            if self._autoindent:
+            if self._config['autoindent']:
                 if self.GetSelectedText():
                     self.CmdKeyExecute(wx.stc.STC_CMD_NEWLINE)
                     return
@@ -601,7 +590,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             else:
                 evt.Skip()
 
-            if self._use_autocomp:
+            if self._config['autocomp']:
                 if self.CallTipActive():
                     self.CallTipCancel()
                 self._autocomp_svc.UpdateNamespace(True)
@@ -622,7 +611,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if self._vimode and self._vinormal:
             self._cmdcache = self._cmdcache + unichr(key_code)
             self.ViCmdDispatch()
-        elif not self._use_autocomp:
+        elif not self._config['autocomp']:
             evt.Skip()
             return
         elif key_code in self._autocomp_svc.GetAutoCompKeys():
@@ -630,14 +619,14 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 self.AutoCompCancel()
             command = self.GetCommandStr() + chr(key_code)
             self.AddText(unichr(key_code))
-            if self._use_autocomp:
+            if self._config['autocomp']:
                 self.ShowAutoCompOpt(command)
         elif key_code in self._autocomp_svc.GetCallTipKeys():
             if self.AutoCompActive():
                 self.AutoCompCancel()
             command = self.GetCommandStr()
             self.AddText(chr(key_code))
-            if self._use_autocomp:
+            if self._config['autocomp']:
                 self.ShowCallTip(command)
         else:
             evt.Skip()
@@ -893,7 +882,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @postcondition: lexer is configured for file
 
         """
-        if not self.highlight:
+        if not self._config['highlight']:
             return 2
 
         if set_ext != u'':
@@ -926,7 +915,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         # Configure Autocompletion
         # NOTE: must be done after syntax configuration
-        if self._use_autocomp:
+        if self._config['autocomp']:
             self.ConfigureAutoComp()
         return 0
 
@@ -1152,7 +1141,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: status of bracket highlight activation
 
         """
-        return self.brackethl
+        return self._config['brackethl']
 
     def IsFoldingOn(self):
         """Returns whether code folding is being used by this
@@ -1160,7 +1149,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: whether folding is on or not
 
         """
-        return self.folding
+        return self._config['folding']
 
     def IsHighlightingOn(self):
         """Returns whether syntax highlighting is being used by this
@@ -1168,7 +1157,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: whether syntax highlighting is on or not
 
         """
-        return self.highlight
+        return self._config['highlight']
 
     def IsRecording(self):
         """Returns whether the control is in the middle of recording
@@ -1211,7 +1200,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         if isinstance(value, bool):
-            self._use_autocomp = value
+            self._config['autocomp'] = value
             if value:
                 self._autocomp_svc.LoadCompProvider(self.GetLexer())
 
@@ -1237,8 +1226,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
     def SetFileName(self, path):
         """Set the buffers filename attributes from the given path"""
-        self._finfo['dirname'] = util.GetPathName(path)
-        self._finfo['filename'] = util.GetFileName(path)
+        self._finfo['filename'] = path
 
     def SetModTime(self, modtime):
         """Set the value of the files last modtime"""
@@ -1646,13 +1634,13 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @keyword switch: force a particular setting
 
         """
-        if (switch is None and not self.folding) or switch:
+        if (switch is None and not self._config['folding']) or switch:
             self.LOG("[stc_evt] Code Folding Turned On")
-            self.folding = True
+            self._config['folding'] = True
             self.SetMarginWidth(FOLD_MARGIN, 12)
         else:
             self.LOG("[stc_evt] Code Folding Turned Off")
-            self.folding = False
+            self._config['folding'] = False
             self.SetMarginWidth(FOLD_MARGIN, 0)
 
     def SyntaxOnOff(self, switch=None):
@@ -1660,13 +1648,13 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @keyword switch: force a particular setting
 
         """
-        if (switch is None and not self.highlight) or switch:
+        if (switch is None and not self._config['highlight']) or switch:
             self.LOG("[stc_evt] Syntax Highlighting Turned On")
-            self.highlight = True
+            self._config['highlight'] = True
             self.FindLexer()
         else:
             self.LOG("[stc_evt] Syntax Highlighting Turned Off")
-            self.highlight = False
+            self._config['highlight'] = False
             self.SetLexer(wx.stc.STC_LEX_NULL)
             self.ClearDocumentStyle()
             self.UpdateBaseStyles()
@@ -1677,23 +1665,23 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @keyword switch: force a particular setting
 
         """
-        if (switch is None and not self._autoindent) or switch:
-            self._autoindent = True
+        if (switch is None and not self._config['autoindent']) or switch:
+            self._config['autoindent'] = True
         else:
-            self._autoindent = False
+            self._config['autoindent'] = False
 
     def ToggleBracketHL(self, switch=None):
         """Toggle Bracket Highlighting On and Off
         @keyword switch: force a particular setting
 
         """
-        if (switch is None and not self.brackethl) or switch:
+        if (switch is None and not self._config['brackethl']) or switch:
             self.LOG("[stc_evt] Bracket Highlighting Turned On")
-            self.brackethl = True
+            self._config['brackethl'] = True
             self.Bind(wx.stc.EVT_STC_UPDATEUI, self.OnUpdateUI)
         else:
             self.LOG("[stc_evt] Bracket Highlighting Turned Off")
-            self.brackethl = False
+            self._config['brackethl'] = False
             self.Unbind(wx.stc.EVT_STC_UPDATEUI)
 
     def ToggleLineNumbers(self, switch=None):
@@ -1837,7 +1825,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @rtype: bool
 
         """
-        cfile = os.path.join(self._finfo['dirname'], self._finfo['filename'])
+        cfile = self.GetFileName()
         if os.path.exists(cfile):
             try:
                 self.BeginUndoAction()
