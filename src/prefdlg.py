@@ -966,7 +966,7 @@ class AppearancePanel(PrefPanelBase):
                 toolbar = mainw.GetToolBar()
                 if toolbar is not None and \
                    (toolbar.GetToolTheme() != Profile_Get('ICONS')) \
-                   or (toolbar.GetToolSize() != Profile_Get('ICON_SZ')):
+                   or (toolbar.GetToolBitmapSize() != Profile_Get('ICON_SZ')):
                     toolbar.ReInit()
                 mainw.UpdateToolBar()
 

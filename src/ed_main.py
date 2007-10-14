@@ -135,7 +135,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Create a toolbar ----#
         if _PGET('TOOLBAR'):
-            self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
+            self.toolbar = ed_toolbar.EdToolBar(self)
             self.SetToolBar(self.toolbar)
         #---- End Toolbar Setup ----#
 
@@ -721,7 +721,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 del self.toolbar
                 _PSET('TOOLBAR', False)
             else:
-                self.toolbar = ed_toolbar.EdToolBar(self, wx.ID_ANY)
+                self.toolbar = ed_toolbar.EdToolBar(self)
                 self.SetToolBar(self.toolbar)
                 self.SendSizeEvent()
                 self.RefreshRect(self.GetRect())
