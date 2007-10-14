@@ -21,16 +21,14 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_toolbar.py                                                      #
+# AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # SUMMARY:                                                                 #
-#   This module creates and manages the customization of the toolbar       #
+#   This module creates Editra's toolbar. This toolbar is very simple and  #
+# only adds automatic icon theming to whats already available in the       #
+# base toolbar class.                                                      #
 #                                                                          #
-# METHODS:                                                                 #
-# - __init__ : Creates the toolbar object                                  #
-# - CreateIcons : Creates the icons to use in the toolbar                  #
-# - LoadIconSet : Loads the icons from the theme handler                   #
-# - PopulateTools : Puts tools in the toolbar                              #
 #--------------------------------------------------------------------------#
 """
 
