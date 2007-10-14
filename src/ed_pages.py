@@ -21,6 +21,7 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_pages.py                                                        #
+# AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # SUMMARY:                                                                 #
