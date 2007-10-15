@@ -108,7 +108,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.toolbar = None
 
         #---- Status bar on bottom of window ----#
-        self.CreateStatusBar(3, style = wx.ST_SIZEGRIP | wx.ST_DOTS_MIDDLE)
+        self.CreateStatusBar(3, style=wx.ST_SIZEGRIP)
         self.SetStatusWidths([-1, 120, 155])
         #---- End Statusbar Setup ----#
 
@@ -117,10 +117,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.nb = ed_pages.EdPages(self.edit_pane, wx.ID_ANY)
         self.edit_pane.nb = self.nb
         self.sizer.Add(self.nb, 1, wx.EXPAND)
-        self.sizer.Layout()
-        self.edit_pane.SendSizeEvent()
         self.edit_pane.SetSizer(self.sizer)
-        self.Layout()
         self._mgr.AddPane(self.edit_pane, wx.aui.AuiPaneInfo(). \
                           Name("EditPane").Center().Layer(1).Dockable(False). \
                           CloseButton(False).MaximizeButton(False). \
@@ -162,6 +159,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                                      _("Manually Set a Lexer/Syntax"))
 
         # On mac, do this to make help menu appear in correct location
+        # Note it must be done before setting the menu bar and after the
+        # menus have been created.
         if wx.Platform == '__WXMAC__':
             wx.GetApp().SetMacHelpMenuTitleName(_("Help"))
 
