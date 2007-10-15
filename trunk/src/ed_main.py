@@ -111,12 +111,12 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- End Statusbar Setup ----#
 
         #---- Notebook that contains the editting buffers ----#
-        self.edit_pane = wx.Panel(self, wx.ID_ANY)
-        self.nb = ed_pages.EdPages(self.edit_pane, wx.ID_ANY)
-        self.edit_pane.nb = self.nb
+        edit_pane = wx.Panel(self, wx.ID_ANY)
+        self.nb = ed_pages.EdPages(edit_pane, wx.ID_ANY)
+        edit_pane.nb = self.nb
         self.sizer.Add(self.nb, 1, wx.EXPAND)
-        self.edit_pane.SetSizer(self.sizer)
-        self._mgr.AddPane(self.edit_pane, wx.aui.AuiPaneInfo(). \
+        edit_pane.SetSizer(self.sizer)
+        self._mgr.AddPane(edit_pane, wx.aui.AuiPaneInfo(). \
                           Name("EditPane").Center().Layer(1).Dockable(False). \
                           CloseButton(False).MaximizeButton(False). \
                           CaptionVisible(False))
@@ -125,7 +125,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.printer = ed_print.EdPrinter(self, self.nb.GetCurrentCtrl)
 
         #---- Command Bar ----#
-        self._cmdbar = ed_cmdbar.CommandBar(self.edit_pane, ID_COMMAND_BAR)
+        self._cmdbar = ed_cmdbar.CommandBar(edit_pane, ID_COMMAND_BAR)
         self._cmdbar.Hide()
 
         #---- Create a toolbar ----#
@@ -136,25 +136,26 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- Menus ----#
         menbar = ed_menu.EdMenuBar()
-        self.filemenu = menbar.GetMenuByName("file")
-        self.editmenu = menbar.GetMenuByName("edit")
-        self.viewmenu = menbar.GetMenuByName("view")
-        self.vieweditmenu = menbar.GetMenuByName("viewedit")
+        self._menus = dict(file=menbar.GetMenuByName("file"),
+                           edit=menbar.GetMenuByName("edit"),
+                           view=menbar.GetMenuByName("view"),
+                           viewedit=menbar.GetMenuByName("viewedit"),
+                           format=menbar.GetMenuByName("format"),
+                           settings=menbar.GetMenuByName("settings"),
+                           tools=menbar.GetMenuByName("tools"),
+                           help=menbar.GetMenuByName("help"),
+                           lineformat=menbar.GetMenuByName("lineformat"),
+                           language=syntax.GenLexerMenu())
+
         # Todo this should not be hard coded
-        self.viewmenu.InsertMenu(5, ID_PERSPECTIVES, _("Perspectives"), 
-                                 self.GetPerspectiveControls())
-        self.formatmenu = menbar.GetMenuByName("format")
-        self.settingsmenu = menbar.GetMenuByName("settings")
-        self.toolsmenu = menbar.GetMenuByName("tools")
-        self.helpmenu = menbar.GetMenuByName("help")
-        self.menubar = menbar
-        self.lineformat = menbar.GetMenuByName("lineformat")
+        self._menus['view'].InsertMenu(5, ID_PERSPECTIVES, _("Perspectives"), 
+                                       self.GetPerspectiveControls())
 
         ## Setup additional menu items
         self.filehistory.UseMenu(menbar.GetMenuByName("filehistory"))
-        self.languagemenu = syntax.GenLexerMenu()
-        self.settingsmenu.AppendMenu(ID_LEXER, _("Lexers"), self.languagemenu,
-                                     _("Manually Set a Lexer/Syntax"))
+        self._menus['settings'].AppendMenu(ID_LEXER, _("Lexers"), 
+                                           self._menus['language'],
+                                           _("Manually Set a Lexer/Syntax"))
 
         # On mac, do this to make help menu appear in correct location
         # Note it must be done before setting the menu bar and after the
@@ -163,7 +164,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             wx.GetApp().SetMacHelpMenuTitleName(_("Help"))
 
         #---- Menu Bar ----#
-        self.SetMenuBar(self.menubar)
+        self.SetMenuBar(menbar)
 
         #---- Actions to take on menu events ----#
         self.Bind(wx.EVT_MENU_OPEN, self.UpdateMenu)
@@ -173,8 +174,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.Bind(wx.EVT_MENU_HIGHLIGHT, \
                       self.OnMenuHighlight, id=ID_EOL_MODE)
 
-        # File Menu Events
-        self._handlers['menu'].extend([(ID_NEW, self.OnNew),
+        # Collect Menu Event handler pairs
+        self._handlers['menu'].extend([# File Menu Events
+                                       (ID_NEW, self.OnNew),
                                        (ID_OPEN, self.OnOpen),
                                        (ID_CLOSE, self.OnClosePage),
                                        (ID_CLOSE_WINDOW, self.OnClose),
@@ -187,42 +189,37 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                                        (ID_EXIT, wx.GetApp().OnExit),
                                        (ID_PRINT, self.OnPrint),
                                        (ID_PRINT_PRE, self.OnPrint),
-                                       (ID_PRINT_SU, self.OnPrint)])
-
-        self.Bind(wx.EVT_MENU_RANGE, self.OnFileHistory, 
-                  id=wx.ID_FILE1, id2=wx.ID_FILE9)
-
-        # Edit Menu Events
-        self._handlers['menu'].extend([(ID_FIND, 
+                                       (ID_PRINT_SU, self.OnPrint),
+                                       # Edit Menu
+                                       (ID_FIND, 
                                         self.nb.FindService.OnShowFindDlg),
                                        (ID_FIND_REPLACE, 
                                         self.nb.FindService.OnShowFindDlg),
                                        (ID_QUICK_FIND, self.OnCommandBar),
-                                       (ID_PREF, self.OnPreferences)])
-        self.Bind(wx.EVT_MENU, self.DispatchToControl)
-        
-        # View Menu Events
-        self._handlers['menu'].extend([(ID_GOTO_LINE, self.OnCommandBar),
-                                       (ID_VIEW_TOOL, self.OnViewTb)])
-        
-        # Format Menu Events
-        self._handlers['menu'].append((ID_FONT, self.OnFont))
-
-        # Tool Menu
-        self._handlers['menu'].extend([(ID_COMMAND, self.OnCommandBar),
+                                       (ID_PREF, self.OnPreferences),
+                                       # View Menu
+                                       (ID_GOTO_LINE, self.OnCommandBar),
+                                       (ID_VIEW_TOOL, self.OnViewTb),
+                                       # Format Menu
+                                       (ID_FONT, self.OnFont),
+                                       # Tool Menu
+                                       (ID_COMMAND, self.OnCommandBar),
                                        (ID_STYLE_EDIT, self.OnStyleEdit),
-                                       (ID_PLUGMGR, self.OnPluginMgr)])
-
-        for l_id in syntax.SyntaxIds():
-            self._handlers['menu'].append((l_id, self.DispatchToControl))
-
-        self.Bind(wx.EVT_MENU, self.OnGenerate)
-
-        # Help Menu Events
-        self._handlers['menu'].extend([(ID_ABOUT, self.OnAbout),
+                                       (ID_PLUGMGR, self.OnPluginMgr),
+                                       # Help Menu
+                                       (ID_ABOUT, self.OnAbout),
                                        (ID_HOMEPAGE, self.OnHelp),
                                        (ID_DOCUMENTATION, self.OnHelp),
                                        (ID_CONTACT, self.OnHelp)])
+
+        self._handlers['menu'].extend([(l_id, self.DispatchToControl) 
+                                       for l_id in syntax.SyntaxIds()])
+
+        # Extra menu handlers (need to work these into above system yet
+        self.Bind(wx.EVT_MENU, self.DispatchToControl)
+        self.Bind(wx.EVT_MENU, self.OnGenerate)
+        self.Bind(wx.EVT_MENU_RANGE, self.OnFileHistory, 
+                  id=wx.ID_FILE1, id2=wx.ID_FILE9)
 
         #---- End Menu Setup ----#
 
@@ -259,12 +256,12 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         addons = MainWindowAddOn(plgmgr)
         addons.Init(self)
         self._handlers['menu'].extend(addons.GetEventHandlers())
-        self._handlers['ui'].extend(addons.GetEventHandlers(ui=True))
+        self._handlers['ui'].extend(addons.GetEventHandlers(ui_evt=True))
         self._shelf = iface.Shelf(plgmgr)
         self._shelf.Init(self)
         self.LOG("[main][info] Loading Generator plugins")
         self._generator = generator.Generator(plgmgr)
-        self._generator.InstallMenu(self.toolsmenu)
+        self._generator.InstallMenu(self._menus['tools'])
 
         # Set Perspective
         self.SetPerspective(_PGET('DEFAULT_VIEW'))
@@ -496,9 +493,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                             title.lstrip(u"*"), 
                             ''.join(syntax.GenFileFilters()), 
                             wx.SAVE | wx.OVERWRITE_PROMPT)
-        result = dlg.ShowModal()
-        if result == wx.ID_OK:
-            path = dlg.GetPath()
+        path = dlg.GetPath()
+        dlg.Destroy()
+
+        if dlg.ShowModal() == wx.ID_OK:
             if page:
                 ctrl = page
             else:
@@ -507,9 +505,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             result = ctrl.SaveFile(path)
             fname = util.GetFileName(ctrl.GetFileName())
             if not result:
-                dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % 
-                                                (fname, result), _("Save Error"),
-                                        wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _("Failed to save file: %s\n\nError:\n%d") % \
+                                       (fname, result), _("Save Error"),
+                                       wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.PushStatusText(_("ERROR: Failed to save %s") % fname, SB_INFO)
@@ -520,8 +518,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.nb.GetCurrentCtrl().FindLexer()
                 self.nb.UpdatePageImage()
             return result
-        else:
-            pass
 
     def OnSaveProfile(self, evt):
         """Saves current settings as a profile
@@ -561,9 +557,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 profiler.Profile().Load(dlg.GetPath())
                 self.PushStatusText(_("Loaded Profile: %s") % \
                                     dlg.GetFilename(), SB_INFO)
-                dlg.Destroy()
-            else:
-                pass
+            dlg.Destroy()
 
             # Update editor to reflect loaded profile
             for win in wx.GetApp().GetMainWindows():
@@ -916,9 +910,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         if evt.GetId() == ID_LEXER:
-            self.UpdateMenu(self.languagemenu)
+            self.UpdateMenu(self._menus['language'])
         elif evt.GetId() == ID_EOL_MODE:
-            self.UpdateMenu(self.lineformat)
+            self.UpdateMenu(self._menus['lineformat'])
         else:
             evt.Skip()
 
@@ -963,12 +957,12 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             menu = evt.GetMenu()
             # HACK MSW GetMenu returns None on submenu open events
             if menu is None:
-                menu = self.languagemenu
-                menu2 = self.lineformat
+                menu = self._menus['language']
+                menu2 = self._menus['lineformat']
         else:
             menu = evt
 
-        if menu == self.languagemenu:
+        if menu == self._menus['language']:
             self.LOG("[main_evt] Updating Settings/Lexer Menu")
             lang_id = ctrl.GetLangId()
             for menu_item in menu.GetMenuItems():
@@ -984,8 +978,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 eol = ctrl.GetEOLModeId()
                 for menu_id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
                     menu2.Check(menu_id, eol == menu_id)
-                menu = self.vieweditmenu
-        if menu == self.editmenu:
+                menu = self._menus['viewedit']
+        if menu == self._menus['edit']:
             self.LOG("[main_evt] Updating Edit Menu")
             menu.Enable(ID_UNDO, ctrl.CanUndo())
             menu.Enable(ID_REDO, ctrl.CanRedo())
@@ -995,30 +989,30 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             menu.Enable(ID_CUT, sel1 != sel2)
             menu.Enable(ID_FIND, True)
             menu.Enable(ID_FIND_REPLACE, True)
-        elif menu == self.settingsmenu:
+        elif menu == self._menus['settings']:
             self.LOG("[menu_evt] Updating Settings Menu")
             menu.Check(ID_AUTOCOMP, ctrl.GetAutoComplete())
             menu.Check(ID_AUTOINDENT, ctrl.GetAutoIndent())
             menu.Check(ID_SYNTAX, ctrl.IsHighlightingOn())
             menu.Check(ID_FOLDING, ctrl.IsFoldingOn())
             menu.Check(ID_BRACKETHL, ctrl.IsBracketHlOn())
-        elif menu == self.viewmenu:
+        elif menu == self._menus['view']:
             zoom = ctrl.GetZoom()
             self.LOG("[menu_evt] Updating View Menu: zoom = %d" % zoom)
-            self.viewmenu.Enable(ID_ZOOM_NORMAL, zoom)
-            self.viewmenu.Enable(ID_ZOOM_IN, zoom < 18)
-            self.viewmenu.Enable(ID_ZOOM_OUT, zoom > -8)
+            self._menus['view'].Enable(ID_ZOOM_NORMAL, zoom)
+            self._menus['view'].Enable(ID_ZOOM_IN, zoom < 18)
+            self._menus['view'].Enable(ID_ZOOM_OUT, zoom > -8)
             menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
-        elif menu == self.vieweditmenu:
+        elif menu == self._menus['viewedit']:
             menu.Check(ID_SHOW_WS, bool(ctrl.GetViewWhiteSpace()))
             menu.Check(ID_SHOW_EDGE, bool(ctrl.GetEdgeMode()))
             menu.Check(ID_SHOW_EOL, bool(ctrl.GetViewEOL()))
             menu.Check(ID_SHOW_LN, bool(ctrl.GetMarginWidth(1)))
             menu.Check(ID_INDENT_GUIDES, bool(ctrl.GetIndentationGuides()))
-        elif menu == self.formatmenu:
+        elif menu == self._menus['format']:
             self.LOG("[menu_evt] Updating Format Menu")
             menu.Check(ID_WORD_WRAP, bool(ctrl.GetWrapMode()))
-        elif menu == self.lineformat:
+        elif menu == self._menus['lineformat']:
             self.LOG("[menu_evt] Updating EOL Mode Menu")
             eol = ctrl.GetEOLModeId()
             for menu_id in [ID_EOL_MAC, ID_EOL_UNIX, ID_EOL_WIN]:
