@@ -24,7 +24,7 @@
 # AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
 #                                                                          #
-# @summary:                                                                #
+# SUMMARY:                                                                 #
 #  This module provides the class for the main window as well as the       #
 # plugin interface to interact with the window.                            #
 #                                                                          #
@@ -87,9 +87,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         self.SetTitle()
         self.LOG = wx.GetApp().GetLog()
-        self._handlers = dict()
-        self._handlers['menu'] = list()
-        self._handlers['ui'] = list()
+        self._handlers = dict(menu=list(), ui=list())
 
         # Try and set an app icon 
         util.SetWindowIcon(self)
@@ -195,8 +193,10 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                   id=wx.ID_FILE1, id2=wx.ID_FILE9)
 
         # Edit Menu Events
-        self._handlers['menu'].extend([(ID_FIND, self.nb.FindService.OnShowFindDlg),
-                                       (ID_FIND_REPLACE, self.nb.FindService.OnShowFindDlg),
+        self._handlers['menu'].extend([(ID_FIND, 
+                                        self.nb.FindService.OnShowFindDlg),
+                                       (ID_FIND_REPLACE, 
+                                        self.nb.FindService.OnShowFindDlg),
                                        (ID_QUICK_FIND, self.OnCommandBar),
                                        (ID_PREF, self.OnPreferences)])
         self.Bind(wx.EVT_MENU, self.DispatchToControl)
@@ -324,7 +324,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         if e_id == ID_OPEN:
             dlg = wx.FileDialog(self, _("Choose a File"), '', "", 
-                                self.MenuFileTypes(), wx.OPEN | wx.MULTIPLE)
+                                ''.join(syntax.GenFileFilters()), 
+                                wx.OPEN | wx.MULTIPLE)
             dlg.SetFilterIndex(_PGET('FFILTER', 'int', 0))
             result = dlg.ShowModal()
             _PSET('FFILTER', dlg.GetFilterIndex())
@@ -492,7 +493,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         dlg = wx.FileDialog(self, _("Choose a Save Location"), u'', 
-                            title.lstrip(u"*"), self.MenuFileTypes(), 
+                            title.lstrip(u"*"), 
+                            ''.join(syntax.GenFileFilters()), 
                             wx.SAVE | wx.OVERWRITE_PROMPT)
         result = dlg.ShowModal()
         if result == wx.ID_OK:
@@ -863,17 +865,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     #---- End Help Menu Functions ----#
 
     #---- Misc Function Definitions ----#
-    def MenuFileTypes(self):
-        """Creates a string from a list of supported filetypes for use
-        in menus of dialogs such as open and saveas
-        @param evt: Event fired that called this handler
-        @type evt: wxMenuEvent
-        @return: A string of all filefilters for all supported filetypes
-                 and extensions.
-
-        """
-        return ''.join(syntax.GenFileFilters())
-
     def DispatchToControl(self, evt):
         """Catches events that need to be passed to the current
         text control for processing.
@@ -885,8 +876,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             evt.Skip()
             return
         
-        e_id = evt.GetId()
-        e_obj = evt.GetEventObject()
         menu_ids = syntax.SyntaxIds()
         menu_ids.extend([ID_SHOW_EOL, ID_SHOW_WS, ID_INDENT_GUIDES, ID_SYNTAX,
                          ID_KWHELPER, ID_WORD_WRAP, ID_BRACKETHL, ID_ZOOM_IN,
@@ -901,7 +890,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                          ID_MACRO_STOP, ID_MACRO_PLAY, ID_TO_LOWER, 
                          ID_TO_UPPER, ID_UNDO, ID_REDO, ID_CUT, ID_COPY,
                          ID_PASTE, ID_SELECTALL])
-        if e_id in menu_ids:
+        if evt.GetId() in menu_ids:
             self.nb.GetCurrentCtrl().ControlDispatch(evt)
             self.UpdateToolBar()
         else:
@@ -1143,27 +1132,27 @@ class MainWindowAddOn(plugin.Plugin):
         @param window: window that observers become children of
 
         """
-        log = wx.GetApp().GetLog()
-        for ob in self.observers:
+        for observer in self.observers:
             try:
-                ob.PlugIt(window)
+                observer.PlugIt(window)
             except Exception, msg:
-                log("[main_addon][err] %s" % str(msg))
+                util.Log("[main_addon][err] %s" % str(msg))
 
-    def GetEventHandlers(self, ui=False):
+    def GetEventHandlers(self, ui_evt=False):
         """Get Event handlers and Id's from all observers
-        @keyword ui: Get Update Ui handlers (default get menu handlers)
+        @keyword ui_evt: Get Update Ui handlers (default get menu handlers)
         @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
 
         """
         handlers = list()
-        for ob in self.observers:
+        for observer in self.observers:
             try:
-                if ui:
-                    items = ob.GetUIHandlers()
+                if ui_evt:
+                    items = observer.GetUIHandlers()
                 else:
-                    items = ob.GetMenuHandlers()
+                    items = observer.GetMenuHandlers()
             except Exception, msg:
+                util.Log("[main_addon][err] %s" % str(msg))
                 continue
             handlers.extend(items)
         return handlers
