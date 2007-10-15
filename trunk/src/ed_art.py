@@ -21,16 +21,14 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_art.py                                                          #
-# @author: Cody Precord                                                    #
+# AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
-# @summary:                                                                #
-#    Provides and ArtProvider class for loading the custom images into the #
-#   editor.                                                                #
+# SUMMARY:                                                                 #
+#  Provides and ArtProvider class that works off of object ID's to return  #
+# an associated art resource. The provider works hand in hand with Editra's#
+# theme framework that allows for themes to be provided as plugins that    #
+# act as the resource providers for the ArtProvider.                       #
 #                                                                          #
-# METHODS:
-#
-#
-#
 #--------------------------------------------------------------------------#
 """
 
@@ -88,18 +86,26 @@ DEFAULT = {
 #--------------------------------------------------------------------------#
 
 class EditraArt(wx.ArtProvider):
-    """Editras Art Provider. Provides the mimetype images and
-    loads any custom user defined icon sets as well.
+    """Editras Art Provider. Provides the mimetype images and loads any custom 
+    user defined icon sets as well. Editra theme specific icons are looked up
+    by passing an objects related id as a string to this providers CreateBitmap
+    function for it to talk to the theme resource provider. If the id is not 
+    a defined object ID it is simply ignored or passed to the the next
+    ArtProvider in the chain to handle.
 
     """
     def __init__(self):
-        """Initializes the art provider"""
+        """Initializes Editra's art provider"""
         wx.ArtProvider.__init__(self)
         self._library = ed_theme.BitmapProvider(wx.GetApp().GetPluginManager())
 
     def CreateBitmap(self, art_id, client, size):
-        """Makes the bitmaps from the images
-        @return: Requested image object if one exists
+        """Lookup and return an associated bitmap from the current theme if
+        one exisists. If the art_id is not a theme defined id and is a wx
+        defined art resource then it is passed to the next ArtProvider in the
+        stack to evaluate.
+
+        @return: Requested bitmap from current theme if one exists
         @rtype: wx.Bitmap
 
         """
@@ -110,6 +116,9 @@ class EditraArt(wx.ArtProvider):
             return wx.NullBitmap
 
         # If using default theme let the system provide the art when possible
+        # this is mostly for GTK where there is a native art provider that can
+        # provide theme icons. Hopefully the one I wrote for wxMac will get
+        # evaluated and added in the near future as well.
         if Profile_Get('ICONS', 'str').lower() == u'default' and \
            DEFAULT.has_key(art_id):
             if client == wx.ART_MENU:
@@ -121,6 +130,8 @@ class EditraArt(wx.ArtProvider):
         # If a custom theme is set fetch the requested bitmap
         bmp = self._library.GetBitmap(art_id, client)
         if not bmp.IsNull() and bmp.IsOk():
+            # Dont scale toolbar icons on wxMac as the toolbar handles it
+            # internally and produces much nicer results.
             if client == wx.ART_TOOLBAR and not wx.Platform == '__WXMAC__':
                 if size == wx.DefaultSize:
                     size = Profile_Get('ICON_SZ', 'size_tuple')
@@ -134,8 +145,12 @@ class EditraArt(wx.ArtProvider):
                 img.Rescale(16, 16, wx.IMAGE_QUALITY_HIGH)
                 bmp = wx.BitmapFromImage(img)
         elif client == wx.ART_TOOLBAR:
+            # Dont fail on a toolbar icon return a warning icon when nothing is
+            # found in the bitmap provider.
             bmp = wx.ArtProvider.GetBitmap(wx.ART_WARNING, client, size)
         elif art_id in syntax.SyntaxIds():
+            # Dont fail when requesting mime type icons, fallback to the system
+            # icon for a normal file in this case.
             bmp = wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE, 
                                            wx.ART_MENU, (16, 16))
 
