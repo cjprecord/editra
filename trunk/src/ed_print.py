@@ -79,7 +79,7 @@ class EdPrinter:
 
         """
         colour = COLOURMODES[self.print_mode]
-        return EdPrintout(self.stc(), colour, self.stc().filename)
+        return EdPrintout(self.stc(), colour, self.stc().GetFileName())
 
     def PageSetup(self):
         """Opens a print setup dialog
@@ -166,10 +166,7 @@ class EdPrintout(wx.Printout):
         @return: wheter page is in range of document or not
 
         """
-        if page <= self.page_count:
-            return True
-        else:
-            return False
+        return page <= self.page_count
 
     def OnPrintPage(self, page):
         """Scales and Renders the page to a DC and prints it
