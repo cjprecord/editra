@@ -21,23 +21,19 @@
 """
 #--------------------------------------------------------------------------#
 # FILE: ed_cmdbar.py                                                       #
-# @author: Cody Precord                                                    #
+# AUTHOR: Cody Precord                                                     #
 # LANGUAGE: Python                                                         #
-# @summary:                                                                #
+# SUMMARY:                                                                 #
 #    This class creates a custom panel that can hide and show different    #
 # controls based an id value. The panel is generally between 24-32 pixels  #
 # in height but can grow to fit the controls inserted in it. The           #
 # the background is painted with a gradient using system defined colors.   #
 #                                                                          #
-# METHODS:
-#
-#
-#
 #--------------------------------------------------------------------------#
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id$"
+__svnid__ = "$Id$"
 __revision__ = "$Revision$"
 
 #--------------------------------------------------------------------------#
@@ -49,7 +45,6 @@ import wx
 import util
 import ed_glob
 import ed_search
-import ed_event
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
@@ -118,8 +113,10 @@ ID_CMD_LBL = wx.NewId()
 #-----------------------------------------------------------------------------#
 
 class CommandBar(wx.Panel):
-    """Creates a panel that houses various different command
-    controls for the editor.
+    """The command bar is a slim panel that is used to hold various small
+    controls for searching jumping to line, ect...
+    @todo: make a plugin interface and a management system for showing and
+           hiding the various conrols
 
     """
     def __init__(self, parent, id_, size=(-1, 24), style=wx.TAB_TRAVERSAL):
@@ -132,26 +129,26 @@ class CommandBar(wx.Panel):
         # Attributes
         self._parent = parent
         self._installed = False
-        self._psizer = parent.GetSizer()
-        self._h_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self._goto_sizer = wx.BoxSizer()
-        self._search_sizer = wx.BoxSizer()
-        self._cmd_sizer = wx.BoxSizer()
+        self._sizers = dict(psizer=parent.GetSizer(),
+                            h_sizer=wx.BoxSizer(wx.HORIZONTAL),
+                            goto=wx.BoxSizer(),
+                            search=wx.BoxSizer(),
+                            cmd=wx.BoxSizer())
 
         # Install Controls
         v_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._h_sizer.Add((8, 8))
+        self._sizers['h_sizer'].Add((8, 8))
         bstyle = wx.BU_EXACTFIT
         if wx.Platform == '__WXGTK__':
             bstyle = wx.NO_BORDER
 
         self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, \
                                        GetXBitmap(), style=bstyle)
-        self._h_sizer.Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
-        self._h_sizer.Add((12, 12))
+        self._sizers['h_sizer'].Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
+        self._sizers['h_sizer'].Add((12, 12))
         v_sizer.Add((2, 2))
-        self._h_sizer.Add(v_sizer)
-        self.SetSizer(self._h_sizer)
+        self._sizers['h_sizer'].Add(v_sizer)
+        self.SetSizer(self._sizers['h_sizer'])
         self.SetAutoLayout(True)
 
         # Bind Events
@@ -165,8 +162,8 @@ class CommandBar(wx.Panel):
 
         """
         wx.Panel.Hide(self)
-        if self._psizer != None:
-            self._psizer.Layout()
+        if self._sizers['psizer'] != None:
+            self._sizers['psizer'].Layout()
         self._parent.SendSizeEvent()
         self._parent.nb.GetCurrentCtrl().SetFocus()
         return True
@@ -205,12 +202,17 @@ class CommandBar(wx.Panel):
         h_sizer.AddMany([(go_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                          ((5, 5)), (v_sizer)])
         h_sizer.Layout()
-        self._goto_sizer = h_sizer
-        self._h_sizer.Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._h_sizer.Layout()
+        self._sizers['goto'] = h_sizer
+        self._sizers['h_sizer'].Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        self._sizers['h_sizer'].Layout()
         return linectrl
 
     def InstallCommandCtrl(self):
+        """Install the sizer containing the command executer control
+        into the bar.
+        @return: the command control instance
+
+        """
         h_sizer = wx.BoxSizer(wx.HORIZONTAL)
         v_sizer = wx.BoxSizer(wx.VERTICAL)
         v_sizer.Add((5, 5))
@@ -223,9 +225,9 @@ class CommandBar(wx.Panel):
         h_sizer.AddMany([(cmd_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                          ((5, 5)), (v_sizer)])
         h_sizer.Layout()
-        self._cmd_sizer = h_sizer
-        self._h_sizer.Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._h_sizer.Layout()
+        self._sizers['cmd'] = h_sizer
+        self._sizers['h_sizer'].Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        self._sizers['h_sizer'].Layout()
         return cmdctrl
 
     def InstallSearchCtrl(self):
@@ -281,9 +283,9 @@ class CommandBar(wx.Panel):
         h_sizer.AddMany([(f_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
                          ((5, 5)), (v_sizer), 
                          (ctrl_sizer, 0, wx.ALIGN_CENTER_VERTICAL)])
-        self._search_sizer = h_sizer
-        self._h_sizer.Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._h_sizer.Layout()
+        self._sizers['search'] = h_sizer
+        self._sizers['h_sizer'].Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
+        self._sizers['h_sizer'].Layout()
         return search
 
     def OnCheck(self, evt):
@@ -354,10 +356,10 @@ class CommandBar(wx.Panel):
 
         """
         # Install self in parent
-        if not self._installed and self._psizer != None:
+        if not self._installed and self._sizers['psizer'] != None:
             self._installed = True
-            self._psizer.Add(self, 0, wx.EXPAND)
-            self._psizer.Layout()
+            self._sizers['psizer'].Add(self, 0, wx.EXPAND)
+            self._sizers['psizer'].Layout()
             self._parent.SendSizeEvent()
         wx.Panel.Show(self)
 
@@ -369,24 +371,20 @@ class CommandBar(wx.Panel):
                 ctrl = self.InstallCtrl(id_)
 
             # First Hide everything
-            for kid in self._search_sizer.GetChildren():
-                kid.Show(False)
-
-            for kid in self._goto_sizer.GetChildren():
-                kid.Show(False)
-
-            for kid in self._cmd_sizer.GetChildren():
+            for kid in (list(self._sizers['search'].GetChildren()) + 
+                        list(self._sizers['goto'].GetChildren()) +
+                        list(self._sizers['cmd'].GetChildren())):
                 kid.Show(False)
 
             if id_ == ID_SEARCH_CTRL:
-                for kid in self._search_sizer.GetChildren():
+                for kid in self._sizers['search'].GetChildren():
                     kid.Show(True)
-                self._search_sizer.Layout()
+                self._sizers['search'].Layout()
             elif id_ == ID_LINE_CTRL:
-                for kid in self._goto_sizer.GetChildren():
+                for kid in self._sizers['goto'].GetChildren():
                     kid.Show(True)
             elif id_ == ID_CMD_CTRL:
-                for kid in self._cmd_sizer.GetChildren():
+                for kid in self._sizers['cmd'].GetChildren():
                     kid.Show(True)
 
             self.GetSizer().Layout()
@@ -415,10 +413,8 @@ class CommandBar(wx.Panel):
 #-----------------------------------------------------------------------------#
 
 class CommandExecuter(wx.SearchCtrl):
-    """Part of the Vi emulation, opens a minibuffer to execute
-    EX commands with.
-    @note: based on search ctrl so we get a more astetically pleasing control
-           on wxmac.
+    """Part of the Vi emulation, opens a minibuffer to execute EX commands.
+    @note: based on search ctrl so we get the nice roudned edges on wxmac.
     
     """
     RE_GO_BUFFER = re.compile('[0-9]*[nN]{1,1}')
@@ -463,19 +459,14 @@ class CommandExecuter(wx.SearchCtrl):
 
         """
         ext = self.GetTextExtent(self.GetValue())[0]
-        cw, ch = self.GetClientSizeTuple()
-        wdiff = cw - ext
-        if ext > cw * .85:
+        curr_w, curr_h = self.GetClientSizeTuple()
+        if ext > curr_w * .85:
             max_w = self.GetParent().GetClientSize().GetWidth() * .75
-            nwidth = ext * 1.15
-            if nwidth > max_w:
-                nwidth = max_w
-            self.SetClientSize((nwidth, ch))
-        elif ((cw > ext * 1.15) and cw > 150):
-            nwidth = ext * 1.15
-            if nwidth < 150:
-                nwidth = 150
-            self.SetClientSize((nwidth, ch))
+            nwidth = min(ext * 1.15, max_w)
+            self.SetClientSize((nwidth, curr_h))
+        elif ((curr_w > ext * 1.15) and curr_w > 150):
+            nwidth = max(ext * 1.15, 150)
+            self.SetClientSize((nwidth, curr_h))
         else:
             pass
 
@@ -502,10 +493,11 @@ class CommandExecuter(wx.SearchCtrl):
         """Push a command to the stack popping as necessary to
         keep stack size less than MAX.
         @param cmd: command string to push
+        @todo: redo this to be more like the code in my terminal project
 
         """
         self._cmdstack.insert(0, cmd)
-        if len(self._cmdstack) > 25: # TODO make this configurable
+        if len(self._cmdstack) > 25:
             self._cmdstack.pop()
 
     def EditCommand(self, cmd):
@@ -522,7 +514,7 @@ class CommandExecuter(wx.SearchCtrl):
         if os.path.exists(cmd):
             frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, cmd)
         else:
-            frame.nb.OpenPage(util.GetPathName(cmd) ,util.GetFileName(cmd))
+            frame.nb.OpenPage(util.GetPathName(cmd), util.GetFileName(cmd))
 
     def ExecuteCommand(self, cmd_str):
         """Interprets and executes a command then hides the control
@@ -541,11 +533,11 @@ class CommandExecuter(wx.SearchCtrl):
                 self.GoBuffer(cmd[1:])
             elif cmd == 'wq':
                 self.Quit()
-        elif cmd.startswith(u'e'):
+        elif cmd.startswith(u'e '):
             self.EditCommand(cmd)
         elif self.RE_GO_WIN.match(cmd):
             self.GoWindow(cmd)
-        elif self.RE_GO_BUFFER.match(cmd):
+        elif re.match(self.RE_GO_BUFFER, cmd):
             self.GoBuffer(cmd)
         elif cmd.isdigit() or self.RE_NGO_LINE.match(cmd):
             ctrl = frame.nb.GetCurrentCtrl()
@@ -564,7 +556,7 @@ class CommandExecuter(wx.SearchCtrl):
             return
 
         self.CommandPush(cmd_str)
-        self._curidx = 0
+        self._histidx = -1
         self.GetParent().Hide()
 
     def GetHistCommand(self, pre=True):
@@ -574,7 +566,6 @@ class CommandExecuter(wx.SearchCtrl):
 
         """
         hist_l = len(self._cmdstack) - 1
-        curr_cmd = self.GetValue()
         if pre:
             self._histidx += 1
             if self._histidx >= hist_l + 1:
@@ -595,14 +586,20 @@ class CommandExecuter(wx.SearchCtrl):
         @param cmd: cmd string [0-9]*[nN]
 
         """
-        do = cmd[0:-1]
+        count = cmd[0:-1]
         cmd = cmd[-1]
-        if do.isdigit():
-            do = int(do)
+        if count.isdigit():
+            count = int(count)
         else:
-            do = 1
+            count = 1
+
         frame = self.GetTopLevelParent()
-        for x in xrange(do):
+        numpage = frame.nb.GetPageCount()
+        for x in xrange(min(count, numpage)):
+            cpage = frame.nb.GetPageIndex(frame.nb.GetCurrentPage())
+            if (cpage == 0 and cmd == 'N') or \
+               (cpage + 1 == numpage and cmd == 'n'):
+                break
             frame.nb.AdvanceSelection(cmd == 'n')
 
     def GoWindow(self, cmd):
@@ -610,24 +607,26 @@ class CommandExecuter(wx.SearchCtrl):
         @param cmd: cmd string [0-9]*n[wW]
 
         """
-        do = cmd[0:-1]
+        count = cmd[0:-1]
         cmd = cmd[-1]
-        if do.isdigit():
-            do = int(do)
+        if count.isdigit():
+            count = int(count)
         else:
-            do = 1
+            count = 1
         wins = wx.GetApp().GetMainWindows()
         pid = self.GetTopLevelParent().GetId()
         widx = 0
-        for win in xrange(len(wins)):
-            if pid == wins[win].GetId():
+        win = 0
+        for nwin in xrange(len(wins)):
+            if pid == wins[nwin].GetId():
                 widx = pid
+                win = nwin
                 break
 
         if cmd == 'W':
-            widx = win + do
+            widx = win + count
         else:
-            widx = win - do
+            widx = win - count
 
         if widx < 0:
             widx = 0
@@ -637,10 +636,11 @@ class CommandExecuter(wx.SearchCtrl):
         wins[widx].Raise()
         wx.CallAfter(wins[widx].nb.GetCurrentCtrl().SetFocus)
 
-    # TODO fix and simplify this
     def GetNextDir(self):
         """Get the next directory path from the current cmd path
         @note: used for tab completion of cd, completion is based off cwd
+        @todo: finish working on this by starting over
+        @note: not currently used
 
         """
         cmd = self.GetValue()
@@ -773,14 +773,15 @@ class CommandExecuter(wx.SearchCtrl):
 
 class LineCtrl(wx.SearchCtrl):
     """A custom int control for providing a go To line control
-    for the Command Bar. The get_doc parameter needs to be of
-    type callable and needs to return the document object that
-    the action is to take place in.
+    for the Command Bar.
+    @note: The control is subclassed from SearchCtrl so that it gets
+           the nice rounded edges on wxMac.
 
     """
     def __init__(self, parent, id_, get_doc, size=wx.DefaultSize):
         """Initializes the LineCtrl control and its attributes.
-        @postcondition: gotoline control is initialized
+        @param get_doc: callback method for retreiving a reference to the
+                        current document.
 
         """
         wx.SearchCtrl.__init__(self, parent, id_, "", size=size,
@@ -814,6 +815,7 @@ class LineCtrl(wx.SearchCtrl):
         val = self.GetValue()
         if not val.isdigit():
             return
+
         val = int(val) - 1
         doc = self.GetDoc()
         lines = doc.GetLineCount()
