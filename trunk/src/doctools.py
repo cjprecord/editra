@@ -87,7 +87,7 @@ class DocPositionMgr(object):
         @return: postion value for the given filename
 
         """
-        self._records.get(name, 0)
+        return self._records.get(name, 0)
 
     def LoadBook(self, book):
         """Loads a set of records from an on disk dictionary
