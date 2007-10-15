@@ -30,12 +30,6 @@
 # GetAvailLocales: Returns a list of canonical names of available locales  #
 # GetLocaleDict: Returns a dictionary consisting of canonical names for    #
 #                keys and language ids for values.                         #
-#
-#----------------------------------                                        #
-# CLASS: LangListCombo                                                     #
-#                                                                          #
-# METHODS:
-#
 #--------------------------------------------------------------------------#
 """
 
@@ -105,24 +99,24 @@ def GetLangId(lang_n):
     
     """
     lang_desc = GetLocaleDict(GetAvailLocales(), OPT_DESCRIPT)
-    if(lang_desc.has_key(lang_n)):
-        return lang_desc[lang_n]
-    else:
-        return wx.LANGUAGE_DEFAULT
+    return lang_desc.get(lang_n, wx.LANGUAGE_DEFAULT)
 
 #---- Language List Combo Box----#
 class LangListCombo(wx.combo.BitmapComboBox):
     """Combines a langlist and a BitmapComboBox"""
     def __init__(self, parent, id_, default=None):
-        """Initializes the combobox
-        @postcondition: combo control containing all available locales
-                        with their flags is returned.
+        """Creates a combobox with a list of all translations for the
+        editor as well as displaying the countries flag next to the item
+        in the list.
+
+        @param default: The default item to show in the combo box
 
         """
         self.default = default
         lang_ids = GetLocaleDict(GetAvailLocales()).values()
         if wx.LANGUAGE_DEFAULT not in lang_ids:
             lang_ids.append(wx.LANGUAGE_DEFAULT)
+
         lang_items = langlist.CreateLanguagesResourceLists(langlist.LC_ONLY, \
                                                                lang_ids)
         wx.combo.BitmapComboBox.__init__(self, parent, id_, 
@@ -131,5 +125,6 @@ class LangListCombo(wx.combo.BitmapComboBox):
         for lang_d in lang_items[1]:
             bit_m = lang_items[0].GetBitmap(lang_items[1].index(lang_d))
             self.Append(lang_d, bit_m)
+
         if default:
             self.SetValue(default)
