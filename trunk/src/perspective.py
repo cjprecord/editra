@@ -44,6 +44,7 @@ import os
 import wx
 import util
 import ed_menu
+from profiler import Profile_Get
 
 #--------------------------------------------------------------------------#
 # Globals
@@ -88,6 +89,14 @@ class PerspectiveManager(object):
         self._menu.AppendSeparator()
         for name in self._viewset:
             self.AddPerspectiveMenuEntry(name)
+
+        # Restore the managed windows previous position and alpha
+        # preferences if they are available.
+        self._window.SetTransparent(Profile_Get('ALPHA', default=255))
+        if Profile_Get('SET_WPOS') and Profile_Get('WPOS', "size_tuple", False):
+            self._window.SetPosition(Profile_Get('WPOS'))
+        else:
+            self._window.CenterOnParent()
 
         # Event Handlers
         self._window.Bind(wx.EVT_MENU, self.OnPerspectiveMenu)
