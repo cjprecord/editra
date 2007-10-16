@@ -867,7 +867,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wxMenuEvent
 
         """
-        if not self.IsActive():
+        if not self.IsActive() or not self.nb.GetCurrentCtrl().HasCapture():
             evt.Skip()
             return
         
