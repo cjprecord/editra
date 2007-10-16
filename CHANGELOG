@@ -18,6 +18,11 @@ editor. Most notably are a correction to some performance issues on Mac OSX,
 a number of UI related issues on Linux, and a fair number of fixes to the
 Style Editor.
 
+I have also decided that this will be the last release version that will require
+a profile reset. From this release onwards updating to the new version will no
+longer require you to reconfigure Editra after wards.
+
+
 NEW: [features/improvements]
 +Icon themes are now part of the plugin system so themes can be created and
 installed through the plugin manager using python eggs.
@@ -45,6 +50,8 @@ the editor when changes are made.
 +Fixed Editra Style Sheet parser error for style sheets that have Windows eol
 characters in them.
 +Fixed flickering of toolbar when changing icon themes
++Don't send clipboard events to text control when it is not the control with the
+capture.
 
 #-----------------------------------------------------------------------------#
 
