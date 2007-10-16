@@ -21,17 +21,19 @@
 
 """
 #--------------------------------------------------------------------------#
-# FILE:	Editra						   
-# AUTHOR: Cody Precord
-# LANGUAGE: Python							   
-# SUMMARY:
-#    Editor Launcher
-#
+# FILE:	Editra                                                             #
+# AUTHOR: Cody Precord                                                     #
+# LANGUAGE: Python                                                         #
+# SUMMARY:                                                                 #
+#  Launch script for the Editor. It first tries to look for Editra on the  #
+# local path and if it is not there it tries to import the Main method     #
+# from where Editra would be installed if it was installed using disutils  #
+#                                                                          #
 #--------------------------------------------------------------------------#
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__cvsid__ = "$Id: Exp $"
+__svnid__ = "$Id: Exp $"
 __revision__ = "$Revision:  $"
 
 #--------------------------------------------------------------------------#
@@ -47,7 +49,7 @@ except ImportError:
     except ImportError, msg:
         print "There was an error while tring to import Editra"
         print ("Make sure that Editra is on your PYTHONPATH and that "
-               "you have wxpython installed.")
+               "you have wxPython installed.")
         print "ERROR MSG: "
         print str(msg)
         exit()
@@ -62,9 +64,11 @@ except ImportError:
 #     For them to work from this script they need to import relative to this
 #     script. (import src.plugin) as apposed to (import plugin), but visa versa
 #     is required for the other main script. This is further complicated by the
-#     fact that the location of this script is never guaranteed. If there is 
-#     anyone that has a more clever way to deal with this I would like to 
-#     listen.
+#     fact that the location of this script is never guaranteed. So the current
+#     solution is to change to the directory where the main is located and tell
+#     the system to execute the script there and then change back to the
+#     current directory in the main. If there is anyone that has a more clever 
+#     way to deal with this I would like to listen.
 #
 # XXX Note for this to work the version of python on the path must be the one
 #     that has all of Editra's dependancies installed on.
