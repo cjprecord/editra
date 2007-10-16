@@ -71,12 +71,12 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
     """
     def __init__(self, parent, id_, wsize, title):
         """Initialiaze the Frame and Event Handlers.
-        @
+        @param wsize: Windows initial size
+        @param title: Windows Title
 
         """
         wx.Frame.__init__(self, parent, id_, title, size=wsize,
-                          style=wx.DEFAULT_FRAME_STYLE | \
-                                wx.NO_FULL_REPAINT_ON_RESIZE)
+                          style=wx.DEFAULT_FRAME_STYLE)
 
         self._mgr = wx.aui.AuiManager(flags=wx.aui.AUI_MGR_DEFAULT | \
                                       wx.aui.AUI_MGR_TRANSPARENT_DRAG | \
@@ -85,16 +85,18 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         viewmgr.PerspectiveManager.__init__(self, self._mgr, \
                                             CONFIG['CACHE_DIR'])
 
+        # Setup app icon and title 
         self.SetTitle()
-        self.LOG = wx.GetApp().GetLog()
-        self._handlers = dict(menu=list(), ui=list())
-
-        # Try and set an app icon 
         util.SetWindowIcon(self)
 
         # Check if user wants Metal Style under OS X
+        # NOTE: soon to be deprecated
         if wx.Platform == '__WXMAC__' and _PGET('METAL'):
             self.SetExtraStyle(wx.FRAME_EX_METAL)
+
+        # Attributes
+        self.LOG = wx.GetApp().GetLog()
+        self._handlers = dict(menu=list(), ui=list())
 
         #---- Sizers to hold subapplets ----#
         self.sizer = wx.BoxSizer(wx.VERTICAL)
@@ -102,16 +104,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         #---- Setup File History ----#
         self.filehistory = wx.FileHistory(_PGET('FHIST_LVL', 'int', 5))
 
-        #---- Toolbar ----#
-        self.toolbar = None
-
         #---- Status bar on bottom of window ----#
         self.CreateStatusBar(3, style=wx.ST_SIZEGRIP)
         self.SetStatusWidths([-1, 120, 155])
         #---- End Statusbar Setup ----#
 
         #---- Notebook that contains the editting buffers ----#
-        edit_pane = wx.Panel(self, wx.ID_ANY)
+        edit_pane = wx.Panel(self)
         self.nb = ed_pages.EdPages(edit_pane, wx.ID_ANY)
         edit_pane.nb = self.nb
         self.sizer.Add(self.nb, 1, wx.EXPAND)
@@ -121,17 +120,14 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                           CloseButton(False).MaximizeButton(False). \
                           CaptionVisible(False))
 
-        #---- Setup Printer ----#
-        self.printer = ed_print.EdPrinter(self, self.nb.GetCurrentCtrl)
-
         #---- Command Bar ----#
         self._cmdbar = ed_cmdbar.CommandBar(edit_pane, ID_COMMAND_BAR)
         self._cmdbar.Hide()
 
-        #---- Create a toolbar ----#
-        if _PGET('TOOLBAR'):
-            self.toolbar = ed_toolbar.EdToolBar(self)
-            self.SetToolBar(self.toolbar)
+        #---- Setup Toolbar ----#
+        self.SetToolBar(ed_toolbar.EdToolBar(self))
+        if not _PGET('TOOLBAR'):
+            self.GetToolBar().Hide()
         #---- End Toolbar Setup ----#
 
         #---- Menus ----#
@@ -143,7 +139,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                            format=menbar.GetMenuByName("format"),
                            settings=menbar.GetMenuByName("settings"),
                            tools=menbar.GetMenuByName("tools"),
-                           help=menbar.GetMenuByName("help"),
                            lineformat=menbar.GetMenuByName("lineformat"),
                            language=syntax.GenLexerMenu())
 
@@ -175,7 +170,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                       self.OnMenuHighlight, id=ID_EOL_MODE)
 
         # Collect Menu Event handler pairs
-        self._handlers['menu'].extend([# File Menu Events
+        self._handlers['menu'].extend([# File Menu
                                        (ID_NEW, self.OnNew),
                                        (ID_OPEN, self.OnOpen),
                                        (ID_CLOSE, self.OnClosePage),
@@ -190,6 +185,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                                        (ID_PRINT, self.OnPrint),
                                        (ID_PRINT_PRE, self.OnPrint),
                                        (ID_PRINT_SU, self.OnPrint),
+
                                        # Edit Menu
                                        (ID_FIND, 
                                         self.nb.FindService.OnShowFindDlg),
@@ -197,15 +193,19 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                                         self.nb.FindService.OnShowFindDlg),
                                        (ID_QUICK_FIND, self.OnCommandBar),
                                        (ID_PREF, self.OnPreferences),
+
                                        # View Menu
                                        (ID_GOTO_LINE, self.OnCommandBar),
                                        (ID_VIEW_TOOL, self.OnViewTb),
+
                                        # Format Menu
                                        (ID_FONT, self.OnFont),
+
                                        # Tool Menu
                                        (ID_COMMAND, self.OnCommandBar),
                                        (ID_STYLE_EDIT, self.OnStyleEdit),
                                        (ID_PLUGMGR, self.OnPluginMgr),
+
                                        # Help Menu
                                        (ID_ABOUT, self.OnAbout),
                                        (ID_HOMEPAGE, self.OnHelp),
@@ -223,7 +223,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         #---- End Menu Setup ----#
 
-        #---- Actions to Take on other Events ----#
+        #---- Other Event Handlers ----#
         # Frame
         self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -243,13 +243,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self.LoadFileHistory(_PGET('FHIST_LVL', fmt='int'))
         self.UpdateToolBar()
 
-        #---- Set Position and Size ----#
-        self.SetTransparent(_PGET('ALPHA', default=255))
-        if _PGET('SET_WPOS') and _PGET('WPOS', "size_tuple", False):
-            self.SetPosition(_PGET('WPOS'))
-        else:
-            self.CenterOnParent()
-
         # Call add on plugins
         self.LOG("[main][info] Loading MainWindow Plugins ")
         plgmgr = wx.GetApp().GetPluginManager()
@@ -260,8 +253,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         self._shelf = iface.Shelf(plgmgr)
         self._shelf.Init(self)
         self.LOG("[main][info] Loading Generator plugins")
-        self._generator = generator.Generator(plgmgr)
-        self._generator.InstallMenu(self._menus['tools'])
+        generator.Generator(plgmgr).InstallMenu(self._menus['tools'])
 
         # Set Perspective
         self.SetPerspective(_PGET('DEFAULT_VIEW'))
@@ -269,9 +261,9 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
     __name__ = u"MainWindow"
 
-    ### End Private Member Functions/Variables ###
+    #---- End Private Member Functions/Variables ----#
 
-    ### Begin Public Function Definitions ###
+    #---- Begin Public Member Function ----#
     def OnActivate(self, evt):
         """Activation Event Handler
         @param evt: event that called this handler
@@ -378,7 +370,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self.LOG("[main][err] Filehistory load failed: %s" % str(msg))
 
     def OnNew(self, evt):
-        """Star a New File in a new tab
+        """Start a New File in a new tab
         @param evt: Event fired that called this handler
         @type evt: wxMenuEvent
 
@@ -493,10 +485,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                             title.lstrip(u"*"), 
                             ''.join(syntax.GenFileFilters()), 
                             wx.SAVE | wx.OVERWRITE_PROMPT)
-        path = dlg.GetPath()
-        dlg.Destroy()
 
         if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            dlg.Destroy()
+
             if page:
                 ctrl = page
             else:
@@ -518,6 +511,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                 self.nb.GetCurrentCtrl().FindLexer()
                 self.nb.UpdatePageImage()
             return result
+        else:
+            dlg.Destroy()
 
     def OnSaveProfile(self, evt):
         """Saves current settings as a profile
@@ -577,19 +572,21 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """Handles sending the current document to the printer,
         showing print previews, and opening the printer settings
         dialog.
+        @todo: is any manual cleanup required for the printer objects?
         @param evt: Event fired that called this handler
         @type evt: wxMenuEvent
 
         """
         e_id = evt.GetId()
-        self.printer.SetColourMode(_PGET('PRINT_MODE', "str").\
-                                   replace(u'/', u'_').lower())
+        printer = ed_print.EdPrinter(self, self.nb.GetCurrentCtrl)
+        printer.SetColourMode(_PGET('PRINT_MODE', "str").\
+                              replace(u'/', u'_').lower())
         if e_id == ID_PRINT:
-            self.printer.Print()
+            printer.Print()
         elif e_id == ID_PRINT_PRE:
-            self.printer.Preview()
+            printer.Preview()
         elif e_id == ID_PRINT_SU:
-            self.printer.PageSetup()
+            printer.PageSetup()
         else:
             evt.Skip()
 
@@ -647,7 +644,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         # XXX On wxMac the window size doesnt seem to take the toolbar
         #     into account so destroy it so that the window size is accurate.
         if wx.Platform == '__WXMAC__' and self.GetToolBar():
-            self.toolbar.Destroy()
+            self.GetToolBar().Destroy()
         _PSET('WSIZE', self.GetSizeTuple())
         _PSET('WPOS', self.GetPositionTuple())
         self.LOG("[main_evt] [exit] Closing editor at pos=%s size=%s" % \
@@ -662,7 +659,6 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             del self.filehistory
         except AttributeError:
             self.LOG("[main][exit][err] Trapped AttributeError OnExit")
-        self._cmdbar.Destroy()
 
         # Post exit notice to all aui panes
         panes = self._mgr.GetAllPanes()
@@ -711,19 +707,23 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         if evt.GetId() == ID_VIEW_TOOL:
-            if _PGET('TOOLBAR', 'bool', False) and self.toolbar != None:
-                self.toolbar.Destroy()
-                del self.toolbar
+            size = self.GetSize()
+            toolbar = self.GetToolBar()
+            if _PGET('TOOLBAR', 'bool', False) or toolbar.IsShown():
                 _PSET('TOOLBAR', False)
+                toolbar.Hide()
+                if wx.Platform != '__WXMAC__':
+                    self.SetSize((size[0], size[1] - toolbar.GetSize()[1]))
             else:
-                self.toolbar = ed_toolbar.EdToolBar(self)
-                self.SetToolBar(self.toolbar)
-                self.SendSizeEvent()
-                self.RefreshRect(self.GetRect())
-                self.Update()
-                self.Refresh()
                 _PSET('TOOLBAR', True)
+                toolbar.Show()
+                if wx.Platform != '__WXMAC__':
+                    self.SetSize((size[0], size[1] + toolbar.GetSize()[1]))
                 self.UpdateToolBar()
+
+            self.SendSizeEvent()
+            self.Refresh()
+            self.Update()
         else:
             evt.Skip()
 
@@ -802,7 +802,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
         """
         e_id = evt.GetId()
-        doc = self._generator.GenerateText(e_id, self.nb.GetCurrentCtrl())
+        gen = generator.Generator(wx.GetApp().GetPluginManager())
+        doc = gen.GenerateText(e_id, self.nb.GetCurrentCtrl())
         if doc:
             self.nb.NewPage()
             ctrl = self.nb.GetCurrentCtrl()
@@ -935,6 +936,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
     def ShowCommandCtrl(self):
         """Open the Commandbar in command mode.
+        @todo: check if this is necessary
 
         """
         self._cmdbar.Show(ed_cmdbar.ID_CMD_CTRL)
@@ -1002,7 +1004,7 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
             self._menus['view'].Enable(ID_ZOOM_NORMAL, zoom)
             self._menus['view'].Enable(ID_ZOOM_IN, zoom < 18)
             self._menus['view'].Enable(ID_ZOOM_OUT, zoom > -8)
-            menu.Check(ID_VIEW_TOOL, hasattr(self, 'toolbar'))
+            menu.Check(ID_VIEW_TOOL, self.GetToolBar().IsShown())
         elif menu == self._menus['viewedit']:
             menu.Check(ID_SHOW_WS, bool(ctrl.GetViewWhiteSpace()))
             menu.Check(ID_SHOW_EDGE, bool(ctrl.GetEdgeMode()))
@@ -1026,12 +1028,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @status: Temporary fix for toolbar status updating
 
         """
-        if not hasattr(self, 'toolbar') or self.toolbar is None:
+        toolbar = self.GetToolBar()
+        if not hasattr(toolbar, 'IsShown') or not toolbar.IsShown():
             return -1
         ctrl = self.nb.GetCurrentCtrl()
-        self.toolbar.EnableTool(ID_UNDO, ctrl.CanUndo())
-        self.toolbar.EnableTool(ID_REDO, ctrl.CanRedo())
-        self.toolbar.EnableTool(ID_PASTE, ctrl.CanPaste())
+        toolbar.EnableTool(ID_UNDO, ctrl.CanUndo())
+        toolbar.EnableTool(ID_REDO, ctrl.CanRedo())
+        toolbar.EnableTool(ID_PASTE, ctrl.CanPaste())
 
     def ModifySave(self):
         """Called when document has been modified prompting
