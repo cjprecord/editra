@@ -149,6 +149,5 @@ stringeol_style {
 unknown_style {
 		fore: #FFFFFF bold;
 		back: #DD0101 eol;
-		face: %(secondary)s;
 }
 
