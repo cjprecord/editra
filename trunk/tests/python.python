@@ -10,9 +10,9 @@ __author__ = "Cody Precord"
 
 import sys
 
-def add(a, b):
-    """A function to add two numbers"""
-    return a + b
+def times_twenty(a):
+    """multiply an item by twenty"""
+    return a * 20
 
 def say_hello():
     """Prints hello world to the console"""
@@ -33,6 +33,10 @@ class Greeting:
             return "Holla"
         else:
             return "Sorry I dont know %s" % self._lang
+
+    @property
+    def classdocs(self):
+        return '\n'.join([ x.__doc__ for x in dir(self) if hasattr(x, '__doc__')])
 
 if __name__ == '__main__':
     say_hello()
