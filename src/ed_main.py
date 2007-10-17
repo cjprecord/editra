@@ -345,6 +345,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         """
         return self._mgr
 
+    def GetNotebook(self):
+        """Get the windows main notebook that contains the editing buffers
+        @return: reference to L{extern.flatnotebook.Flatnotebook} instance
+
+        """
+        return self.nb
+
     def IsExiting(self):
         """Returns whether the windows is in the process of exiting
         or not.
@@ -867,10 +874,11 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @type evt: wxMenuEvent
 
         """
-        if not self.IsActive() or not self.nb.GetCurrentCtrl().HasCapture():
+        if not self.IsActive() or \
+           not (self.FindFocus() == self.nb.GetCurrentCtrl()):
             evt.Skip()
             return
-        
+
         menu_ids = syntax.SyntaxIds()
         menu_ids.extend([ID_SHOW_EOL, ID_SHOW_WS, ID_INDENT_GUIDES, ID_SYNTAX,
                          ID_KWHELPER, ID_WORD_WRAP, ID_BRACKETHL, ID_ZOOM_IN,
@@ -883,8 +891,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
                          ID_LINE_BEFORE, ID_TAB_TO_SPACE, ID_SPACE_TO_TAB,
                          ID_TRIM_WS, ID_SHOW_EDGE, ID_MACRO_START, 
                          ID_MACRO_STOP, ID_MACRO_PLAY, ID_TO_LOWER, 
-                         ID_TO_UPPER, ID_UNDO, ID_REDO, ID_CUT, ID_COPY,
-                         ID_PASTE, ID_SELECTALL])
+                         ID_TO_UPPER, ID_SELECTALL, ID_UNDO, ID_REDO, ID_CUT, 
+                         ID_COPY, ID_PASTE])
         if evt.GetId() in menu_ids:
             self.nb.GetCurrentCtrl().ControlDispatch(evt)
             self.UpdateToolBar()
@@ -1043,14 +1051,13 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
         @return: Result value of whether the file was saved or not
 
         """
-        if self.nb.GetCurrentCtrl().GetFileName() == u"":
+        name = self.nb.GetCurrentCtrl().GetFileName()
+        if name == u"":
             name = self.nb.GetPageText(self.nb.GetSelection())
-        else:
-            name = self.nb.GetCurrentCtrl().GetFileName()
 
         dlg = wx.MessageDialog(self, 
                                 _("The file: \"%s\" has been modified since "
-                                  "the last save point.\n Would you like to "
+                                  "the last save point.\n\nWould you like to "
                                   "save the changes?") % name, 
                                _("Save Changes?"), 
                                wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | \
