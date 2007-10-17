@@ -42,8 +42,13 @@ comment_style {
 		face: %(primary)s;
 }
 
+decor_style {
+        fore: #BA0EEA italic;
+        face: %(secondary)s;
+}
+
 directive_style {
-		fore: #0000FF;
+		fore: #0000FF bold;
 		face: %(secondary)s;
 }
 
