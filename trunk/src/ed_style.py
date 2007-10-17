@@ -738,6 +738,7 @@ def DefaultStyleDictionary():
          'class_style' : StyleItem("#2E8B57,bold"),
          'class2_style' : StyleItem("#2E8B57,bold"),
          'comment_style' : StyleItem("#838383"),
+         'decor_style' : StyleItem("#BA0EEA italic", face="%(secondary)s"),
          'directive_style' : StyleItem("#0000FF,bold", face="%(secondary)s"),
          'dockey_style' : StyleItem("#0000FF"),
          'error_style' : StyleItem("#DD0101,bold", face="%(secondary)s"),
