@@ -29,7 +29,7 @@
 #
 # Intefaces:
 #   * ShelfI: Interface into the L{Shelf}
-#
+#   * MainWindowI: Interface into L{ed_main.MainWindow}
 #
 #--------------------------------------------------------------------------#
 """
@@ -53,6 +53,51 @@ import util
 PGNUM_PAT = re.compile(' - [0-9]+')
 
 #--------------------------------------------------------------------------#
+
+class MainWindowI(plugin.Interface):
+    """The MainWindow Interface is intended as a simple general purpose
+    interface for adding functionality to the main window. It does little
+    managing of how object the implementing it is handled, most is left up to
+    the plugin. Some examples of plugins using this interface are the
+    FileBrowser and Calculator plugins.
+
+    """
+    def PlugIt(self, window):
+        """This method is called once and only once per window when it is 
+        created. It should typically be used to register menu entries, 
+        bind event handlers and other similar actions.
+
+        @param window: The parent window of the plugin
+        @postcondition: The plugins controls are installed in the L{MainWindow}
+
+        """
+        raise NotImplementedError
+
+    def GetMenuHandlers(self):
+        """Get menu event handlers/id pairs. This function should return a
+        list of tuples containing menu ids and their handlers. The handlers
+        should be not be a member of this class but a member of the ui component
+        that they handler acts upon.
+        
+        
+        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
+
+        """
+        raise NotImplementedError
+
+    def GetUIHandlers(self):
+        """Get update ui event handlers/id pairs. This function should return a
+        list of tuples containing object ids and their handlers. The handlers
+        should be not be a member of this class but a member of the ui component
+        that they handler acts upon.
+        
+        
+        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
+
+        """
+        raise NotImplementedError
+
+#-----------------------------------------------------------------------------#
 
 class ShelfI(plugin.Interface):
     """Interface into the L{Shelf}. All plugins wanting to be
