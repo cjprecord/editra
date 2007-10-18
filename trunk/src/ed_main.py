@@ -25,8 +25,9 @@
 # LANGUAGE: Python                                                         #
 #                                                                          #
 # SUMMARY:                                                                 #
-#  This module provides the class for the main window as well as the       #
-# plugin interface to interact with the window.                            #
+#  This module provides the class for the main window. The MainWindow is   #
+# main object of the editor containing the notebook, shelf, command bar    #
+# and other items.                                                         #
 #                                                                          #
 #--------------------------------------------------------------------------#
 """
@@ -1085,48 +1086,8 @@ class MainWindow(wx.Frame, viewmgr.PerspectiveManager):
 
 #-----------------------------------------------------------------------------#
 # Plugin interface's to the MainWindow
-class MainWindowI(plugin.Interface):
-    """The MainWindow Interface is intended as a simple general purpose
-    interface for adding functionality to the main window. It does little
-    managing of how object the implementing it is handled, most is left up to
-    the plugin. Some examples of plugins using this interface are the
-    FileBrowser and Calculator plugins.
-
-    """
-    def PlugIt(self, window):
-        """This method is called once and only once per window when it is 
-        created. It should typically be used to register menu entries, 
-        bind event handlers and other similar actions.
-
-        @param window: The parent window of the plugin
-        @postcondition: The plugins controls are installed in the L{MainWindow}
-
-        """
-        raise NotImplementedError
-
-    def GetMenuHandlers(self):
-        """Get menu event handlers/id pairs. This function should return a
-        list of tuples containing menu ids and their handlers. The handlers
-        should be not be a member of this class but a member of the ui component
-        that they handler acts upon.
-        
-        
-        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
-
-        """
-        raise NotImplementedError
-
-    def GetUIHandlers(self):
-        """Get update ui event handlers/id pairs. This function should return a
-        list of tuples containing object ids and their handlers. The handlers
-        should be not be a member of this class but a member of the ui component
-        that they handler acts upon.
-        
-        
-        @return: list [(ID_FOO, foo.OnFoo), (ID_BAR, bar.OnBar)]
-
-        """
-        raise NotImplementedError
+# For backwards compatibility soon to be moved
+MainWindowI = iface.MainWindowI
 
 class MainWindowAddOn(plugin.Plugin):
     """Plugin that Extends the L{MainWindowI}"""
