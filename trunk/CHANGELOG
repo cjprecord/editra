@@ -18,6 +18,12 @@ editor. Most notably are a correction to some performance issues on Mac OSX,
 a number of UI related issues on Linux, and a fair number of fixes to the
 Style Editor.
 
+There was also a bug in the scripts on the website for sending plugins to the
+Plugin Manager that caused old outdated ones to get sent instead of the new ones.
+The old ones are incompatible with Editra 0.2.0 and could cause it to fail to start
+when trying to load them. I have fixed both the script on the website and the code
+for preventing broken plugins from crashing the editor.
+
 I have also decided that this will be the last release version that will require
 a profile reset. From this release onwards updating to the new version will no
 longer require you to reconfigure Editra after wards.
@@ -27,9 +33,10 @@ NEW: [features/improvements]
 +Icon themes are now part of the plugin system so themes can be created and
 installed through the plugin manager using python eggs.
 +New icon theme based on Humility icons available through plugin manager.
++Improved highlighting for python (decorators are now supported)
 
 BUG FIXES:
-+Fixed a performance related bug that was most notable on the OSX version of Editra.
++Fixed a performance related bug that was most notable Editra was running on OSX.
 +Clipboard related keybindings on GTK version
 +Many UI fixes for when running on GTK
 +Fixed a bug in adjusting theme colors for systems using themes that have lots
