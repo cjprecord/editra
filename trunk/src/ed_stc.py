@@ -338,10 +338,10 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             sel = self.GetSelection()
             start = self.LineFromPosition(sel[0])
             end = self.LineFromPosition(sel[1])
-            c_start = self._code['comment'] + " "
+            c_start = self._code['comment'][0] + " "
             c_end = u''
             if len(self._code['comment']) > 1:
-                c_end = " " + self._code['comment']
+                c_end = " " + self._code['comment'][1]
             if end > start and self.GetColumn(sel[1]) == 0:
                 end = end - 1
             self.BeginUndoAction()
@@ -371,7 +371,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.SetSelection(sel[0], sel[1] + nchars)
                 else:
                     if len(self._code['comment']) > 1:
-                        nchars = nchars - len(self._code['comment'])
+                        nchars = nchars - len(self._code['comment'][1])
                     self.GotoPos(sel[0] + nchars)
 
     def ConvertCase(self, upper=False):
