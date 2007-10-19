@@ -393,7 +393,6 @@ class StyleEditor(wx.Dialog):
             sheet_path = dlg.GetPath()
             if u'ess' != sheet_path.split(u'.')[-1]:
                 sheet_path += u".ess"
-            dlg.Destroy()
 
             try:
                 writer = util.GetFileWriter(sheet_path)
@@ -419,12 +418,13 @@ class StyleEditor(wx.Dialog):
                         mainw.nb.UpdateTextControls()
                         mainw.SetStatusText(_("Changed color scheme to %s") % \
                                             sheet, ed_glob.SB_INFO)
+        dlg.Destroy()
         return result
 
     def GenerateStyleSheet(self):
         """Generates a style sheet from the dialogs style data
-        @return: the dictionary of L{StyleItems} formated into a style sheet
-                 string
+        @return: The dictionary of L{StyleItems} in self.styles_new transformed
+                 into a string that is in Editra Style Sheet format.
 
         """
         sty_sheet = list()
@@ -444,7 +444,7 @@ class StyleEditor(wx.Dialog):
 
     def OnCancel(self, evt):
         """Catches the cancel button clicks and checks if anything
-        needs to be done before closing the window on a cancel.
+        needs to be done before closing the window.
         @param evt: event that called this handler
 
         """
@@ -568,7 +568,6 @@ class StyleEditor(wx.Dialog):
     def OnExport(self, evt):
         """Catches save button event
         @param evt: event that called this handler
-        @postcondition: export file dialog is opened
 
         """
         self.LOG('[style_editor][export] Saving style changes')
