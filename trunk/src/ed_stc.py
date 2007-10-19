@@ -108,10 +108,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         # Attributes
         self.LOG = wx.GetApp().GetLog()
-        self._vimode = False
-        self._vinormal = False
-        self._vilast = u''
-        self._cmdcache = u''
+        self._vi = dict(vimode=False, normal=False,
+                        last=u'', cmdcache=u'')
 
         # File Attributes
         self._finfo = dict(filename='', encoding='utf-8', 
@@ -127,20 +125,23 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                             brackethl=_PGET("BRACKETHL"),
                             folding=_PGET('CODE_FOLD'),
                             highlight=_PGET("SYNTAX"))
-        self._autocomp_svc = autocomp.AutoCompService(self)
-        self._synmgr = syntax.SyntaxMgr(ed_glob.CONFIG['CACHE_DIR'])
-        self.keywords = [ ' ' ]		# Keywords list
-        self.syntax_set = list()
-        self._comment = list()
-        self.lang_id = 0        # Language ID from syntax module
+
+        # Code Related Objects
+        self._code = dict(compsvc=autocomp.AutoCompService(self),
+                          synmgr=syntax.SyntaxMgr(ed_glob.CONFIG['CACHE_DIR']),
+                          keywords=[ ' ' ],
+                          syntax_set=list(),
+                          comment=list(),
+                          lang_id=0)        # Language ID from syntax module
 
         # Set Up Margins 
+        ## Outer Left Margin Bookmarks
         self.SetMarginType(MARK_MARGIN, wx.stc.STC_MARGIN_SYMBOL)
         self.SetMarginMask(MARK_MARGIN, self.ED_STC_MASK_MARKERS)
         self.SetMarginSensitive(MARK_MARGIN, True)
         self.SetMarginWidth(MARK_MARGIN, 12)
 
-        ## Outer Left Margin Line Number Indication
+        ## Middle Left Margin Line Number Indication
         self.SetMarginType(NUM_MARGIN, wx.stc.STC_MARGIN_NUMBER)
         self.SetMarginMask(NUM_MARGIN, 0)
 
@@ -333,14 +334,14 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @param uncomment: uncomment selection
 
         """
-        if len(self._comment):
+        if len(self._code['comment']):
             sel = self.GetSelection()
             start = self.LineFromPosition(sel[0])
             end = self.LineFromPosition(sel[1])
-            c_start = self._comment[0] + " "
+            c_start = self._code['comment'] + " "
             c_end = u''
-            if len(self._comment) > 1:
-                c_end = " " + self._comment[1]
+            if len(self._code['comment']) > 1:
+                c_end = " " + self._code['comment']
             if end > start and self.GetColumn(sel[1]) == 0:
                 end = end - 1
             self.BeginUndoAction()
@@ -369,8 +370,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                 if sel[0] != sel[1]:
                     self.SetSelection(sel[0], sel[1] + nchars)
                 else:
-                    if len(self._comment) > 1:
-                        nchars = nchars - len(self._comment[1])
+                    if len(self._code['comment']) > 1:
+                        nchars = nchars - len(self._code['comment'])
                     self.GotoPos(sel[0] + nchars)
 
     def ConvertCase(self, upper=False):
@@ -409,7 +410,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @rtype: int
 
         """
-        return self.lang_id
+        return self._code['lang_id']
 
     def GetLastVisibleLine(self):
         """Return what the last visible line is
@@ -521,7 +522,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @return: style tag string
 
         """
-        for data in self.syntax_set:
+        for data in self._code['syntax_set']:
             if style_id == getattr(wx.stc, data[0]):
                 return data[1]
         return 'default_style'
@@ -574,7 +575,9 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         k_code = evt.GetKeyCode()
-        if not evt.ShiftDown() and self._vimode and k_code == wx.WXK_ESCAPE:
+        if not evt.ShiftDown() and \
+           self._vi['vimode'] and \
+           k_code == wx.WXK_ESCAPE:
             # If Vi emulation is active go into Normal mode and
             # pass the key event to OnChar
             self.SetViNormalMode(True)
@@ -593,7 +596,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if self._config['autocomp']:
                 if self.CallTipActive():
                     self.CallTipCancel()
-                self._autocomp_svc.UpdateNamespace(True)
+                self._code['compsvc'].UpdateNamespace(True)
         else:
             evt.Skip()
 
@@ -608,20 +611,20 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         key_code = evt.GetKeyCode()
-        if self._vimode and self._vinormal:
-            self._cmdcache = self._cmdcache + unichr(key_code)
+        if self._vi['vimode'] and self._vi['normal']:
+            self._vi['cmdcache'] = self._vi['cmdcache'] + unichr(key_code)
             self.ViCmdDispatch()
         elif not self._config['autocomp']:
             evt.Skip()
             return
-        elif key_code in self._autocomp_svc.GetAutoCompKeys():
+        elif key_code in self._code['compsvc'].GetAutoCompKeys():
             if self.AutoCompActive():
                 self.AutoCompCancel()
             command = self.GetCommandStr() + chr(key_code)
             self.AddText(unichr(key_code))
             if self._config['autocomp']:
                 self.ShowAutoCompOpt(command)
-        elif key_code in self._autocomp_svc.GetCallTipKeys():
+        elif key_code in self._code['compsvc'].GetCallTipKeys():
             if self.AutoCompActive():
                 self.AutoCompCancel()
             command = self.GetCommandStr()
@@ -686,8 +689,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         curr_pos = self.GetCurrentPos()
         start = curr_pos - 1
         col = self.GetColumn(curr_pos)
-        cmd_lmt = list(self._autocomp_svc.GetAutoCompStops())
-        for key in self._autocomp_svc.GetAutoCompKeys():
+        cmd_lmt = list(self._code['compsvc'].GetAutoCompStops())
+        for key in self._code['compsvc'].GetAutoCompKeys():
             kval = chr(key)
             if kval in cmd_lmt:
                 cmd_lmt.remove(kval)
@@ -706,7 +709,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @param command: command to look for autocomp options for
 
         """
-        lst = self._autocomp_svc.GetAutoCompList(command)
+        lst = self._code['compsvc'].GetAutoCompList(command)
         if len(lst):
             options = u' '.join(lst)
             self.AutoCompShow(0, options)
@@ -718,7 +721,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         if self.CallTipActive():
             self.CallTipCancel()
-        tip = self._autocomp_svc.GetCallTip(command)
+        tip = self._code['compsvc'].GetCallTip(command)
         if len(tip):
             curr_pos = self.GetCurrentPos()
             tip_pos = curr_pos - (len(command) + 1)
@@ -732,10 +735,10 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         if self.AutoCompActive():
             self.AutoCompCancel()
-        elif len(self.keywords) > 1:
+        elif len(self._code['keywords']) > 1:
             pos = self.GetCurrentPos()
             pos2 = self.WordStartPosition(pos, True)
-            self.AutoCompShow(pos - pos2, self.keywords)
+            self.AutoCompShow(pos - pos2, self._code['keywords'])
         return
 
     def OnModified(self, evt):
@@ -1202,7 +1205,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if isinstance(value, bool):
             self._config['autocomp'] = value
             if value:
-                self._autocomp_svc.LoadCompProvider(self.GetLexer())
+                self._code['compsvc'].LoadCompProvider(self.GetLexer())
 
     def SetEncoding(self, enc):
         """Sets the encoding of the current document
@@ -1238,9 +1241,9 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @type use_vi: boolean
 
         """
-        self._vimode = use_vi
+        self._vi['vimode'] = use_vi
         self.SetViNormalMode(False)  # Use input mode by default
-        self._cmdcache = u'' # clear all cmds when switching modes
+        self._vi['cmdcache'] = u'' # clear all cmds when switching modes
 
     def SetViNormalMode(self, normal):
         """Change the cursor appearance when toggling
@@ -1249,8 +1252,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         @type normal: boolean
 
         """
-        self._vinormal = normal
-        self._cmdcache = u''
+        self._vi['normal'] = normal
+        self._vi['cmdcache'] = u''
         if normal:
             self.SetCaretWidth(10)
             msg = 'NORMAL'
@@ -1332,18 +1335,18 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                put together for testing but now has implemented everything.
 
         """
-        if not len(self._cmdcache):
+        if not len(self._vi['cmdcache']):
             return
 
-        if self._cmdcache != u'.':
-            cmd = self._cmdcache
+        if self._vi['cmdcache'] != u'.':
+            cmd = self._vi['cmdcache']
         else:
-            cmd = self._vilast
+            cmd = self._vi['last']
         cpos = self.GetCurrentPos()
         cline = self.LineFromPosition(cpos)
         mw = self.GetTopLevelParent()
         if u':' in cmd:
-            self._cmdcache = u''
+            self._vi['cmdcache'] = u''
             mw.ShowCommandCtrl()
 
         # Single key commands
@@ -1376,8 +1379,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             if cmd in u'aAiI':
                 self.SetViNormalMode(False)
 
-            self._vilast = cmd
-            self._cmdcache = u''
+            self._vi['last'] = cmd
+            self._vi['cmdcache'] = u''
         # Repeatable 1 key commands
         elif re.match(VI_SINGLE_REPEAT, cmd):
             rcmd = cmd[-1]
@@ -1495,8 +1498,8 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             elif rcmd in u'CoOs':
                 self.SetViNormalMode(False)
             self.EndUndoAction()
-            self._vilast = cmd
-            self._cmdcache = u''
+            self._vi['last'] = cmd
+            self._vi['cmdcache'] = u''
         # 2 key commands
         elif re.match(VI_DOUBLE_P1, cmd) or \
              re.match(VI_DOUBLE_P2, cmd) or \
@@ -1535,7 +1538,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.SetCurrentPos(pos)
                 elif u'G' in rcmd:
                     if repeat == 0: # invalid cmd
-                        self._cmdcache = u''
+                        self._vi['cmdcache'] = u''
                         return
                     if repeat == 1 and u'1' not in cmd: # Default eof
                         self.SetAnchor(self.GetLineEndPosition(cline - 1))
@@ -1617,15 +1620,15 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self.EndUndoAction()
             if rcmd in '<<>>' or rcmd[-1] == u'G':
                 self.GotoIndentPos(cline)
-            self._vilast = cmd
-            self._cmdcache = u''
+            self._vi['last'] = cmd
+            self._vi['cmdcache'] = u''
         else:
             pass
 
         # Update status bar
-        if mw and self._vinormal:
+        if mw and self._vi['normal']:
             evt = ed_event.StatusEvent(ed_event.edEVT_STATUS, self.GetId(),
-                                       'NORMAL\t%s' % self._cmdcache,
+                                       'NORMAL\t%s' % self._vi['cmdcache'],
                                         ed_glob.SB_BUFF)
             wx.PostEvent(self.GetTopLevelParent(), evt)
         
@@ -1868,7 +1871,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             writer.close()
         except (AttributeError, IOError), msg:
             result = False
-            self.LOG("[stc][err]There was an error saving %s" % path)
+            self.LOG("[stc][err] There was an error saving %s" % path)
             self.LOG("[stc][err] ERROR: %s" % str(msg))
 
         if result:
@@ -1876,6 +1879,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
             self._finfo['modtime'] = util.GetFileModTime(path)
             self.OnModified(wx.stc.StyledTextEvent(wx.stc.wxEVT_STC_MODIFIED))
             self.SetFileName(path)
+
         return result
 
     # With utf-16 encoded text need to remove the BOM prior to setting
@@ -1922,24 +1926,24 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
 
         """
         self.AutoCompSetAutoHide(False)
-        self._autocomp_svc.LoadCompProvider(self.GetLexer())
-        self.AutoCompSetIgnoreCase(self._autocomp_svc.GetIgnoreCase())
-        self.AutoCompStops(self._autocomp_svc.GetAutoCompStops())
-        self._autocomp_svc.UpdateNamespace(True)
+        self._code['compsvc'].LoadCompProvider(self.GetLexer())
+        self.AutoCompSetIgnoreCase(self._code['compsvc'].GetIgnoreCase())
+        self.AutoCompStops(self._code['compsvc'].GetAutoCompStops())
+        self._code['compsvc'].UpdateNamespace(True)
 
     def ConfigureLexer(self, file_ext):
         """Sets Lexer and Lexer Keywords for the specifed file extension
         @param file_ext: a file extension to configure the lexer from
 
         """
-        syn_data = self._synmgr.SyntaxData(file_ext)
+        syn_data = self._code['synmgr'].SyntaxData(file_ext)
 
         # Set the ID of the selected lexer
         try:
-            self.lang_id = syn_data[syntax.LANGUAGE]
+            self._code['lang_id'] = syn_data[syntax.LANGUAGE]
         except KeyError:
             self.LOG("[stc][err] Failed to get Lang Id from Syntax package")
-            self.lang_id = 0
+            self._code['lang_id'] = 0
 
         lexer = syn_data[syntax.LEXER]
         # Check for special cases
@@ -1988,7 +1992,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         # Set Extra Properties
         self.SetProperties(props)
         # Set Comment Pattern
-        self._comment = comment
+        self._code['comment'] = comment
         return True
 
     def SetKeyWords(self, kw_lst):
@@ -2000,7 +2004,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         """
         # Parse Keyword Settings List simply ignoring bad values and badly
         # formed lists
-        self.keywords = ""
+        self._code['keywords'] = ""
         for keyw in kw_lst:
             if len(keyw) != 2:
                 continue
@@ -2009,13 +2013,13 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                    not isinstance(keyw[1], basestring):
                     continue
                 else:
-                    self.keywords += keyw[1]
+                    self._code['keywords'] += keyw[1]
                     wx.stc.StyledTextCtrl.SetKeyWords(self, keyw[0], keyw[1])
 
-        kwlist = self.keywords.split()      # Split into a list of words
-        kwlist = list(set(kwlist))          # Uniqueify the list
-        kwlist.sort()                       # Sort into alphbetical order
-        self.keywords = " ".join(kwlist)    # Put back into a string
+        kwlist = self._code['keywords'].split()    # Split into a list of words
+        kwlist = list(set(kwlist))                 # Uniqueify the list
+        kwlist.sort()                              # Sort into alphbetical order
+        self._code['keywords'] = " ".join(kwlist)  # Put back into a string
         return True
  
     def SetSyntax(self, syn_lst):
@@ -2044,7 +2048,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
                     self.StyleSetSpec(getattr(wx.stc, syn[0]), \
                                       self.GetStyleByName(syn[1]))
                     valid_settings.append(syn)
-        self.syntax_set = valid_settings
+        self._code['syntax_set'] = valid_settings
         return True
 
     def SetProperties(self, prop_lst):
@@ -2076,7 +2080,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         self.Freeze()
         self.StyleClearAll()
         self.UpdateBaseStyles()
-        self.SetSyntax(self.syntax_set)
+        self.SetSyntax(self._code['syntax_set'])
         self.DefineMarkers()
         self.Thaw()
         self.Refresh()
@@ -2126,7 +2130,7 @@ class EditraStc(wx.stc.StyledTextCtrl, ed_style.StyleMgr):
         if spec_style != self.style_set:
             self.LoadStyleSheet(self.GetStyleSheet(spec_style), force=True)
         self.UpdateBaseStyles()
-        self.SetSyntax(self.syntax_set)
+        self.SetSyntax(self._code['syntax_set'])
         self.DefineMarkers()
         self.Refresh()
 
