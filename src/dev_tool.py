@@ -18,7 +18,7 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-""" Development Tools 
+""" Editra Development Tools 
 @author: Cody Precord
 @summary: Utility function for debugging the editor
 
@@ -41,18 +41,28 @@ _ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
 # General Debuging Helper Functions
 
-def DEBUGP(statement, mode="std", log_lvl="none"):
-    """Used to print Debug Statements
-    1. Modes of operation:
+def DEBUGP(statement, mode="std"):
+    """Used to print Debug Statements. Statements should be formated as 
+    follows:
+    @note: mode variable and message type information in message string are
+           not currently used but will be in the future for organizing the
+           debug levels.
+
+    1. Formatting
+       - [object/module name][msg_type] msg
+
+    2. Modes of operation:
        - std = stdout
        - log = writes to log file
     
-    2. Log Levels:
-       - none = used with stdout
-       - INFO = Basic Information
-       - WARN = Could be a potential problem
-       - ERROR = Serious problem has occured
-       
+    3. Message Type:
+       - [err]  : Notes an exception or error condition
+       - [warn] : Notes a error that is not severe
+       - [info] : General information message
+       - [evt]  : Some sort of event related message
+
+    Example: [ed_main][err] File failed to open
+
     """
     # Turn off normal debugging messages when not in Debug mode
     if mode == "std" and not ed_glob.DEBUG:
@@ -115,7 +125,7 @@ def EnvironmentInfo():
     ftypes = list()
     for key, val in Profile().iteritems():
         # Exclude "private" information
-        if key == 'MYPROFILE' or key.startswith('FILE'):
+        if key.startswith('FILE'):
             continue
         elif key == 'LAST_SESSION' or key == 'FHIST':
             for fname in val:
@@ -124,8 +134,8 @@ def EnvironmentInfo():
                     if ext not in ftypes:
                         ftypes.append(ext)
         else:
-            info.append(u"%s=%s" % (key, unicode(val)))
-    info.append(u"FTYPES=%s" % unicode(ftypes))
+            info.append(u"%s=%s" % (key, str(val)))
+    info.append(u"FTYPES=%s" % str(ftypes))
     info.append("#---- End Runtime Variables ----#")
 
     return u"\n".join(info)
@@ -140,6 +150,11 @@ def ExceptionHook(exctype, value, trace):
     ftrace = FormatTrace(exctype, value, trace)
     # Ensure that error gets raised to console as well
     print ftrace
+
+    # If abort has been set and we get here again do a more forcefull shutdown
+    global ABORT
+    if ABORT:
+        exit()
 
     # Prevent multiple reporter dialogs from opening at once
     if not REPORTER_ACTIVE and not ABORT:
@@ -311,7 +326,9 @@ class ErrorDialog(wx.Dialog):
             webbrowser.open(msg)
             self.Close()
         elif e_id == wx.ID_ABORT:
+            global ABORT
             ABORT = True
+            # Try a nice shutdown first time through
             wx.CallLater(500, wx.GetApp().OnExit, 
                          wx.MenuEvent(wx.wxEVT_MENU_OPEN, ed_glob.ID_EXIT),
                          True)
