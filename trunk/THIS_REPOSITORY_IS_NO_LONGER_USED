@@ -1,0 +1,5 @@
+This repository is no longer used and will only remain here for the immediate
+future. To get the latest versions of the code please check the code out from
+the new repository:
+
+svn checkout http://svn.wxwidgets.org/svn/wx/wxPython/3rdParty/Editra
