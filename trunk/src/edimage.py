@@ -1,3 +1,10 @@
+###############################################################################
+# Name: ed_image.py                                                           #
+# Purpose: Encoded art resources for Editra                                   #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
+# Licence: wxWindows Licence                                                  #
+###############################################################################
 """This file is an image data file that provides some of the base icons
 @note: image data generated with img2py
 

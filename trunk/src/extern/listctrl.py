@@ -800,11 +800,11 @@ class CheckListCtrlMixin:
     def __init__(self, check_image=None, uncheck_image=None):
         self.__imagelist_ = wx.ImageList(16, 16)
         if not check_image:
-#             check_image, uncheck_image = self.__CreateDefaultBitmaps()
-            if wx.Platform == '__WXMAC__':
-                check_image = getMacCheckBitmap()
-            else:
-                check_image = getCheckBitmap()
+            check_image, uncheck_image = self.__CreateDefaultBitmaps()
+#             if wx.Platform == '__WXMAC__':
+#                 check_image = getMacCheckBitmap()
+#             else:
+#                 check_image = getCheckBitmap()
         if not uncheck_image:
             if wx.Platform == '__WXMAC__':
                 uncheck_image = getMacUncheckBitmap()
@@ -827,8 +827,7 @@ class CheckListCtrlMixin:
                                        wx.CONTROL_CHECKED)
         cbmp = dc.GetAsBitmap()
         dc.SelectObject(wx.EmptyBitmap(16, 16))
-        wx.RendererNative.Get().DrawCheckBox(self, dc, wx.Rect(0, 0, 16, 16), 
-                                       wx.CONTROL_CHECKABLE)
+        wx.RendererNative.Get().DrawCheckBox(self, dc, wx.Rect(0, 0, 16, 16), 0)
         ucbmp = dc.GetAsBitmap()
 
         return cbmp, ucbmp
