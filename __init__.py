@@ -1,3 +1,11 @@
+###############################################################################
+# Name: __init__.py                                                           #
+# Purpose: Put the src package in the Editra packages namespace               #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
+# Licence: wxWindows Licence                                                  #
+###############################################################################
+
 """Main package initializer
 @summary: makes the src package available to the package
 
