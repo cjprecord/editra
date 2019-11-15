@@ -1,0 +1,4 @@
+Name=Ubuntoon
+Author=Cody Precord
+Description=Ubuntoon Icon theme for Editra
+Version=0.1

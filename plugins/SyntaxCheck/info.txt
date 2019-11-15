@@ -1,0 +1,4 @@
+Name=SyntaxChecker
+Author=Giuseppe "Cowo" Corbelli
+Description=Adds a Syntax Checker to the Shelf Menu
+Version=0.2

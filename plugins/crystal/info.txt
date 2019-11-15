@@ -1,0 +1,4 @@
+Name=Crystal
+Author=Cody Precord
+Description=Crystal Project icons for Editra
+Version=0.2

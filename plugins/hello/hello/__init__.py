@@ -1,59 +1,63 @@
-#!/usr/bin/env python
-############################################################################
-#    Copyright (C) 2007 Cody Precord                                       #
-#    cprecord@editra.org                                                   #
-#                                                                          #
-#    Editra is free software; you can redistribute it and#or modify        #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-#                                                                          #
-#    Editra is distributed in the hope that it will be useful,             #
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-#    GNU General Public License for more details.                          #
-#                                                                          #
-#    You should have received a copy of the GNU General Public License     #
-#    along with this program; if not, write to the                         #
-#    Free Software Foundation, Inc.,                                       #
-#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
-############################################################################
+###############################################################################
+# Name: __init__.py                                                           #
+# Purpose: Hello World Sample Plugin                                          #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
+# Licence: wxWindows Licence                                                  #
+###############################################################################
 """Adds Hello World to the View Menu"""
 __author__ = "Cody Precord"
-__version__ = "0.2"
+__version__ = "0.3"
 
 import wx
-import ed_main
-import ed_menu
+import iface
 import plugin
+
+_ = wx.GetTranslation
+#-----------------------------------------------------------------------------#
 
 ID_HELLO = wx.NewId()
 class Hello(plugin.Plugin):
     """Adds Hello World to the View Menu"""
-    plugin.Implements(ed_main.MainWindowI)
+    plugin.Implements(iface.MainWindowI)
     def PlugIt(self, parent):
         """Adds the view menu entry registers the event handler"""
-        mw = parent
-        if mw:
+        if parent:
+            # This will let you use Editra's loggin system
             self._log = wx.GetApp().GetLog()
-            self._log("[hello] Installing Hello World")
-            mb = mw.GetMenuBar()
-            hm = mb.GetMenuByName("view")
-            hm.Append(ID_HELLO, _("Hello World"), 
+            self._log("[hello][info] Installing Hello World")
+            vm = parent.GetMenuBar().GetMenuByName("view")
+            vm.Append(ID_HELLO, _("Hello World"), 
                       _("Open a Hello World Dialog"))
         else:
             self._log("[hello][err] Failed to install hello plugin")
 
     def GetMenuHandlers(self):
+        """This is used to register the menu handler with the app and
+        associate the event with the parent window. It needs to return
+        a list of ID/Handler pairs for each menu handler that the plugin
+        is providing.
+
+        """
         return [(ID_HELLO, SayHello)]
 
     def GetUIHandlers(self):
+        """This is used to register the update ui handler with the app and
+        associate the event with the parent window. This plugin doesn't use
+        the UpdateUI event so it can just return an empty list.
+
+        """
         return list()
+
+#-----------------------------------------------------------------------------#
+# This is the handler for opening the hello world dialog it is defined
+# outside of the plugins class instance because that class is created
+# as a singleton so if the event handler is part of that class there are
+# problems with using when multiple windows are open.
 
 def SayHello(evt):
     """Opens the hello dialog"""
-    e_id = evt.GetId()
-    if e_id == ID_HELLO:
+    if evt.GetId() == ID_HELLO:
         dlg = wx.MessageBox(_("Editra's Hello Plugin Says Hello"), 
                             _("Hello World"))
     else:

@@ -1,0 +1,27 @@
+# Latvian translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-18 20:36-0600\n"
+"PO-Revision-Date: 2008-11-17 22:40+0000\n"
+"Last-Translator: janis.sl <Unknown>\n"
+"Language-Team: Latvian <lv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-11-19 00:52+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: cssoptimizer/cssoptimizer/__init__.py:93
+msgid "Generate an optimized version of the css"
+msgstr "Ģenerēt optimizētu CSS versiju"
+
+#: cssoptimizer/cssoptimizer/__init__.py:92
+#, python-format
+msgid "Optimize %s"
+msgstr "Optimizēt %s"

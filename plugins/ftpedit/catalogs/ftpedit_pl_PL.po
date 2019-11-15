@@ -1,0 +1,236 @@
+# Polish translation for editra
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-26 14:32-0500\n"
+"PO-Revision-Date: 2009-02-12 04:21+0000\n"
+"Last-Translator: pp/bs <Unknown>\n"
+"Language-Team: Polish <pl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-04-26 15:00+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ftpedit/ftpedit/ftpwindow.py:451
+#, python-format
+msgid "%s already exists"
+msgstr "%s już istnieje"
+
+#: ftpedit/ftpedit/ftpconfig.py:284
+#, python-format
+msgid "%s already exists!"
+msgstr "%s już istnieje!"
+
+#: ftpedit/ftpedit/ftpconfig.py:283 ftpedit/ftpedit/ftpwindow.py:450
+#, python-format
+msgid "%s already exists. Please enter a different name."
+msgstr "%s już istnieje. Wprowadź inną nazwę"
+
+#: ftpedit/ftpedit/ftpwindow.py:408
+#, python-format
+msgid "Are you sure you want to delete %s?"
+msgstr "Czy na pewno usunąć %s?"
+
+#: ftpedit/ftpedit/ftpwindow.py:124
+msgid "Configuration"
+msgstr "Konfiguracja"
+
+#: ftpedit/ftpedit/ftpwindow.py:146 ftpedit/ftpedit/ftpwindow.py:177
+msgid "Connect"
+msgstr "Połącz"
+
+#: ftpedit/ftpedit/ftpwindow.py:657
+msgid "Copy URL"
+msgstr "Kopiuj adres URL"
+
+#: ftpedit/ftpedit/ftpconfig.py:517
+msgid "Default Path:"
+msgstr "Ścieżka domyślna:"
+
+#: ftpedit/ftpedit/ftpconfig.py:362 ftpedit/ftpedit/ftpwindow.py:643
+msgid "Delete"
+msgstr "Skasuj"
+
+#: ftpedit/ftpedit/ftpwindow.py:409
+msgid "Delete File?"
+msgstr "Usunąć plik?"
+
+#: ftpedit/ftpedit/ftpwindow.py:280
+msgid "Disconnect"
+msgstr "Rozłącz"
+
+#: ftpedit/ftpedit/ftpwindow.py:641
+msgid "Edit"
+msgstr "Edycja"
+
+#: ftpedit/ftpedit/ftpconfig.py:520
+msgid "Encoding:"
+msgstr "Kodowanie:"
+
+#: ftpedit/ftpedit/ftpwindow.py:440
+msgid "Enter name for new directory."
+msgstr "Wprowadź nazwę, która ma zostać nadana nowemu katalogowi."
+
+#: ftpedit/ftpedit/ftpwindow.py:431
+msgid "Enter name for new file."
+msgstr "Wprowadź nazwę, która ma zostać nadana nowemu plikowi."
+
+#: ftpedit/ftpedit/ftpwindow.py:397
+msgid "Enter the new name"
+msgstr "Wprowadź nową nazwę"
+
+#: ftpedit/ftpedit/ftpwindow.py:255
+#, python-format
+msgid ""
+"Error on disconnect:\n"
+"Error:\n"
+"%s"
+msgstr ""
+"Błąd przy rozłączaniu:\n"
+"Błąd:\n"
+"%s"
+
+#: ftpedit/ftpedit/ftpwindow.py:502
+#, python-format
+msgid "Error: %s"
+msgstr "Błąd: %s"
+
+#: ftpedit/ftpedit/ftpwindow.py:345
+#, python-format
+msgid ""
+"Failed to download %(file)s\n"
+"Error:\n"
+"%(err)s"
+msgstr ""
+
+#: ftpedit/ftpedit/ftpwindow.py:593
+msgid "Filename"
+msgstr "Nazwa pliku"
+
+#: ftpedit/ftpedit/ftpwindow.py:293
+msgid "Ftp Configuration"
+msgstr "Konfiguracja Ftp"
+
+#: ftpedit/ftpedit/ftpwindow.py:275
+msgid "Ftp Connection Error"
+msgstr "Błąd połączenia FTP"
+
+#: ftpedit/ftpedit/ftpwindow.py:347
+msgid "Ftp Download Failed"
+msgstr "Pobieranie plików przez Ftp nie powiodło się"
+
+#: ftpedit/ftpedit/ftpwindow.py:256 ftpedit/ftpedit/ftpwindow.py:502
+msgid "Ftp Error"
+msgstr "Błąd FTP"
+
+#: ftpedit/ftpedit/__init__.py:77
+msgid "Ftp File Window"
+msgstr "Okno pliku Ftp"
+
+#: ftpedit/ftpedit/ftpfile.py:96
+msgid "Ftp Save Error"
+msgstr "Błąd podczas zapisywania poprzez Ftp"
+
+#: ftpedit/ftpedit/__init__.py:76
+msgid "Ftp Window"
+msgstr "Okno Ftp"
+
+#: ftpedit/ftpedit/ftpfile.py:139 ftpedit/ftpedit/ftpfile.py:145
+#, python-format
+msgid "Ftp upload failed: %s"
+msgstr "Wysyłanie pliku przez Ftp nie powiodło się: %s"
+
+#: ftpedit/ftpedit/ftpfile.py:147
+#, python-format
+msgid "Ftp upload succeeded: %s"
+msgstr "Wysłanie pliku przez Ftp zakończone: %s"
+
+#: ftpedit/ftpedit/ftpconfig.py:502
+msgid "Host:"
+msgstr "Host:"
+
+#: ftpedit/ftpedit/ftpconfig.py:470
+msgid "Login Settings"
+msgstr "Ustawienia logowania"
+
+#: ftpedit/ftpedit/ftpwindow.py:595
+msgid "Modified"
+msgstr "Zmodyfikowano"
+
+#: ftpedit/ftpedit/ftpconfig.py:177
+msgid "My Sites"
+msgstr "Moje serwisy"
+
+#: ftpedit/ftpedit/ftpwindow.py:441
+msgid "New Directory"
+msgstr "Nowy katalog"
+
+#: ftpedit/ftpedit/ftpwindow.py:432 ftpedit/ftpedit/ftpwindow.py:648
+msgid "New File"
+msgstr "Nowy plik"
+
+#: ftpedit/ftpedit/ftpwindow.py:652
+msgid "New Folder"
+msgstr "Nowy folder"
+
+#: ftpedit/ftpedit/ftpconfig.py:361 ftpedit/ftpedit/ftpconfig.py:409
+msgid "New Site"
+msgstr "Nowy serwis"
+
+#: ftpedit/ftpedit/ftpconfig.py:111
+msgid "Ok"
+msgstr "Ok"
+
+#: ftpedit/ftpedit/ftpconfig.py:511 ftpedit/ftpedit/ftpwindow.py:138
+msgid "Password:"
+msgstr "Hasło:"
+
+#: ftpedit/ftpedit/ftpconfig.py:496
+msgid "Port:"
+msgstr "Port:"
+
+#: ftpedit/ftpedit/ftpwindow.py:636
+msgid "Refresh"
+msgstr "Odśwież"
+
+#: ftpedit/ftpedit/ftpwindow.py:642
+msgid "Rename"
+msgstr "Zmień nazwę"
+
+#: ftpedit/ftpedit/ftpwindow.py:398
+msgid "Rename File"
+msgstr "Zmień nazwę pliku"
+
+#: ftpedit/ftpedit/ftpwindow.py:544
+msgid "Retrieving file"
+msgstr "Pobieranie pliku"
+
+#: ftpedit/ftpedit/ftpconfig.py:341
+msgid "Sites"
+msgstr "Serwisy"
+
+#: ftpedit/ftpedit/ftpwindow.py:128
+msgid "Sites:"
+msgstr "Serwisy:"
+
+#: ftpedit/ftpedit/ftpwindow.py:594
+msgid "Size"
+msgstr "Rozmiar"
+
+#: ftpedit/ftpedit/ftpwindow.py:344
+msgid "Unknown"
+msgstr "Nieznany"
+
+#: ftpedit/ftpedit/ftpconfig.py:508
+msgid "User:"
+msgstr "Użytkownik:"
+
+#: ftpedit/ftpedit/ftpwindow.py:133
+msgid "Username:"
+msgstr "Nazwa użytkownika:"

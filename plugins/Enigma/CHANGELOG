@@ -1,0 +1,13 @@
+Enigma Plugin
+Text Encoder and Decoder Tools
+Changelog
+
+#-----------------------------------------------------------------------------#
+
+Version 0.1
+Released: 08/18/2012
+
+Initial Release
+
++ Supports Base16, Base32, and Base64 Encoding / Decoding
++ Encode text with Base64 and Unix EOL

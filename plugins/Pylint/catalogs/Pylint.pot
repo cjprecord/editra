@@ -1,0 +1,37 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-26 21:09-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: Pylint/Pylint/__init__.py:128
+msgid "Error"
+msgstr ""
+
+#: Pylint/Pylint/__init__.py:129
+msgid "File"
+msgstr ""
+
+#: Pylint/Pylint/__init__.py:130
+msgid "Line"
+msgstr ""
+
+#: Pylint/Pylint/__init__.py:202
+msgid "Show Pylint checker"
+msgstr ""
+
+#: Pylint/Pylint/__init__.py:127
+msgid "Type"
+msgstr ""

@@ -1,0 +1,4 @@
+Author=Cody Precord
+Version=0.4
+Name=FtpEdit
+Description=Browse and Edit files over FTP

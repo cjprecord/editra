@@ -1,0 +1,48 @@
+CommentBrowser Plugin for Editra
+Author: DR0ID
+License: wxWindows
+
+
+#-----------------------------------------------------------------------------#
+
+Version 0.4
+Released: 03/30/2010
+
++ Api compatibility changes
++ Fix Unicode handling issue
+
+#-----------------------------------------------------------------------------#
+
+Version 0.3
+Released: 09/06/2008
+
++ Some ui improvements
++ Added Italian, Russian, and Serbian, Brazilian Portuguese, Ukrainian, and
+  Finnish translations
+
+#-----------------------------------------------------------------------------#
+
+Version 0.2:
+Released: 03/14/2008
+
+  + Update icons when Editra's icon theme changes
+  + Fix some performance issues for when multiple windows are open
+  + Fix menu checkmark not updating properly
+  + Fix some unicode issues
+  + Added a checkbox to enable/disable after keypress update of the entries
+
+#-----------------------------------------------------------------------------#
+
+Version 0.1:
+    Initial release. 02/08/2008
+    CommentBrowser is a list that shows you what tasks are still open.
+    
+    Features:
+    
+    - priority bases on '!' and type of task
+    - highlightening priority by color
+    - it looks for TODO, HACK, XXX, FIXME, NOTE
+    - should work with any language (it parses for example for 'todo :' and it has to be in a comment)
+    - switch between one file and all open files
+    - filter task type
+    - you can change sort order

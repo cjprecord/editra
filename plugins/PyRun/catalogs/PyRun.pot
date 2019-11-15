@@ -1,0 +1,47 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-18 20:35-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: PyRun/PyRun/outwin.py:687
+msgid "Abort"
+msgstr ""
+
+#: PyRun/PyRun/outwin.py:629
+msgid "Clear"
+msgstr ""
+
+#: PyRun/PyRun/outwin.py:671
+#, python-format
+msgid "Current Script: %s"
+msgstr ""
+
+#: PyRun/PyRun/__init__.py:61
+msgid "Executes a python script"
+msgstr ""
+
+#: PyRun/PyRun/outwin.py:623
+msgid "Path to Python executable or name of executable to use"
+msgstr ""
+
+#: PyRun/PyRun/outwin.py:648
+msgid "Python Executable"
+msgstr ""
+
+#: PyRun/PyRun/outwin.py:628 PyRun/PyRun/outwin.py:698
+#: PyRun/PyRun/outwin.py:746
+msgid "Run Script"
+msgstr ""

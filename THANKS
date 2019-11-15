@@ -5,11 +5,8 @@ Python Programming Language (http://www.python.org)
 wxPython Class Library (http://www.wxpython.org)
 setuptools (http://peak.telecommunity.com/DevCenter/setuptools)
 py2app (http://undefined.org/python/#py2app)
-py2exe (http://py2exe.org) 
+py2exe (http://py2exe.org)
+pygments (http://pygments.org)
 
-The primary icon theme that is distributed with Editra 'Nuovo' is derived from 
-the excellent Dropline Nuovo! icon set.
-http://www.silvestre.com.ar/
-
-The secondary icon theme 'Tango' is derived from the Tango set of icons
+The primary icon theme 'Tango' is derived from the Tango set of icons
 http://tango.freedesktop.org

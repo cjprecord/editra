@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+*.egg
+plugins/*/dist
+plugins/*/build
+plugins/*/*.egg-info
+**.svn

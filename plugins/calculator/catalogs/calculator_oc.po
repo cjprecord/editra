@@ -1,0 +1,77 @@
+# Occitan (post 1500) translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-30 19:22-0500\n"
+"PO-Revision-Date: 2008-03-31 14:40+0000\n"
+"Last-Translator: Cédric VALMARY <Unknown>\n"
+"Language-Team: Occitan (post 1500) <oc@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-10-20 02:28+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: calculator/calculator/calc.py:146
+msgid "Ascii"
+msgstr "Ascii"
+
+#: calculator/calculator/__init__.py:44 calculator/calculator/calc.py:643
+msgid "Calculator"
+msgstr "Calculadoira"
+
+#: calculator/calculator/calc.py:145
+msgid "Char Display"
+msgstr ""
+
+#: calculator/calculator/calc.py:153
+msgid "Dec"
+msgstr "Dec"
+
+#: calculator/calculator/calc.py:52
+msgid "Editra | Calculator"
+msgstr "Editra | Calculadoira"
+
+#: calculator/calculator/calc.py:184 calculator/calculator/calc.py:523
+msgid "Error"
+msgstr "Error"
+
+#: calculator/calculator/calc.py:521
+#, python-format
+msgid "Error: %s"
+msgstr "Error : %s"
+
+#: calculator/calculator/calc.py:388
+msgid "Error: Display Overflow"
+msgstr ""
+
+#: calculator/calculator/calc.py:153
+msgid "Hex"
+msgstr "Exa"
+
+#: calculator/calculator/calc.py:152
+msgid "Mode"
+msgstr "Mòde"
+
+#: calculator/calculator/calc.py:153
+msgid "Oct"
+msgstr "Oct"
+
+#: calculator/calculator/calc.py:146
+msgid "Unicode"
+msgstr "Unicode"
+
+#: calculator/calculator/calc.py:426
+#, python-format
+msgid "ascii: %s"
+msgstr "asci i: %s"
+
+#: calculator/calculator/calc.py:432
+#, python-format
+msgid "unicode: %s"
+msgstr "unicode i: %s"

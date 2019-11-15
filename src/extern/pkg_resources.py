@@ -14,7 +14,13 @@ method.
 """
 
 import sys, os, zipimport, time, re, imp, new
-from sets import ImmutableSet
+
+# Fix for Python 2.6 deprecation warning
+try:
+    ImmutableSet = frozenset
+except NameError:
+    from sets import ImmutableSet
+
 from os import utime, rename, unlink    # capture these to bypass sandboxing
 from os import open as os_open
 

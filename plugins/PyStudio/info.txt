@@ -1,0 +1,4 @@
+Name=PyStudio
+Author=Mike Rans, Cody Precord
+Description=Upgrades Editra into a Python IDE, integrated debugger, code analysis, and more.
+Version=0.8

@@ -1,32 +1,22 @@
 # -*- coding: utf-8 -*-
-############################################################################
-#    Copyright (C) 2007 Cody Precord                                       #
-#    cprecord@editra.org                                                   #
-#                                                                          #
-#    Editra is free software; you can redistribute it and#or modify        #
-#    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation; either version 2 of the License, or     #
-#    (at your option) any later version.                                   #
-#                                                                          #
-#    Editra is distributed in the hope that it will be useful,             #
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
-#    GNU General Public License for more details.                          #
-#                                                                          #
-#    You should have received a copy of the GNU General Public License     #
-#    along with this program; if not, write to the                         #
-#    Free Software Foundation, Inc.,                                       #
-#    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
-############################################################################
+###############################################################################
+# Name: __init__.py                                                           #
+# Purpose: Css Optimizer Plugin                                               #
+# Author: Cody Precord <cprecord@editra.org>                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
+###############################################################################
 # Plugin Metadata
 """Generate optimized Css code"""
 __author__ = "Cody Precord"
-__version__ = "0.2"
+__version__ = "0.4"
 
 #-----------------------------------------------------------------------------#
 # Imports
 import re
 import wx
+
+# Editra Libraries
 import plugin
 from syntax.synglob import ID_LANG_CSS
 import generator
@@ -35,7 +25,15 @@ import generator
 # Globals
 ID_CSS_OPTIMIZER = wx.NewId()
 
+# Try and add this plugins message catalogs to the app
+try:
+    wx.GetApp().AddMessageCatalog('cssoptimizer', __name__)
+except:
+    pass
+
+_ = wx.GetTranslation
 #-----------------------------------------------------------------------------#
+
 class CssOptimizer(plugin.Plugin):
     """ Optimizes Css Files """
     plugin.Implements(generator.GeneratorI)
@@ -47,11 +45,11 @@ class CssOptimizer(plugin.Plugin):
         """
         stc = txt_ctrl
         eol = stc.GetEOLChar()
-        if stc.GetLexer() == wx.stc.STC_LEX_CSS or \
-           (len(stc.filename) > 3 and stc.filename[-3:] == "css"):
+        fname = stc.GetFileName()
+        if stc.GetLexer() == wx.stc.STC_LEX_CSS or fname.endswith(".css"):
             # Optimize the text
             lines = [stc.GetLine(x) for x in xrange(stc.GetLineCount()+1)]
-            to_pop = list()
+
             # First Pass compact everything
             for x in xrange(len(lines)):
                 line = lines[x].strip()
@@ -68,11 +66,18 @@ class CssOptimizer(plugin.Plugin):
                 if len(line) and line[-1] == u'}':
                     line += eol
                 lines[x] = line
-            # Finally remove all comments
+
+            # Remove all comments
             txt = "".join(lines)
             cmt_pat = re.compile("\/\*[^*]*\*+([^/][^*]*\*+)*\/")
             if re.search(cmt_pat, txt):
                 txt = re.sub(cmt_pat, u'', txt)
+
+            # Compact Redundant Color Defs
+            for val in "0123456789abcdefABCDEF":
+                find = val * 3
+                txt = txt.replace("#" + (find * 2), "#" + find)
+                
             ret = ('css', txt)
         else:
             ret = ('txt', stc.GetText())
@@ -84,7 +89,7 @@ class CssOptimizer(plugin.Plugin):
 
     def GetMenuEntry(self, menu):
         """Returns the MenuItem entry for this generator"""
-        mi = wx.MenuItem(menu, ID_CSS_OPTIMIZER, _("Optimize %s") % u"CSS",
-                         _("Generate an optimized version of the css"))
-        mi.SetBitmap(wx.ArtProvider.GetBitmap(str(ID_LANG_CSS), wx.ART_MENU))
-        return mi
+        mitem = wx.MenuItem(menu, ID_CSS_OPTIMIZER, _("Optimize %s") % u"CSS",
+                            _("Generate an optimized version of the css"))
+        mitem.SetBitmap(wx.ArtProvider.GetBitmap(str(ID_LANG_CSS), wx.ART_MENU))
+        return mitem

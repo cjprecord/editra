@@ -1,0 +1,4 @@
+Name=PyRun
+Author=Fred Lionetti
+Description=Runs current python script and displays output in the Shelf.
+Version=0.1

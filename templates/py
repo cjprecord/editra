@@ -2,18 +2,16 @@
 # Name:                                                                       #
 # Purpose:                                                                    #
 # Author: AUTHOR <email address>                                              #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE:
-# AUTHOR:
-# LANGUAGE: Python
-# SUMMARY:
-#
-#--------------------------------------------------------------------------#
+FILE:
+AUTHOR:
+LANGUAGE: Python
+SUMMARY:
+
 """
 
 __author__ = ""
@@ -22,9 +20,9 @@ __revision__ = "$Revision:  $"
 
 #--------------------------------------------------------------------------#
 # Dependancies
-import wx
-import ed_glob
 
 #--------------------------------------------------------------------------#
+# Globals
 
+#--------------------------------------------------------------------------#
 

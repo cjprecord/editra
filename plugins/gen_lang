@@ -1,0 +1,306 @@
+#!/bin/bash
+#
+# FILE: gen_lang
+# LANGUAGE: bash shell script
+# AUTHOR: Cody Precord
+# LICENSE: wxWindows
+#
+# SUMMARY:
+# This script is used to automate the generation of all localization files for
+# every project in this repository. It can be used to create/syncronize message
+# catalogs (.po/.pot) files by searching the project directories for python
+# source files and running the mk18n.py script on them. The script can also be
+# used for compiling all of the .po files in to Machine Object (.mo) files and
+# installing them in the proper location inside the project folder.
+#
+# EXAMPLE USAGE:
+# This script should be run from the root directory of the repository
+#
+# 1) Generate and Syncronize all Message Catalogs (.po)
+#    ./gen_lang -p
+#
+# 2) Generate and Syncronize message catalogs for a specific project
+#    ./gen_lang -p $FOLDERNAME
+#
+# 3) Compile all Machine Object (.mo) files for all projects/languages
+#    ./gen_lang -m
+#
+# 4) Compile all .mo files for a specific project
+#    ./gen_lang -m $FOLDERNAME
+#
+# SPECIFICATIONS:
+# 1) Project Layout:
+#      - The name of a projects root repository directory must match that of its
+#        package directory in a case insensitve search.
+#        (i.e 'Project' and 'Project/project' are good, while a layout such as
+#         'Project' and 'Project/src' is not)
+#
+# 2) Output Directories:
+#      - PO/POT files will be put in 'Project/catalogs'
+#      - MO files will be put in 'Project/project/locale/'
+#
+# REQUIREMENTS:
+# Bash 2.05 or Newer
+# python 2.4 or Higher
+# wxPython (any version should do)
+# msgcat, msgfmt
+# xgettext
+# msgmerge
+
+## Editable Variables ##
+APPLIST='app.fil'
+SCRIPTDIR='catalogs'
+LOCALEDIR='locale'
+
+## Non Editable Variables ##
+CWD=$(pwd)
+EXPATH=$(dirname $0)
+DOMAIN=$2
+
+# Make output pretty
+BLUE="[34;01m"
+CYAN="[36;01m"
+GREEN="[32;01m"
+RED="[31;01m"
+YELLOW="[33;01m"
+OFF="[0m"
+
+### Helper Functions ###
+
+###############################################################################
+# print_help
+# Print help message of available commands
+###############################################################################
+print_help () {
+    echo "Editra Plugins Localization Script"
+    echo "Type 'gen_lang [hmp] {Folder}' to run a build command"
+    echo ""
+    echo "Available Options:"
+    echo "  -h      Print This help message"
+    echo "  -m      Generate .mo files"
+    echo "  -p      Generate .po files"
+    echo ""
+    echo "Running the script without specifying a folder will run the"
+    echo "generation/syncronization process for all folders found relative"
+    echo "to this script."
+    echo ""
+}
+
+
+# FIXME the recursion in this sometimes causes the file paths to be wrong
+###############################################################################
+# generate_src_list:
+#   Parameter 1: Directory to search from
+#   Parameter 2: Relative Path for export file
+#
+# Recrusivly searches for source files from the given top level directory and
+# appends all matches to the temporary app.fil file.
+###############################################################################
+generate_src_list () {
+    local RELPATH
+    RELPATH=$1
+    for FNAME in $(ls .); do
+        if ! [ -z `echo $FNAME | grep "^.*\.py$"` ]; then
+            if [ -a "$FNAME" ]; then
+                echo "  ${GREEN}Found${OFF}: $RELPATH/$FNAME"
+                echo "$RELPATH/$FNAME" >> $2
+            fi
+        elif [ -d "$FNAME" ]; then
+            echo "  ${CYAN}Recursing into${OFF} $RELPATH/$FNAME"
+            cd "$FNAME"
+            generate_src_list "$RELPATH/$FNAME" $2
+        else
+            continue
+        fi
+    done
+    cd ..
+}
+
+
+###############################################################################
+# make_output_dirs:
+#    Parameter 1: Path to look for output direcotries under
+#    Postcondition: Any of the missing output directories are created
+#
+#
+###############################################################################
+make_output_dirs () {
+    RELPATH=$1
+    if ! [ -d "$RELPATH/$SCRIPTDIR" ]; then
+        echo "${CYAN}Making${OFF} $RELPATH/$SCRIPTDIR"
+        mkdir "$RELPATH/$SCRIPTDIR"
+    fi
+
+    SRC=''
+    find_pkg_dir "$RELPATH"
+    local LOCDIR
+    LOCDIR="$RELPATH/$SRC/$LOCALEDIR"
+    if ! [ -z "$SRC" ]; then
+        if ! [ -d "$LOCDIR" ]; then
+            echo "${CYAN}Making${OFF} $LOCDIR"
+            mkdir "$LOCDIR"
+        fi
+    fi
+}
+
+
+###############################################################################
+# find_pkg_dir:
+#    Parameter 1: Project path to look in
+#    Postcondition: SRC variable is set to value of package directory name if
+#                   package is not found the value will be 0.
+#
+# This relies on the SRC variable being set/available in the scope of where
+# this is called from. If not the there will be no way to get the results of
+# this function. It also relies on the convention that the projects top level
+# directory name will be the same as the package subdirectory when doing a
+# case insensitive match.
+#
+###############################################################################
+find_pkg_dir () {
+    TOP=$1
+    for ITEM in $(ls $TOP); do
+        if [ -d "$ITEM" ]; then
+            if ! [ -z `echo $ITEM | grep -i $ITEM` ]; then
+                SRC="$ITEM"
+                break
+            fi
+        fi
+    done
+}
+
+
+###############################################################################
+# do_one_build:
+#    Parameter 1: Path of project to do build on
+#
+###############################################################################
+do_one_build () {
+    local WORKPATH
+    WORKPATH=$1
+
+    # Make sure output directories are available
+    if [ "$BUILD_PO" -eq "1" ]; then
+        echo "${CYAN}Syncronizing${OFF} Message Catalogs for ${CYAN}$WORKPATH${OFF}"
+    else
+        echo "${CYAN}Compiling${OFF} Machine Object files for ${CYAN}$WORKPATH${OFF}"
+    fi
+
+    echo "${CYAN}Checking${OFF} ouput directories for ${CYAN}$WORKPATH${OFF}"
+    make_output_dirs "$WORKPATH"
+    PO="$WORKPATH/$SCRIPTDIR"
+    if [ "$BUILD_PO" -eq "1" ]; then
+        echo "${CYAN}Generating${OFF} file list for ${CYAN}$WORKPATH${OFF}"
+        CURDIR=$(pwd)
+        cd $WORKPATH
+        OUTPATH="$CURDIR/$APPLIST"
+        generate_src_list "$WORKPATH" "$OUTPATH"
+        cd $CURDIR
+        echo "${CYAN}Outputting${OFF} catalogs to ${GREEN}$PO${OFF}..."
+        $(python mki18n.py  -pv --domain=$WORKPATH --podir=$PO) 2>/dev/null
+        CLOCATION=$(pwd)
+        cd $PO
+        # Copy all .new files to override the originals
+        for fname in $(ls); do
+            if ! [ -z $(echo $fname | grep '.*\.new') ]; then
+                name=$(echo $fname | sed 's/.new//')
+                mv $fname $name
+            fi
+        done
+        cd $CLOCATION
+        unset CLOCATION
+        echo "${RED}**${OFF} ${GREEN}Complete${OFF} ${RED}**${OFF}"
+    else
+        SRC=''
+        find_pkg_dir $WORKPATH
+        MO="$WORKPATH/$SRC/$LOCALEDIR"
+        echo "${CYAN}Outputting${OFF} object files to ${GREEN}$MO${OFF}..."
+        $(python mki18n.py  -mv --domain=$WORKPATH --podir=$PO --moTarget=$MO) 2>/dev/null
+        echo "${RED}**${OFF} ${GREEN}Complete${OFF} ${RED}**${OFF}"
+    fi
+
+    # Cleanup temp files
+    if [ -a messages.pot ]; then
+        mv messages.pot $PO/$WORKPATH.pot
+    fi
+    if [ -a "$APPLIST" ]; then
+        rm "$APPLIST"
+    fi
+}
+
+
+###############################################################################
+# generate_files:
+#   Parameter 1: Relative Directory Path
+#                (Becomes the domain of the generated output file)
+#   Parameter 2: 1 = Generate .po files, 0 = Generate .mo files
+#   Postcondition: locale directories and po/mo files are generated/resynced
+#                  with all of the python source files found under the
+#                  given directory.
+#
+# This method uses the mk18n.py script to generate the necessary files for
+# localizing a project folder. It works by checking the contents of the given
+# directory and generating a temporary app.fil that contains a list of all the
+# relative paths of the python files in that folder. After generating the list
+# it runs the mk18n.py script to create/syncronize the DIRNAME.pot file with
+# the sources and then syncronizes any .po files found in the directory with
+# the new .pot file. These syncronized files will be created in a file called
+# LANGUAGE.po.new. 
+#
+# If this is the first time this script has been run on a given directory it
+# will also do the following.
+#
+# - po : It will create a directory called 'catalogs'. This is where the 
+#        .po/.pot files will be stored.
+# - mo : It will create a directory called '$SOURCEDIR/locale' that will be 
+#        used for storing the compiled .mo files.
+###############################################################################
+generate_files () {
+    WORKPATH=$1
+    BUILD_PO=$2
+
+    # If WORKPATH is empty then generate and files for all project folders
+    # relative to this script
+    if [ -z "$WORKPATH" ]; then
+        for PROJECT in $(ls); do
+            if [ -d "$PROJECT" ]; then
+                echo ""
+                echo "------------------------------------------------"
+                echo ""
+                do_one_build "$PROJECT"
+            fi
+        done
+    else
+        # TODO: Remove any trailing / from the path
+        do_one_build "$WORKPATH"
+    fi
+
+}
+
+
+###############################################################################
+# Main
+#
+#
+###############################################################################
+# Parse command line args and set associated params
+while getopts "hpm" flag
+do
+    if [[ "$flag" == "h" ]]; then
+        print_help
+        exit
+    elif [[ "$flag" == "p" ]]; then
+        echo "${CYAN}Starting .po file generation${OFF}"
+        generate_files "$DOMAIN" 1
+        exit
+    elif [[ "$flag" == "m" ]]; then
+        echo "${CYAN}Starting .mo file generation${OFF}"
+        generate_files "$DOMAIN" 0
+        exit
+    else
+        continue
+    fi
+done
+
+# No known build options so print help and exit
+print_help 

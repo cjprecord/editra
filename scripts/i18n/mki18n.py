@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: iso-8859-1 -*-
-# 
+#   
 #   PYTHON MODULE:     MKI18N.PY
 #                      =========
 # 
@@ -12,7 +12,7 @@
 #   Update history:
 #   - File updated: Thursday, June 12, 2007 by Cody Precord
 #   - File created: Saturday, June 7, 2003. by Pierre Rouleau
-#   - 07/12/07: Make it work with current wx code and clean up code
+#   - 07/12/07: Make it work with current wx code and clean up code CJP
 #   - 10/06/03 rcs : RCS Revision 1.1  2003/06/10 10:06:12  PRouleau
 #   - 10/06/03 rcs : RCS Initial revision
 #   - 23/08/03 rcs : RCS Revision 1.2  2003/06/10 10:54:27  PRouleau
@@ -91,7 +91,7 @@ import wx
 #
 
 __author__ = "Pierre Rouleau"
-__version__ = "$Revision: 1.5 $"
+__version__ = "$Revision: 70029 $"
 
 # -----------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ def makePO(app_dir,  app_domain=None, verbose=0) :
     #   --files-from=app.fil : The list of files is taken from the file: app.fil
     #   --output= : specifies the name of the output file 
     #               (using a .pot extension)
-    cmd = 'xgettext -s --no-wrap --files-from=app.fil --output=messages.pot'
+    cmd = 'xgettext -s --from-code=utf-8 --no-wrap --files-from=app.fil --output=Editra.pot'
     if verbose: 
         print cmd
     os.system(cmd)                                                
@@ -164,7 +164,7 @@ def makePO(app_dir,  app_domain=None, verbose=0) :
         else:
             lang_po_filename = "%s_%s.po" % (app_name, lang_code)
             if os.path.exists(lang_po_filename):
-                cmd = 'msgmerge -s --no-wrap "%s" messages.pot > "%s.new"' % \
+                cmd = 'msgmerge -s --no-wrap "%s" Editra.pot > "%s.new"' % \
                       (lang_po_filename, lang_po_filename)
                 if verbose: 
                     print cmd

@@ -1,0 +1,422 @@
+# Estonian translation for editra
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 20:21-0500\n"
+"PO-Revision-Date: 2009-11-05 13:40+0000\n"
+"Last-Translator: Enrico <Unknown>\n"
+"Language-Team: Estonian <et@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Projects/projects/ConfigDialog.py:434
+msgid "*NAME*"
+msgstr "*NIMI*"
+
+#: Projects/projects/ConfigDialog.py:435
+msgid "*VALUE*"
+msgstr "*VÄÄRTUS*"
+
+#: Projects/projects/ProjectPane.py:1664
+msgid ". Do you wish to continue?"
+msgstr ". Soovid jätkata?"
+
+#: Projects/projects/ProjectPane.py:1769
+msgid "Add Project"
+msgstr "Uus projekt"
+
+#: Projects/projects/ConfigDialog.py:499
+msgid "Add a New Repository Path"
+msgstr "Lisa hoidla uus asukoht"
+
+#: Projects/projects/ProjectPane.py:1387
+msgid "Add to repository"
+msgstr "Lisa hoidlasse"
+
+#: Projects/projects/ProjectPane.py:1663
+msgid "An error occurred when attempting to remove "
+msgstr ""
+
+#: Projects/projects/HistWin.py:315
+msgid "Author"
+msgstr "Autor"
+
+#: Projects/projects/ConfigDialog.py:149
+msgid "Built-in"
+msgstr "Sisseehitatud"
+
+#: Projects/projects/ProjectPane.py:147
+msgid "C File"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1817
+msgid "Choose a Project Directory"
+msgstr "Vali projekti kaust"
+
+#: Projects/projects/ProjCmnDlg.py:275
+msgid "Close"
+msgstr ""
+
+#: Projects/projects/ModList.py:131 Projects/projects/ProjCmnDlg.py:71
+msgid "Commit"
+msgstr ""
+
+#: Projects/projects/ModList.py:395 Projects/projects/ProjectPane.py:971
+msgid "Commit Dialog"
+msgstr ""
+
+#: Projects/projects/ModList.py:561 Projects/projects/ProjectPane.py:1427
+msgid "Commit changes"
+msgstr "Vii muudatused sisse"
+
+#: Projects/projects/HistWin.py:146 Projects/projects/HistWin.py:277
+msgid "Compare Revisions"
+msgstr ""
+
+#: Projects/projects/HistWin.py:281
+msgid "Compare Selected Revisions"
+msgstr ""
+
+#: Projects/projects/HistWin.py:279
+msgid "Compare to Selected Revision"
+msgstr ""
+
+#: Projects/projects/ModList.py:555 Projects/projects/ProjectPane.py:1423
+msgid "Compare to previous version"
+msgstr "Võrdle eelmise versiooniga"
+
+#: Projects/projects/ProjectPane.py:1763
+msgid "Configure"
+msgstr "Seadista"
+
+#: Projects/projects/ProjectPane.py:1411
+msgid "Copy"
+msgstr "Kopeeri"
+
+#: Projects/projects/ProjCmnDlg.py:45
+msgid "Could not retrieve file"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1410
+msgid "Cut"
+msgstr "Lõika"
+
+#: Projects/projects/HistWin.py:314
+msgid "Date"
+msgstr "Kuupäev"
+
+#: Projects/projects/ConfigDialog.py:148
+msgid "Diff Program"
+msgstr "Võrdlemise rakendus"
+
+#: Projects/projects/ProjectPane.py:1405
+msgid "Edit"
+msgstr "Muuda"
+
+#: Projects/projects/ProjCmnDlg.py:306
+msgid "Enter a command to be executed on all selected files and files in selected directories."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:896 Projects/projects/ProjectPane.py:1539
+msgid "Enter command to execute on all files"
+msgstr ""
+
+#: Projects/projects/ModList.py:396 Projects/projects/ProjectPane.py:972
+msgid "Enter your commit message:"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:285
+msgid "Environment Variables"
+msgstr "Keskkonnamuutujad"
+
+#: Projects/projects/ProjectPane.py:1630 Projects/projects/ProjectPane.py:1638
+msgid "Error occurred when copying/moving files"
+msgstr "Tõrge failide kopeerimisel/liigutamisel"
+
+#: Projects/projects/ProjectPane.py:1665
+msgid "Error occurred when removing files"
+msgstr "Tõrge failide kustutamisel"
+
+#: Projects/projects/ConfigDialog.py:261
+msgid "Executable Path"
+msgstr "Programmi asukoht"
+
+#: Projects/projects/ProjCmnDlg.py:300
+msgid "Execute command on files"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1414
+msgid "Execute command..."
+msgstr "Käivita käsklus..."
+
+#: Projects/projects/ConfigDialog.py:129
+msgid "File Filters"
+msgstr ""
+
+#: Projects/projects/ModList.py:331
+msgid "Filename"
+msgstr "Faili nimi"
+
+#: Projects/projects/ProjectPane.py:1391
+msgid "Folder"
+msgstr "Kaust"
+
+#: Projects/projects/ConfigDialog.py:100
+msgid "General"
+msgstr "Üldine"
+
+#: Projects/projects/ProjectPane.py:148
+msgid "HTML File"
+msgstr "HTML-fail"
+
+#: Projects/projects/HistWin.py:328
+msgid "History information could not be retrieved"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:143
+msgid "Keep project tree synchronized with editor notebook"
+msgstr ""
+
+#: Projects/projects/HistWin.py:316
+msgid "Log Message"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1428
+msgid "Make Patch"
+msgstr ""
+
+#: Projects/projects/ProjCmnDlg.py:68
+msgid "Message"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1399
+msgid "Move to Recycle Bin"
+msgstr "Tõsta prügikasti"
+
+#: Projects/projects/ProjectPane.py:1401
+msgid "Move to Trash"
+msgstr "Tõsta prügikasti"
+
+#: Projects/projects/ConfigDialog.py:289
+msgid "Name"
+msgstr "Nimi"
+
+#: Projects/projects/ProjectPane.py:1408
+msgid "New..."
+msgstr "uus..."
+
+#: Projects/projects/ProjectPane.py:1406
+msgid "Open"
+msgstr "Ava"
+
+#: Projects/projects/ProjectPane.py:1745
+msgid "Open Projects Sidepanel"
+msgstr "Ava projektide külgpaneel"
+
+#: Projects/projects/ProjectPane.py:1407
+msgid "Open enclosing folder"
+msgstr "Ava kataloog, milles sisaldub"
+
+#: Projects/projects/__init__.py:117
+msgid "Open the Projects source control summary list"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:277
+msgid "Password"
+msgstr "Salasõna"
+
+#: Projects/projects/ProjectPane.py:1412
+msgid "Paste"
+msgstr "Aseta"
+
+#: Projects/projects/ProjectPane.py:149
+msgid "Php File"
+msgstr "PHP-fail"
+
+#: Projects/projects/ConfigDialog.py:498
+msgid "Please enter a repository path.  Partial paths may also be entered."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1744 Projects/projects/__init__.py:60
+#: Projects/projects/__init__.py:154
+msgid "Projects"
+msgstr "Projektid"
+
+#: Projects/projects/ConfigDialog.py:56
+msgid "Projects Configuration"
+msgstr "Projektide seaded"
+
+#: Projects/projects/ProjectPane.py:150
+msgid "Python File"
+msgstr ""
+
+#: Projects/projects/ProjCmnDlg.py:126
+msgid "Recent Messages"
+msgstr ""
+
+#: Projects/projects/ModList.py:119
+msgid "Refresh"
+msgstr "Värskenda"
+
+#: Projects/projects/ModList.py:551 Projects/projects/ProjectPane.py:1421
+msgid "Refresh status"
+msgstr "Uuenda staatus"
+
+#: Projects/projects/ProjectPane.py:1775
+msgid "Remove Project"
+msgstr "Kustuta projekt"
+
+#: Projects/projects/ProjectPane.py:1385
+msgid "Remove from repository"
+msgstr "Eemalda hoidlast"
+
+#: Projects/projects/ConfigDialog.py:490
+msgid "Remove repository"
+msgstr "Eemalda hoidla"
+
+#: Projects/projects/ModList.py:110
+msgid "Repository"
+msgstr "Hoidla"
+
+#: Projects/projects/ConfigDialog.py:266
+msgid "Repository Configuration"
+msgstr "Hoidla seaded"
+
+#: Projects/projects/HistWin.py:119
+msgid "Retrieving File History"
+msgstr ""
+
+#: Projects/projects/HistWin.py:313
+msgid "Rev #"
+msgstr ""
+
+#: Projects/projects/ModList.py:137
+msgid "Revert"
+msgstr ""
+
+#: Projects/projects/ModList.py:565 Projects/projects/ProjectPane.py:1429
+msgid "Revert to repository version"
+msgstr ""
+
+#: Projects/projects/HistWin.py:138
+msgid "Revision History"
+msgstr "Muudatuste ajalugu"
+
+#: Projects/projects/HistWin.py:421
+msgid "Search Log"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1417
+msgid "Search in directory"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:164
+msgid "Select diff program"
+msgstr "Vali võrdlemise programm"
+
+#: Projects/projects/ConfigDialog.py:489
+msgid "Select the repository path to remove"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1024
+msgid "Selected files are from multiple repositories"
+msgstr ""
+
+#: Projects/projects/ModList.py:558 Projects/projects/ProjectPane.py:1425
+msgid "Show revision history"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:102 Projects/projects/__init__.py:116
+msgid "Source Control"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1415
+#, fuzzy
+msgid "Source Control command..."
+msgstr "Käivita käsklus..."
+
+#: Projects/projects/ConfigDialog.py:257
+msgid "Source control system"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:136
+msgid ""
+"Space separated list of files patterns to exclude from view\n"
+"The use of wildcards (*) are permitted."
+msgstr ""
+
+#: Projects/projects/ModList.py:329
+msgid "Status"
+msgstr "Olek"
+
+#: Projects/projects/ProjectPane.py:146
+msgid "Text File"
+msgstr "Tekstifail"
+
+#: Projects/projects/ProjectPane.py:1537
+msgid ""
+"The following command will be executed on all selected\n"
+"files and files contained in selected directories."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:893
+msgid ""
+"The following source control command will be executed on all selected\n"
+"files and files contained in selected directories.\n"
+"e.g. bzr [command] filename.py"
+msgstr ""
+
+#: Projects/projects/HistWin.py:325
+msgid "The history information for the requested file could not be retrieved.  Please make sure that you have network access."
+msgstr ""
+
+#: Projects/projects/ProjCmnDlg.py:43
+msgid "The requested file could not be retrieved from the source control system."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1636
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1627
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s. Do you wish to continue?"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1469
+msgid "Untitled Folder"
+msgstr "Nimetu kaust"
+
+#: Projects/projects/ModList.py:125 Projects/projects/ProjectPane.py:1422
+msgid "Update"
+msgstr "Uuenda"
+
+#: Projects/projects/ProjectPane.py:921
+#, python-format
+msgid "Updating %s"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:166
+msgid "Use a specified diff program"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:275
+msgid "Username"
+msgstr "Kasutajanimi"
+
+#: Projects/projects/ConfigDialog.py:290
+msgid "Value"
+msgstr "Väärtus"
+
+#: Projects/projects/ProjectPane.py:1023
+msgid "You can not execute source control commands across multiple repositories."
+msgstr ""

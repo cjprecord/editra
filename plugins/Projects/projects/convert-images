@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+__author__ = "Kevin D. Smith <Kevin.Smith@sixquickrun.com>"
+__revision__ = "$Revision: 254 $"
+__scid__ = "$Id: convert-images 254 2007-10-24 02:32:39Z Kevin.Dale.Smith $"
+
+import os, glob
+
+for i, png in enumerate(glob.glob('Icons/*.png')):
+    name = os.path.splitext(os.path.basename(png))[0].replace('-', ' ').title().replace(' ','')
+    if i == 0:
+        os.system('img2py -n %s %s FileIcons.py' % (name, png))
+    else:
+        os.system('img2py -a -n %s %s FileIcons.py' % (name, png))

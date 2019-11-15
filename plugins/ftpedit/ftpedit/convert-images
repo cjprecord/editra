@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+__author__ = "Cody Precord <cprecord@editra.org>"
+__revision__ = "$Revision:  $"
+__scid__ = "$Id:  $"
+
+import os, glob
+
+for i, png in enumerate(glob.glob('icons/*.png')):
+    name = os.path.splitext(os.path.basename(png))[0].replace('-', ' ').title().replace(' ','')
+    if i == 0:
+        os.system('img2py -n %s %s IconFile.py' % (name, png))
+    else:
+        os.system('img2py -a -n %s %s IconFile.py' % (name, png))
+

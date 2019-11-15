@@ -1,0 +1,4 @@
+Name=Humility
+Author=Cody Precord
+Description=Humility icon theme for Editra
+Version=0.2

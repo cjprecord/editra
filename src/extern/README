@@ -3,3 +3,9 @@ but were not originally written as part of this project.
 
 See each module for their individual licensing and other related information.
 
+
+pygments 1.0 (BSD) 
+
+# Modifications notes for updates
+
+1) In lexers/web.py remove + from  (r'[{}\[\]();.]+', Punctuation),

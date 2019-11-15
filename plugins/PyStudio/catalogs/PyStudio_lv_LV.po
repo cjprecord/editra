@@ -1,0 +1,1624 @@
+# Latvian translation for editra
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-28 12:51-0500\n"
+"PO-Revision-Date: 2011-10-22 21:17+0000\n"
+"Last-Translator: janis.sl <Unknown>\n"
+"Language-Team: Latvian <lv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-06-09 18:21+0000\n"
+"X-Generator: Launchpad (build 15376)\n"
+
+#: PyStudio/PyStudio/Debugger/DebuggeeWindow.py:35
+#: PyStudio/build/lib/PyStudio/Debugger/DebuggeeWindow.py:35
+msgid ""
+"\n"
+"\n"
+"Debuggee finished."
+msgstr ""
+"\n"
+"\n"
+"Atkļūdojamais process pabeigts."
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:98
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:98
+msgid ""
+"\n"
+"\n"
+"Debugger detached."
+msgstr ""
+"\n"
+"\n"
+"Atkļūdojamais process atvienots."
+
+#: PyStudio/PyStudio/Debugger/RpdbDebugger.py:179
+#: PyStudio/build/lib/PyStudio/Debugger/RpdbDebugger.py:179
+#, python-format
+msgid ""
+"\n"
+"%s\n"
+msgstr ""
+"\n"
+"%s\n"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:252
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:247
+#, python-format
+msgid ""
+"%s\n"
+"\n"
+"Click 'Cancel' to ignore this warning in this session."
+msgstr ""
+"%s\n"
+"\n"
+"Lai šo brīdinājumu šajā sesijā ignorētu, noklikšķiniet uz Atcelt."
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:720
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:702
+msgid "(error prevented analysis)"
+msgstr "(analīze netika veikta kļūdas dēļ)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:685
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:667
+msgid "(syntax error raised for a module)"
+msgstr "(modulī izraisīta sintakses kļūda)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:663
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:645
+msgid "(warning notes in code comments)"
+msgstr "(brīdinājuma piezīmes koda komentāros)"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:194
+msgid "<Project Destination>"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:213
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:225
+msgid "<Project Name>"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:628
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:610
+msgid "Abstract class is only referenced a few times"
+msgstr "Norāde uz abstrakto klasi ir lietota tikai dažas reizes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:627
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:609
+msgid "Abstract class not referenced"
+msgstr "Nav norāžu uz abstrakto klasi"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:644
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:626
+msgid "Access to a protected member of a client class"
+msgstr "Piekļuve aizsargātam klienta klases elementam"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:696
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:678
+msgid "Accessing method before it is defined"
+msgstr "Piekļuve metodei pirms tās definēšanas"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:141
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:132
+msgid "Add python executable"
+msgstr "Pievienot Python izpildāmo failu"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:190
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:190
+#, python-format
+msgid "Added %s to PyExpression shelf."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:369
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:351
+msgid "Allow Synchronicity"
+msgstr "Atļaut sinhronitāti"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:173
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:173
+msgid "An unhandled exception was caught. Would you like to analyze it?"
+msgstr "Tika notverts neapstrādāts izņēmums. Vai vēlaties to analizēt?"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:246
+#, python-format
+msgid "Are you sure you want to delete '%s' and all of its contents?"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:248
+#, python-format
+msgid "Are you sure you want to delete '%s'?"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:645
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:627
+msgid "Arguments number differs from super method"
+msgstr "Argumentu skaits atšķiras no augstāka līmeņa metodes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:716
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:698
+msgid "Assigning to function call which doesn't return"
+msgstr "Piešķire tādas funkcijas izsaukumam, kas neatgriež nekādu vērtību"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:681
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:663
+msgid "Assigning to function call which only returns None"
+msgstr "Piešķire tādas funkcijas izsaukumam, kas atgriež tikai None"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:36
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:36
+msgid "Attach"
+msgstr "Pievienot"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:46
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:46
+msgid "Attach to a script (that has the debugger engine running) on local or remote machine:"
+msgstr "Pievienot skriptam (kas izmanto atkļūdošanas programmu) lokālajā vai attālajā datorā:"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:642
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:624
+msgid "Attribute defined outside __init__"
+msgstr "Atribūts ir definēts ārpus __init__"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:269
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:251
+msgid "Automatic"
+msgstr "Automātiski"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:187
+msgid "Automatically reload last project at startup."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:270
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:252
+msgid "Automatically rerun on save, document change, and file load"
+msgstr "Automātiski izpildīt vēlreiz saglabāšanas, dokumenta izmaiņu un faila ielādes gadījumā"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:707
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:689
+msgid "Bad except clauses order"
+msgstr "Nederīgs operatoru except pieprasījums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:712
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:694
+msgid "Bad first argument given to super class"
+msgstr "Augstāka līmeņa klasei piešķirts nederīgs pirmais arguments"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:652
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:634
+msgid "Bad indentation"
+msgstr "Nederīga atkāpe"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:687
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:669
+msgid "Bad option value"
+msgstr "Nederīga izvēles iespējas vērtība"
+
+#: PyStudio/PyStudio/Project/ProjectTemplate.py:188
+#: PyStudio/PyStudio/Project/ProjectTemplate.py:198
+msgid "Basic Project"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:590
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:572
+msgid "Black listed name"
+msgstr "Nosaukums no melnā saraksta"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:74
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:74
+msgid "Break"
+msgstr "Pārtraukt"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:677
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:659
+msgid "Catch \"Exception\""
+msgstr "Notvert izņēmumu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:145
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:136
+msgid "Check for syntax errors on save"
+msgstr "Saglabājot pārbaudīt, vai nav sintakses kļūdu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:649
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:631
+msgid "Class has no __init__ method"
+msgstr "Klasei nav metodes __init__"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:595
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:577
+msgid "Class method should have \"cls\" as first argument"
+msgstr "Klases metodē kā pirmajam argumentam jābūt \"cls\""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:80
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:63
+msgid "Clear"
+msgstr "Notīrīt"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:129
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:120
+msgid "Code Analysis"
+msgstr "Koda analīze"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:602
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:584
+msgid "Comma not followed by a space"
+msgstr "Pēc komata nav atstarpes"
+
+#: PyStudio/PyStudio/Common/BaseShelfWindow.py:85
+#: PyStudio/build/lib/PyStudio/Common/BaseShelfWindow.py:72
+msgid "Configure"
+msgstr "Konfigurēt"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:578
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:296
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:560
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:235
+msgid "Convention"
+msgstr "Nosacītais apzīmējums"
+
+#: PyStudio/PyStudio/ModuleFinder/FindTabMenu.py:72
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindTabMenu.py:72
+msgid "Copy Module Path"
+msgstr "Kopēt moduļa ceļu"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:44
+msgid "Create New Project"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:72
+msgid "Create a new project"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:176
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:166
+msgid "Currently active Python"
+msgstr "Pašlaik aktīvais Python fails"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:612
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:594
+msgid "Cyclic import"
+msgstr "Cikliska importēšana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:634
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:616
+msgid "Dangerous default value used as an argument"
+msgstr "Par argumentu izmantota nestabila noklusējuma vērtība"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:301
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:302
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:304
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:306
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:331
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:296
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:297
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:299
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:301
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:326
+msgid "Data Retrieval Timeout"
+msgstr "Datu izgūšanas taimauts"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:128
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:119
+msgid "Debugger"
+msgstr "Atkļūdotājs"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:76
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:76
+msgid "Debugger Args"
+msgstr "Atkļūdotāja argumenti"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:97
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:97
+msgid ""
+"Debugger attached.\n"
+"\n"
+msgstr ""
+"Atkļūdotājs pievienots.\n"
+"\n"
+
+#: PyStudio/PyStudio/Debugger/PythonDebugger.py:59
+#: PyStudio/build/lib/PyStudio/Debugger/PythonDebugger.py:59
+msgid ""
+"Debugger attached. Debuggee output starts now...\n"
+"\n"
+msgstr ""
+"Atkļūdotājs pievienots. Tagad tiek sākta atkļūdojamā procesa izvade...\n"
+"\n"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:387
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:387
+#, python-format
+msgid ""
+"Debugging remote debuggee %s\n"
+"\n"
+msgstr ""
+"Notiek attālā atkļūdojamā procesa %s atkļūdošana\n"
+"\n"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:164
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:164
+msgid "Delete All Breakpoints"
+msgstr "Dzēst visus pārtraukumpunktus"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:52
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:52
+msgid "Delete All Expressions"
+msgstr "Dzēst visas izteiksmes"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:162
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:162
+msgid "Delete Breakpoint"
+msgstr "Dzēst pārtraukumpunktu"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:50
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:50
+msgid "Delete Expression"
+msgstr "Dzēst izteiksmi"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:250
+msgid "Delete?"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:537
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:519
+msgid "Description"
+msgstr "Apraksts"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:95
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:95
+msgid "Disabling Pylint Autorun during Debug.\n"
+msgstr "Notiek Pylint automātiskās izpildes deaktivizēšana atkļūdošanas laikā.\n"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:616
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:598
+msgid "Duplication"
+msgstr "Dublēšana"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:181
+msgid "Edit"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTemplate.py:187
+#, fuzzy
+msgid "Empty Project"
+msgstr "Tukša dokumentācijas virkne"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:593
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:575
+msgid "Empty docstring"
+msgstr "Tukša dokumentācijas virkne"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:536
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:518
+msgid "Enabled"
+msgstr "Aktivizēts"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:159
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:159
+msgid "Enter Code to Execute"
+msgstr "Ievadiet kodu, kas jāizpilda"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:412
+msgid "Enter file name:"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:425
+msgid "Enter folder name:"
+msgstr ""
+
+#: PyStudio/PyStudio/ModuleFinder/FindShelfWindow.py:55
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindShelfWindow.py:55
+msgid "Enter module name to search for"
+msgstr "Ievadiet meklējamo moduļa nosaukumu"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:428
+msgid "Enter package name:"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/PyStudioUtils.py:164
+#: PyStudio/PyStudio/Common/ToolConfig.py:581
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:51
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:214
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:294
+#: PyStudio/build/lib/PyStudio/Common/PyStudioUtils.py:156
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:563
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:49
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:158
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:233
+msgid "Error"
+msgstr "Kļūda"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:607
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:589
+msgid "Errors / warnings by module"
+msgstr "Kļūdas/brīdinājumi pēc moduļa"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:395
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:377
+msgid "Escape Non-Ascii Characters for Execute/Evaluate"
+msgstr "Rakstzīmes, kas nav ASCII, izpildes/vērtēšanas vajadzībām pārveidot par atsoļa sekvenci"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:65
+#, fuzzy
+msgid "Evaluation"
+msgstr "Globāls vērtējums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:678
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:660
+msgid "Except doesn't do anything"
+msgstr "Except neveic nekādu darbību"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:679
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:661
+msgid "Exception doesn't inherit from standard \"Exception\" class"
+msgstr "Izņēmums netiek mantots no standarta izņēmuma klases"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:70
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:70
+msgid "Exceptions"
+msgstr "Izņēmumi"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:59
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:59
+msgid "Execute"
+msgstr "Izpildīt"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:689
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:671
+msgid "Explicit return in __init__"
+msgstr "Metodē __init__ ir tieši norādīts operators return"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsList.py:44
+#: PyStudio/PyStudio/Debugger/ExpressionsList.py:46
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsList.py:44
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsList.py:46
+msgid "Expression"
+msgstr "Izteiksme"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:613
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:595
+msgid "External dependencies"
+msgstr "Ārējās atkarības"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:219
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:181
+#, python-format
+msgid "Failed to load results data: %s"
+msgstr "Neizdevās ielādēt rezultātu datus: %s"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:195
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:157
+msgid "Failed to save PyLint Results"
+msgstr "Neizdevās saglabāt PyLint rezultātus"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:582
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:564
+msgid "Fatal"
+msgstr "Fatāla kļūda"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsList.py:42
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:45
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:58
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsList.py:42
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:45
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:58
+msgid "File"
+msgstr "Fails"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:77
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:77
+msgid "Filename"
+msgstr "Faila nosaukums"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:84
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:84
+msgid "Filtering:"
+msgstr "Filtrēšana:"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:380
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:362
+msgid "Fork into Child"
+msgstr "Sazarojums bērnprocesā"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:726
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:708
+msgid "Format detection error"
+msgstr "Formāta noteikšanas kļūda"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:653
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:635
+msgid "Found inconsistent indentation"
+msgstr "Atklāta nekonsekventa atkāpe"
+
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:44
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:44
+msgid "Frame"
+msgstr "Kadrs"
+
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:47
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:47
+msgid "Function"
+msgstr "Funkcija"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:127
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:118
+msgid "General"
+msgstr "Vispārīgi"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:609
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:591
+msgid "Global evaluation"
+msgstr "Globāls vērtējums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:665
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:647
+msgid "Global statement used but no assignment is done"
+msgstr "Tiek izmantots globāls operators, taču nav veikta piešķire"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:664
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:646
+msgid "Global variable undefined at the module level"
+msgstr "Globālais mainīgais nav definēts moduļa līmenī"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:69
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:69
+msgid "Globals"
+msgstr "Globālie mainīgie"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:61
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:61
+msgid "Host:"
+msgstr "Resursdators:"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:46
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:46
+#, python-format
+msgid "INFO: Directory Variables file: %s"
+msgstr "INFO: direktoriju mainīgo fails: %s"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:45
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:45
+#, python-format
+msgid "INFO: PyFind command line: %s"
+msgstr "INFO: PyFind komandrinda: %s"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:44
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:44
+#, python-format
+msgid "INFO: Using PYTHONPATH + %s"
+msgstr "INFO: izmanto PYTHONPATH + %s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:364
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:346
+msgid "Ignore SystemExit Exception"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:184
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:184
+msgid "Ignore Warning"
+msgstr "Ignorēt brīdinājumu"
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:73
+msgid "Import Project"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:184
+msgid "Import Project Directory"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:74
+msgid "Import an existing project"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:298
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:237
+msgid "Information"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:699
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:681
+msgid "Interface is not a class"
+msgstr "Interfeiss nav klase"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:629
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:611
+msgid "Interface not implemented"
+msgstr "Interfeiss nav implementēts"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:34
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:34
+msgid "Internal Search Error"
+msgstr "Iekšēja meklēšanas kļūda"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:591
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:573
+msgid "Invalid name"
+msgstr "Nederīgs nosaukums"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:56
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:56
+msgid "Jump"
+msgstr "Pāriet"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:638
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:620
+msgid "Lambda may not be necessary"
+msgstr "Lambda, iespējams, nav nepieciešama"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsList.py:43
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:46
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:50
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsList.py:43
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:46
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:48
+msgid "Line"
+msgstr "Rindiņa"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:597
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:579
+msgid "Line too long"
+msgstr "Rindiņa ir pārāk gara"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:267
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:249
+msgid "Lint Run Mode"
+msgstr "Lint izpildes režīms"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:146
+msgid "Load Last Project"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:73
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:204
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:57
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:166
+msgid "Load Results"
+msgstr "Rezultātu ielāde"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:217
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:179
+#, python-format
+msgid "Loaded code analysis data: %s"
+msgstr "Ielādētie koda analīzes dati: %s"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:277
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:278
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:279
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:280
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:331
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:272
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:273
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:274
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:275
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:326
+msgid "Loading..."
+msgstr "Notiek ielāde..."
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:68
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:68
+msgid "Locals"
+msgstr "Lokālie mainīgie"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:76
+msgid "Location to create new project."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:272
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:254
+msgid "Manual"
+msgstr "Manuāli"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:183
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:173
+msgid "Mark syntax errors in buffer after save"
+msgstr "Pēc saglabāšanas buferī marķēt sintakses kļūdas"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:82
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:82
+msgid "Maximum"
+msgstr "Maksimāli"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:82
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:82
+msgid "Medium"
+msgstr "Vidēji"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:306
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:288
+msgid "Message Type: "
+msgstr "Ziņojuma tips: "
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:608
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:590
+msgid "Messages"
+msgstr "Ziņojumi"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:606
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:588
+msgid "Messages by category"
+msgstr "Ziņojumi pēc kategorijas"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:596
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:578
+msgid "Metaclass method should have \"mcs\" as first argument"
+msgstr "Metaklases metodes pirmajam argumentam jābūt \"mcs\""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:611
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:593
+msgid "Method could be a function"
+msgstr "Metode varētu būt funkcija"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:697
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:679
+msgid "Method has no argument"
+msgstr "Metodei nav argumentu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:695
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:677
+msgid "Method hidden by instance attribute"
+msgstr "Metode ir paslēpta instances atribūta dēļ"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:647
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:629
+msgid "Method of an abstract class is not overridden"
+msgstr "Abstraktas klases metode nav pārdeklarēta"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:698
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:680
+msgid "Method should have \"self\" as first argument"
+msgstr "Metodes pirmajam argumentam jābūt \"self\""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:592
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:574
+msgid "Missing docstring"
+msgstr "Trūkst dokumentācijas virknes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:700
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:682
+msgid "Missing method from interface"
+msgstr "Trūkst interfeisa metodes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:594
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:576
+msgid "Missing required attribute"
+msgstr "Trūkst obligāta atribūta"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:661
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:643
+msgid "Module import itself"
+msgstr "Modulis importē pats sevi"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:614
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:596
+msgid "Modules dependencies graph"
+msgstr "Moduļu atkarību grafs"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:599
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:581
+msgid "More than one statement on a single line"
+msgstr "Vairāki operatori vienā rindiņā"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:197
+msgid "Move to Recycle Bin"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:199
+msgid "Move to Trash"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:40
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:84
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:61
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:40
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:84
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:61
+msgid "Name"
+msgstr "Nosaukums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:706
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:688
+msgid "Name not defined in module"
+msgstr "Nosaukums modulī nav definēts"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:182
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:205
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:182
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:205
+msgid "Namespace Warning"
+msgstr "Brīdinājums par nosaukumvietu"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:193
+msgid "New"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:412
+#, fuzzy
+msgid "New File"
+msgstr "Fails"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:187
+msgid "New File..."
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:95
+#: PyStudio/PyStudio/Project/ProjectTree.py:426
+msgid "New Folder"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:188
+msgid "New Folder..."
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:89
+msgid "New Module"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:92
+#: PyStudio/PyStudio/Project/ProjectTree.py:429
+msgid "New Package"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:189
+msgid "New Package..."
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:71
+msgid "New Project"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:199
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:161
+msgid "No data to save!"
+msgstr "Nav datu, ko saglabāt!"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:676
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:658
+msgid "No exception type(s) specified"
+msgstr "Nav norādīts(i) izņēmuma tips(i)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:701
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:683
+msgid "Non ascii characters found but no encoding specified (PEP 263)"
+msgstr "Konstatētas no ASCII atšķirīgas rakstzīmes, taču nav norādīts kodējums (PEP 263)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:714
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:696
+msgid "Object is not callable"
+msgstr "Objekts nav izsaucams"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:82
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:82
+msgid "Off"
+msgstr "Izsl."
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:273
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:255
+msgid "Only run when requested"
+msgstr "Izpildīt tikai pēc pieprasījuma"
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:75
+#: PyStudio/PyStudio/Project/ProjectMgr.py:238
+msgid "Open Project"
+msgstr ""
+
+#: PyStudio/PyStudio/__init__.py:198
+msgid "Open PyStudio Project side panel"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:76
+msgid "Open an existing PyProject project file"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:184
+msgid "Open enclosing folder..."
+msgstr ""
+
+#: PyStudio/PyStudio/ModuleFinder/FindTabMenu.py:103
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindTabMenu.py:103
+#, python-format
+msgid "Open module '%s'"
+msgstr "Atvērt moduli '%s'"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:183
+msgid "Open..."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:601
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:583
+msgid "Operator not followed by a space"
+msgstr "Pēc operatora nav atstarpes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:600
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:582
+msgid "Operator not preceded by a space"
+msgstr "Pirms operatora nav atstarpes"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:76
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:76
+msgid "PID"
+msgstr "PID"
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:33
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:33
+msgid "Password"
+msgstr "Parole"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:375
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:357
+msgid "Pause before fork"
+msgstr "Apstāties pirms sazarojuma"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:79
+msgid "Pep8 Check"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:130
+msgid "Preview"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:76
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:76
+msgid "Program Args"
+msgstr "Programmas argumenti"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:97
+msgid "Project Destination:"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:194
+msgid "Project Exists"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:94
+msgid "Project Name:"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:250
+msgid "Project Settings"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:128
+msgid "Project Type"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:74
+msgid "Project directory will be created using this name."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:280
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:262
+msgid "PyLint Checkers"
+msgstr "PyLint pārbaudītāji"
+
+#: PyStudio/PyStudio/__init__.py:197
+msgid "PyProject"
+msgstr ""
+
+#: PyStudio/PyStudio/__init__.py:261
+#: PyStudio/build/lib/PyStudio/__init__.py:193
+msgid "PyStudio"
+msgstr "PyStudio"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:97
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:88
+msgid "PyStudio Config"
+msgstr "PyStudio konfigurēšana"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:393
+#, fuzzy
+msgid "PyStudio Error"
+msgstr "PyStudio"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:177
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:167
+msgid "Python Path:"
+msgstr "Python faila ceļš:"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:708
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:690
+#, python-format
+msgid "Raising %s while only classes, instances or string are allowed"
+msgstr "Izraisīts(a) %s, lai gan ir atļautas tikai klases, instances vai simbolu virknes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:709
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:691
+msgid "Raising a new style class which doesn't inherit from BaseException"
+msgstr "Izraisīta jauna stila klase, kas nav mantota no BaseException"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:675
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:657
+msgid "Raising a string exception"
+msgstr "Izraisīts simbolu virknes izņēmums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:615
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:597
+msgid "Raw metrics"
+msgstr "Neapstrādāta metrika"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:673
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:655
+msgid "Redefining built-in"
+msgstr "Iebūvēta objekta pārdefinēšana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:672
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:654
+msgid "Redefining name from outer scope"
+msgstr "Ārējā apgabalā esoša nosaukuma pārdefinēšana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:690
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:672
+msgid "Redefinition of method"
+msgstr "Metodes pārdefinēšana"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:96
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:96
+msgid "Reenabling Pylint Autorun.\n"
+msgstr "Pylint automātiskās izpildes aktivizēšana atkārtoti.\n"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:579
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:297
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:561
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:236
+msgid "Refactor"
+msgstr "Refaktorings"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:68
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:68
+msgid "Refresh"
+msgstr "Atsvaidzināt"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:54
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:54
+#, fuzzy
+msgid "Refresh Expressions"
+msgstr "Iestatīt izteiksmi"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:79
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:79
+#, fuzzy
+msgid "Refresh Variables"
+msgstr "Nedefinēts mainīgais"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:660
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:642
+msgid "Reimport of module"
+msgstr "Moduļa importēšana atkārtoti"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:659
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:641
+msgid "Relative import"
+msgstr "Relatīva importēšana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:144
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:135
+msgid "Remove selected python executable"
+msgstr "Noņemt atlasīto Python izpildāmo failu"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:201
+#, fuzzy
+msgid "Rename"
+msgstr "Faila nosaukums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:692
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:674
+msgid "Return outside function"
+msgstr "Operators return atrodas ārpus funkcijas"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:694
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:676
+msgid "Return with argument inside generator"
+msgstr "Operators return ar argumentu ģeneratorā"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:62
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:62
+msgid "Run"
+msgstr "Izpildīt"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:55
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:55
+msgid "Run To Line"
+msgstr "Izpildīt līdz rindiņai"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:71
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:180
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:55
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:142
+msgid "Save Results"
+msgstr "Saglabāt rezultātus"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:193
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:155
+#, python-format
+msgid "Saved PyLint results to: %s"
+msgstr "PyLint rezultāti saglabāti šeit: %s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:218
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:200
+msgid "Select Python Executable"
+msgstr "Python izpildāmā faila atlase"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:160
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:160
+msgid "Set Breakpoint"
+msgstr "Iestatīt pārtraukumpunktu"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:48
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:48
+msgid "Set Expression"
+msgstr "Iestatīt izteiksmi"
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:58
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:58
+msgid "Set password:"
+msgstr "Iestatiet paroli:"
+
+#: PyStudio/PyStudio/Common/BaseShelfPlugin.py:85
+#: PyStudio/build/lib/PyStudio/Common/BaseShelfPlugin.py:79
+#, python-format
+msgid "Show %s"
+msgstr "Rādīt %s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:646
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:628
+msgid "Signature differs from super method"
+msgstr "Paraksts atšķiras no augstāka līmeņa metodes"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:617
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:599
+msgid "Similar lines in other files"
+msgstr "Līdzīgas rindiņas citos failos"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:390
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:372
+msgid "Source Encoding for Execute/Evaluate"
+msgstr "Avota failu kodējums izpildes/vērtēšanas vajadzībām"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:386
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:368
+msgid "Source Encoding:"
+msgstr "Avota failu kodējums:"
+
+#: PyStudio/PyStudio/Debugger/StackThreadShelfWindow.py:50
+#: PyStudio/build/lib/PyStudio/Debugger/StackThreadShelfWindow.py:50
+msgid "Stack Frame"
+msgstr "Steka kadrs"
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:41
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:85
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:41
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:85
+msgid "State"
+msgstr "Stāvoklis"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:635
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:617
+msgid "Statement seems to have no effect"
+msgstr "Šķiet, ka operators neko neveic"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:643
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:625
+msgid "Static method with self or class as first argument"
+msgstr "Statiska metode, kuras pirmais arguments ir self vai class"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:610
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:592
+msgid "Statistics by type"
+msgstr "Statistika pēc tipa"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:68
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:68
+msgid "Step In"
+msgstr "Dziļāk"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:72
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:72
+msgid "Step Out"
+msgstr "Seklāk"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:70
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:70
+msgid "Step Over"
+msgstr "Izlaist soli"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:64
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:64
+msgid "Stop debugging"
+msgstr "Apstādināt atkļūdošanu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:636
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:618
+msgid "String statement has no effect"
+msgstr "Simbolu virknes operators neko neveic"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:92
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:92
+#, python-format
+msgid "The modules: %s, which are incompatible with the debugger were detected and can possibly cause the debugger to fail."
+msgstr "Konstatēti ar atkļūdotāju nesaderīgi moduļi %s, kas var izraisīt atkļūdotāja darbības problēmas"
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:38
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:38
+msgid "The password is used to secure communication between the "
+msgstr "Parole tiek lietota, lai nodrošinātu drošu saziņu starp "
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:87
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:87
+msgid "The password should begin with a letter and continue "
+msgstr "Parolei jāsākas ar burtu un jāturpinās "
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:193
+#, python-format
+msgid ""
+"The project '%s' already exists.\n"
+"Do you wish to overwrite it?"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:158
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:158
+msgid "This code will be executed at the debuggee:"
+msgstr "Atkļūdojamā procesā tiks izpildīts šis kods:"
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:39
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:39
+msgid "Thread Id"
+msgstr "Pavediena ID"
+
+#: PyStudio/PyStudio/Debugger/StackThreadShelfWindow.py:51
+#: PyStudio/build/lib/PyStudio/Debugger/StackThreadShelfWindow.py:51
+msgid "Threads"
+msgstr "Pavedieni"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:55
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:55
+msgid "Toggle Breakpoint"
+msgstr "Iestatīt/noņemt pārtraukumpunktu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:620
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:602
+msgid "Too few public methods"
+msgstr "Pārāk maz publisko metožu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:618
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:600
+msgid "Too many ancestors"
+msgstr "Pārāk daudz priekšteču"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:624
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:606
+msgid "Too many arguments"
+msgstr "Pārāk daudz argumentu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:623
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:605
+msgid "Too many branches"
+msgstr "Pārāk daudz zaru"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:619
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:601
+msgid "Too many instance attributes"
+msgstr "Pārāk daudz instances atribūtu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:598
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:580
+msgid "Too many lines in module"
+msgstr "Pārāk daudz rindiņu modulī"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:625
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:607
+msgid "Too many local variables"
+msgstr "Pārāk daudz lokālo mainīgo"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:621
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:603
+msgid "Too many public methods"
+msgstr "Pārāk daudz publisko metožu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:622
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:604
+msgid "Too many return statements"
+msgstr "Pārāk daudz operatoru return"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:626
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:608
+msgid "Too many statements"
+msgstr "Pārāk daudz operatoru"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:358
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:340
+msgid "Trap Unhandled Exceptions"
+msgstr "Fiksēt neapstrādātus izņēmumus"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsList.py:48
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:63
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:49
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:213
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsList.py:48
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:63
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:47
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:157
+msgid "Type"
+msgstr "Tips"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:724
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:706
+msgid "Unable to check methods signature"
+msgstr "Nevar pārbaudīt metodes parakstu"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:727
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:709
+msgid "Unable to import module"
+msgstr "Nevar importēt moduli"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:392
+#, fuzzy, python-format
+msgid "Unable to load project: %s"
+msgstr "Neizdevās ielādēt rezultātu datus: %s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:713
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:695
+msgid "Undefined class member"
+msgstr "Nedefinēts klases elements"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:715
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:697
+msgid "Undefined class member (but some types could not be inferred)"
+msgstr "Nedefinēts klases elements (taču dažus tipus nevar izsecināt)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:705
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:687
+msgid "Undefined variable"
+msgstr "Nedefinēts mainīgais"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:721
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:703
+msgid "Unexpected error"
+msgstr "Neparedzēta kļūda"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:35
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:36
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:35
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:36
+msgid "Unknown Error"
+msgstr "Nezināma kļūda"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:703
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:685
+msgid "Unknown encoding specified"
+msgstr "Norādīts nezināms kodējums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:637
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:619
+msgid "Unnecessary pass statement"
+msgstr "Lieks operators pass"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:651
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:633
+msgid "Unnecessary semicolon"
+msgstr "Lieks semikols"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:633
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:615
+msgid "Unreachable code"
+msgstr "Nesasniedzams kods"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:686
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:668
+msgid "Unrecognized file option"
+msgstr "Neatpazīta faila izvēles iespēja"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:670
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:652
+msgid "Unused argument"
+msgstr "Neizmantots arguments"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:668
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:650
+msgid "Unused import"
+msgstr "Neizmantots importētais modulis"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:671
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:653
+msgid "Unused import from wildcard import"
+msgstr "Neizmantots modulis, kas importēts, lietojot aizstājējzīmi"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:669
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:651
+msgid "Unused variable"
+msgstr "Neizmantots mainīgais"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:710
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:692
+msgid "Use __slots__ on an old style class"
+msgstr "__slots__ izmantošana vecā stila klasē"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:655
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:637
+msgid "Use l as long integer identifier"
+msgstr "Mazā burta l izmantošana par gara vesela skaitļa identifikatoru"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:680
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:662
+msgid "Use of \"property\" on an old style class"
+msgstr "property izmantošana vecā stila klasē"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:654
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:636
+msgid "Use of the <> operator"
+msgstr "Operatora <> izmantošana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:656
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:638
+msgid "Use of the `` operator"
+msgstr "Operatora `` izmantošana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:639
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:621
+msgid "Use of the exec statement"
+msgstr "Operatora exec izmantošana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:711
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:693
+msgid "Use super on an old style class"
+msgstr "super izmantošana vecā stila klasē"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:641
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:623
+msgid "Used * or ** magic"
+msgstr "Izmantotas * vai ** iespējas"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:640
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:622
+msgid "Used builtin function"
+msgstr "Izmantota iebūvēta funkcija"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:658
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:640
+msgid "Uses of a deprecated module"
+msgstr "Izmanto neieteicamu moduli"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:674
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:656
+msgid "Using possibly undefined loop variable"
+msgstr "Iespējami nedefinēta cikla mainīgā izmantošana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:666
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:648
+msgid "Using the global statement"
+msgstr "Globālā operatora izmantošana"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:667
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:649
+msgid "Using the global statement at the module level"
+msgstr "Globālā operatora izmantošana moduļu līmenī"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:704
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:686
+msgid "Using variable before assignment"
+msgstr "Mainīgā izmantošana pirms piešķires"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsList.py:47
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:62
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsList.py:47
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:62
+msgid "Value"
+msgstr "Vērtība"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:580
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:169
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:94
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:174
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:253
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:295
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:299
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:562
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:169
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:94
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:174
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:248
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:234
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:238
+msgid "Warning"
+msgstr "Brīdinājums"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:64
+#, fuzzy
+msgid "Warnings/Errors"
+msgstr "Brīdinājums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:657
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:639
+msgid "Wildcard import"
+msgstr "Importēšana, lietojot aizstājējzīmi"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:183
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:183
+#, python-format
+msgid ""
+"Would you like to ignore this warning for the rest of this session?\n"
+"\n"
+"%s"
+msgstr ""
+"Vai turpmāk šajā sesijā vēlaties ignorēt šo brīdinājumu?\n"
+"\n"
+"%s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:702
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:684
+msgid "Wrong encoding specified"
+msgstr "Norādīts nepareizs kodējums"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:693
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:675
+msgid "Yield outside function"
+msgstr "yield atrodas ārpus funkcijas"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:662
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:644
+msgid "__future__ import is not the first non docstring statement"
+msgstr "__future__import nav pirmais operators, kas nav dokumentācijas virkne"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:650
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:632
+msgid "__init__ method from a non direct base class is called"
+msgstr "Metode __init__ ir izsaukta no netiešas pamatklases"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:648
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:630
+msgid "__init__ method from base class is not called"
+msgstr "Metode __init__ nav izsaukta no pamatklases"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:688
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:670
+msgid "__init__ method is a generator"
+msgstr "Metode __init__ ir ģenerators"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:691
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:673
+msgid "break or continue used outside a loop"
+msgstr "break vai continue izmantots ārpus cikla"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:725
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:707
+msgid "failed to resolve interfaces"
+msgstr "neizdevās izšķirt interfeisus"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:722
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:704
+msgid "ignored builtin module"
+msgstr "ignorēts iebūvētais modulis"
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:96
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:96
+msgid "running"
+msgstr "notiek izpilde"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:723
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:705
+msgid "unexpected inferred value"
+msgstr "neparedzēta izsecināta vērtība"
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:96
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:96
+msgid "waiting at breakpoint"
+msgstr "notiek gaidīšana pārtraukumpunktā"
+
+#~ msgid "Repr"
+#~ msgstr "Repr"

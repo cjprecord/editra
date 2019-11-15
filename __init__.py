@@ -6,13 +6,8 @@
 # Licence: wxWindows Licence                                                  #
 ###############################################################################
 
-"""Main package initializer
-@summary: makes the src package available to the package
+"""Main package initializer"""
 
-"""
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id$"
-__revision__ = "$Revision$"
-
-import src
-
+__svnid__ = "$Id: __init__.py 49807 2007-11-10 07:08:33Z CJP $"
+__revision__ = "$Revision: 49807 $"

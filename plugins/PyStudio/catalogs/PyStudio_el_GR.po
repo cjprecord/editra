@@ -1,0 +1,1614 @@
+# Greek translation for editra
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-28 12:51-0500\n"
+"PO-Revision-Date: 2011-08-06 12:40+0000\n"
+"Last-Translator: Stefanos Kariotidis <Unknown>\n"
+"Language-Team: Greek <el@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2012-06-09 18:21+0000\n"
+"X-Generator: Launchpad (build 15376)\n"
+
+#: PyStudio/PyStudio/Debugger/DebuggeeWindow.py:35
+#: PyStudio/build/lib/PyStudio/Debugger/DebuggeeWindow.py:35
+msgid ""
+"\n"
+"\n"
+"Debuggee finished."
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:98
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:98
+msgid ""
+"\n"
+"\n"
+"Debugger detached."
+msgstr ""
+"\n"
+"\n"
+"Επισυνάπτηκε ο αποσφαλματωτής"
+
+#: PyStudio/PyStudio/Debugger/RpdbDebugger.py:179
+#: PyStudio/build/lib/PyStudio/Debugger/RpdbDebugger.py:179
+#, python-format
+msgid ""
+"\n"
+"%s\n"
+msgstr ""
+"\n"
+"%s\n"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:252
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:247
+#, python-format
+msgid ""
+"%s\n"
+"\n"
+"Click 'Cancel' to ignore this warning in this session."
+msgstr ""
+"%s\n"
+"\n"
+"Πατήστε 'Ακύρωση' για ανγόηση σε αυτή τη συνεδρία."
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:720
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:702
+msgid "(error prevented analysis)"
+msgstr "(λάθος απέτρεψε την ανάλυση)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:685
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:667
+msgid "(syntax error raised for a module)"
+msgstr "(συντακτικό λάθος ανέκυψε για μια ενότητα )"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:663
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:645
+msgid "(warning notes in code comments)"
+msgstr "(σημειώσεις προειδοποίησης στα σχόλια κώδικα)"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:194
+msgid "<Project Destination>"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:213
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:225
+msgid "<Project Name>"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:628
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:610
+msgid "Abstract class is only referenced a few times"
+msgstr "Η αφηρημένη κλάση αναφέρεται λίγες φορές"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:627
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:609
+msgid "Abstract class not referenced"
+msgstr "Η αφηρημένη κλάση δεν αναφέρεται"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:644
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:626
+msgid "Access to a protected member of a client class"
+msgstr "Πρόσβαση σε προστατευόμενο μέλος μιας κλάσης - πελάτη"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:696
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:678
+msgid "Accessing method before it is defined"
+msgstr "Πρόσβαση σε μέθοδο η οποία δεν έχει ορισθεί"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:141
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:132
+msgid "Add python executable"
+msgstr "Πρόσθεσε εκτελέσιμο αρχείο python"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:190
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:190
+#, python-format
+msgid "Added %s to PyExpression shelf."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:369
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:351
+msgid "Allow Synchronicity"
+msgstr "Επέτρεψε συγχρονισμό"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:173
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:173
+msgid "An unhandled exception was caught. Would you like to analyze it?"
+msgstr "Μία αδιαχείριστη εξαίρεση εντοπίστηκε. Θέλετε να αναλυθεί;"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:246
+#, python-format
+msgid "Are you sure you want to delete '%s' and all of its contents?"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:248
+#, python-format
+msgid "Are you sure you want to delete '%s'?"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:645
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:627
+msgid "Arguments number differs from super method"
+msgstr "Ο αριθμός των ορισμάτων διαφέρει απο την μέθοδο της υπερκλάσης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:716
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:698
+msgid "Assigning to function call which doesn't return"
+msgstr "Ανάθεση σε συνάρτηση η οποία δεν επιστρέφει ορίσματα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:681
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:663
+msgid "Assigning to function call which only returns None"
+msgstr "Ανάθεση σε συνάρτηση η οποία επιστρέφει τύπο None"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:36
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:36
+msgid "Attach"
+msgstr "Προσάρτηση"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:46
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:46
+msgid "Attach to a script (that has the debugger engine running) on local or remote machine:"
+msgstr "Προσάρτηση σε κώδικα (ο οποίος εκτελείται απο τον αποσφαλματωτή) σε τοπικό ή απομακρυσμένο υπολογιστή:"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:642
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:624
+msgid "Attribute defined outside __init__"
+msgstr "Η ιδιότητα ορίστηκε εκτός της __init__"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:269
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:251
+msgid "Automatic"
+msgstr "Αυτόματο"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:187
+msgid "Automatically reload last project at startup."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:270
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:252
+msgid "Automatically rerun on save, document change, and file load"
+msgstr "Αυτόματα επανεκτέλεσε με την αποθήκευση, αλλαγή του αρχείου ή φόρτωση αρχείου"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:707
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:689
+msgid "Bad except clauses order"
+msgstr "Λανθασμένη σειρά των ορισμών εξαιρέσεων"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:712
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:694
+msgid "Bad first argument given to super class"
+msgstr "Λανθασμένο πρώτο όρισμα δόθηκε στην υπερκλάση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:652
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:634
+msgid "Bad indentation"
+msgstr "Λανθασμένη οδόντωση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:687
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:669
+msgid "Bad option value"
+msgstr "Λανθασμένη αξία σε επιλογή"
+
+#: PyStudio/PyStudio/Project/ProjectTemplate.py:188
+#: PyStudio/PyStudio/Project/ProjectTemplate.py:198
+msgid "Basic Project"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:590
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:572
+msgid "Black listed name"
+msgstr "Όνομα απο μαύρη λίστα"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:74
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:74
+msgid "Break"
+msgstr "Διακοπή"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:677
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:659
+msgid "Catch \"Exception\""
+msgstr "Εγκλώβισε \"Εξαίρεση\""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:145
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:136
+msgid "Check for syntax errors on save"
+msgstr "Έλεγξε για συντακτικά λάθη κατα την αποθήκευση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:649
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:631
+msgid "Class has no __init__ method"
+msgstr "Η κλάση δεν έχει μέθοδο __init__"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:595
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:577
+msgid "Class method should have \"cls\" as first argument"
+msgstr "Η μέθοδος της κλάσης πρέπει να έχει το \"cls\" ως πρώτο όρισμα"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:80
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:63
+msgid "Clear"
+msgstr "Εκκαθάριση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:129
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:120
+msgid "Code Analysis"
+msgstr "Ανάλυση Κώδικα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:602
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:584
+msgid "Comma not followed by a space"
+msgstr "Το σημείο στίξεως κόμα δεν ακολουθείται απο κενό χαρακτήρα"
+
+#: PyStudio/PyStudio/Common/BaseShelfWindow.py:85
+#: PyStudio/build/lib/PyStudio/Common/BaseShelfWindow.py:72
+msgid "Configure"
+msgstr "Παραμετροποίηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:578
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:296
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:560
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:235
+msgid "Convention"
+msgstr "Σύμβαση"
+
+#: PyStudio/PyStudio/ModuleFinder/FindTabMenu.py:72
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindTabMenu.py:72
+msgid "Copy Module Path"
+msgstr "Αντέγραψε τη διαδρομή της ενότητας"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:44
+msgid "Create New Project"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:72
+msgid "Create a new project"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:176
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:166
+msgid "Currently active Python"
+msgstr "Python σε χρήση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:612
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:594
+msgid "Cyclic import"
+msgstr "Κυκλική εισαγωγή"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:634
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:616
+msgid "Dangerous default value used as an argument"
+msgstr "Επικίνδυνη προεπιλεγμένη αξία χρησιμοποιήθηκε ως όρισμα"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:301
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:302
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:304
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:306
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:331
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:296
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:297
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:299
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:301
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:326
+msgid "Data Retrieval Timeout"
+msgstr "Όριο Χρόνου Ανάκτησης Δεδομένων"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:128
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:119
+msgid "Debugger"
+msgstr "Αποσφαλματωτής"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:76
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:76
+msgid "Debugger Args"
+msgstr "Ορίσματα Αποσφαλματωτή"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:97
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:97
+msgid ""
+"Debugger attached.\n"
+"\n"
+msgstr ""
+"Ο αποσφαλματωτής επισυνάφθηκε.\n"
+"\n"
+
+#: PyStudio/PyStudio/Debugger/PythonDebugger.py:59
+#: PyStudio/build/lib/PyStudio/Debugger/PythonDebugger.py:59
+msgid ""
+"Debugger attached. Debuggee output starts now...\n"
+"\n"
+msgstr ""
+"Ο αποσφαλματωτής επισυνάφθηκε. Η έξοδος της αποσφαλμάτωσης ξεκινάει τώρα...\n"
+"\n"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:387
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:387
+#, python-format
+msgid ""
+"Debugging remote debuggee %s\n"
+"\n"
+msgstr ""
+"Αποσφαλμάτωση απομακρυσμένου αρχείου %s\n"
+"\n"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:164
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:164
+msgid "Delete All Breakpoints"
+msgstr "Διέγραψε Όλα τα Σημέια Στάσης (Breakpoints)"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:52
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:52
+msgid "Delete All Expressions"
+msgstr "Διέγραψε Όλες τις Εκφράσεις"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:162
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:162
+msgid "Delete Breakpoint"
+msgstr "Διέγραψε το Σημείο Στάσης (Breakpoint)"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:50
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:50
+msgid "Delete Expression"
+msgstr "Διέγραψε την Έκφραση"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:250
+msgid "Delete?"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:537
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:519
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:95
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:95
+msgid "Disabling Pylint Autorun during Debug.\n"
+msgstr "Απενεργοποίηση της αυτόματης εκτέλεσης του Pylint κατα την αποσφαλμάτωση.\n"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:616
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:598
+msgid "Duplication"
+msgstr "Αλληλεπικάλυψη"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:181
+msgid "Edit"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTemplate.py:187
+#, fuzzy
+msgid "Empty Project"
+msgstr "Κενή συμβολοσειρά τεκμηρίωσης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:593
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:575
+msgid "Empty docstring"
+msgstr "Κενή συμβολοσειρά τεκμηρίωσης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:536
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:518
+msgid "Enabled"
+msgstr "Ενεργοποιημένο"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:159
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:159
+msgid "Enter Code to Execute"
+msgstr "Εισάγετε Κώδικα προς Εκτέλεση"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:412
+msgid "Enter file name:"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:425
+msgid "Enter folder name:"
+msgstr ""
+
+#: PyStudio/PyStudio/ModuleFinder/FindShelfWindow.py:55
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindShelfWindow.py:55
+msgid "Enter module name to search for"
+msgstr "Εισάγετε όνομα ενότητας (module) προς αναζήτηση"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:428
+msgid "Enter package name:"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/PyStudioUtils.py:164
+#: PyStudio/PyStudio/Common/ToolConfig.py:581
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:51
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:214
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:294
+#: PyStudio/build/lib/PyStudio/Common/PyStudioUtils.py:156
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:563
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:49
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:158
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:233
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:607
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:589
+msgid "Errors / warnings by module"
+msgstr "Σφάλματα / ειδοποιήσεις ανα ενότητα (module)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:395
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:377
+msgid "Escape Non-Ascii Characters for Execute/Evaluate"
+msgstr "Παρέβλεψε χαρακτήρες εκτός του Ascii για Εκτέλεση/Αξιολόγηση"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:65
+#, fuzzy
+msgid "Evaluation"
+msgstr "Καθολική αξιολόγηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:678
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:660
+msgid "Except doesn't do anything"
+msgstr "Η εξαίρεση δεν κάνει τίποτα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:679
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:661
+msgid "Exception doesn't inherit from standard \"Exception\" class"
+msgstr "Η εξαίρεση δεν κληρονομεί απο την στάνταρ \"Exception\" κλάση"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:70
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:70
+msgid "Exceptions"
+msgstr "Εξαιρέσεις"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:59
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:59
+msgid "Execute"
+msgstr "Εκτέλεσε"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:689
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:671
+msgid "Explicit return in __init__"
+msgstr "Ρητή επιστροφή στην __init__"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsList.py:44
+#: PyStudio/PyStudio/Debugger/ExpressionsList.py:46
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsList.py:44
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsList.py:46
+msgid "Expression"
+msgstr "Έκφραση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:613
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:595
+msgid "External dependencies"
+msgstr "Εξωτερικές εξαρτήσεις"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:219
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:181
+#, python-format
+msgid "Failed to load results data: %s"
+msgstr "Αποτυχία φόρτωσης αποτελεσμάτω: %s"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:195
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:157
+msgid "Failed to save PyLint Results"
+msgstr "Αποτυχία αποθήκευσης των αποτελεσμάτων απο το PylLint"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:582
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:564
+msgid "Fatal"
+msgstr "Κρίσιμο"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsList.py:42
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:45
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:58
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsList.py:42
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:45
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:58
+msgid "File"
+msgstr "Αρχείο"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:77
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:77
+msgid "Filename"
+msgstr "Όνομα Αρχείου"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:84
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:84
+msgid "Filtering:"
+msgstr "Φιλτράρισμα:"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:380
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:362
+msgid "Fork into Child"
+msgstr "Διακλάδωσε σε νέο"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:726
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:708
+msgid "Format detection error"
+msgstr "Ανιχνεύθηκε σφάλμα διαμόρφωσης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:653
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:635
+msgid "Found inconsistent indentation"
+msgstr "Βρέθηκε μη συνεπής οδόντωση"
+
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:44
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:44
+msgid "Frame"
+msgstr "Πλαίσιο"
+
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:47
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:47
+msgid "Function"
+msgstr "Συνάρτηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:127
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:118
+msgid "General"
+msgstr "Γενικά"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:609
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:591
+msgid "Global evaluation"
+msgstr "Καθολική αξιολόγηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:665
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:647
+msgid "Global statement used but no assignment is done"
+msgstr "Χρησιμοποιήθηκε καθολική έκφραση αλλά δεν έχει γίνει εκχώρηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:664
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:646
+msgid "Global variable undefined at the module level"
+msgstr "Απροσδιόριστη καθολική μεταβλητή σε επίπεδο ενότητας (module)"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:69
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:69
+msgid "Globals"
+msgstr "Καθολικά"
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:61
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:61
+msgid "Host:"
+msgstr ""
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:46
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:46
+#, python-format
+msgid "INFO: Directory Variables file: %s"
+msgstr "ΠΛΗΡΟΦΟΡΙΑ: Μεταβλητές Αρχείου Καταλόγου: %s"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:45
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:45
+#, python-format
+msgid "INFO: PyFind command line: %s"
+msgstr "ΠΛΗΡΟΦΟΡΙΑ: PyFind γραμμή εντολών: %s"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:44
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:44
+#, python-format
+msgid "INFO: Using PYTHONPATH + %s"
+msgstr "ΠΛΗΡΟΦΟΡΙΑ: Χρησιμοποιείται PYTHONPATH + %s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:364
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:346
+msgid "Ignore SystemExit Exception"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:184
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:184
+msgid "Ignore Warning"
+msgstr "Αγνόησε την Προειδοποίηση"
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:73
+msgid "Import Project"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:184
+msgid "Import Project Directory"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:74
+msgid "Import an existing project"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:298
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:237
+msgid "Information"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:699
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:681
+msgid "Interface is not a class"
+msgstr "Η διεπαφή (interface) δεν είναι κλάση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:629
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:611
+msgid "Interface not implemented"
+msgstr "Η διεπαφή (interface) δεν έχει υλοποιηθεί"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:34
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:34
+msgid "Internal Search Error"
+msgstr "Εσωτερικό Σφάλμα Αναζήτησης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:591
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:573
+msgid "Invalid name"
+msgstr "Μη έγκυρο όνομα"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:56
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:56
+msgid "Jump"
+msgstr "Μετάβαση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:638
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:620
+msgid "Lambda may not be necessary"
+msgstr "Η Συνάρτηση Λάμδα μπορεί να μην είναι απαραίτητη"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsList.py:43
+#: PyStudio/PyStudio/Debugger/StackFrameList.py:46
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:50
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsList.py:43
+#: PyStudio/build/lib/PyStudio/Debugger/StackFrameList.py:46
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:48
+msgid "Line"
+msgstr "Γραμμή"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:597
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:579
+msgid "Line too long"
+msgstr "Η γραμμή είναι πολύ μεγάλη"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:267
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:249
+msgid "Lint Run Mode"
+msgstr "Λειτουργία Εκτέλεσης του Lint"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:146
+msgid "Load Last Project"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:73
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:204
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:57
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:166
+msgid "Load Results"
+msgstr "Φόρτωσε Αποτελέσματα"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:217
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:179
+#, python-format
+msgid "Loaded code analysis data: %s"
+msgstr "Ανάλυση δεδομένων φορτωμένου κώδικα: %s"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:277
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:278
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:279
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:280
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:331
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:181
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:204
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:272
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:273
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:274
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:275
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:326
+msgid "Loading..."
+msgstr "Γίνεται φόρτωση..."
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:68
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:68
+msgid "Locals"
+msgstr "Τοπικά"
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:76
+msgid "Location to create new project."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:272
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:254
+msgid "Manual"
+msgstr "Χειροκίνητο"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:183
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:173
+msgid "Mark syntax errors in buffer after save"
+msgstr "Σημείωσε τα συντακτικά λάθη του buffer μετά την αποθήκευση"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:82
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:82
+msgid "Maximum"
+msgstr "Μέγιστο"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:82
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:82
+msgid "Medium"
+msgstr "Μεσαίο"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:306
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:288
+msgid "Message Type: "
+msgstr "Τύπος Μηνύματος: "
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:608
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:590
+msgid "Messages"
+msgstr "Μηνύματα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:606
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:588
+msgid "Messages by category"
+msgstr "Μηνύματα ανα κατηγορία"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:596
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:578
+msgid "Metaclass method should have \"mcs\" as first argument"
+msgstr "Η μέθοδος της μετακλάσης πρέπει να έχει \"mcs\" ως πρώτο όρισμα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:611
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:593
+msgid "Method could be a function"
+msgstr "Η μέθοδος θα μπορούσε να είναι συνάρτηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:697
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:679
+msgid "Method has no argument"
+msgstr "Η μέθοδος δεν έχει ορίσματα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:695
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:677
+msgid "Method hidden by instance attribute"
+msgstr "Η μέθοδος είναι κρυμμένη απο ιδιότητα του στηγμιοτύπου"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:647
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:629
+msgid "Method of an abstract class is not overridden"
+msgstr "Η μέθοδος μιας αφηρημένης κλάσης δεν μπορεί να παρακαμφθεί"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:698
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:680
+msgid "Method should have \"self\" as first argument"
+msgstr "Η μέθοδος πρέπει να έχει το \"self\" ως πρώτο όρισμα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:592
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:574
+msgid "Missing docstring"
+msgstr "Απουσιάζει η συμβολοσειρά τεκμηρίωσης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:700
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:682
+msgid "Missing method from interface"
+msgstr "Απουσιάζει η μέθοδος απο την διεπαφή (interface)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:594
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:576
+msgid "Missing required attribute"
+msgstr "Απουσιάζει απαιτούμενη ιδιότητα (attribute)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:661
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:643
+msgid "Module import itself"
+msgstr "Η ενότητα (module) εισάγη τον ευτό της"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:614
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:596
+msgid "Modules dependencies graph"
+msgstr "Γράφιμα εξαρτήσεων ενοτήτων (modules)"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:599
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:581
+msgid "More than one statement on a single line"
+msgstr "Παραπάνω απο μία έκφραση σε μία γραμμή"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:197
+msgid "Move to Recycle Bin"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:199
+msgid "Move to Trash"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:40
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:84
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:61
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:40
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:84
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:61
+msgid "Name"
+msgstr "Όνομα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:706
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:688
+msgid "Name not defined in module"
+msgstr "Το όνομα δεν έχει καθορισθεί στην ενότητα (module)"
+
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:182
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:205
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:182
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:205
+msgid "Namespace Warning"
+msgstr "Προειδοποίηση Χώρου Ονομάτων (namespace)"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:193
+msgid "New"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:412
+#, fuzzy
+msgid "New File"
+msgstr "Αρχείο"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:187
+msgid "New File..."
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:95
+#: PyStudio/PyStudio/Project/ProjectTree.py:426
+msgid "New Folder"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:188
+msgid "New Folder..."
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:89
+msgid "New Module"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:92
+#: PyStudio/PyStudio/Project/ProjectTree.py:429
+msgid "New Package"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:189
+msgid "New Package..."
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:71
+msgid "New Project"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:199
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:161
+msgid "No data to save!"
+msgstr "Δεν υπάρχουν δεδομένα προς αποθήκευση!"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:676
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:658
+msgid "No exception type(s) specified"
+msgstr "Δεν έχουν καθορισθεί τύποι εξαιρέσεων"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:701
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:683
+msgid "Non ascii characters found but no encoding specified (PEP 263)"
+msgstr "Βρέθηκαν χαρακτήρες εκτός Ascii χωρίς να έχει καθορισθεί κωδικοποίηση (PEP 263"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:714
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:696
+msgid "Object is not callable"
+msgstr "Το αντικείμενο δεν μπορεί να κληθεί"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:82
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:82
+msgid "Off"
+msgstr "Ανενεργό"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:273
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:255
+msgid "Only run when requested"
+msgstr "Εκτέλεση μόνο κατόπιν αιτήσεως"
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:75
+#: PyStudio/PyStudio/Project/ProjectMgr.py:238
+msgid "Open Project"
+msgstr ""
+
+#: PyStudio/PyStudio/__init__.py:198
+msgid "Open PyStudio Project side panel"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:76
+msgid "Open an existing PyProject project file"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:184
+msgid "Open enclosing folder..."
+msgstr ""
+
+#: PyStudio/PyStudio/ModuleFinder/FindTabMenu.py:103
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindTabMenu.py:103
+#, python-format
+msgid "Open module '%s'"
+msgstr "Άνοιξε ενότητα (module) '%s'"
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:183
+msgid "Open..."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:601
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:583
+msgid "Operator not followed by a space"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:600
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:582
+msgid "Operator not preceded by a space"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:76
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:76
+msgid "PID"
+msgstr "ΑΡΙΘΜ.ΔΙΕΡΓΑΣΙΑΣ"
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:33
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:33
+msgid "Password"
+msgstr "Συνθηματικό"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:375
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:357
+msgid "Pause before fork"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:79
+msgid "Pep8 Check"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:130
+msgid "Preview"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:76
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:76
+msgid "Program Args"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:97
+msgid "Project Destination:"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:194
+msgid "Project Exists"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:94
+msgid "Project Name:"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:250
+msgid "Project Settings"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:128
+msgid "Project Type"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/NewProjectDlg.py:74
+msgid "Project directory will be created using this name."
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:280
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:262
+msgid "PyLint Checkers"
+msgstr ""
+
+#: PyStudio/PyStudio/__init__.py:197
+msgid "PyProject"
+msgstr ""
+
+#: PyStudio/PyStudio/__init__.py:261
+#: PyStudio/build/lib/PyStudio/__init__.py:193
+msgid "PyStudio"
+msgstr "PyStudio"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:97
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:88
+msgid "PyStudio Config"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:393
+#, fuzzy
+msgid "PyStudio Error"
+msgstr "PyStudio"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:177
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:167
+msgid "Python Path:"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:708
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:690
+#, python-format
+msgid "Raising %s while only classes, instances or string are allowed"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:709
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:691
+msgid "Raising a new style class which doesn't inherit from BaseException"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:675
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:657
+msgid "Raising a string exception"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:615
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:597
+msgid "Raw metrics"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:673
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:655
+msgid "Redefining built-in"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:672
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:654
+msgid "Redefining name from outer scope"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:690
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:672
+msgid "Redefinition of method"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:96
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:96
+msgid "Reenabling Pylint Autorun.\n"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:579
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:297
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:561
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:236
+msgid "Refactor"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:68
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:68
+msgid "Refresh"
+msgstr "Ανανέωση"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:54
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:54
+#, fuzzy
+msgid "Refresh Expressions"
+msgstr "Ορισμός έκφρασης"
+
+#: PyStudio/PyStudio/Debugger/VariablesShelfWindow.py:79
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesShelfWindow.py:79
+msgid "Refresh Variables"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:660
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:642
+msgid "Reimport of module"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:659
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:641
+msgid "Relative import"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:144
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:135
+msgid "Remove selected python executable"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:201
+#, fuzzy
+msgid "Rename"
+msgstr "Όνομα Αρχείου"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:692
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:674
+msgid "Return outside function"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:694
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:676
+msgid "Return with argument inside generator"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:62
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:62
+msgid "Run"
+msgstr "Εκτέλεση"
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:55
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:55
+msgid "Run To Line"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:71
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:180
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:55
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:142
+msgid "Save Results"
+msgstr ""
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:193
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/LintShelfWindow.py:155
+#, python-format
+msgid "Saved PyLint results to: %s"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:218
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:200
+msgid "Select Python Executable"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:160
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:160
+msgid "Set Breakpoint"
+msgstr "Ορισμός σημείου διακοπής"
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:48
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:48
+msgid "Set Expression"
+msgstr "Ορισμός έκφρασης"
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:58
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:58
+msgid "Set password:"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/BaseShelfPlugin.py:85
+#: PyStudio/build/lib/PyStudio/Common/BaseShelfPlugin.py:79
+#, python-format
+msgid "Show %s"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:646
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:628
+msgid "Signature differs from super method"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:617
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:599
+msgid "Similar lines in other files"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:390
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:372
+msgid "Source Encoding for Execute/Evaluate"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:386
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:368
+msgid "Source Encoding:"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/StackThreadShelfWindow.py:50
+#: PyStudio/build/lib/PyStudio/Debugger/StackThreadShelfWindow.py:50
+msgid "Stack Frame"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:41
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:85
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:41
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:85
+msgid "State"
+msgstr "Κατάσταση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:635
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:617
+msgid "Statement seems to have no effect"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:643
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:625
+msgid "Static method with self or class as first argument"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:610
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:592
+msgid "Statistics by type"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:68
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:68
+msgid "Step In"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:72
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:72
+msgid "Step Out"
+msgstr "Βήμα Εκτός"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:70
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:70
+msgid "Step Over"
+msgstr "Βήμα Πάνω"
+
+#: PyStudio/PyStudio/Debugger/DebugShelfWindow.py:64
+#: PyStudio/build/lib/PyStudio/Debugger/DebugShelfWindow.py:64
+msgid "Stop debugging"
+msgstr "Παύση αποσφαλμάτωσης"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:636
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:618
+msgid "String statement has no effect"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:92
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:92
+#, python-format
+msgid "The modules: %s, which are incompatible with the debugger were detected and can possibly cause the debugger to fail."
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:38
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:38
+msgid "The password is used to secure communication between the "
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/PasswordDialog.py:87
+#: PyStudio/build/lib/PyStudio/Debugger/PasswordDialog.py:87
+msgid "The password should begin with a letter and continue "
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectMgr.py:193
+#, python-format
+msgid ""
+"The project '%s' already exists.\n"
+"Do you wish to overwrite it?"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:158
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:158
+msgid "This code will be executed at the debuggee:"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:39
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:39
+msgid "Thread Id"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/StackThreadShelfWindow.py:51
+#: PyStudio/build/lib/PyStudio/Debugger/StackThreadShelfWindow.py:51
+msgid "Threads"
+msgstr "Νήματα"
+
+#: PyStudio/PyStudio/Debugger/BreakPointsShelfWindow.py:55
+#: PyStudio/build/lib/PyStudio/Debugger/BreakPointsShelfWindow.py:55
+msgid "Toggle Breakpoint"
+msgstr "Εναλλαγή Σημείου Διακοπής"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:620
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:602
+msgid "Too few public methods"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:618
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:600
+msgid "Too many ancestors"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:624
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:606
+msgid "Too many arguments"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:623
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:605
+msgid "Too many branches"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:619
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:601
+msgid "Too many instance attributes"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:598
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:580
+msgid "Too many lines in module"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:625
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:607
+msgid "Too many local variables"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:621
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:603
+msgid "Too many public methods"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:622
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:604
+msgid "Too many return statements"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:626
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:608
+msgid "Too many statements"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:358
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:340
+msgid "Trap Unhandled Exceptions"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsList.py:48
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:63
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:49
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:213
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsList.py:48
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:63
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:47
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:157
+msgid "Type"
+msgstr "Τύπος"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:724
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:706
+msgid "Unable to check methods signature"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:727
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:709
+msgid "Unable to import module"
+msgstr ""
+
+#: PyStudio/PyStudio/Project/ProjectTree.py:392
+#, fuzzy, python-format
+msgid "Unable to load project: %s"
+msgstr "Αποτυχία φόρτωσης αποτελεσμάτω: %s"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:713
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:695
+msgid "Undefined class member"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:715
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:697
+msgid "Undefined class member (but some types could not be inferred)"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:705
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:687
+msgid "Undefined variable"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:721
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:703
+msgid "Unexpected error"
+msgstr "Μη αναμενόμενο σφάλμα"
+
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:35
+#: PyStudio/PyStudio/ModuleFinder/FindResultsList.py:36
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:35
+#: PyStudio/build/lib/PyStudio/ModuleFinder/FindResultsList.py:36
+msgid "Unknown Error"
+msgstr "Άγνωστο Σφάλμα"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:703
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:685
+msgid "Unknown encoding specified"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:637
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:619
+msgid "Unnecessary pass statement"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:651
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:633
+msgid "Unnecessary semicolon"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:633
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:615
+msgid "Unreachable code"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:686
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:668
+msgid "Unrecognized file option"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:670
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:652
+msgid "Unused argument"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:668
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:650
+msgid "Unused import"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:671
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:653
+msgid "Unused import from wildcard import"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:669
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:651
+msgid "Unused variable"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:710
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:692
+msgid "Use __slots__ on an old style class"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:655
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:637
+msgid "Use l as long integer identifier"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:680
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:662
+msgid "Use of \"property\" on an old style class"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:654
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:636
+msgid "Use of the <> operator"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:656
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:638
+msgid "Use of the `` operator"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:639
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:621
+msgid "Use of the exec statement"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:711
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:693
+msgid "Use super on an old style class"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:641
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:623
+msgid "Used * or ** magic"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:640
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:622
+msgid "Used builtin function"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:658
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:640
+msgid "Uses of a deprecated module"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:674
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:656
+msgid "Using possibly undefined loop variable"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:666
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:648
+msgid "Using the global statement"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:667
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:649
+msgid "Using the global statement at the module level"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:704
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:686
+msgid "Using variable before assignment"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsList.py:47
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:62
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsList.py:47
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:62
+msgid "Value"
+msgstr "Τιμή"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:580
+#: PyStudio/PyStudio/Debugger/AttachDialog.py:169
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:94
+#: PyStudio/PyStudio/Debugger/MessageHandler.py:174
+#: PyStudio/PyStudio/Debugger/VariablesLists.py:253
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:295
+#: PyStudio/PyStudio/SyntaxChecker/CheckResultsList.py:299
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:562
+#: PyStudio/build/lib/PyStudio/Debugger/AttachDialog.py:169
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:94
+#: PyStudio/build/lib/PyStudio/Debugger/MessageHandler.py:174
+#: PyStudio/build/lib/PyStudio/Debugger/VariablesLists.py:248
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:234
+#: PyStudio/build/lib/PyStudio/SyntaxChecker/CheckResultsList.py:238
+msgid "Warning"
+msgstr "Προειδοποίηση"
+
+#: PyStudio/PyStudio/SyntaxChecker/LintShelfWindow.py:64
+#, fuzzy
+msgid "Warnings/Errors"
+msgstr "Προειδοποίηση"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:657
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:639
+msgid "Wildcard import"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ExpressionsShelfWindow.py:183
+#: PyStudio/build/lib/PyStudio/Debugger/ExpressionsShelfWindow.py:183
+#, python-format
+msgid ""
+"Would you like to ignore this warning for the rest of this session?\n"
+"\n"
+"%s"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:702
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:684
+msgid "Wrong encoding specified"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:693
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:675
+msgid "Yield outside function"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:662
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:644
+msgid "__future__ import is not the first non docstring statement"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:650
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:632
+msgid "__init__ method from a non direct base class is called"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:648
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:630
+msgid "__init__ method from base class is not called"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:688
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:670
+msgid "__init__ method is a generator"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:691
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:673
+msgid "break or continue used outside a loop"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:725
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:707
+msgid "failed to resolve interfaces"
+msgstr ""
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:722
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:704
+msgid "ignored builtin module"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:96
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:96
+msgid "running"
+msgstr "εκτελείται"
+
+#: PyStudio/PyStudio/Common/ToolConfig.py:723
+#: PyStudio/build/lib/PyStudio/Common/ToolConfig.py:705
+msgid "unexpected inferred value"
+msgstr ""
+
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/PyStudio/Debugger/ThreadsList.py:96
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:60
+#: PyStudio/build/lib/PyStudio/Debugger/ThreadsList.py:96
+msgid "waiting at breakpoint"
+msgstr ""

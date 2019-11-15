@@ -1,0 +1,4 @@
+Name=Oxygen
+Author=Cody Precord
+Description=KDE4 Oxygen icons for Editra
+Version=0.4

@@ -1,0 +1,126 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-02 10:21-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:668
+msgid "Are you sure you want to delete the selected macros?"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:669
+msgid "Are you sure?"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1106
+msgid "Delete"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:178
+msgid "Delete macro"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1104
+msgid "Edit"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:156
+msgid "Edit macro"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:127
+msgid "Filter macros by their type"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/__init__.py:84
+#: MacroLauncher/MacroLauncher/__init__.py:96
+#: MacroLauncher/MacroLauncher/__init__.py:197
+msgid "Macro Launcher"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:673
+msgid "Macro deletion cancelled"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/__init__.py:63
+#: MacroLauncher/MacroLauncher/__init__.py:67
+msgid "MacroLauncher"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1105
+msgid "New"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:164
+msgid "New macro"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/__init__.py:85
+msgid "Open Macro Launcher Sidepanel"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1108
+msgid "Quick View"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:617
+#, python-format
+msgid "Quick view: %s"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:196
+msgid "R: running, F: finished, C: cancelled or failed"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:149
+msgid "Refresh list, reload macros if necessary"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1107
+msgid "Reload this macro"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1103
+msgid "Run"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1101
+msgid "Run another"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:171
+msgid "Run macro"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:681
+msgid "Sorry"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:680
+#, python-format
+msgid "Sorry, the macro '%s' is protected"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:1100
+msgid "Stop"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:631
+msgid "This macro is protected, you can view it only"
+msgstr ""
+
+#: MacroLauncher/MacroLauncher/mbrowser.py:772
+msgid "Wait please..."
+msgstr ""

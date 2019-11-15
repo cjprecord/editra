@@ -1,0 +1,4 @@
+Author=Kevin D. Smith, Cody Precord
+Version=1.8
+Name=Projects
+Description=A sidepanel that incorporates file management and source control

@@ -2,10 +2,7 @@
 # Setup script to build the calculator plugin. To build the plugin
 # just run 'python setup.py' and an egg will be built and put into 
 # the plugin directory
-"""The calculator plugin creates a simple calculator that can be docked
-anywhere in the mainwindow by implementing the MainWindowI.
-
-"""
+"""The calculator plugin creates a simple calculator"""
 
 import sys
 try:
@@ -17,17 +14,16 @@ except ImportError:
 __author__ = "Cody Precord"
 
 if setup != None:
-    sys.argv.append("bdist_egg")
-    sys.argv.append("--dist-dir=../.")
     setup(
         name='Calculator',
-        version='0.2',
+        version='0.6',
         description=__doc__,
         author=__author__,
         author_email="cprecord@editra.org",
-        license="GPLv2",
-        url="editra.org",
+        license="wxWindows",
+        url="http://editra.org",
         platforms=["Linux", "OS X", "Windows"],
+        package_data={'calculator' : ['locale/*/LC_MESSAGES/*.mo']},
         packages=['calculator'],
         entry_points='''
         [Editra.plugins]

@@ -14,17 +14,17 @@ except ImportError:
 __author__ = "Cody Precord"
 
 if setup != None:
-    sys.argv.append("bdist_egg")
-    sys.argv.append("--dist-dir=../.")
     setup(
         name='CssOptimizer',
-        version='0.2',
+        version='0.4',
         description=__doc__,
         author=__author__,
         author_email="cprecord@editra.org",
-        license="GPLv2",
+        license="wxWindows",
         url="http://editra.org",
         platforms=["Linux", "OS X", "Windows"],
+        package_data={'cssoptimizer' : ['CHANGELOG.txt',
+                                        'locale/*/LC_MESSAGES/*.mo']},
         packages=['cssoptimizer'],
         entry_points='''
         [Editra.plugins]

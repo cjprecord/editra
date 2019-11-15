@@ -1,0 +1,4 @@
+Name=Pylint
+Author=Mike Rans, Cody Precord
+Description=Adds a Pylint Syntax Checker to the Shelf Menu
+Version=0.1

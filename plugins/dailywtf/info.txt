@@ -1,0 +1,4 @@
+Author=Cody Precord
+Version=0.1
+Name=TheDailyWtf
+Description=Submit code snippets to thedailywtf.com

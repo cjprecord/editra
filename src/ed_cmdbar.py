@@ -3,461 +3,576 @@
 # Purpose: Creates a small slit panel that holds small controls for searching #
 #          and other actions.                                                 #
 # Author: Cody Precord <cprecord@editra.org>                                  #
-# Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# Copyright: (c) 2008 Cody Precord <staff@editra.org>                         #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 """
-#--------------------------------------------------------------------------#
-# FILE: ed_cmdbar.py                                                       #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
-#    This class creates a custom panel that can hide and show different    #
-# controls based an id value. The panel is generally between 24-32 pixels  #
-# in height but can grow to fit the controls inserted in it. The           #
-# the background is painted with a gradient using system defined colors.   #
-#                                                                          #
-#--------------------------------------------------------------------------#
+This class creates a custom panel that can hide and show different controls
+based an id value. The panel is generally between 24-32 pixels in height but
+can grow to fit the controls inserted in it. The the background is painted with
+a gradient using system defined colors.
+
+@summary: The buffers CommandBar control with search/goto line/command entry
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
-__svnid__ = "$Id$"
-__revision__ = "$Revision$"
+__svnid__ = "$Id: ed_cmdbar.py 70229 2012-01-01 01:27:10Z CJP $"
+__revision__ = "$Revision: 70229 $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Imports
 import os
 import sys
 import re
 import wx
+
+# Local Imports
 import util
 import ed_glob
 import ed_search
+import ed_event
+import ed_msg
+import ebmlib
+import eclib
+import ed_basewin
+from profiler import Profile_Get
 
 _ = wx.GetTranslation
 #--------------------------------------------------------------------------#
 # Close Button Bitmap
-from wx import ImageFromStream, BitmapFromImage
-import cStringIO, zlib
+from extern.embeddedimage import PyEmbeddedImage
 
-def GetXData():
-    """Returns the raw image data for the close button
-    @return: raw image data
-
-    """
-    return zlib.decompress(
-'x\xda\x011\x02\xce\xfd\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x0e\
-\x00\x00\x00\x0e\x08\x02\x00\x00\x00\x90*\xba\x86\x00\x00\x00\x03sBIT\x08\
-\x08\x08\xdb\xe1O\xe0\x00\x00\x01\xe9IDAT(\x91m\x92\xbdk\x13a\x18\xc0\x9f\
-\xbb\\r\xd7Ks\xb9&\xc6\xd2j\x8f\xc6D\x08\x8a\xa2\xed\xe2G\x87,\x15\xc4\xb5\
-\x8bH\x17-]\x02\x85:\x14\x84\xd0\x82J\x07A\x07\xc1\xff\xc1\xc1I\x04\x07\x11\
-\x05\x15\x1d\x1cJ\x87\xa2\xd5\x96\x92&49\xe9\x99\xf4\xbc7w\xf7\xbe\xef\xf3:\
-\xdcQ:\xf4\x99\x9e\x8f\x1f\xcf\xb7\xf4\xe9\xf1\xc3\xde\xd7\xcfAg/l5\xe08I\
-\x9d\xb2\xd4\xe1\x91\xec\xd5)\xe9\xcd\xad\x1b\x93W.\x9bC\x05.\xfc(&h?\xa6h\
-\xec\xe9\xb5\xbbk\x9b\xbbJ\xd0\xd93\xc6n\xd2\xfd\x16\xddo\xc7\x00c\x00\x80\
-\x9cE\xa6f\x1a\xc6\xe9\x9c\xfasK\x0e[\rP\x12\x9cx\xd2@*=\xbb(\x8d\x8e!g\xc8\
-\x99b\x95rs\x0f\xb8\xaa\xf9\xdd\x03\xa6&\xc5_[>\xecI\x9f\xa9\xa9\x95\x89\xec\
-\xbd\xbab\x95\x14\xab\x94\x9f_V+\x13\x85\xd9E\x1f\xa9\xc2)\x00(\x00 \x04\x13\
-\x10\x90\xf7\xaf\x92\xe3\x15Y\xd3\xf3\xf3\xcb\x00 k:\xfa\xc4y\xfb\xf20\x97\
-\x02\x00\xd0%\xc1\xae\xc36\xb6\x83\xe6\xfd\x93+\xcfdM\x07\x00\xf4I\xa3\xbe\
-\xe0o\xfd\x00\x00\x9e\x1b\x8dQ\xf6\x8f0/\xa0\xae/\x05\xec\xe8\x9a0\xe4\xcc\
-\xf59"w\\\xc1\xb8\x0c\x00"d\x88"u\xf6\xfc\xc8\xea\xf3\xa8.\xfaD\xd6\xf4\xf1\
-\'/\xf4s\x17\x00\x00(\x17!\x8d\xc7B\xa4\xd9\xdbw#ng\xa9\xb6\xb3T\x8b\xe8\xfc\
-\x9d9\x00\x10,\x00\xc4\xc4LF+_\xbaHl\xdb\xfb\xf2!Y,\xb7\x9e>"\x9b\x1b\xb4\
-\xd3\xf6\xd6\xbe\xcb\xb9Bc\xb5.3\xaa\r\x19\x9df[z}}r\xaaz\xad\xff\xc7>\xb0\
-\x9b\xcc\x8d\xcf\xc3\x11#%\x91J\x0e\x9a\x99\xf4\xe0\xc0z\xb3\xa7\xe8V\xd1u\
-\x1c#sB\xcb\xa4\x01@`\x185\x17\xd5e\x88\t\xce\xdc^\x1fr\xc3\x8aY\x9d\xfe\xf5\
-\xf1\x1dY\xff\xe6m\xff>\xf6]\xd2g\xca\xbaU4\xab\xd3\xff\x01\xe3\xf6\xf0\x91\
-\xbc\xe0^J\x00\x00\x00\x00IEND\xaeB`\x82\x7fU\x05\xed' )
-
-def GetXBitmap():
-    """Returns a bitmap version of the close button
-    @return: bitmap of close button
-
-    """
-    return BitmapFromImage(GetXImage())
-
-def GetXImage():
-    """Returns an image version of the close button
-    @return: image of close button
-
-    """
-    stream = cStringIO.StringIO(GetXData())
-    return ImageFromStream(stream)
+XButton = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAIAAACQKrqGAAAAA3NCSVQICAjb4U/gAAAB6UlE"
+    "QVQokW2SvWsTYRjAn7tcctdLc7kmxtJqj8ZECIqi7eJHhywVxLWLSBctXQKFOhSE0IJKB0EH"
+    "wf/BwUkEBxEFFR0cSoei1ZaSJjQ56Zn0vDd3977v8zrcUTr0mZ6PH8+39Onxw97Xz0FnL2w1"
+    "4DhJnbLU4ZHs1Snpza0bk1cum0MFLvwoJmg/pmjs6bW7a5u7StDZM8Zu0v0W3W/HAGMAgJxF"
+    "pmYaxumc+nNLDlsNUBKceNJAKj27KI2OIWfImWKVcnMPuKr53QOmJsVfWz7sSZ+pqZWJ7L26"
+    "YpUUq5SfX1YrE4XZRR+pwikAKAAgBBMQkPevkuMVWdPz88sAIGs6+sR5+/IwlwIA0CXBrsM2"
+    "toPm/ZMrz2RNBwD0SaO+4G/9AACeG41R9o8wL6CuLwXs6Jow5Mz1OSJ3XMG4DAAiZIgidfb8"
+    "yOrzqC76RNb08Scv9HMXAAAoFyGNx0Kk2dt3I25nqbazVIvo/J05ABAsAMTETEYrX7pIbNv7"
+    "8iFZLLeePiKbG7TT9ta+y7lCY7UuM6oNGZ1mW3p9fXKqeq3/xz6wm8yNz8MRIyWRSg6amfTg"
+    "wHqzp+hW0XUcI3NCy6QBQGAYNRfVZYgJztxeH3LDilmd/vXxHVn/5m3/PvZd0mfKulU0q9P/"
+    "AeP28JG84F5KAAAAAElFTkSuQmCC")
 
 #-----------------------------------------------------------------------------#
 # Globals
 ID_CLOSE_BUTTON = wx.NewId()
-ID_SEARCH_CTRL = wx.NewId()
 ID_SEARCH_NEXT = wx.NewId()
 ID_SEARCH_PRE = wx.NewId()
+ID_FIND_ALL = wx.NewId()
 ID_MATCH_CASE = wx.NewId()
-ID_FIND_LBL = wx.NewId()
-ID_LINE_CTRL = wx.NewId()
-ID_GOTO_LBL = wx.NewId()
-ID_CMD_CTRL = wx.NewId()
-ID_CMD_LBL = wx.NewId()
+ID_WHOLE_WORD = wx.NewId()
+ID_REGEX = wx.NewId()
 
 #-----------------------------------------------------------------------------#
 
-class CommandBar(wx.Panel):
-    """The command bar is a slim panel that is used to hold various small
-    controls for searching jumping to line, ect...
-    @todo: make a plugin interface and a management system for showing and
-           hiding the various conrols
+class CommandBarBase(ed_basewin.EdBaseCtrlBar,
+                     ebmlib.FactoryMixin):
+    """Base class for control bars"""
+    def __init__(self, parent):
+        super(CommandBarBase, self).__init__(parent,
+                                             style=eclib.CTRLBAR_STYLE_GRADIENT)
 
-    """
-    def __init__(self, parent, id_, size=(-1, 24), style=wx.TAB_TRAVERSAL):
-        """Initializes the bar and its default widgets
-        @postcondition: commandbar is created
+        if wx.Platform == '__WXGTK__':
+            self.SetWindowStyle(eclib.CTRLBAR_STYLE_DEFAULT)
 
-        """
-        wx.Panel.__init__(self, parent, id_, size=size, style=style)
+        self.SetVMargin(2, 2)
 
         # Attributes
         self._parent = parent
-        self._installed = False
-        self._sizers = dict(psizer=parent.GetSizer(),
-                            h_sizer=wx.BoxSizer(wx.HORIZONTAL),
-                            goto=wx.BoxSizer(),
-                            search=wx.BoxSizer(),
-                            cmd=wx.BoxSizer())
+        self._menu = None
+        self._menu_enabled = True
+        self.ctrl = None
+        self.close_b = eclib.PlateButton(self, ID_CLOSE_BUTTON,
+                                         bmp=XButton.GetBitmap(),
+                                         style=eclib.PB_STYLE_NOBG)
 
-        # Install Controls
-        v_sizer = wx.BoxSizer(wx.VERTICAL)
-        self._sizers['h_sizer'].Add((8, 8))
-        bstyle = wx.BU_EXACTFIT
-        if wx.Platform == '__WXGTK__':
-            bstyle = wx.NO_BORDER
+        # Setup
+        self.AddControl(self.close_b, wx.ALIGN_LEFT)
 
-        self.close_b = wx.BitmapButton(self, ID_CLOSE_BUTTON, \
-                                       GetXBitmap(), style=bstyle)
-        self._sizers['h_sizer'].Add(self.close_b, 0, wx.ALIGN_CENTER_VERTICAL)
-        self._sizers['h_sizer'].Add((12, 12))
-        v_sizer.Add((2, 2))
-        self._sizers['h_sizer'].Add(v_sizer)
-        self.SetSizer(self._sizers['h_sizer'])
-        self.SetAutoLayout(True)
+        # Event Handlers
+        self.Bind(wx.EVT_BUTTON, self.OnClose, self.close_b)
+        self.Bind(wx.EVT_CONTEXT_MENU, self.OnContext)
+        self.Bind(wx.EVT_MENU, self.OnContextMenu)
+        self.Bind(wx.EVT_SHOW, self.OnShowBar)
 
-        # Bind Events
-        self.Bind(wx.EVT_PAINT, self.OnPaint)
-        self.Bind(wx.EVT_BUTTON, self.OnButton)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+    @classmethod
+    def GetMetaDefaults(cls):
+        return dict(id=-1, config_key=None)
 
-    def Hide(self):
-        """Hides the control and notifies the parent
-        @postcondition: commandbar is hidden
+    #---- Properties ----#
 
-        """
-        wx.Panel.Hide(self)
-        if self._sizers['psizer'] != None:
-            self._sizers['psizer'].Layout()
-        self._parent.SendSizeEvent()
-        self._parent.nb.GetCurrentCtrl().SetFocus()
-        return True
+    MainControl = property(lambda self: self.ctrl,
+                           lambda self, ctrl: self.SetControl(ctrl))
 
-    def InstallCtrl(self, id_):
-        """Installs a control into the bar by ID
-        @postcondition: control is installed
-        @return: requested control or None
+    #---- Implementation ----#
 
-        """
-        if id_ == ID_SEARCH_CTRL:
-            ctrl = self.InstallSearchCtrl()
-        elif id_ == ID_LINE_CTRL:
-            ctrl = self.InstallLineCtrl()
-        elif id_ == ID_CMD_CTRL:
-            ctrl = self.InstallCommandCtrl()
-        else:
-            ctrl = None
-        return ctrl
-
-    def InstallLineCtrl(self):
-        """Installs the go to line control into the panel.
-        @postcondition: GotoLine control is installed in bar.
-
-        """
-        h_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        v_sizer = wx.BoxSizer(wx.VERTICAL)
-        v_sizer.Add((5, 5))
-        linectrl = LineCtrl(self, ID_LINE_CTRL, self._parent.nb.GetCurrentCtrl,
-                            size=(100, 20))
-        v_sizer.Add(linectrl, 0, wx.ALIGN_CENTER_VERTICAL)
-        v_sizer.Add((4, 4))
-        go_lbl = wx.StaticText(self, ID_GOTO_LBL, _("Goto Line") + ": ")
-        if wx.Platform == '__WXMAC__':
-            go_lbl.SetFont(wx.SMALL_FONT)
-        h_sizer.AddMany([(go_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                         ((5, 5)), (v_sizer)])
-        h_sizer.Layout()
-        self._sizers['goto'] = h_sizer
-        self._sizers['h_sizer'].Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._sizers['h_sizer'].Layout()
-        return linectrl
-
-    def InstallCommandCtrl(self):
-        """Install the sizer containing the command executer control
-        into the bar.
-        @return: the command control instance
-
-        """
-        h_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        v_sizer = wx.BoxSizer(wx.VERTICAL)
-        v_sizer.Add((5, 5))
-        cmdctrl = CommandExecuter(self, ID_CMD_CTRL, size=(150, 20))
-        v_sizer.Add(cmdctrl, 0, wx.ALIGN_CENTER_VERTICAL)
-        v_sizer.Add((4, 4))
-        cmd_lbl = wx.StaticText(self, ID_CMD_LBL, _("Command") + ": ")
-        if wx.Platform == '__WXMAC__':
-            cmd_lbl.SetFont(wx.SMALL_FONT)
-        h_sizer.AddMany([(cmd_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                         ((5, 5)), (v_sizer)])
-        h_sizer.Layout()
-        self._sizers['cmd'] = h_sizer
-        self._sizers['h_sizer'].Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._sizers['h_sizer'].Layout()
-        return cmdctrl
-
-    def InstallSearchCtrl(self):
-        """Installs the search context controls into the panel.
-        Other controls should be removed from the panel before calling
-        this method.
-        @postcondition: search control is installed in bar
-
-        """
-        h_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        v_sizer = wx.BoxSizer(wx.VERTICAL)
-        t_sizer = wx.BoxSizer(wx.VERTICAL)
-
-        v_sizer.Add((5, 5))
-        ssize = wx.Size(180, 20)
-        if wx.Platform == '__WXGTK__':
-            ssize.SetHeight(24)
-        search = ed_search.EdSearchCtrl(self, ID_SEARCH_CTRL, 
-                                         menulen=5, size=ssize)
-        v_sizer.Add(search)
-        v_sizer.Add((4, 4))
-        f_lbl = wx.StaticText(self, ID_FIND_LBL, _("Find") + u": ")
-        ctrl_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
-        next_btn = wx.BitmapButton(self, ID_SEARCH_NEXT, 
-                                   t_bmp, style=wx.NO_BORDER)
-        nlbl = wx.StaticText(self, label=_("Next"))
-
-        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
-        pre_btn = wx.BitmapButton(self, ID_SEARCH_PRE, 
-                                  t_bmp, style=wx.NO_BORDER)
-        plbl = wx.StaticText(self, label=_("Previous"))
-
-        match_case = wx.CheckBox(self, ID_MATCH_CASE, _("Match Case"))
-        match_case.SetValue(search.IsMatchCase())
-        if wx.Platform == '__WXMAC__':
-            f_lbl.SetFont(wx.SMALL_FONT)
-            match_case.SetFont(wx.SMALL_FONT)
-            nlbl.SetFont(wx.SMALL_FONT)
-            plbl.SetFont(wx.SMALL_FONT)
-
-        ctrl_sizer.AddMany([(10, 10), (next_btn, 0, wx.ALIGN_CENTER_VERTICAL), 
-                            ((3, 3)), (nlbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                            ((10, 10)), (pre_btn, 0, wx.ALIGN_CENTER_VERTICAL), 
-                            ((3, 3)), (plbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                            ((10, 10)), 
-                            (match_case, 0, wx.ALIGN_CENTER_VERTICAL)])
-
-        t_sizer.Add((7, 7))
-        t_sizer.Add(ctrl_sizer)
-        t_sizer.Add((4, 4))
-
-        h_sizer.AddMany([(f_lbl, 0, wx.ALIGN_CENTER_VERTICAL),
-                         ((5, 5)), (v_sizer), 
-                         (ctrl_sizer, 0, wx.ALIGN_CENTER_VERTICAL)])
-        self._sizers['search'] = h_sizer
-        self._sizers['h_sizer'].Add(h_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL)
-        self._sizers['h_sizer'].Layout()
-        return search
-
-    def OnCheck(self, evt):
-        """Check box event handler
-        @param evt: Event that called this handler
-        @type evt: wx.EVT_CHECKBOX
-
-        """
-        e_id = evt.GetId()
-        if e_id == ID_MATCH_CASE:
-            ctrl = self.FindWindowById(e_id)
-            if ctrl != None:
-                search = self.FindWindowById(ID_SEARCH_CTRL)
-                if search != None:
-                    if ctrl.GetValue():
-                        search.SetSearchFlag(wx.FR_MATCHCASE)
-                    else:
-                        search.ClearSearchFlag(wx.FR_MATCHCASE)
-        else:
-            evt.Skip()
-
-    def OnButton(self, evt):
+    def OnClose(self, evt):
         """Handles events from the buttons on the bar
         @param evt: Event that called this handler
 
         """
-        e_id = evt.GetId()
-        if e_id == ID_CLOSE_BUTTON:
+        if evt.Id == ID_CLOSE_BUTTON:
             self.Hide()
-        elif e_id in [ID_SEARCH_NEXT, ID_SEARCH_PRE]:
-            search = self.FindWindowById(ID_SEARCH_CTRL)
-            if search != None:
-                evt = wx.KeyEvent(wx.wxEVT_KEY_UP)
-                evt.m_keyCode = wx.WXK_RETURN
-                if e_id == ID_SEARCH_PRE:
-                    evt.m_shiftDown = True
-                else:
-                    evt.m_shiftDown = False
-                wx.PostEvent(search, evt)
         else:
             evt.Skip()
 
-    def OnPaint(self, evt):
-        """Paints the background of the bar with a nice gradient.
-        @param evt: Event that called this handler
-        @type evt: wx.PaintEvent
+    def OnContext(self, evt):
+        """Show the custom menu"""
+        if self._menu_enabled:
+            if self._menu is None:
+                # Lazy init the menu
+                self._menu = wx.Menu(_("Customize"))
+                # Ensure the label is disabled (wxMSW Bug)
+                if len(self._menu.MenuItems):
+                    item = self._menu.MenuItems[0]
+                    self._menu.Enable(item.GetId(), False)
 
-        """
-        dc = wx.PaintDC(self)
-        gc = wx.GraphicsContext.Create(dc)
-        col1 = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
-        col2 = util.AdjustColour(col1, 50)
-        col1 = util.AdjustColour(col1, -60)
-        grad = gc.CreateLinearGradientBrush(0, 1, 0, 29, col2, col1)
-        rect = self.GetClientRect()
+                to_menu = list()
+                for child in self.GetChildren():
+                    if self.IsCustomizable(child):
+                        to_menu.append(child)
 
-        pen_col = tuple([min(190, x) for x in util.AdjustColour(col1, -60)])
-        gc.SetPen(gc.CreatePen(wx.Pen(pen_col, 1)))
-        gc.SetBrush(grad)
-        gc.DrawRectangle(0, 1, rect.width - 0.5, rect.height - 0.5)
+                if len(to_menu):
+                    to_menu.sort(key=wx.Window.GetLabel)
+                    for item in to_menu:
+                        if not item.GetLabel():
+                            continue
 
+                        self._menu.Append(item.Id,
+                                          item.GetLabel(),
+                                          kind=wx.ITEM_CHECK)
+                        self._menu.Check(item.Id, item.IsShown())
+
+            self.PopupMenu(self._menu)
+        else:
+            evt.Skip()
+
+    def OnContextMenu(self, evt):
+        """Hide and Show controls"""
+        ctrl = self.FindWindowById(evt.Id)
+        if ctrl is not None:
+            self.ShowControl(ctrl.GetName(), not ctrl.IsShown())
+            self.Layout()
+
+            # Update the persistent configuration
+            key = self.GetConfigKey()
+            if key is not None:
+                cfg = Profile_Get('CTRLBAR', default=dict())
+                state = self.GetControlStates()
+                cfg[key] = state
+
+    def OnShowBar(self, evt):
+        """Update the session list"""
+        if evt.IsShown():
+            if self and evt.EventObject is self:
+                self.OnBarShown()
         evt.Skip()
 
-    def Show(self, id_=0):
-        """Shows the control and installs it in the parents
-        sizer if not installed already.
-        @param id_: Id of control to show in bar
+    def OnBarShown(self):
+        """virtual override for subclasses that wish to receive window show
+        event callbacks.
 
         """
-        # Install self in parent
-        if not self._installed and self._sizers['psizer'] != None:
-            self._installed = True
-            self._sizers['psizer'].Add(self, 0, wx.EXPAND)
-            self._sizers['psizer'].Layout()
-            self._parent.SendSizeEvent()
-        wx.Panel.Show(self)
+        pass
 
-        # HACK YUCK, come back and try again when my brain is working
-        # Show specified control
-        if id_:
-            ctrl = self.FindWindowById(id_)
-            if ctrl is None:
-                ctrl = self.InstallCtrl(id_)
-
-            # First Hide everything
-            for kid in (list(self._sizers['search'].GetChildren()) + 
-                        list(self._sizers['goto'].GetChildren()) +
-                        list(self._sizers['cmd'].GetChildren())):
-                kid.Show(False)
-
-            if id_ == ID_SEARCH_CTRL:
-                for kid in self._sizers['search'].GetChildren():
-                    kid.Show(True)
-                self._sizers['search'].Layout()
-            elif id_ == ID_LINE_CTRL:
-                for kid in self._sizers['goto'].GetChildren():
-                    kid.Show(True)
-            elif id_ == ID_CMD_CTRL:
-                for kid in self._sizers['cmd'].GetChildren():
-                    kid.Show(True)
-
-            self.GetSizer().Layout()
-            if ctrl != None:
-                ctrl.SetFocus()
-                ctrl.SelectAll()
-
-    def UpdateIcons(self):
-        """Refresh icons to current theme settings
-        @postcondition: all icons are updated
+    def EnableMenu(self, enable=True):
+        """Enable the popup customization menu
+        @keyword enable: bool
 
         """
-        next = self.FindWindowById(ID_SEARCH_NEXT)
-        if next:
-            t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
-            next.SetBitmapLabel(t_bmp)
-            next.SetBitmapHover(t_bmp)
-            next.Refresh()
-        pre = self.FindWindowById(ID_SEARCH_PRE)
-        if pre:
-            t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
-            pre.SetBitmapLabel(t_bmp)
-            pre.SetBitmapHover(t_bmp)
-            pre.Refresh()
+        self._menu_enabled = enable
+        if not enable and self._menu is not None:
+            self._menu.Destroy()
+            self._menu = None
+
+    def GetConfigKey(self):
+        """Get the key to use for the layout config persistence. This value
+        is set in the class definitions meta class.
+        @return: string
+
+        """
+        return self.meta.config_key
+
+    def GetControlStates(self):
+        """Get the map of control name id's to their shown state True/False
+        @return: dict()
+
+        """
+        state = dict()
+        for child in self.GetChildren():
+            if self.IsCustomizable(child):
+                state[child.GetName()] = child.IsShown()
+        return state
+
+    def SetControlStates(self, state):
+        """Set visibility state of the customizable controls
+        @param state: dict(ctrl_name=bool)
+
+        """
+        for name, show in state.iteritems():
+            self.ShowControl(name, show)
+        self.Layout()
+
+    def Hide(self):
+        """Hides the control and notifies the parent
+        @postcondition: CommandBar is hidden
+        @todo: don't reference nb directly here
+
+        """
+        super(CommandBarBase, self).Hide()
+        self._parent.SendSizeEvent()
+        nb = self._parent.GetNotebook()
+        ctrl = nb.GetCurrentCtrl()
+        if ctrl:
+            ctrl.SetFocus()
+        return True
+
+    def ShowControl(self, ctrl_name, show=True):
+        """Show/Hide a control
+        @param ctrl_name: string
+        @note: assumes all left aligned controls
+
+        """
+        sizer = self.GetControlSizer()
+        gonext = False
+        for item in sizer.GetChildren():
+            if gonext:
+                if item.IsSpacer():
+                    item.Show(show)
+                break
+
+            if item.Window and item.Window.GetName() == ctrl_name:
+                item.Show(show)
+                gonext = True
+
+    def IsCustomizable(self, ctrl):
+        """Is the control of a type that can be customized
+        @param ctrl: wx.Window
+        @return: bool
+
+        """
+        ok = (ctrl is not self.close_b)
+        ok = ok and (isinstance(ctrl, wx.CheckBox) or \
+                     isinstance(ctrl, eclib.PlateButton))
+        return ok
+
+    def SetControl(self, ctrl):
+        """Set the main control of this command bar
+        @param ctrl: window
+
+        """
+        self.ctrl = ctrl
+
+    def SetFocus(self):
+        """Set the focus to the bar and its main control"""
+        super(CommandBarBase, self).SetFocus()
+        if self.MainControl:
+            self.MainControl.SetFocus()
 
 #-----------------------------------------------------------------------------#
 
-class CommandExecuter(wx.SearchCtrl):
+class SearchBar(CommandBarBase):
+    """Commandbar for searching text in the current buffer."""
+    class meta:
+        id = ed_glob.ID_QUICK_FIND
+        config_key = 'SearchBar'
+
+    def __init__(self, parent):
+        super(SearchBar, self).__init__(parent)
+
+        # Attributes
+        self.SetControl(ed_search.EdSearchCtrl(self, wx.ID_ANY,
+                                               menulen=5, size=(180, -1)))
+        self._sctrl = self.MainControl.GetSearchController()
+
+        # Setup
+        f_lbl = wx.StaticText(self, label=_("Find") + u": ")
+        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
+        next_btn = eclib.PlateButton(self, ID_SEARCH_NEXT, _("Next"),
+                                     t_bmp, style=eclib.PB_STYLE_NOBG,
+                                     name="NextBtn")
+        self.AddControl(f_lbl, wx.ALIGN_LEFT)
+        self.AddControl(self.ctrl, wx.ALIGN_LEFT)
+        self.AddControl(next_btn, wx.ALIGN_LEFT)
+
+        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
+        pre_btn = eclib.PlateButton(self, ID_SEARCH_PRE, _("Previous"),
+                                    t_bmp, style=eclib.PB_STYLE_NOBG,
+                                    name="PreBtn")
+        self.AddControl(pre_btn, wx.ALIGN_LEFT)
+
+        t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_FIND), wx.ART_MENU)
+        fa_btn = eclib.PlateButton(self, ID_FIND_ALL, _("Find All"),
+                                   t_bmp, style=eclib.PB_STYLE_NOBG,
+                                   name="FindAllBtn")
+        self.AddControl(fa_btn)
+        fa_btn.Show(False) # Hide this button by default
+
+        match_case = wx.CheckBox(self, ID_MATCH_CASE, _("Match Case"),
+                                 name="MatchCase")
+        match_case.SetValue(self.ctrl.IsMatchCase())
+        self.AddControl(match_case, wx.ALIGN_LEFT)
+        match_case.Show(False) # Hide by default
+
+        ww_cb = wx.CheckBox(self, ID_WHOLE_WORD,
+                            _("Whole Word"), name="WholeWord")
+        ww_cb.SetValue(self.ctrl.IsWholeWord())
+        self.AddControl(ww_cb, wx.ALIGN_LEFT)
+
+        regex_cb = wx.CheckBox(self, ID_REGEX, _("Regular Expression"),
+                               name="RegEx")
+        regex_cb.SetValue(self.ctrl.IsRegEx())
+        self.AddControl(regex_cb, wx.ALIGN_LEFT)
+
+        # HACK: workaround bug in mac control that resets size to
+        #       that of the default variant after any text has been
+        #       typed in it. Note it reports the best size as the default
+        #       variant and causes layout issues. wxBUG
+        if wx.Platform == '__WXMAC__':
+            self.ctrl.SetSizeHints(180, 16, 180, 16)
+
+        # Event Handlers
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
+        self.Bind(wx.EVT_BUTTON, self.OnButton)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck)
+        ed_msg.Subscribe(self.OnThemeChange, ed_msg.EDMSG_THEME_CHANGED)
+        self._sctrl.RegisterClient(self)
+
+        # Set user customizable layout
+        state = Profile_Get('CTRLBAR', default=dict())
+        cfg = state.get(self.GetConfigKey(), dict())
+        self.SetControlStates(cfg)
+
+    def OnDestroy(self, evt):
+        """Cleanup message handlers on destroy"""
+        if evt.GetId() == self.GetId():
+            ed_msg.Unsubscribe(self.OnThemeChange)
+            self._sctrl.RemoveClient(self)
+
+    def OnButton(self, evt):
+        """Handle button clicks for the next/previous buttons
+        @param evt: wx.CommandEvent
+
+        """
+        e_id = evt.GetId()
+        if e_id in [ID_SEARCH_NEXT, ID_SEARCH_PRE]:
+            self.ctrl.DoSearch(e_id == ID_SEARCH_NEXT)
+        elif e_id == ID_FIND_ALL:
+            self.ctrl.FindAll()
+        else:
+            evt.Skip()
+
+    def OnCheck(self, evt):
+        """Set search options for match case, regex, ect...
+        @param evt: wx.CommandEvent
+
+        """
+        e_id = evt.GetId()
+        if e_id in (ID_MATCH_CASE, ID_REGEX, ID_WHOLE_WORD):
+            ctrl = self.FindWindowById(e_id)
+            if ctrl != None:
+                if e_id == ID_MATCH_CASE:
+                    flag = eclib.AFR_MATCHCASE
+                elif e_id == ID_WHOLE_WORD:
+                    flag = eclib.AFR_WHOLEWORD
+                else:
+                    flag = eclib.AFR_REGEX
+
+                if self.ctrl != None:
+                    if ctrl.GetValue():
+                        self.ctrl.SetSearchFlag(flag)
+                    else:
+                        self.ctrl.ClearSearchFlag(flag)
+        else:
+            evt.Skip()
+
+    def NotifyOptionChanged(self, evt):
+        """Callback for L{ed_search.SearchController} to notify of update
+        to the find options.
+        @param evt: eclib.finddlg.FindEvent
+
+        """
+        self.FindWindowById(ID_MATCH_CASE).SetValue(evt.IsMatchCase())
+        self.FindWindowById(ID_REGEX).SetValue(evt.IsRegEx())
+        self.FindWindowById(ID_WHOLE_WORD).SetValue(evt.IsWholeWord())
+
+    def OnThemeChange(self, msg):
+        """Update icons when the theme has changed
+        @param msg: Message Object
+
+        """
+        next_btn = self.FindWindowById(ID_SEARCH_NEXT)
+        if next_btn:
+            t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_DOWN), wx.ART_MENU)
+            next_btn.SetBitmapLabel(t_bmp)
+            next_btn.SetBitmapHover(t_bmp)
+            next_btn.Update()
+            next_btn.Refresh()
+
+        pre_btn = self.FindWindowById(ID_SEARCH_PRE)
+        if pre_btn:
+            t_bmp = wx.ArtProvider.GetBitmap(str(ed_glob.ID_UP), wx.ART_MENU)
+            pre_btn.SetBitmapLabel(t_bmp)
+            pre_btn.SetBitmapHover(t_bmp)
+            pre_btn.Update()
+            pre_btn.Refresh()
+
+#-----------------------------------------------------------------------------#
+
+class CommandEntryBar(CommandBarBase):
+    """Commandbar for editor command entry and execution."""
+    class meta:
+        id = ed_glob.ID_COMMAND
+
+    def __init__(self, parent):
+        super(CommandEntryBar, self).__init__(parent)
+
+        # Attributes
+        self.SetControl(CommandExecuter(self, wx.ID_ANY, size=(150, -1)))
+
+        # Setup
+        cmd_lbl = wx.StaticText(self, label=_("Command") + ": ")
+        self.info_lbl = wx.StaticText(self, label="")
+        self.AddControl(cmd_lbl, wx.ALIGN_LEFT)
+        self.AddControl(self.ctrl, 1, wx.ALIGN_LEFT)
+        self.AddControl(self.info_lbl, wx.ALIGN_RIGHT)
+
+        # HACK: workaround bug in mac control that resets size to
+        #       that of the default variant after any text has been
+        #       typed in it. Note it reports the best size as the default
+        #       variant and causes layout issues. wxBUG
+        if wx.Platform == '__WXMAC__':
+            self.ctrl.SetSizeHints(200, 16, -1, 16)
+
+        # Setup
+        self.EnableMenu(False)
+
+#-----------------------------------------------------------------------------#
+
+class GotoLineBar(CommandBarBase):
+    """Commandbar for Goto Line function"""
+    class meta:
+        id = ed_glob.ID_GOTO_LINE
+
+    def __init__(self, parent):
+        super(GotoLineBar, self).__init__(parent)
+
+        # Attributes
+        self.SetControl(LineCtrl(self, wx.ID_ANY,
+                                 self._parent.nb.GetCurrentCtrl,
+                                 size=(100, -1)))
+
+        # Setup
+        self.EnableMenu(False)
+        go_lbl = wx.StaticText(self, label=_("Goto Line") + ": ")
+        self.AddControl(go_lbl, wx.ALIGN_LEFT)
+        self.AddControl(self.ctrl, wx.ALIGN_LEFT)
+
+        # HACK: workaround bug in mac control that resets size to
+        #       that of the default variant after any text has been
+        #       typed in it. Note it reports the best size as the default
+        #       variant and causes layout issues. wxBUG
+        if wx.Platform == '__WXMAC__':
+            self.ctrl.SetSizeHints(100, 16, 100, 16)
+
+#-----------------------------------------------------------------------------#
+
+class CommandExecuter(eclib.CommandEntryBase):
     """Part of the Vi emulation, opens a minibuffer to execute EX commands.
-    @note: based on search ctrl so we get the nice roudned edges on wxmac.
-    
+    @note: based on search ctrl so we get the nice rounded edges on wxmac.
+
     """
     RE_GO_BUFFER = re.compile('[0-9]*[nN]{1,1}')
     RE_GO_WIN = re.compile('[0-9]*n[wW]{1,1}')
     RE_WGO_BUFFER = re.compile('w[0-9]*[nN]')
     RE_NGO_LINE = re.compile('[+-][0-9]+')
+
     def __init__(self, parent, id_, size=wx.DefaultSize):
         """Initializes the CommandExecuter"""
-        wx.SearchCtrl.__init__(self, parent, id_, size=size, 
-                               style=wx.TE_PROCESS_ENTER)
+        super(CommandExecuter, self).__init__(parent, id_, size=size,
+                                              style=wx.TE_PROCESS_ENTER|wx.WANTS_CHARS)
 
         # Attributes
-        self._cmdstack = ['']
-        self._histidx = -1
-        self._curdir = wx.GetHomeDir() + os.sep
-        self._bpath = None
+        self._history = dict(cmds=[''], index=-1, lastval='')
         if not hasattr(sys, 'frozen'):
             self._curdir = os.path.abspath(os.curdir) + os.sep
-
-        # Hide the search button and text
-        self.ShowSearchButton(False)
-        self.ShowCancelButton(False)
-        self.SetDescriptiveText(wx.EmptyString)
-
-        # Event Handlers
-        # HACK, needed on Windows to get key events
-        if wx.Platform == '__WXMSW__':
-            for child in self.GetChildren():
-                if isinstance(child, wx.TextCtrl):
-                    child.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-                    child.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-                    break
         else:
-            self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-            self.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnEnter)
-        self.Bind(wx.EVT_SIZE, self.OnKeyUp)
+            self._curdir = wx.GetHomeDir() + os.sep
+
+        if wx.Platform == '__WXMAC__':
+            self._popup = PopupList(self)
+            self.Bind(wx.EVT_SET_FOCUS, self.OnSetFocus)
+            self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
+        else:
+            self._popup = PopupWinList(self)
+
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy, self)
+        self.Bind(ed_event.EVT_NOTIFY, self.OnPopupNotify)
+
+        # Message handlers
+        ed_msg.Subscribe(self._UpdateCwd, ed_msg.EDMSG_UI_NB_CHANGED)
+        ed_msg.Subscribe(self._UpdateCwd, ed_msg.EDMSG_FILE_SAVED)
+
+    def OnDestroy(self, evt):
+        """Clean up message handlers on destroy"""
+        if evt.GetId() == self.GetId():
+            ed_msg.Unsubscribe(self._UpdateCwd)
+        evt.Skip()
 
     def _AdjustSize(self):
         """Checks width of text as its added and dynamically resizes
         the control as needed.
+        @todo: re-enable after resizing issue can be resolved
 
         """
-        ext = self.GetTextExtent(self.GetValue())[0]
-        curr_w, curr_h = self.GetClientSizeTuple()
-        if ext > curr_w * .85:
-            max_w = self.GetParent().GetClientSize().GetWidth() * .75
-            nwidth = min(ext * 1.15, max_w)
-            self.SetClientSize((nwidth, curr_h))
-        elif ((curr_w > ext * 1.15) and curr_w > 150):
-            nwidth = max(ext * 1.15, 150)
-            self.SetClientSize((nwidth, curr_h))
+        pass
+#        ext = self.GetTextExtent(self.GetValue())[0]
+#        curr_w, curr_h = self.GetClientSizeTuple()
+#        if ext > curr_w * .5:
+#            max_w = self.GetParent().GetClientSize().GetWidth() * .8
+#            nwidth = min(ext * 1.3, max_w)
+#            pwidth = self._popup.GetBestSize()[0]
+#            if pwidth > nwidth:
+#                nwidth = pwidth
+#            self.SetClientSize((nwidth, curr_h))
+#            self._popup.SetSize((nwidth, -1))
+#            self.GetParent().Layout()
+#        elif ((curr_w > ext * 1.18) and curr_w > 150):
+#            nwidth = max(ext * 1.18, 150)
+#            self.SetClientSize((nwidth, curr_h))
+#            self.GetParent().Layout()
+#        else:
+#            pass
+
+    def _AdjustValue(self, val):
+        """Adjust value of input string as autocomp provides new values
+        @param val: val to use as base for adjustment
+
+        """
+        cval = self.GetValue().split(' ', 1)
+        if val.startswith(cval[-1]) or val.startswith('~'):
+            self.AppendText(val.replace(cval[-1], '', 1))
         else:
-            pass
+            self.SetValue(" ".join([cval[0], val]))
+        self.SetInsertionPoint(self.GetLastPosition())
+
+    def _UpdateCwd(self, msg):
+        """Update the current working directory to that of the current
+        buffer.
+        @param msg: Message Object
+
+        """
+        # Only Update if we are the currently active window
+        tlp = self.GetTopLevelParent()
+        if tlp.IsActive():
+            ctrl = tlp.GetNotebook().GetCurrentCtrl()
+            fname = ctrl.GetFileName()
+            if len(fname):
+                self._curdir = os.path.dirname(fname)
 
     def ChangeDir(self, cmd):
         """Change to a directory based on cd command
@@ -468,26 +583,45 @@ class CommandExecuter(wx.SearchCtrl):
         if not os.path.isabs(path):
             if path.startswith('..'):
                 path = os.path.abspath(path)
+            elif path.startswith('~'):
+                path = path.replace('~', wx.GetHomeDir(), 1)
             else:
                 path = os.path.join(self._curdir, path)
 
         if os.path.exists(path) and os.path.isdir(path):
-            os.chdir(path)
-            self._curdir = os.path.abspath(os.path.curdir) + os.sep
+            if os.access(path, os.R_OK):
+                os.chdir(path)
+                self._curdir = os.path.abspath(os.path.curdir) + os.sep
+            else:
+                # Doesn't have permissions
+                ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
+                                  (ed_glob.SB_INFO,
+                                   _("Can't change directory to: %s") % path))
+                wx.Bell()
+                self.Clear()
         else:
+            # Invalid path
             self.Clear()
             wx.Bell()
-            
+
     def CommandPush(self, cmd):
         """Push a command to the stack popping as necessary to
-        keep stack size less than MAX.
+        keep stack size less than MAX (currently 25 commands).
         @param cmd: command string to push
         @todo: redo this to be more like the code in my terminal project
 
         """
-        self._cmdstack.insert(0, cmd)
-        if len(self._cmdstack) > 25:
-            self._cmdstack.pop()
+        cmd = cmd.strip()
+        if not len(cmd):
+            return
+
+        if len(self._history['cmds']) > 25:
+            self._history['cmds'].pop()
+
+        if cmd != self._history['cmds'][0]:
+            self._history['cmds'].insert(0, cmd)
+
+        self._history['index'] = -1
 
     def EditCommand(self, cmd):
         """Perform an edit related command
@@ -497,13 +631,14 @@ class CommandExecuter(wx.SearchCtrl):
         # e fname: edit file
         cmd = cmd[1:].strip()
         frame = self.GetTopLevelParent()
+        cmd = ebmlib.GetPathFromURI(cmd)
         if not os.path.isabs(cmd):
             cmd = os.path.join(self._curdir, cmd)
 
-        if os.path.exists(cmd):
+        if ebmlib.PathExists(cmd):
             frame.DoOpen(ed_glob.ID_COMMAND_LINE_OPEN, cmd)
         else:
-            frame.nb.OpenPage(util.GetPathName(cmd), util.GetFileName(cmd))
+            frame.nb.OpenPage(ebmlib.GetPathName(cmd), ebmlib.GetFileName(cmd))
 
     def ExecuteCommand(self, cmd_str):
         """Interprets and executes a command then hides the control
@@ -516,7 +651,7 @@ class CommandExecuter(wx.SearchCtrl):
             cmd = 'wq'
 
         if cmd.startswith(u'w'):
-            frame.OnSave(wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED, 
+            frame.OnSave(wx.MenuEvent(wx.wxEVT_COMMAND_MENU_SELECTED,
                                                      ed_glob.ID_SAVE))
             if self.RE_WGO_BUFFER.match(cmd):
                 self.GoBuffer(cmd[1:])
@@ -524,6 +659,9 @@ class CommandExecuter(wx.SearchCtrl):
                 self.Quit()
         elif cmd.startswith(u'e '):
             self.EditCommand(cmd)
+        elif cmd.rstrip() == u'e!':
+            ctrl = frame.nb.GetCurrentCtrl()
+            ctrl.RevertToSaved()
         elif self.RE_GO_WIN.match(cmd):
             self.GoWindow(cmd)
         elif re.match(self.RE_GO_BUFFER, cmd):
@@ -536,7 +674,7 @@ class CommandExecuter(wx.SearchCtrl):
             else:
                 line = int(cmd) - 1
             ctrl.GotoLine(line)
-        elif cmd.startswith('cd'):
+        elif cmd.startswith('cd '):
             self.ChangeDir(cmd)
         elif cmd == 'q':
             self.Quit()
@@ -545,7 +683,6 @@ class CommandExecuter(wx.SearchCtrl):
             return
 
         self.CommandPush(cmd_str)
-        self._histidx = -1
         self.GetParent().Hide()
 
     def GetHistCommand(self, pre=True):
@@ -554,19 +691,27 @@ class CommandExecuter(wx.SearchCtrl):
         @note: pre moves right in stack, next moves left in stack
 
         """
-        hist_l = len(self._cmdstack) - 1
+        val = self.GetValue().strip()
+        if val not in self._history['cmds']:
+            self._history['lastval'] = val
+
         if pre:
-            self._histidx += 1
-            if self._histidx >= hist_l + 1:
-                self._histidx = hist_l
-            cmd = self._cmdstack[self._histidx]
+            if self._history['index'] < len(self._history['cmds']) - 1\
+               and self._history['index'] < 25:
+                self._history['index'] += 1
+
+            index = self._history['index']
+            cmd = self._history['cmds'][index]
         else:
-            self._histidx -= 1
-            if self._histidx < 0:
-                cmd = ''
-                self._histidx = -1
+            if self._history['index'] > -1:
+                self._history['index'] -= 1
+
+            index = self._history['index']
+            if index == -1:
+                cmd = self._history['lastval']
             else:
-                cmd = self._cmdstack[self._histidx]
+                cmd = self._history['cmds'][index]
+
         self.SetValue(cmd)
         self.SelectAll()
 
@@ -584,7 +729,7 @@ class CommandExecuter(wx.SearchCtrl):
 
         frame = self.GetTopLevelParent()
         numpage = frame.nb.GetPageCount()
-        for x in xrange(min(count, numpage)):
+        for x in range(min(count, numpage)):
             cpage = frame.nb.GetPageIndex(frame.nb.GetCurrentPage())
             if (cpage == 0 and cmd == 'N') or \
                (cpage + 1 == numpage and cmd == 'n'):
@@ -625,111 +770,129 @@ class CommandExecuter(wx.SearchCtrl):
         wins[widx].Raise()
         wx.CallAfter(wins[widx].nb.GetCurrentCtrl().SetFocus)
 
-    def GetNextDir(self):
-        """Get the next directory path from the current cmd path
-        @note: used for tab completion of cd, completion is based off cwd
-        @todo: finish working on this by starting over
-        @note: not currently used
+    def GetPaths(self, path, files=False):
+        """Get a list of paths that are part of the given path by
+        default it will only return directories.
+        @param path: Path to enumerate
+        @keyword files: Get list of files too
 
         """
-        cmd = self.GetValue()
-        if not cmd.startswith('cd '):
-            return
+        def append_slash(path):
+            """Helper function that appends a slash to the path
+            if it's a directory.
 
-        cmd = cmd.replace('cd ', u'', 1).strip()
-        if not os.path.exists(self._curdir):
-            self._curdir = wx.GetHomeDir()
+            """
+            if os.path.isdir(path) and not path.endswith(os.sep):
+                return path + os.sep
+            return path
 
-        if len(cmd) and (cmd[0].isalnum() or cmd.startswith('.')):
-            path = self._curdir
-            cmd = os.path.join(path, cmd)
-        else:
-            path = os.path.abspath(cmd)
-            if (len(cmd) and cmd[-1] == os.sep) or not len(cmd):
-                path = path + os.sep
+        curdir = self._curdir
+        head, tail = os.path.split(path)
+        head = os.path.expanduser(head)
+        head = os.path.expandvars(head)
+        head = os.path.join(curdir, head)
+        if not os.path.isdir(head):
+            return []
 
-        if not os.path.exists(path):
-            path = self._curdir
+        # Return empty list of user does not have
+        # read access to the directory
+        if not os.access(head, os.R_OK):
+            ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
+                              (ed_glob.SB_INFO,
+                               _("Access Denied: %s") % head))
+            wx.Bell() # Beep to alert
+            return list()
 
-        # Filter Directories
-        if path[-1] != os.sep:
-            path = os.path.join(*os.path.split(path)[:-1]) + os.sep
-            if not path.startswith(os.sep):
-                path = os.sep + path
-        dirs = [ os.path.join(path, x) \
-                 for x in os.listdir(path) \
-                 if os.path.isdir(os.path.join(path, x)) ]
-        dirs.sort()
-        if not len(dirs):
-            return
+        # We expanded head, so trim the suggestion list of its head
+        # so we can add the tail of the suggestion back to the original head
+        try:
+            candidates = [os.path.basename(p) for p in os.listdir(head)
+                          if p.startswith(tail)]
+            candidates = [append_slash(os.path.join(os.path.dirname(path), cand))
+                          for cand in candidates]
+            if not files:
+                candidates = [cand for cand in candidates if os.path.isdir(cand)]
+        except OSError:
+            ed_msg.PostMessage(ed_msg.EDMSG_UI_SB_TXT,
+                               (ed_glob.SB_INFO, _("Invalid Path")))
+            candidates = list()
 
-        if len(cmd):
-            npath = None
-            for next in dirs:
-                if next.startswith(cmd):
-                    if cmd[-1] != os.path.sep and next == cmd:
-                        idx = dirs.index(next) + 1
-                    else:
-                        idx = dirs.index(next)
-                    
-                    if idx < len(dirs):
-                        npath = dirs[idx] #.replace(path, u'', 1)
-                    break
-            if npath:
-                return npath
-        else:
-            return dirs[0]
+        return sorted(list(set(candidates)))
 
     def ListDir(self):
-        """List the next directory from the current cmd path
-        @note: used for tab completion of cd, completion is based off cwd
+        """List the next directory from the current cmd path"""
+        cmd = self.GetValue()
+        if cmd.startswith('cd '):
+            cstr = 'cd '
+        elif cmd.startswith('e '):
+            cstr = 'e '
+        else:
+            return
 
-        """
-        path = self.GetNextDir()
-        if path:
-            self.SetValue('cd ' + path)
+        cmd = cmd.replace(cstr, u'', 1).strip()
+        paths = self.GetPaths(cmd, cstr == 'e ')
+        self._popup.SetChoices(paths)
+        if len(paths):
+            self._popup.SetupPosition(self)
+            if not self._popup.IsShown():
+                self._popup.Show()
 
-    def ListFile(self):
-        """List the next file in the current cmd path
-        @note: used for tab completion of e, completion is based off cwd
-
-        """
+        self.SetInsertionPoint(self.GetLastPosition())
 
     def OnEnter(self, evt):
         """Get the currently entered command string and execute it.
         @postcondition: ctrl is cleared and command is executed
-        
+
         """
+        if self._popup.HasSuggestions() and self._popup.HasSelection():
+            psel = self._popup.GetSelection()
+            if self.GetValue().split(' ', 1)[-1].strip() != psel:
+                self._AdjustValue(psel)
+                self._popup.Hide()
+                return
+
         cmd = self.GetValue()
         self.Clear()
         self.ExecuteCommand(cmd)
+        if self._popup.IsShown():
+            self._popup.Hide()
 
     def OnKeyDown(self, evt):
         """Records the key sequence that has been entered and
-        performs actions based on that keysequence.
+        performs actions based on that key sequence.
         @param evt: event that called this handler
 
         """
         e_key = evt.GetKeyCode()
         cmd = self.GetValue()
+
         if e_key == wx.WXK_UP:
-            self.GetHistCommand(pre=True)
+            if self._popup.HasSuggestions():
+                self._popup.AdvanceSelection(False)
+            else:
+                self.GetHistCommand(pre=True)
         elif e_key == wx.WXK_DOWN:
-            self.GetHistCommand(pre=False)
+            if self._popup.HasSuggestions():
+                self._popup.AdvanceSelection(True)
+            else:
+                self.GetHistCommand(pre=False)
         elif e_key == wx.WXK_SPACE and not len(cmd):
             # Swallow space key when command is empty
             pass
         elif e_key == wx.WXK_TAB:
             # Provide Tab Completion or swallow key
-            if cmd.startswith('e '):
-                self.ListFile()
-            elif cmd.startswith('cd '):
+            if cmd.startswith('cd ') or cmd.startswith('e '):
+                if self._popup.HasSuggestions():
+                    self._AdjustValue(self._popup.GetSelection())
                 self.ListDir()
             else:
                 pass
         elif e_key == wx.WXK_ESCAPE:
-            self.Clear()
-            self.GetParent().Hide()
+            if self._popup.IsShown():
+                self._popup.Hide()
+            else:
+                self.Clear()
+                self.GetParent().Hide()
         else:
             evt.Skip()
 
@@ -738,16 +901,80 @@ class CommandExecuter(wx.SearchCtrl):
         @param evt: event that called this handler
 
         """
+        e_key = evt.GetKeyCode()
+        if e_key == wx.WXK_ESCAPE:
+            evt.Skip()
+            return
+
+        val = self.GetValue()
+        cwd_info = ""
+        if val.strip() in ['cwd', 'e', 'cd']:
+            cwd_info = "   " + _(u"cwd: ") + self._curdir
+        self.Parent.info_lbl.SetLabel(cwd_info)
+        if self._popup.IsShown():
+            if not len(val):
+                self._popup.Hide()
+            else:
+                wx.CallAfter(self.UpdateAutoComp)
+        else:
+            if self._popup.HasSuggestions():
+                self._AdjustValue(self._popup.GetSelection())
+            self.ListDir()
         self._AdjustSize()
         evt.Skip()
+
+    def OnPopupNotify(self, evt):
+        """Receive the selections from the popup list
+        @param evt: event that called this handler
+
+        """
+        val = evt.GetValue()
+        self._AdjustValue(val)
+
+    def OnKillFocus(self, evt):
+        """Hide the popup when we look focus
+        @param evt: event that called this handler
+
+        """
+        self._popup.Hide()
+        evt.Skip()
+
+    def OnSetFocus(self, evt):
+        """Ensure caret is at end when focus is reset
+        @param evt: event that called this handler
+
+        """
+        self.SetInsertionPoint(self.GetLastPosition())
+        evt.Skip()
+
+    def RestoreFocus(self):
+        """Restore focus and cursor position
+        @postcondition: ctrl has focus and cursor is moved to last position
+
+        """
+        self.SetInsertionPoint(self.GetLastPosition())
+        self.SetFocus()
 
     def Quit(self):
         """Tell the editor to exit
         @postcondition: Editor begins exit, confirming file saves
 
         """
-        wx.PostEvent(self.GetTopLevelParent(), 
+        wx.PostEvent(self.GetTopLevelParent(),
                      wx.CloseEvent(wx.wxEVT_CLOSE_WINDOW))
+
+    def SetValue(self, value):
+        """Overrides the controls default function to allow for automatic
+        resizing of the control when text is added.
+        @param value: string to set value of control to
+
+        """
+        super(CommandExecuter, self).SetValue(value)
+        self._AdjustSize()
+
+    def UpdateAutoComp(self):
+        """Update the autocomp list for paths that best match current value"""
+        self.ListDir()
 
     def WriteCommand(self, cstr):
         """Perform a file write related command
@@ -760,45 +987,31 @@ class CommandExecuter(wx.SearchCtrl):
 
 #-----------------------------------------------------------------------------#
 
-class LineCtrl(wx.SearchCtrl):
+class LineCtrl(eclib.CommandEntryBase):
     """A custom int control for providing a go To line control
     for the Command Bar.
-    @note: The control is subclassed from SearchCtrl so that it gets
-           the nice rounded edges on wxMac.
 
     """
     def __init__(self, parent, id_, get_doc, size=wx.DefaultSize):
         """Initializes the LineCtrl control and its attributes.
-        @param get_doc: callback method for retreiving a reference to the
+        @param parent: Parent Window
+        @param id_: Control ID
+        @param get_doc: callback method for retrieving a reference to the
                         current document.
+        @keyword size: Control Size (tuple)
 
         """
-        wx.SearchCtrl.__init__(self, parent, id_, "", size=size,
-                             style=wx.TE_PROCESS_ENTER,
-                             validator=util.IntValidator(0, 65535))
+        super(LineCtrl, self).__init__(parent, id_, u"", size=size,
+                                       style=wx.TE_PROCESS_ENTER,
+                                       validator=util.IntValidator(0, 65535))
 
         # Attributes
         self._last = 0
         self.GetDoc = get_doc
 
-        # Hide the search button and text
-        self.ShowSearchButton(False)
-        self.ShowCancelButton(False)
-        self.SetDescriptiveText(wx.EmptyString)
-
-        # MSW/GTK HACK
-        if wx.Platform in ['__WXGTK__', '__WXMSW__']:
-            for child in self.GetChildren():
-                if isinstance(child, wx.TextCtrl):
-                    child.SetValidator(util.IntValidator(0, 65535))
-
-        # Event management
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnInput)
-
-    def OnInput(self, evt):
+    def OnEnter(self, evt):
         """Processes the entered line number
-        @param evt: Event that called this handler
-        @type evt: wx.EVT_TEXT_ENTER
+        @param evt: wx.EVT_TEXT_ENTER
 
         """
         val = self.GetValue()
@@ -814,4 +1027,288 @@ class LineCtrl(wx.SearchCtrl):
         doc.SetFocus()
         self.GetParent().Hide()
 
+    def OnKeyUp(self, evt):
+        """Handle keyup events"""
+        if evt.GetEventType() != wx.wxEVT_KEY_UP:
+            evt.Skip()
+            return
+
+        e_key = evt.GetKeyCode()
+        if e_key == wx.WXK_ESCAPE:
+            # TODO change to more safely determine the context
+            # Currently control is only used in command bar
+            self.GetParent().Hide()
+        else:
+            evt.Skip()
+
 #-----------------------------------------------------------------------------#
+# TODO: merge the common parts of these two classes into a single base class
+
+class PopupListBase(object):
+    """Common functionality between Popuplist GTK and Mac"""
+
+    def AdvanceSelection(self, next=True):
+        """Advance the list selection
+        @keyword next: goto the next or previous selection
+
+        """
+        sel = self._list.GetSelection()
+        if next:
+            count = self._list.GetCount()
+            sel += 1
+            if sel < count:
+                self._list.SetSelection(sel)
+        else:
+            sel -= 1
+            if sel >= 0:
+                self._list.SetSelection(sel)
+
+    def GetSelection(self):
+        """Get the string that is currently selected in the list
+        @return: string selection
+
+        """
+        return self._list.GetStringSelection()
+
+    def HasSelection(self):
+        """Tells whether anything in the list is selected"""
+        return self._list.GetSelection() != wx.NOT_FOUND
+
+    def HasSuggestions(self):
+        """Tell whether the list is showing suggestions"""
+        return self.IsShown() and self.ListCount() > 0
+
+    def ListCount(self):
+        """return the number of elements in the popup list"""
+        return self._list.GetCount()
+
+    def GetListCtrl(self):
+        """Get the ListBox control of the popupwindow"""
+        return self._list
+
+    def GetChoices(self):
+        """Get the items as a list
+        @return: list of strings
+
+        """
+        return self._list.GetStrings()
+
+    def SetSelection(self, index):
+        """Set the selection in the list by index
+        @param index: zero based index to set selection by
+
+        """
+        self._list.SetSelection(index)
+
+class PopupList(wx.MiniFrame, PopupListBase):
+    """Popup window with a listbox in it"""
+    def __init__(self, parent, choices=list(), pos=wx.DefaultPosition):
+
+        style = wx.FRAME_NO_TASKBAR | wx.FRAME_FLOAT_ON_PARENT
+        if wx.Platform == '__WXMAC__':
+            style = style | wx.BORDER_NONE | wx.POPUP_WINDOW
+        else:
+            style = style | wx.SIMPLE_BORDER
+
+        wx.MiniFrame.__init__(self, parent, pos=pos, style=style)
+        PopupListBase.__init__(self)
+
+        # Attributes
+        self._list = wx.ListBox(self, choices=choices,
+                                style=wx.LC_REPORT | wx.LC_SINGLE_SEL |
+                                      wx.LC_NO_HEADER | wx.NO_BORDER)
+
+        # Layout
+        self._list.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
+        self.SetWindowVariant(wx.WINDOW_VARIANT_SMALL)
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self._list, 1, wx.EXPAND)
+        self.SetSizer(sizer)
+        txt_h = self.GetTextExtent('/')[1]
+        self.SetMaxSize((-1, txt_h * 6))
+        self.SetAutoLayout(True)
+
+        # Event Handlers
+        self.Bind(wx.EVT_CHAR, lambda evt: parent.GetEventHandler().ProcessEvent(evt))
+        self.Bind(wx.EVT_SET_FOCUS, self.OnFocus)
+        self.Bind(wx.EVT_LISTBOX_DCLICK, self.OnSelection)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        self._list.Bind(wx.EVT_KEY_UP, self.OnKeyUp)
+
+        self._list.SetFocus()
+        self.Hide()
+
+    def __PostEvent(self):
+        """Post notification of selection to parent
+        @postcondition: selected string is posted to parent
+
+        """
+        val = self._list.GetStringSelection()
+        evt = ed_event.NotificationEvent(ed_event.edEVT_NOTIFY,
+                                          self.GetId(), val, self._list)
+        wx.PostEvent(self.GetParent(), evt)
+        self.ActivateParent()
+
+    def ActivateParent(self):
+        """Activate the parent window
+        @postcondition: parent window is raised
+
+        """
+        parent = self.GetParent()
+        parent.Raise()
+        parent.SetFocus()
+
+    def OnFocus(self, evt):
+        """Raise and reset the focus to the parent window whenever
+        we get focus.
+        @param evt: event that called this handler
+
+        """
+        self.ActivateParent()
+        self.GetParent().SetFocus()
+        evt.Skip()
+
+    def OnKeyUp(self, evt):
+        """Process key up events in the control
+        @param evt: event that called this handler
+
+        """
+        if evt.GetKeyCode() == wx.WXK_RETURN:
+            self.__PostEvent()
+        else:
+            evt.Skip()
+
+    def OnSelection(self, evt):
+        """Handle a selection in list by posting the result to
+        the parent.
+        @param evt: Event that called this handler
+
+        """
+        self.__PostEvent()
+
+    def OnSize(self, evt):
+        """Resize the listbox"""
+        csz = self.GetClientSize()
+        csz.SetWidth(csz.x + wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X))
+        self._list.SetSize(csz)
+        evt.Skip()
+
+    def Show(self, show=True):
+        """Adjust size of popup and then show it
+        @keyword show: Should the window be shown or not
+
+        """
+        res = super(PopupList, self).Show(show)
+
+        if res and show:
+            self.ActivateParent()
+
+        if wx.Platform == '__WXMAC__':
+            self.GetParent().Refresh(False)
+
+        return res
+
+    def SetChoices(self, choices):
+        """Set the available choices that are shown in the list
+        @param choices: list of strings
+
+        """
+        selection = self._list.GetSelection()
+        self._list.SetItems(choices)
+        count = self._list.GetCount()
+        if selection == wx.NOT_FOUND or selection >= count:
+            selection = 0
+        if count > 0:
+            self._list.SetSelection(selection)
+
+    def SetStringSelection(self, text):
+        """Set the list selection by using a string value
+        @param text: string to select in list
+
+        """
+        self._list.SetStringSelection(text)
+
+    def SetupPosition(self, cmd_ex):
+        """Sets size and position of widget
+        @param cmd_ex: CommandExecuter window
+
+        """
+        cmd = cmd_ex.GetValue()
+        cmd = cmd.split(u' ', 1)[0]
+        xpos = cmd_ex.GetTextExtent(cmd + u' ')[0]
+        pos = cmd_ex.GetScreenPosition().Get()
+        csize = cmd_ex.GetSize()
+        self.SetPosition((pos[0] + xpos, pos[1] + csize[1]))
+        self.ActivateParent()
+
+#----------------------------------------------------------------------------#
+
+class PopupWinList(wx.PopupWindow, PopupListBase):
+    """Popuplist for Windows/GTK"""
+    def __init__(self, parent, choices=list(), pos=wx.DefaultPosition):
+        """Create the popup window and its list control"""
+        wx.PopupWindow.__init__(self, parent)
+        PopupListBase.__init__(self)
+
+        # Attributes
+        self._list = wx.ListBox(self, choices=choices, pos=(0, 0),
+                                style=wx.LC_REPORT | wx.LC_SINGLE_SEL |
+                                      wx.LC_NO_HEADER)
+
+        # Layout
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.Add(self._list, 0, wx.EXPAND)
+        self.SetSizer(sizer)
+        txt_h = self.GetTextExtent('/')[1]
+        self.SetMaxSize((-1, txt_h * 6))
+        self.SetAutoLayout(True)
+
+        # Event Handlers
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+
+    def OnSize(self, evt):
+        """Resize the list box to the correct size to fit."""
+        csz = self.GetClientSize()
+        csz.SetWidth(csz.x + wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X))
+        self._list.SetSize(csz)
+        evt.Skip()
+
+    def SetupPosition(self, cmd_ex):
+        """Sets size and position of widget
+        @param cmd_ex: CommandExecuter window
+
+        """
+        cmd = cmd_ex.GetValue()
+        cmd = cmd.split(u' ', 1)[0]
+        pos = cmd_ex.GetScreenPosition().Get()
+        csize = cmd_ex.GetSize()
+        xpos = cmd_ex.GetTextExtent(cmd)[0]
+        self._list.SetInitialSize()
+        self.SetInitialSize()
+        self.SetPosition((pos[0] + xpos, pos[1] + csize[1]))
+
+    def SetChoices(self, choices):
+        """Set the available choices that are shown in the list
+        @param choices: list of strings
+
+        """
+        selection = self._list.GetSelection()
+        self._list.SetItems(choices)
+        count = self._list.GetCount()
+        if selection == wx.NOT_FOUND or selection >= count:
+            selection = 0
+        if count > 0:
+            self._list.SetSelection(selection)
+
+    def Show(self, show=True):
+        """Adjust size of popup and then show it
+        @keyword show: Should the window be shown or not
+
+        """
+        res = super(PopupWinList, self).Show(show)
+
+        self._list.Show()
+        self._list.SetInitialSize()
+        self.SetInitialSize()
+
+        return res

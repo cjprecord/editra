@@ -1,0 +1,88 @@
+# Serbian translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2008-02-25 04:44-0600\n"
+"PO-Revision-Date: 2008-03-19 18:43+0000\n"
+"Last-Translator: Vladimir Lazic <vlazic@gmail.com>\n"
+"Language-Team: Serbian <sr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-10-20 02:28+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: calculator/calculator/calc.py:151 calculator/calculator/calc.py:317
+msgid "Ascii"
+msgstr "Аски код"
+
+#: calculator/calculator/__init__.py:34
+msgid "Calculator"
+msgstr "Калкулатор"
+
+#: calculator/calculator/calc.py:150
+msgid "Char Display"
+msgstr "Приказ карактера"
+
+#: calculator/calculator/calc.py:158 calculator/calculator/calc.py:195
+#: calculator/calculator/calc.py:307 calculator/calculator/calc.py:407
+#: calculator/calculator/calc.py:509 calculator/calculator/calc.py:522
+#: calculator/calculator/calc.py:533 calculator/calculator/calc.py:560
+msgid "Dec"
+msgstr "Дец"
+
+#: calculator/calculator/calc.py:48
+msgid "Editra | Calculator"
+msgstr "Editra | Калкулатор"
+
+#: calculator/calculator/calc.py:189 calculator/calculator/calc.py:274
+#: calculator/calculator/calc.py:500 calculator/calculator/calc.py:556
+msgid "Error"
+msgstr "Грешка"
+
+#: calculator/calculator/calc.py:498
+#, python-format
+msgid "Error: %s"
+msgstr "Грешка: %s"
+
+#: calculator/calculator/calc.py:389
+msgid "Error: Display Overflow"
+msgstr "Грешка: Резултат прелази границе диплеја"
+
+#: calculator/calculator/calc.py:158 calculator/calculator/calc.py:216
+#: calculator/calculator/calc.py:307 calculator/calculator/calc.py:310
+#: calculator/calculator/calc.py:403 calculator/calculator/calc.py:513
+#: calculator/calculator/calc.py:524 calculator/calculator/calc.py:564
+msgid "Hex"
+msgstr "Хекс"
+
+#: calculator/calculator/calc.py:157
+msgid "Mode"
+msgstr "Режим"
+
+#: calculator/calculator/calc.py:158 calculator/calculator/calc.py:219
+#: calculator/calculator/calc.py:307 calculator/calculator/calc.py:312
+#: calculator/calculator/calc.py:403 calculator/calculator/calc.py:409
+#: calculator/calculator/calc.py:511 calculator/calculator/calc.py:518
+#: calculator/calculator/calc.py:535 calculator/calculator/calc.py:570
+msgid "Oct"
+msgstr "Окт"
+
+#: calculator/calculator/calc.py:151
+msgid "Unicode"
+msgstr "Уникод"
+
+#: calculator/calculator/calc.py:423
+#, python-format
+msgid "ascii: %s"
+msgstr "аски код: %s"
+
+#: calculator/calculator/calc.py:430
+#, python-format
+msgid "unicode: %s"
+msgstr "уникод: %s"

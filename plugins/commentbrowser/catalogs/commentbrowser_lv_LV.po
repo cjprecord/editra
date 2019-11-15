@@ -1,0 +1,68 @@
+# Latvian translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-18 20:36-0600\n"
+"PO-Revision-Date: 2008-11-17 22:53+0000\n"
+"Last-Translator: janis.sl <Unknown>\n"
+"Language-Team: Latvian <lv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2008-11-19 00:56+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: commentbrowser/commentbrowser/cbrowser.py:114
+msgid "After key"
+msgstr "Pēc taustiņa"
+
+#: commentbrowser/commentbrowser/cbrowser.py:112
+msgid "All opened files"
+msgstr "Visi atvērtie faili"
+
+#: commentbrowser/commentbrowser/__init__.py:84
+#: commentbrowser/commentbrowser/__init__.py:96
+msgid "Comment Browser"
+msgstr "Komentāru pārlūks"
+
+#: commentbrowser/commentbrowser/__init__.py:63
+#: commentbrowser/commentbrowser/__init__.py:67
+msgid "CommentBrowser"
+msgstr "Komentāru pārlūks"
+
+#: commentbrowser/commentbrowser/cbrowserlistctrl.py:58
+msgid "Description"
+msgstr "Apraksts"
+
+#: commentbrowser/commentbrowser/cbrowserlistctrl.py:59
+msgid "File"
+msgstr "Fails"
+
+#: commentbrowser/commentbrowser/cbrowserlistctrl.py:60
+msgid "Line"
+msgstr "Rinda"
+
+#: commentbrowser/commentbrowser/__init__.py:85
+msgid "Open Comment Browser Sidepanel"
+msgstr "Atvērt komentāru pārlūka sānu paneli"
+
+#: commentbrowser/commentbrowser/cbrowser.py:105
+msgid "Taskfilter: "
+msgstr "Uzdevumu filtrs: "
+
+#: commentbrowser/commentbrowser/cbrowserlistctrl.py:57
+msgid "Type"
+msgstr "Tips"
+
+#: commentbrowser/commentbrowser/cbrowser.py:117
+msgid "Update"
+msgstr "Atjaunināt"
+
+#: commentbrowser/commentbrowser/cbrowser.py:115
+msgid "Update as you type"
+msgstr "Atjaunināt rakstīšanas laikā"

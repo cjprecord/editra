@@ -4,21 +4,17 @@
 # Purpose: Editra's main launch script                                        #
 # Author: Cody Precord <cprecord@editra.org>                                  #
 # Copyright: (c) 2007 Cody Precord <staff@editra.org>                         #
-# Licence: wxWindows Licence                                                  #
+# License: wxWindows License                                                  #
 ###############################################################################
 
 
 """
-#--------------------------------------------------------------------------#
-# FILE:	Editra                                                             #
-# AUTHOR: Cody Precord                                                     #
-# LANGUAGE: Python                                                         #
-# SUMMARY:                                                                 #
-#  Launch script for the Editor. It first tries to look for Editra on the  #
-# local path and if it is not there it tries to import the Main method     #
-# from where Editra would be installed if it was installed using disutils  #
-#                                                                          #
-#--------------------------------------------------------------------------#
+Main launch script for the Editor. It first tries to look for Editra on the
+local path and if it is not there it tries to import the Main method
+from where Editra would be installed if it was installed using disutils
+
+@summary: Editra's main launch script
+
 """
 
 __author__ = "Cody Precord <cprecord@editra.org>"
@@ -26,52 +22,58 @@ __svnid__ = "$Id: Exp $"
 __revision__ = "$Revision:  $"
 
 #--------------------------------------------------------------------------#
-# Dependancies
+# Dependencies
 import sys
 import os
 
 try:
     import src as esrc
+    IS_LOCAL = True
 except ImportError:
     try:
-        import Editra.src as esrc
+        import Editra as esrc
+        IS_LOCAL = False
     except ImportError, msg:
         print "There was an error while tring to import Editra"
         print ("Make sure that Editra is on your PYTHONPATH and that "
                "you have wxPython installed.")
         print "ERROR MSG: "
         print str(msg)
-        exit()
+        os._exit(1)
 
 #--------------------------------------------------------------------------#
-# XXX plugins need to have the import paths of the libraries they use taken
-#     care of in someway to allow for them to work regardless of where the
-#     application is executed from.
-#
-#     i.e  from Editra/Editra (this script), or from Editra/src/Editra.py
-#
-#     For them to work from this script they need to import relative to this
-#     script. (import src.plugin) as apposed to (import plugin), but visa versa
-#     is required for the other main script. This is further complicated by the
-#     fact that the location of this script is never guaranteed. So the current
-#     solution is to change to the directory where the main is located and tell
-#     the system to execute the script there and then change back to the
-#     current directory in the main. If there is anyone that has a more clever 
-#     way to deal with this I would like to listen.
-#
-# XXX Note for this to work the version of python on the path must be the one
-#     that has all of Editra's dependancies installed on.
-if __name__ == '__main__':
+# There are currently some necessary hacks for launching editra from this
+# script that will hopefully be removed in the not so distance future once
+# the plugin managers meta registry is redesigned.
+
+def main():
+    # The initial import above is necessary to get the path of where
+    # Editra is installed so that the src package can be put on the path.
+    # If the src module is not on the path the plugins are unable to import
+    # things from inside editras namespace properly. It also causes problems
+    # with recognizing plugins in Extension registry of the Plugins metaclass.
     SRC_DIR = os.path.dirname(esrc.__file__)
-    CWD = os.getcwd()
-    try:
-        os.chdir(SRC_DIR)
-    except OSError:
-        print ("There was a problem finding the main script,"
-              " try running Editra.py in the src dir")
+    if not IS_LOCAL:
+        SRC_DIR = os.path.join(SRC_DIR, 'src')
+
+    # Cleanup any of Editras modules that are already present before
+    # importing Editra again so that the modules are imported with the
+    # correct signature (i.e ed_theme vs src.ed_theme). As the plugin
+    # manager currently registers the class objects metadata by using
+    # the classes module signature for identification.
+    if not IS_LOCAL:
+        torem = [ key for key in sys.modules.keys()
+                  if key.startswith('Editra') ]
+        for key in torem:
+            del sys.modules[key]
     else:
-        ARGS = u''
-        if len(sys.argv) > 1:
-            ARGS = " ".join(sys.argv[1:])
-        RES = os.system("python Editra.py --oldPath=\"" + CWD + "\" " + ARGS)
-        exit(RES)
+        if 'src' in sys.modules:
+            del sys.modules['src']
+
+    sys.path.insert(0, SRC_DIR)
+    import Editra
+    Editra.Main()
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,4 @@
+Name=MacroLauncher
+Author=rca
+Description=Run and control Python scripts and applications from inside Editra
+Version=0.1

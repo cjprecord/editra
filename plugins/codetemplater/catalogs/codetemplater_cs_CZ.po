@@ -1,0 +1,155 @@
+# Czech translation for editra
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-02 10:44-0500\n"
+"PO-Revision-Date: 2010-07-04 13:39+0000\n"
+"Last-Translator: Konki <pavel.konkol@seznam.cz>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: codetemplater/codetemplater/templates.py:178
+msgid "Add a New Template"
+msgstr "Přidat novou šablonu"
+
+#: codetemplater/codetemplater/templates.py:221
+msgid "An \"$\" character."
+msgstr "Nějaký \"$\" znak."
+
+#: codetemplater/codetemplater/cfgdlg.py:59
+msgid "Causes the language type used for templates to adjust to the file type whenever a new tab is selected"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:212
+msgid "Check to have all lines of the template be indented to match the indentation at which the template is inserted"
+msgstr ""
+
+#: codetemplater/codetemplater/__init__.py:128
+msgid "Code Template Editor"
+msgstr "Editor kódu šablony"
+
+#: codetemplater/codetemplater/__init__.py:59
+#: codetemplater/codetemplater/templates.py:150
+msgid "Code Templates"
+msgstr "Kódy šablon"
+
+#: codetemplater/codetemplater/cfgdlg.py:47
+msgid "CodeTemplater"
+msgstr "Šablonový kód"
+
+#: codetemplater/codetemplater/templates.py:395
+msgid "Convert Selection to Get/Set Property"
+msgstr "Převést zvolené na získat/nastavit vlastnost"
+
+#: codetemplater/codetemplater/templates.py:406
+msgid "Convert Selection to Get/Set/Del Property"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:413
+msgid "Convert Selection to read-only Property"
+msgstr "Převést vybrané na vlastnost jen pro čtení"
+
+#: codetemplater/codetemplater/templates.py:425
+msgid "Convert selection into a method"
+msgstr "Převést výběr do metody"
+
+#: codetemplater/codetemplater/__init__.py:55
+msgid "Edit Templates..."
+msgstr "Upravyt šablony..."
+
+#: codetemplater/codetemplater/templates.py:203
+msgid "Help Text:"
+msgstr "Pomocný text:"
+
+#: codetemplater/codetemplater/__init__.py:59
+msgid "Insert Code Templates into Document"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:419
+msgid "Iterate over items of selected dictionary"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:222
+msgid "Move cursor to this location after inserting template."
+msgstr "Po vložení šablony přesuňte kurzor na toto místo."
+
+#: codetemplater/codetemplater/templates.py:195
+msgid "Name:"
+msgstr "Název:"
+
+#: codetemplater/codetemplater/templates.py:293
+msgid "New Template"
+msgstr "Nová šablona"
+
+#: codetemplater/codetemplater/templates.py:211
+msgid "Obey Indentation?"
+msgstr "Řídit se podle odsazení?"
+
+#: codetemplater/codetemplater/__init__.py:56
+msgid "Open a Dialog to Edit the Templates Currently in Use"
+msgstr "Otevřít dialog pro upravování šablon, které se právě používají"
+
+#: codetemplater/codetemplater/templates.py:182
+msgid "Remove the selected Template"
+msgstr "Odstranit zvolenou šablonu"
+
+#: codetemplater/codetemplater/templates.py:218
+msgid ""
+"Replace with selected text.\n"
+"\""
+msgstr ""
+"Nahradit zvoleným textem.\n"
+"\""
+
+#: codetemplater/codetemplater/templates.py:220
+msgid "Replace with selected, first character lower case.\n"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:219
+msgid "Replace with selected, first character upper case.\n"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:101
+msgid "Reset to defaults"
+msgstr "Obnovit výchozí hodnoty"
+
+#: codetemplater/codetemplater/templates.py:102
+msgid "Resets the Profile to default as well as the Current Setup"
+msgstr "Obnoví profil na výchozí, stejně jako aktuální nastavení"
+
+#: codetemplater/codetemplater/templates.py:97
+msgid "Save"
+msgstr "Uložit"
+
+#: codetemplater/codetemplater/templates.py:98
+msgid "Save to the Profile to be reloaded on next Startup"
+msgstr "Uložit do profilu, aby bylo znovu načteno při dalším spuštění"
+
+#: codetemplater/codetemplater/__init__.py:53
+msgid "Show Code Templates"
+msgstr "Zobrazit kód šablon"
+
+#: codetemplater/codetemplater/cfgdlg.py:58
+msgid "Synchronize language with file type?"
+msgstr "Synchronizovat jazyk s typem souboru?"
+
+#: codetemplater/codetemplater/templates.py:217
+msgid "Template Codes:\n"
+msgstr "Kódy šablony:\n"
+
+#: codetemplater/codetemplater/cfgdlg.py:72
+msgid "Template Popup shortcut (requires restart):"
+msgstr "Šablona Popup zástupce (vyžaduje restart):"
+
+#: codetemplater/codetemplater/templates.py:223
+msgid "tabs will be replaced by the appropriate indent."
+msgstr "Záložky budou přesunuty příslušnou odrážkou."

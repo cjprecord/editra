@@ -1,0 +1,4 @@
+Name=Enigma
+Author=Cody Precord
+Description=Text encoder and decoder
+Version=0.1

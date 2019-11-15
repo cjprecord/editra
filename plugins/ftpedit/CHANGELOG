@@ -1,0 +1,31 @@
+Name: FtpEdit
+Author: Cody Precord
+License: wxWindows
+
+Changelog:
+
+#-----------------------------------------------------------------------------#
+Version 0.4
+Released:
+
++Fix issue with disconnecting message handlers after window has been destroyed.
++Fix validation of Port field in configuration dialog
+
+#-----------------------------------------------------------------------------#
+Version 0.3
+Released: 04/26/2009
+
++Fix some bugs in error handling of FtpFile class.
+
+#-----------------------------------------------------------------------------#
+Version 0.2
+Released: 02/08/2009
+
++Fixed bug with view getting cleared when saving a file.
++Add Polish, Portuguese, and Russian translations.
+
+#-----------------------------------------------------------------------------#
+Version 0.1
+Released: 01/24/2009
+
+* Initial release

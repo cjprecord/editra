@@ -1,0 +1,153 @@
+# Hungarian translation for editra
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-02 10:44-0500\n"
+"PO-Revision-Date: 2010-05-23 10:57+0000\n"
+"Last-Translator: Gergely Szarka <szarka.honved@gmail.com>\n"
+"Language-Team: Hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: codetemplater/codetemplater/templates.py:178
+msgid "Add a New Template"
+msgstr "Új sablon hozzáadása"
+
+#: codetemplater/codetemplater/templates.py:221
+msgid "An \"$\" character."
+msgstr "\"$\" karakter"
+
+#: codetemplater/codetemplater/cfgdlg.py:59
+msgid "Causes the language type used for templates to adjust to the file type whenever a new tab is selected"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:212
+msgid "Check to have all lines of the template be indented to match the indentation at which the template is inserted"
+msgstr ""
+
+#: codetemplater/codetemplater/__init__.py:128
+msgid "Code Template Editor"
+msgstr "Kód sablon szerkesztő"
+
+#: codetemplater/codetemplater/__init__.py:59
+#: codetemplater/codetemplater/templates.py:150
+msgid "Code Templates"
+msgstr "Kód sablonok"
+
+#: codetemplater/codetemplater/cfgdlg.py:47
+msgid "CodeTemplater"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:395
+msgid "Convert Selection to Get/Set Property"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:406
+msgid "Convert Selection to Get/Set/Del Property"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:413
+msgid "Convert Selection to read-only Property"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:425
+msgid "Convert selection into a method"
+msgstr ""
+
+#: codetemplater/codetemplater/__init__.py:55
+msgid "Edit Templates..."
+msgstr "Sablonok szerkesztése"
+
+#: codetemplater/codetemplater/templates.py:203
+msgid "Help Text:"
+msgstr ""
+
+#: codetemplater/codetemplater/__init__.py:59
+msgid "Insert Code Templates into Document"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:419
+msgid "Iterate over items of selected dictionary"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:222
+msgid "Move cursor to this location after inserting template."
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:195
+msgid "Name:"
+msgstr "Név:"
+
+#: codetemplater/codetemplater/templates.py:293
+msgid "New Template"
+msgstr "Új sablon"
+
+#: codetemplater/codetemplater/templates.py:211
+msgid "Obey Indentation?"
+msgstr ""
+
+#: codetemplater/codetemplater/__init__.py:56
+msgid "Open a Dialog to Edit the Templates Currently in Use"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:182
+msgid "Remove the selected Template"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:218
+msgid ""
+"Replace with selected text.\n"
+"\""
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:220
+msgid "Replace with selected, first character lower case.\n"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:219
+msgid "Replace with selected, first character upper case.\n"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:101
+msgid "Reset to defaults"
+msgstr "Az alapértelmezés visszaállítása"
+
+#: codetemplater/codetemplater/templates.py:102
+msgid "Resets the Profile to default as well as the Current Setup"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:97
+msgid "Save"
+msgstr "Mentés"
+
+#: codetemplater/codetemplater/templates.py:98
+msgid "Save to the Profile to be reloaded on next Startup"
+msgstr ""
+
+#: codetemplater/codetemplater/__init__.py:53
+msgid "Show Code Templates"
+msgstr ""
+
+#: codetemplater/codetemplater/cfgdlg.py:58
+msgid "Synchronize language with file type?"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:217
+msgid "Template Codes:\n"
+msgstr ""
+
+#: codetemplater/codetemplater/cfgdlg.py:72
+msgid "Template Popup shortcut (requires restart):"
+msgstr ""
+
+#: codetemplater/codetemplater/templates.py:223
+msgid "tabs will be replaced by the appropriate indent."
+msgstr ""

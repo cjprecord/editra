@@ -1,0 +1,31 @@
+# CssOptimizer Plugin for Editra
+# Author: Cody Precord
+# License: wxWindows
+# Description: Compact CSS code to smaller sizes
+
+#----------------------------------------------------------------------------#
+# Version 0.4
+# Released: xx/xx/2008
+
++Fix compatibility with latest Editra releases
+
+#----------------------------------------------------------------------------#
+# Version 0.3
+# Released: 06/14/2008
+
++Slightly improved compression
++Added Dutch, German, Italian, Japanese, Portuguese, Serbian, Czech,
+       Ukrainian, Basque, and Simplifed Chinese translations.
+
+#----------------------------------------------------------------------------#
+# Version 0.2
+# Released: 10/30/2007
+
+Minor bug fixes
+
+#----------------------------------------------------------------------------#
+# Version 0.1
+# Released: ??
+
+Initial Release
+

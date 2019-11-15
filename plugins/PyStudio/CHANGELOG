@@ -1,0 +1,93 @@
+PyStudio Plugin
+Changelog
+
+#-----------------------------------------------------------------------------#
+Version 0.8
+Released:
+
++Fix dead object error in GetEditorForFile.
+
+#-----------------------------------------------------------------------------#
+Version 0.7
+Released:
+
++Fix more import issues on Windows
++Fix dead object error on exit
++Add translations (German, Spanish, Japanese, Latvian, Russian)
+
+#-----------------------------------------------------------------------------#
+Version 0.6
+Released:
+
++Fix bad build of 0.5, project component not getting bundled in binaries.
+
+
+#-----------------------------------------------------------------------------#
+
+Version 0.5
+Released: 08/12/2012
+
++Add basic Python project management features in new PyProject component.
++Add Pep 8 Checker
++Add raw PyLint output window to capture overall score information from
+analysis run.
++Code Analysis results window allows sorting of results
++Fix use case where debugger settings were not getting stored into profile.
++Fix Clear button on Code Analysis window not working after file has been closed.
++Fix some unicode handling issues in debugger.
++Fix crash in CompileChecker caused by incorrect window type being returned by GetActiveWindow
+
+#-----------------------------------------------------------------------------#
+
+Version 0.4
+Released: 08/30/2011
+
++Fix for unicode errors when program exits using sys.exit()
++Stop blank expression appearing when breakpoint hit
++Store expressions in OrderedDict to maintain the order the user entered them
++Don't allow same expression to be entered twice
++Store filter regular expressions (for locals, globals...) in config so that they are reloaded
++Allow Enter to be pressed to confirm filter expressions (same as pressing Search button)
++Display breakpoints sorted by filename and line number
++Fix crash when editor emits save message during shutdown
++Make exception trapping work when Variables shelf not open
++Add config to ignore SystemExit when trapping exceptions
++Add partial translations for Greek, Japanese, Latvian, and Russian.
+
+#-----------------------------------------------------------------------------#
+
+Version 0.3
+Released: 07/23/2011
+
++Add indicator icons to PyAnalysis output list
++Fix bug with not being able to debug GUI programs on Linux
++Fix crash that could occur while debugging when plugin is unable to retrieve
++Fix crash when setting configuration (caused by PYSTUDIO_CONFIG: should be PYTOOL_CONFIG)
++Fix conflicting modules crash (MessageDialog needs self.mainwindow not self)
+editor instance from main application
++Fix crash when switching between variables subshelves when not debugging
++Remove quotes around pylintrc file that stopped it being recognized
++Clear expression values when Go button pressed
++Only evaluate expressions when debugger is broken to prevent "Debuggee has to be waiting at a breakpoint to complete this command" dialog
++Add refresh button to Expressions shelf for use when pausing wx apps
++Adding a new expression "checks" the check box
++Right click on pyVariable tree item to add a variable to pyExpression
++Type column added to pyExpression
++Fix crash that could occur in compile check during file save.
++Add filtering of variables by regular expression
+
+#-----------------------------------------------------------------------------#
+
+Version 0.2
+Released: 05/24/2011
+
++Fix missing resource file on Linux/OSX
++Fix crash in VariableList when getting attributes of a variable times out.
++Fix crash in ExpressionsList when expressions data is not present in profile.
+
+#-----------------------------------------------------------------------------#
+
+Version 0.1
+Released: 05/22/2011
+
+Initial Release

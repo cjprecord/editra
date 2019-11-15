@@ -1,0 +1,425 @@
+# Dutch translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 20:21-0500\n"
+"PO-Revision-Date: 2009-07-14 13:01+0000\n"
+"Last-Translator: Gerard Petersen <Unknown>\n"
+"Language-Team: Dutch <nl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Projects/projects/ConfigDialog.py:434
+msgid "*NAME*"
+msgstr "*NAAM*"
+
+#: Projects/projects/ConfigDialog.py:435
+msgid "*VALUE*"
+msgstr "*WAARDE*"
+
+#: Projects/projects/ProjectPane.py:1664
+msgid ". Do you wish to continue?"
+msgstr ". Wil je doorgaan?"
+
+#: Projects/projects/ProjectPane.py:1769
+msgid "Add Project"
+msgstr "Toevoegen project"
+
+#: Projects/projects/ConfigDialog.py:499
+msgid "Add a New Repository Path"
+msgstr "Voeg een nieuw data opslag pad toe"
+
+#: Projects/projects/ProjectPane.py:1387
+msgid "Add to repository"
+msgstr "Voeg toe aan data opslag"
+
+#: Projects/projects/ProjectPane.py:1663
+msgid "An error occurred when attempting to remove "
+msgstr "Er is een fout opgetreden tijdens het verwijderen "
+
+#: Projects/projects/HistWin.py:315
+msgid "Author"
+msgstr "Auteur"
+
+#: Projects/projects/ConfigDialog.py:149
+msgid "Built-in"
+msgstr "Ingebouwd"
+
+#: Projects/projects/ProjectPane.py:147
+msgid "C File"
+msgstr "C bestand"
+
+#: Projects/projects/ProjectPane.py:1817
+msgid "Choose a Project Directory"
+msgstr "Kies een project map"
+
+#: Projects/projects/ProjCmnDlg.py:275
+msgid "Close"
+msgstr ""
+
+#: Projects/projects/ModList.py:131 Projects/projects/ProjCmnDlg.py:71
+msgid "Commit"
+msgstr "Vastleggen (commit)"
+
+#: Projects/projects/ModList.py:395 Projects/projects/ProjectPane.py:971
+msgid "Commit Dialog"
+msgstr "Vastleggen scherm"
+
+#: Projects/projects/ModList.py:561 Projects/projects/ProjectPane.py:1427
+msgid "Commit changes"
+msgstr "Wijzigingen vastleggen (commit)"
+
+#: Projects/projects/HistWin.py:146 Projects/projects/HistWin.py:277
+msgid "Compare Revisions"
+msgstr "Vergelijk revisies"
+
+#: Projects/projects/HistWin.py:281
+msgid "Compare Selected Revisions"
+msgstr "Vergelijk geselecteerde revisies"
+
+#: Projects/projects/HistWin.py:279
+msgid "Compare to Selected Revision"
+msgstr "Vergelijk met geselecteerde revisie"
+
+#: Projects/projects/ModList.py:555 Projects/projects/ProjectPane.py:1423
+msgid "Compare to previous version"
+msgstr "Vergelijk met vorige revisie"
+
+#: Projects/projects/ProjectPane.py:1763
+msgid "Configure"
+msgstr "Configureren"
+
+#: Projects/projects/ProjectPane.py:1411
+msgid "Copy"
+msgstr "Kopiëren"
+
+#: Projects/projects/ProjCmnDlg.py:45
+msgid "Could not retrieve file"
+msgstr "Kon file niet ophalen"
+
+#: Projects/projects/ProjectPane.py:1410
+msgid "Cut"
+msgstr "Knippen"
+
+#: Projects/projects/HistWin.py:314
+msgid "Date"
+msgstr "Datum"
+
+#: Projects/projects/ConfigDialog.py:148
+msgid "Diff Program"
+msgstr "Diff-programma"
+
+#: Projects/projects/ProjectPane.py:1405
+msgid "Edit"
+msgstr "Bewerk"
+
+#: Projects/projects/ProjCmnDlg.py:306
+msgid "Enter a command to be executed on all selected files and files in selected directories."
+msgstr "Geef een commando om uit te voeren op de geselecteerde bestanden en de bestanden in de geselecteerde directories"
+
+#: Projects/projects/ProjectPane.py:896 Projects/projects/ProjectPane.py:1539
+msgid "Enter command to execute on all files"
+msgstr "Geef een commando om uit te voeren op alle bestanden"
+
+#: Projects/projects/ModList.py:396 Projects/projects/ProjectPane.py:972
+msgid "Enter your commit message:"
+msgstr "Geef revisie omschrijving"
+
+#: Projects/projects/ConfigDialog.py:285
+msgid "Environment Variables"
+msgstr "Omgevingsvariabelen"
+
+#: Projects/projects/ProjectPane.py:1630 Projects/projects/ProjectPane.py:1638
+msgid "Error occurred when copying/moving files"
+msgstr "Er deed zich een fout voor tijdens het kopiëren/verplaatsen van de bestanden"
+
+#: Projects/projects/ProjectPane.py:1665
+msgid "Error occurred when removing files"
+msgstr "Er deed zich een fout voor tijdens het verwijderen van de bestanden"
+
+#: Projects/projects/ConfigDialog.py:261
+msgid "Executable Path"
+msgstr "Programma pad"
+
+#: Projects/projects/ProjCmnDlg.py:300
+msgid "Execute command on files"
+msgstr "Voer command uit op bestanden"
+
+#: Projects/projects/ProjectPane.py:1414
+msgid "Execute command..."
+msgstr "Voer command uit ..."
+
+#: Projects/projects/ConfigDialog.py:129
+msgid "File Filters"
+msgstr "Bestandsfilters"
+
+#: Projects/projects/ModList.py:331
+msgid "Filename"
+msgstr "Bestandsnaam"
+
+#: Projects/projects/ProjectPane.py:1391
+msgid "Folder"
+msgstr "Map"
+
+#: Projects/projects/ConfigDialog.py:100
+msgid "General"
+msgstr "Algemeen"
+
+#: Projects/projects/ProjectPane.py:148
+msgid "HTML File"
+msgstr "HTML-bestand"
+
+#: Projects/projects/HistWin.py:328
+msgid "History information could not be retrieved"
+msgstr "historische informatie kon niet worden opgehaald"
+
+#: Projects/projects/ConfigDialog.py:143
+msgid "Keep project tree synchronized with editor notebook"
+msgstr "Synchroniseer project met gebruikers laptop"
+
+#: Projects/projects/HistWin.py:316
+msgid "Log Message"
+msgstr "Log melding"
+
+#: Projects/projects/ProjectPane.py:1428
+msgid "Make Patch"
+msgstr "Maak patch"
+
+#: Projects/projects/ProjCmnDlg.py:68
+msgid "Message"
+msgstr "Bericht"
+
+#: Projects/projects/ProjectPane.py:1399
+msgid "Move to Recycle Bin"
+msgstr "Naar prullenbak verplaatsen"
+
+#: Projects/projects/ProjectPane.py:1401
+msgid "Move to Trash"
+msgstr "Naar prullenbak verplaatsen"
+
+#: Projects/projects/ConfigDialog.py:289
+msgid "Name"
+msgstr "Naam"
+
+#: Projects/projects/ProjectPane.py:1408
+msgid "New..."
+msgstr "Nieuw..."
+
+#: Projects/projects/ProjectPane.py:1406
+msgid "Open"
+msgstr "Open"
+
+#: Projects/projects/ProjectPane.py:1745
+msgid "Open Projects Sidepanel"
+msgstr "Geef projectpaneel weer"
+
+#: Projects/projects/ProjectPane.py:1407
+msgid "Open enclosing folder"
+msgstr "Open bevattende folder"
+
+#: Projects/projects/__init__.py:117
+msgid "Open the Projects source control summary list"
+msgstr "Open de Project code revisie samenvatting"
+
+#: Projects/projects/ConfigDialog.py:277
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: Projects/projects/ProjectPane.py:1412
+msgid "Paste"
+msgstr "Plakken"
+
+#: Projects/projects/ProjectPane.py:149
+msgid "Php File"
+msgstr "PHP-bestand"
+
+#: Projects/projects/ConfigDialog.py:498
+msgid "Please enter a repository path.  Partial paths may also be entered."
+msgstr "Geef een repository path op. Gedeeltelijk paden zijn ook toegestaan."
+
+#: Projects/projects/ProjectPane.py:1744 Projects/projects/__init__.py:60
+#: Projects/projects/__init__.py:154
+msgid "Projects"
+msgstr "Projecten"
+
+#: Projects/projects/ConfigDialog.py:56
+msgid "Projects Configuration"
+msgstr "Project configuratie"
+
+#: Projects/projects/ProjectPane.py:150
+msgid "Python File"
+msgstr "Python bestand"
+
+#: Projects/projects/ProjCmnDlg.py:126
+msgid "Recent Messages"
+msgstr "Recente berichten"
+
+#: Projects/projects/ModList.py:119
+msgid "Refresh"
+msgstr "Vernieuwen"
+
+#: Projects/projects/ModList.py:551 Projects/projects/ProjectPane.py:1421
+msgid "Refresh status"
+msgstr "Ververs status"
+
+#: Projects/projects/ProjectPane.py:1775
+msgid "Remove Project"
+msgstr "Verwijder project"
+
+#: Projects/projects/ProjectPane.py:1385
+msgid "Remove from repository"
+msgstr "Verwijder uit repository"
+
+#: Projects/projects/ConfigDialog.py:490
+msgid "Remove repository"
+msgstr "Verwijder repository"
+
+#: Projects/projects/ModList.py:110
+msgid "Repository"
+msgstr "Pakketbron"
+
+#: Projects/projects/ConfigDialog.py:266
+msgid "Repository Configuration"
+msgstr "Repository Configuratie"
+
+#: Projects/projects/HistWin.py:119
+msgid "Retrieving File History"
+msgstr "Bestands historie ophalen"
+
+#: Projects/projects/HistWin.py:313
+msgid "Rev #"
+msgstr "Rev #"
+
+#: Projects/projects/ModList.py:137
+msgid "Revert"
+msgstr "Herstel"
+
+#: Projects/projects/ModList.py:565 Projects/projects/ProjectPane.py:1429
+msgid "Revert to repository version"
+msgstr "Herstel naar repository versie"
+
+#: Projects/projects/HistWin.py:138
+msgid "Revision History"
+msgstr "Revisie Historie"
+
+#: Projects/projects/HistWin.py:421
+msgid "Search Log"
+msgstr "Doorzoek log"
+
+#: Projects/projects/ProjectPane.py:1417
+msgid "Search in directory"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:164
+msgid "Select diff program"
+msgstr "Selecteer diff programma"
+
+#: Projects/projects/ConfigDialog.py:489
+msgid "Select the repository path to remove"
+msgstr "Selecteer het repository pad om te verwijderen"
+
+#: Projects/projects/ProjectPane.py:1024
+msgid "Selected files are from multiple repositories"
+msgstr "Geselecteerde bestanden zijn van meerdere repositories"
+
+#: Projects/projects/ModList.py:558 Projects/projects/ProjectPane.py:1425
+msgid "Show revision history"
+msgstr "Geef revisie historie weer"
+
+#: Projects/projects/ConfigDialog.py:102 Projects/projects/__init__.py:116
+msgid "Source Control"
+msgstr "Bron controle"
+
+#: Projects/projects/ProjectPane.py:1415
+#, fuzzy
+msgid "Source Control command..."
+msgstr "Bron controle"
+
+#: Projects/projects/ConfigDialog.py:257
+msgid "Source control system"
+msgstr "Bron code versie systeem"
+
+#: Projects/projects/ConfigDialog.py:136
+msgid ""
+"Space separated list of files patterns to exclude from view\n"
+"The use of wildcards (*) are permitted."
+msgstr ""
+"Spatie gescheiden lijst met patronen die niet worden weergegeven.\n"
+"het gebruik van vervanging  (*) is toegestaan"
+
+#: Projects/projects/ModList.py:329
+msgid "Status"
+msgstr "Status"
+
+#: Projects/projects/ProjectPane.py:146
+msgid "Text File"
+msgstr "Tekstbestand"
+
+#: Projects/projects/ProjectPane.py:1537
+msgid ""
+"The following command will be executed on all selected\n"
+"files and files contained in selected directories."
+msgstr "Het volgende commando wordt uitgevoerd op de geselecteerde bestanden en de bestanden in de geselecteerde directories."
+
+#: Projects/projects/ProjectPane.py:893
+#, fuzzy
+msgid ""
+"The following source control command will be executed on all selected\n"
+"files and files contained in selected directories.\n"
+"e.g. bzr [command] filename.py"
+msgstr "Het volgende commando wordt uitgevoerd op de geselecteerde bestanden en de bestanden in de geselecteerde directories."
+
+#: Projects/projects/HistWin.py:325
+msgid "The history information for the requested file could not be retrieved.  Please make sure that you have network access."
+msgstr "The historie informatie van het geselecteerde bestand kon niet worden opgehaald. Controleer of je netwerk verbinding in orde is."
+
+#: Projects/projects/ProjCmnDlg.py:43
+msgid "The requested file could not be retrieved from the source control system."
+msgstr "het geselecteerde bestand kon niet worden opgehaald van het bron controle systeem"
+
+#: Projects/projects/ProjectPane.py:1636
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s."
+msgstr "Het systeem gaf de volgende melding bij een poging tot verplaatsen/kopiëren van %(filename)s: %(errmsg)s."
+
+#: Projects/projects/ProjectPane.py:1627
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s. Do you wish to continue?"
+msgstr "Het systeem gaf de volgende melding bij een poging tot verplaatsen/kopiëren van %(filename)s: %(errmsg)s. Wil je doorgaan?"
+
+#: Projects/projects/ProjectPane.py:1469
+msgid "Untitled Folder"
+msgstr "Naamloze Folder"
+
+#: Projects/projects/ModList.py:125 Projects/projects/ProjectPane.py:1422
+msgid "Update"
+msgstr "Verversen"
+
+#: Projects/projects/ProjectPane.py:921
+#, python-format
+msgid "Updating %s"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:166
+msgid "Use a specified diff program"
+msgstr "Gebruik een alternatief diff programma"
+
+#: Projects/projects/ConfigDialog.py:275
+msgid "Username"
+msgstr "Gebruikersnaam"
+
+#: Projects/projects/ConfigDialog.py:290
+msgid "Value"
+msgstr "Waarde"
+
+#: Projects/projects/ProjectPane.py:1023
+msgid "You can not execute source control commands across multiple repositories."
+msgstr "Je kan geen commando's uitvoeren op bestanden uit meerdere bron controle systemen"

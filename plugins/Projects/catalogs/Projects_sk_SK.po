@@ -1,0 +1,429 @@
+# Slovak translation for editra
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 20:21-0500\n"
+"PO-Revision-Date: 2009-07-12 21:52+0000\n"
+"Last-Translator: Ladislav \"t€rist\" Galadik <Unknown>\n"
+"Language-Team: Slovak <sk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Projects/projects/ConfigDialog.py:434
+msgid "*NAME*"
+msgstr "*NÁZOV*"
+
+#: Projects/projects/ConfigDialog.py:435
+msgid "*VALUE*"
+msgstr "*HODNOTA*"
+
+#: Projects/projects/ProjectPane.py:1664
+msgid ". Do you wish to continue?"
+msgstr "Naozaj chceš pokračovať?"
+
+#: Projects/projects/ProjectPane.py:1769
+msgid "Add Project"
+msgstr "Pridať projekt"
+
+#: Projects/projects/ConfigDialog.py:499
+msgid "Add a New Repository Path"
+msgstr "Pridať cestu k novému repozitáru"
+
+#: Projects/projects/ProjectPane.py:1387
+msgid "Add to repository"
+msgstr "Pridať do repozitára"
+
+#: Projects/projects/ProjectPane.py:1663
+msgid "An error occurred when attempting to remove "
+msgstr "Nastala chyba pri odstarňovaní "
+
+#: Projects/projects/HistWin.py:315
+msgid "Author"
+msgstr "Autor"
+
+#: Projects/projects/ConfigDialog.py:149
+msgid "Built-in"
+msgstr "Zabudovaný"
+
+#: Projects/projects/ProjectPane.py:147
+msgid "C File"
+msgstr "C súbor"
+
+#: Projects/projects/ProjectPane.py:1817
+msgid "Choose a Project Directory"
+msgstr "Vyber adresár projektu"
+
+#: Projects/projects/ProjCmnDlg.py:275
+msgid "Close"
+msgstr ""
+
+#: Projects/projects/ModList.py:131 Projects/projects/ProjCmnDlg.py:71
+msgid "Commit"
+msgstr "Odovzdať"
+
+#: Projects/projects/ModList.py:395 Projects/projects/ProjectPane.py:971
+msgid "Commit Dialog"
+msgstr "Odovzdať"
+
+#: Projects/projects/ModList.py:561 Projects/projects/ProjectPane.py:1427
+msgid "Commit changes"
+msgstr "Zmeny"
+
+#: Projects/projects/HistWin.py:146 Projects/projects/HistWin.py:277
+msgid "Compare Revisions"
+msgstr "Porovnať revízie"
+
+#: Projects/projects/HistWin.py:281
+msgid "Compare Selected Revisions"
+msgstr "Porovnať vybrané revízie"
+
+#: Projects/projects/HistWin.py:279
+msgid "Compare to Selected Revision"
+msgstr "Porovnať s vybranou revíziou"
+
+#: Projects/projects/ModList.py:555 Projects/projects/ProjectPane.py:1423
+msgid "Compare to previous version"
+msgstr "Porovnať s predošlou verziou"
+
+#: Projects/projects/ProjectPane.py:1763
+msgid "Configure"
+msgstr "Nastav"
+
+#: Projects/projects/ProjectPane.py:1411
+msgid "Copy"
+msgstr "Kopírovať"
+
+#: Projects/projects/ProjCmnDlg.py:45
+msgid "Could not retrieve file"
+msgstr "Nemôžem načítať súbor"
+
+#: Projects/projects/ProjectPane.py:1410
+msgid "Cut"
+msgstr "Vystrihnúť"
+
+#: Projects/projects/HistWin.py:314
+msgid "Date"
+msgstr "Dátum"
+
+#: Projects/projects/ConfigDialog.py:148
+msgid "Diff Program"
+msgstr "Program Diff"
+
+#: Projects/projects/ProjectPane.py:1405
+msgid "Edit"
+msgstr "Upraviť"
+
+#: Projects/projects/ProjCmnDlg.py:306
+msgid "Enter a command to be executed on all selected files and files in selected directories."
+msgstr "Zadaj príkaz, ktorý bude použitý na všetky vybrané súbory a súbory vo vybraných adresároch"
+
+#: Projects/projects/ProjectPane.py:896 Projects/projects/ProjectPane.py:1539
+msgid "Enter command to execute on all files"
+msgstr "Zadaj príkaz, ktorý sa použije na všetky súbory"
+
+#: Projects/projects/ModList.py:396 Projects/projects/ProjectPane.py:972
+msgid "Enter your commit message:"
+msgstr "Napíš správu k tvojej odovzávke"
+
+#: Projects/projects/ConfigDialog.py:285
+msgid "Environment Variables"
+msgstr "Premenné prostredia"
+
+#: Projects/projects/ProjectPane.py:1630 Projects/projects/ProjectPane.py:1638
+msgid "Error occurred when copying/moving files"
+msgstr "Nastala chyba pri kopírovaní/presúvaní súborov"
+
+#: Projects/projects/ProjectPane.py:1665
+msgid "Error occurred when removing files"
+msgstr "Nastala chyba pri odstraňovaní súborov"
+
+#: Projects/projects/ConfigDialog.py:261
+msgid "Executable Path"
+msgstr "Prístupná cesta"
+
+#: Projects/projects/ProjCmnDlg.py:300
+msgid "Execute command on files"
+msgstr "Použi príkaz na súbory"
+
+#: Projects/projects/ProjectPane.py:1414
+msgid "Execute command..."
+msgstr "Spusti príkaz..."
+
+#: Projects/projects/ConfigDialog.py:129
+msgid "File Filters"
+msgstr "Súborové filtre"
+
+#: Projects/projects/ModList.py:331
+msgid "Filename"
+msgstr "Názov súboru"
+
+#: Projects/projects/ProjectPane.py:1391
+msgid "Folder"
+msgstr "Adresár"
+
+#: Projects/projects/ConfigDialog.py:100
+msgid "General"
+msgstr "Všeobecné"
+
+#: Projects/projects/ProjectPane.py:148
+msgid "HTML File"
+msgstr "HTML súbor"
+
+#: Projects/projects/HistWin.py:328
+msgid "History information could not be retrieved"
+msgstr "Informácie o histórii neboli načítané"
+
+#: Projects/projects/ConfigDialog.py:143
+msgid "Keep project tree synchronized with editor notebook"
+msgstr "Udržať strom projektu synchronizovaný s notebookom editora"
+
+#: Projects/projects/HistWin.py:316
+msgid "Log Message"
+msgstr "Správa logu"
+
+#: Projects/projects/ProjectPane.py:1428
+msgid "Make Patch"
+msgstr "Vytvor patch"
+
+#: Projects/projects/ProjCmnDlg.py:68
+msgid "Message"
+msgstr "Správa"
+
+#: Projects/projects/ProjectPane.py:1399
+msgid "Move to Recycle Bin"
+msgstr "Presunúť do koša"
+
+#: Projects/projects/ProjectPane.py:1401
+msgid "Move to Trash"
+msgstr "Presunúť do odpadkov"
+
+#: Projects/projects/ConfigDialog.py:289
+msgid "Name"
+msgstr "Názov"
+
+#: Projects/projects/ProjectPane.py:1408
+msgid "New..."
+msgstr "Nový..."
+
+#: Projects/projects/ProjectPane.py:1406
+msgid "Open"
+msgstr "Otvoriť"
+
+#: Projects/projects/ProjectPane.py:1745
+msgid "Open Projects Sidepanel"
+msgstr "Otvoriť postranný panel Projekty"
+
+#: Projects/projects/ProjectPane.py:1407
+msgid "Open enclosing folder"
+msgstr "Otvoriť uzatváraný adresár"
+
+#: Projects/projects/__init__.py:117
+msgid "Open the Projects source control summary list"
+msgstr "Otvoriť sumarizačný výpis zdrojov pre Projekty"
+
+#: Projects/projects/ConfigDialog.py:277
+msgid "Password"
+msgstr "Heslo"
+
+#: Projects/projects/ProjectPane.py:1412
+msgid "Paste"
+msgstr "Prilepiť"
+
+#: Projects/projects/ProjectPane.py:149
+msgid "Php File"
+msgstr "PHP súbor"
+
+#: Projects/projects/ConfigDialog.py:498
+msgid "Please enter a repository path.  Partial paths may also be entered."
+msgstr "Zadaj prosím ťa cestu k repozitáru. Môžeš použiť aj čiastočnú cestu."
+
+#: Projects/projects/ProjectPane.py:1744 Projects/projects/__init__.py:60
+#: Projects/projects/__init__.py:154
+msgid "Projects"
+msgstr "Projekty"
+
+#: Projects/projects/ConfigDialog.py:56
+msgid "Projects Configuration"
+msgstr "Nastavenie - Projekty"
+
+#: Projects/projects/ProjectPane.py:150
+msgid "Python File"
+msgstr "Python súbor"
+
+#: Projects/projects/ProjCmnDlg.py:126
+msgid "Recent Messages"
+msgstr "Posledné správy"
+
+#: Projects/projects/ModList.py:119
+msgid "Refresh"
+msgstr "Obnoviť"
+
+#: Projects/projects/ModList.py:551 Projects/projects/ProjectPane.py:1421
+msgid "Refresh status"
+msgstr "Stav obnovenia"
+
+#: Projects/projects/ProjectPane.py:1775
+msgid "Remove Project"
+msgstr "Odstrániť projekt"
+
+#: Projects/projects/ProjectPane.py:1385
+msgid "Remove from repository"
+msgstr "Odstrániť z repozitára"
+
+#: Projects/projects/ConfigDialog.py:490
+msgid "Remove repository"
+msgstr "Odstrániť repozitár"
+
+#: Projects/projects/ModList.py:110
+msgid "Repository"
+msgstr "Repozitár"
+
+#: Projects/projects/ConfigDialog.py:266
+msgid "Repository Configuration"
+msgstr "Nastavenie repozitára"
+
+#: Projects/projects/HistWin.py:119
+msgid "Retrieving File History"
+msgstr "Načítam históriu súborov"
+
+#: Projects/projects/HistWin.py:313
+msgid "Rev #"
+msgstr "Rev #"
+
+#: Projects/projects/ModList.py:137
+msgid "Revert"
+msgstr "Vrátiť"
+
+#: Projects/projects/ModList.py:565 Projects/projects/ProjectPane.py:1429
+msgid "Revert to repository version"
+msgstr "Vrátiť k verzii v repozitári"
+
+#: Projects/projects/HistWin.py:138
+msgid "Revision History"
+msgstr "História revízií"
+
+#: Projects/projects/HistWin.py:421
+msgid "Search Log"
+msgstr "Log vyhľadávania"
+
+#: Projects/projects/ProjectPane.py:1417
+msgid "Search in directory"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:164
+msgid "Select diff program"
+msgstr "Vyber diff program"
+
+#: Projects/projects/ConfigDialog.py:489
+msgid "Select the repository path to remove"
+msgstr "Vyber cestu k repozitáru, ktrorý chceš odstrániť"
+
+#: Projects/projects/ProjectPane.py:1024
+msgid "Selected files are from multiple repositories"
+msgstr "Vybrané súbory sú z rôznych repozirárov"
+
+#: Projects/projects/ModList.py:558 Projects/projects/ProjectPane.py:1425
+msgid "Show revision history"
+msgstr "Zobrazí históriu revízií"
+
+#: Projects/projects/ConfigDialog.py:102 Projects/projects/__init__.py:116
+msgid "Source Control"
+msgstr "Zdroje"
+
+#: Projects/projects/ProjectPane.py:1415
+#, fuzzy
+msgid "Source Control command..."
+msgstr "Zdroje"
+
+#: Projects/projects/ConfigDialog.py:257
+msgid "Source control system"
+msgstr "Typ zdroja"
+
+#: Projects/projects/ConfigDialog.py:136
+msgid ""
+"Space separated list of files patterns to exclude from view\n"
+"The use of wildcards (*) are permitted."
+msgstr ""
+"Medzerou oddelený zoznam vzorov súborov, ktoré nebudú zobrazené\n"
+"Pri každom je potrebné uviesť zástupný znak (*)"
+
+#: Projects/projects/ModList.py:329
+msgid "Status"
+msgstr "Stav"
+
+#: Projects/projects/ProjectPane.py:146
+msgid "Text File"
+msgstr "Textový súbor"
+
+#: Projects/projects/ProjectPane.py:1537
+msgid ""
+"The following command will be executed on all selected\n"
+"files and files contained in selected directories."
+msgstr ""
+"Nasledujúci príkaz bude použitý na všetky vybrané súbory\n"
+"a súbory umiestnené vo vybraných adresároch"
+
+#: Projects/projects/ProjectPane.py:893
+#, fuzzy
+msgid ""
+"The following source control command will be executed on all selected\n"
+"files and files contained in selected directories.\n"
+"e.g. bzr [command] filename.py"
+msgstr ""
+"Nasledujúci príkaz bude použitý na všetky vybrané súbory\n"
+"a súbory umiestnené vo vybraných adresároch"
+
+#: Projects/projects/HistWin.py:325
+msgid "The history information for the requested file could not be retrieved.  Please make sure that you have network access."
+msgstr "História pre požadovaný súbor nebola načítaná. Skontroluj prosím ťa či nemáš problémy s pripojením."
+
+#: Projects/projects/ProjCmnDlg.py:43
+msgid "The requested file could not be retrieved from the source control system."
+msgstr "Požadovaný súbor nemôže byť stiahnutý z daného typu zdroja"
+
+#: Projects/projects/ProjectPane.py:1636
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s."
+msgstr "Pri pokuse o presunutie/kopírovanie súboru %(filename)s systém vrátil nasledujúcu správu: %(errmsg)s"
+
+#: Projects/projects/ProjectPane.py:1627
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s. Do you wish to continue?"
+msgstr "Pri pokuse o presunutie/kopírovanie súboru %(filename)s systém vrátil nasledujúcu správu: %(errmsg)s. Chceš pokračovať?"
+
+#: Projects/projects/ProjectPane.py:1469
+msgid "Untitled Folder"
+msgstr "Nepomenovaný adresár"
+
+#: Projects/projects/ModList.py:125 Projects/projects/ProjectPane.py:1422
+msgid "Update"
+msgstr "Aktualizovať"
+
+#: Projects/projects/ProjectPane.py:921
+#, python-format
+msgid "Updating %s"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:166
+msgid "Use a specified diff program"
+msgstr "Použije sa tu zadaný diff program"
+
+#: Projects/projects/ConfigDialog.py:275
+msgid "Username"
+msgstr "Užívateľské meno"
+
+#: Projects/projects/ConfigDialog.py:290
+msgid "Value"
+msgstr "Hodnota"
+
+#: Projects/projects/ProjectPane.py:1023
+msgid "You can not execute source control commands across multiple repositories."
+msgstr "Nemôžeš použiť príkazy pre zdroj na viac repozitárov"

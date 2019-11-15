@@ -1,0 +1,431 @@
+# Romanian translation for editra
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 20:21-0500\n"
+"PO-Revision-Date: 2009-09-02 00:22+0000\n"
+"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
+"Language-Team: Romanian <ro@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Projects/projects/ConfigDialog.py:434
+msgid "*NAME*"
+msgstr "*NUME*"
+
+#: Projects/projects/ConfigDialog.py:435
+msgid "*VALUE*"
+msgstr "*VALOARE*"
+
+#: Projects/projects/ProjectPane.py:1664
+msgid ". Do you wish to continue?"
+msgstr ". Continuați?"
+
+#: Projects/projects/ProjectPane.py:1769
+msgid "Add Project"
+msgstr "Adaugă Proiect"
+
+#: Projects/projects/ConfigDialog.py:499
+msgid "Add a New Repository Path"
+msgstr "Adaugă o cale nouă pentru Repository(resurse on-line)"
+
+#: Projects/projects/ProjectPane.py:1387
+msgid "Add to repository"
+msgstr "Adaugă la repository(resurse on-line)"
+
+#: Projects/projects/ProjectPane.py:1663
+msgid "An error occurred when attempting to remove "
+msgstr "O eroare a apărut în încercarea de a șterge "
+
+#: Projects/projects/HistWin.py:315
+msgid "Author"
+msgstr "Autor"
+
+#: Projects/projects/ConfigDialog.py:149
+msgid "Built-in"
+msgstr "Integrat"
+
+#: Projects/projects/ProjectPane.py:147
+msgid "C File"
+msgstr "Fișier C"
+
+#: Projects/projects/ProjectPane.py:1817
+msgid "Choose a Project Directory"
+msgstr "Alegeți un dosar pentru proiect"
+
+#: Projects/projects/ProjCmnDlg.py:275
+msgid "Close"
+msgstr ""
+
+#: Projects/projects/ModList.py:131 Projects/projects/ProjCmnDlg.py:71
+msgid "Commit"
+msgstr "Aplicați"
+
+#: Projects/projects/ModList.py:395 Projects/projects/ProjectPane.py:971
+msgid "Commit Dialog"
+msgstr "Dialog aplicare"
+
+#: Projects/projects/ModList.py:561 Projects/projects/ProjectPane.py:1427
+msgid "Commit changes"
+msgstr "Aplicați schimbările"
+
+#: Projects/projects/HistWin.py:146 Projects/projects/HistWin.py:277
+msgid "Compare Revisions"
+msgstr "Comparați versiunile"
+
+#: Projects/projects/HistWin.py:281
+msgid "Compare Selected Revisions"
+msgstr "Comparați versiunile selectate"
+
+#: Projects/projects/HistWin.py:279
+msgid "Compare to Selected Revision"
+msgstr "Comparați cu versiunea selectată"
+
+#: Projects/projects/ModList.py:555 Projects/projects/ProjectPane.py:1423
+msgid "Compare to previous version"
+msgstr "Compară cu versiunea precedentă"
+
+#: Projects/projects/ProjectPane.py:1763
+msgid "Configure"
+msgstr "Configurare"
+
+#: Projects/projects/ProjectPane.py:1411
+msgid "Copy"
+msgstr "Copiază"
+
+#: Projects/projects/ProjCmnDlg.py:45
+msgid "Could not retrieve file"
+msgstr "Nu pot accesa fișierul"
+
+#: Projects/projects/ProjectPane.py:1410
+msgid "Cut"
+msgstr "taie"
+
+#: Projects/projects/HistWin.py:314
+msgid "Date"
+msgstr "Dată"
+
+#: Projects/projects/ConfigDialog.py:148
+msgid "Diff Program"
+msgstr "Program \"diff\""
+
+#: Projects/projects/ProjectPane.py:1405
+msgid "Edit"
+msgstr "Editare"
+
+#: Projects/projects/ProjCmnDlg.py:306
+msgid "Enter a command to be executed on all selected files and files in selected directories."
+msgstr "Introduceți o comandă de executat în toate fișierele și în fișierele din toate dosarele selectate."
+
+#: Projects/projects/ProjectPane.py:896 Projects/projects/ProjectPane.py:1539
+msgid "Enter command to execute on all files"
+msgstr "Introduceți comanda de executat asupra tuturor fișierelor"
+
+#: Projects/projects/ModList.py:396 Projects/projects/ProjectPane.py:972
+msgid "Enter your commit message:"
+msgstr "Introduceți propriul mesaj de aplicare"
+
+#: Projects/projects/ConfigDialog.py:285
+msgid "Environment Variables"
+msgstr "Variabile de mediu"
+
+#: Projects/projects/ProjectPane.py:1630 Projects/projects/ProjectPane.py:1638
+msgid "Error occurred when copying/moving files"
+msgstr "Eroare la copierea/mutarea fișierelor"
+
+#: Projects/projects/ProjectPane.py:1665
+msgid "Error occurred when removing files"
+msgstr "Eroare la ștergerea fișierelor"
+
+#: Projects/projects/ConfigDialog.py:261
+msgid "Executable Path"
+msgstr "Calea către executabil"
+
+#: Projects/projects/ProjCmnDlg.py:300
+msgid "Execute command on files"
+msgstr "Aplică fișierelor comanda"
+
+#: Projects/projects/ProjectPane.py:1414
+msgid "Execute command..."
+msgstr "Execută comanda..."
+
+#: Projects/projects/ConfigDialog.py:129
+msgid "File Filters"
+msgstr "Sortare fișiere"
+
+#: Projects/projects/ModList.py:331
+msgid "Filename"
+msgstr "Nume fişier"
+
+#: Projects/projects/ProjectPane.py:1391
+msgid "Folder"
+msgstr "Dosar"
+
+#: Projects/projects/ConfigDialog.py:100
+msgid "General"
+msgstr "General"
+
+#: Projects/projects/ProjectPane.py:148
+msgid "HTML File"
+msgstr "Fișier HTML"
+
+#: Projects/projects/HistWin.py:328
+msgid "History information could not be retrieved"
+msgstr "Informațiile despre istoric nu au putut fi găsite"
+
+#: Projects/projects/ConfigDialog.py:143
+msgid "Keep project tree synchronized with editor notebook"
+msgstr "Păstrați structura proiectului sincronizată cu editorul"
+
+#: Projects/projects/HistWin.py:316
+msgid "Log Message"
+msgstr "Mesaj în jurnal"
+
+#: Projects/projects/ProjectPane.py:1428
+msgid "Make Patch"
+msgstr "Fă modificarea(patch)"
+
+#: Projects/projects/ProjCmnDlg.py:68
+msgid "Message"
+msgstr "Mesaj"
+
+#: Projects/projects/ProjectPane.py:1399
+msgid "Move to Recycle Bin"
+msgstr "Mută la coșul de gunoi"
+
+#: Projects/projects/ProjectPane.py:1401
+msgid "Move to Trash"
+msgstr "Șterge"
+
+#: Projects/projects/ConfigDialog.py:289
+msgid "Name"
+msgstr "Nume"
+
+#: Projects/projects/ProjectPane.py:1408
+msgid "New..."
+msgstr "Nou..."
+
+#: Projects/projects/ProjectPane.py:1406
+msgid "Open"
+msgstr "Deschide"
+
+#: Projects/projects/ProjectPane.py:1745
+msgid "Open Projects Sidepanel"
+msgstr "Deschide panoul Proiecte"
+
+#: Projects/projects/ProjectPane.py:1407
+msgid "Open enclosing folder"
+msgstr "Deschideți dosarul părinte"
+
+#: Projects/projects/__init__.py:117
+msgid "Open the Projects source control summary list"
+msgstr "Deschideți lista cu sumarul sursei proiectelor"
+
+#: Projects/projects/ConfigDialog.py:277
+msgid "Password"
+msgstr "Parolă"
+
+#: Projects/projects/ProjectPane.py:1412
+msgid "Paste"
+msgstr "Lipeşte"
+
+#: Projects/projects/ProjectPane.py:149
+msgid "Php File"
+msgstr "Fișier PHP"
+
+#: Projects/projects/ConfigDialog.py:498
+msgid "Please enter a repository path.  Partial paths may also be entered."
+msgstr "Adăugați o cale către reposirory(resurse on-line).Poate fi introdusă și o cale parțială."
+
+#: Projects/projects/ProjectPane.py:1744 Projects/projects/__init__.py:60
+#: Projects/projects/__init__.py:154
+msgid "Projects"
+msgstr "Proiecte"
+
+#: Projects/projects/ConfigDialog.py:56
+msgid "Projects Configuration"
+msgstr "Configurare proiecte"
+
+#: Projects/projects/ProjectPane.py:150
+msgid "Python File"
+msgstr "Fișier Python"
+
+#: Projects/projects/ProjCmnDlg.py:126
+msgid "Recent Messages"
+msgstr "Mesaje recente"
+
+#: Projects/projects/ModList.py:119
+msgid "Refresh"
+msgstr "Reîmprospătare"
+
+#: Projects/projects/ModList.py:551 Projects/projects/ProjectPane.py:1421
+msgid "Refresh status"
+msgstr "Stare actualizare"
+
+#: Projects/projects/ProjectPane.py:1775
+msgid "Remove Project"
+msgstr "Șterge proiect"
+
+#: Projects/projects/ProjectPane.py:1385
+msgid "Remove from repository"
+msgstr "Șterge din repository"
+
+#: Projects/projects/ConfigDialog.py:490
+msgid "Remove repository"
+msgstr "Șterge repository"
+
+#: Projects/projects/ModList.py:110
+msgid "Repository"
+msgstr "Repozitory(depozit on-line)"
+
+#: Projects/projects/ConfigDialog.py:266
+msgid "Repository Configuration"
+msgstr "Configurare repository"
+
+#: Projects/projects/HistWin.py:119
+msgid "Retrieving File History"
+msgstr "Istorie fișier"
+
+#: Projects/projects/HistWin.py:313
+msgid "Rev #"
+msgstr "Rev"
+
+#: Projects/projects/ModList.py:137
+msgid "Revert"
+msgstr "Restaurează"
+
+#: Projects/projects/ModList.py:565 Projects/projects/ProjectPane.py:1429
+msgid "Revert to repository version"
+msgstr "Reveniți la versiunea din stoc(repository)"
+
+#: Projects/projects/HistWin.py:138
+msgid "Revision History"
+msgstr "Istoric revizii"
+
+#: Projects/projects/HistWin.py:421
+msgid "Search Log"
+msgstr "Caută în jurnal"
+
+#: Projects/projects/ProjectPane.py:1417
+msgid "Search in directory"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:164
+msgid "Select diff program"
+msgstr "Caută programul diff(comparare fișiere linie cu linie)"
+
+#: Projects/projects/ConfigDialog.py:489
+msgid "Select the repository path to remove"
+msgstr "Alegeți calea către depozit(repository) pe care să o șterg"
+
+#: Projects/projects/ProjectPane.py:1024
+msgid "Selected files are from multiple repositories"
+msgstr "Fișierele selectate sunt din mai multe depozite"
+
+#: Projects/projects/ModList.py:558 Projects/projects/ProjectPane.py:1425
+msgid "Show revision history"
+msgstr "Arată istoricul versiunilor"
+
+#: Projects/projects/ConfigDialog.py:102 Projects/projects/__init__.py:116
+msgid "Source Control"
+msgstr "Controlul sursei"
+
+#: Projects/projects/ProjectPane.py:1415
+#, fuzzy
+msgid "Source Control command..."
+msgstr "Controlul sursei"
+
+#: Projects/projects/ConfigDialog.py:257
+msgid "Source control system"
+msgstr "Sistem de control al sursei"
+
+#: Projects/projects/ConfigDialog.py:136
+msgid ""
+"Space separated list of files patterns to exclude from view\n"
+"The use of wildcards (*) are permitted."
+msgstr ""
+"Separați prin spațiu lista tipurilor de fișiere excluse.\n"
+"Puteți folosi metacaractere (*)"
+
+#: Projects/projects/ModList.py:329
+msgid "Status"
+msgstr "Stare"
+
+#: Projects/projects/ProjectPane.py:146
+msgid "Text File"
+msgstr "Fișier Text"
+
+#: Projects/projects/ProjectPane.py:1537
+msgid ""
+"The following command will be executed on all selected\n"
+"files and files contained in selected directories."
+msgstr ""
+"Următoarea comandă va fi executată asupra tuturor\n"
+"fișierelor selectate și asupra fișierelor din \n"
+"dosarele selectate."
+
+#: Projects/projects/ProjectPane.py:893
+#, fuzzy
+msgid ""
+"The following source control command will be executed on all selected\n"
+"files and files contained in selected directories.\n"
+"e.g. bzr [command] filename.py"
+msgstr ""
+"Următoarea comandă va fi executată asupra tuturor\n"
+"fișierelor selectate și asupra fișierelor din \n"
+"dosarele selectate."
+
+#: Projects/projects/HistWin.py:325
+msgid "The history information for the requested file could not be retrieved.  Please make sure that you have network access."
+msgstr "Istoricul fișierului nu poate fi accesat. Asigurațivă că aveți acces la rețea."
+
+#: Projects/projects/ProjCmnDlg.py:43
+msgid "The requested file could not be retrieved from the source control system."
+msgstr "Fișierul nu poate fi accesat în sursă."
+
+#: Projects/projects/ProjectPane.py:1636
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s."
+msgstr "Sistemul a returnat următorul mesaj la încercarea de a muta/copia %(filename)s: %(errmsg)s."
+
+#: Projects/projects/ProjectPane.py:1627
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s. Do you wish to continue?"
+msgstr "Sistemul a returnat următorul mesaj la încercarea de a muta/copia %(filename)s: %(errmsg)s. Continuați?"
+
+#: Projects/projects/ProjectPane.py:1469
+msgid "Untitled Folder"
+msgstr "Dosar fără nume"
+
+#: Projects/projects/ModList.py:125 Projects/projects/ProjectPane.py:1422
+msgid "Update"
+msgstr "Actualizează"
+
+#: Projects/projects/ProjectPane.py:921
+#, python-format
+msgid "Updating %s"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:166
+msgid "Use a specified diff program"
+msgstr "Folosește un program 'diff' particular"
+
+#: Projects/projects/ConfigDialog.py:275
+msgid "Username"
+msgstr "Nume utilizator"
+
+#: Projects/projects/ConfigDialog.py:290
+msgid "Value"
+msgstr "Valoare"
+
+#: Projects/projects/ProjectPane.py:1023
+msgid "You can not execute source control commands across multiple repositories."
+msgstr "Nu puteți executa comenzi de control a sursei asupra mai multor depozite(repository)"

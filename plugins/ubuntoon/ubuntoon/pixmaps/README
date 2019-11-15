@@ -1,0 +1,36 @@
+GNUtoon/Ubuntoon/Gartoon Gnome Icon Theme
+==============================================
+Credits: GNUtoon/Ubuntoon
+Created/Modified by reassuringlyoffensive (nathan@xmail.net
+
+Credits:Gartoon
+Created by Zeus (zeussama@gmail.com).
+Website http://zeus.qballcow.nl
+
+With help from:
+La Mula Francis - thanks a lot dude for backing me up
+
+==============================================
+Installation: 
+Untar GNUtoon/Ubuntoon packages into your hard drive. 
+Copy GNUtoon/Ubuntoon directory to ~/.icons or install (the tar) using the Gnome theme manager (System>Preferences>Appearance. 
+
+Open "Appearance",
+click the Theme button. Select GNUtoon/Ubuntoon from
+the Icon tab.
+
+F.A.Q:
+
+Q: Why can't I just install Gartoon original?
+A: You can, but Gnome and developers have made many name changes which stops icons loading.
+
+Q: What's GNUtoon/Ubuntoon's License?
+A: Lincensed under GPL (read GPL.txt)
+
+Q: Can I modify GNUtoon/Ubuntoon?
+A: Yes you can, because GNUtoon/Ubuntoon is GPL. you can also distribute your modified GNUtoon/Ubuntoon icons.
+
+Q: How to install it?
+A: Read the installation section above.
+
+

@@ -1,0 +1,429 @@
+# Russian translation for editra
+# Copyright (c) 2008 Rosetta Contributors and Canonical Ltd 2008
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 20:21-0500\n"
+"PO-Revision-Date: 2009-10-31 08:30+0000\n"
+"Last-Translator: Michael Rybinsky <Unknown>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Projects/projects/ConfigDialog.py:434
+msgid "*NAME*"
+msgstr "*НАЗВАНИЕ*"
+
+#: Projects/projects/ConfigDialog.py:435
+msgid "*VALUE*"
+msgstr "*ЗНАЧЕНИЕ*"
+
+#: Projects/projects/ProjectPane.py:1664
+msgid ". Do you wish to continue?"
+msgstr "Хотите продолжить?"
+
+#: Projects/projects/ProjectPane.py:1769
+msgid "Add Project"
+msgstr "Добавить проект"
+
+#: Projects/projects/ConfigDialog.py:499
+msgid "Add a New Repository Path"
+msgstr "Добавить новый путь к репозитарию"
+
+#: Projects/projects/ProjectPane.py:1387
+msgid "Add to repository"
+msgstr "Добавить в репозитарий"
+
+#: Projects/projects/ProjectPane.py:1663
+msgid "An error occurred when attempting to remove "
+msgstr "Произошла ошибка при попытке удалить "
+
+#: Projects/projects/HistWin.py:315
+msgid "Author"
+msgstr "Автор"
+
+#: Projects/projects/ConfigDialog.py:149
+msgid "Built-in"
+msgstr "Встроенный"
+
+#: Projects/projects/ProjectPane.py:147
+msgid "C File"
+msgstr "C файл"
+
+#: Projects/projects/ProjectPane.py:1817
+msgid "Choose a Project Directory"
+msgstr "Выбрать каталог проекта"
+
+#: Projects/projects/ProjCmnDlg.py:275
+msgid "Close"
+msgstr ""
+
+#: Projects/projects/ModList.py:131 Projects/projects/ProjCmnDlg.py:71
+msgid "Commit"
+msgstr "Подтвердить"
+
+#: Projects/projects/ModList.py:395 Projects/projects/ProjectPane.py:971
+msgid "Commit Dialog"
+msgstr "Диалог подтверждения"
+
+#: Projects/projects/ModList.py:561 Projects/projects/ProjectPane.py:1427
+msgid "Commit changes"
+msgstr "Подтвердить изменения"
+
+#: Projects/projects/HistWin.py:146 Projects/projects/HistWin.py:277
+msgid "Compare Revisions"
+msgstr "Сравнить версии"
+
+#: Projects/projects/HistWin.py:281
+msgid "Compare Selected Revisions"
+msgstr "Сравнить выбранные версии"
+
+#: Projects/projects/HistWin.py:279
+msgid "Compare to Selected Revision"
+msgstr "Сравнить выбранную версию"
+
+#: Projects/projects/ModList.py:555 Projects/projects/ProjectPane.py:1423
+msgid "Compare to previous version"
+msgstr "Сравнить предыдущую версию"
+
+#: Projects/projects/ProjectPane.py:1763
+msgid "Configure"
+msgstr "Настройка"
+
+#: Projects/projects/ProjectPane.py:1411
+msgid "Copy"
+msgstr "Копировать"
+
+#: Projects/projects/ProjCmnDlg.py:45
+msgid "Could not retrieve file"
+msgstr "Не удалось получить файл"
+
+#: Projects/projects/ProjectPane.py:1410
+msgid "Cut"
+msgstr "Вырезать"
+
+#: Projects/projects/HistWin.py:314
+msgid "Date"
+msgstr "Дата"
+
+#: Projects/projects/ConfigDialog.py:148
+msgid "Diff Program"
+msgstr "Программа сравнения"
+
+#: Projects/projects/ProjectPane.py:1405
+msgid "Edit"
+msgstr "Правка"
+
+#: Projects/projects/ProjCmnDlg.py:306
+msgid "Enter a command to be executed on all selected files and files in selected directories."
+msgstr "Введите команду, которая должна быть выполнена для всех выбранных файлов и файлов в выбранных каталогах."
+
+#: Projects/projects/ProjectPane.py:896 Projects/projects/ProjectPane.py:1539
+msgid "Enter command to execute on all files"
+msgstr "Введите команду, которая будет выполнена для все файлов"
+
+#: Projects/projects/ModList.py:396 Projects/projects/ProjectPane.py:972
+msgid "Enter your commit message:"
+msgstr "Введите Ваше сообщение:"
+
+#: Projects/projects/ConfigDialog.py:285
+msgid "Environment Variables"
+msgstr "Переменные окружения"
+
+#: Projects/projects/ProjectPane.py:1630 Projects/projects/ProjectPane.py:1638
+msgid "Error occurred when copying/moving files"
+msgstr "Произошла ошибка при копировании/перемещении файлов"
+
+#: Projects/projects/ProjectPane.py:1665
+msgid "Error occurred when removing files"
+msgstr "Произошла ошибка при удалении файлов"
+
+#: Projects/projects/ConfigDialog.py:261
+msgid "Executable Path"
+msgstr "Исполняемый путь"
+
+#: Projects/projects/ProjCmnDlg.py:300
+msgid "Execute command on files"
+msgstr "Выполнение команды для файлов"
+
+#: Projects/projects/ProjectPane.py:1414
+msgid "Execute command..."
+msgstr "Выполнение команды..."
+
+#: Projects/projects/ConfigDialog.py:129
+msgid "File Filters"
+msgstr "Фильтры файлов"
+
+#: Projects/projects/ModList.py:331
+msgid "Filename"
+msgstr "Имя файла"
+
+#: Projects/projects/ProjectPane.py:1391
+msgid "Folder"
+msgstr "Папка"
+
+#: Projects/projects/ConfigDialog.py:100
+msgid "General"
+msgstr "Общие"
+
+#: Projects/projects/ProjectPane.py:148
+msgid "HTML File"
+msgstr "HTML-файл"
+
+#: Projects/projects/HistWin.py:328
+msgid "History information could not be retrieved"
+msgstr "Не может быть получена история информации"
+
+#: Projects/projects/ConfigDialog.py:143
+msgid "Keep project tree synchronized with editor notebook"
+msgstr "Синхронизировать дерево проекта с редактором блокнота"
+
+#: Projects/projects/HistWin.py:316
+msgid "Log Message"
+msgstr "Журнал сообщений"
+
+#: Projects/projects/ProjectPane.py:1428
+msgid "Make Patch"
+msgstr "Сделать патч"
+
+#: Projects/projects/ProjCmnDlg.py:68
+msgid "Message"
+msgstr "Сообщение"
+
+#: Projects/projects/ProjectPane.py:1399
+msgid "Move to Recycle Bin"
+msgstr "Переместить в корзину"
+
+#: Projects/projects/ProjectPane.py:1401
+msgid "Move to Trash"
+msgstr "Переместить в корзину"
+
+#: Projects/projects/ConfigDialog.py:289
+msgid "Name"
+msgstr "Имя"
+
+#: Projects/projects/ProjectPane.py:1408
+msgid "New..."
+msgstr "Новый..."
+
+#: Projects/projects/ProjectPane.py:1406
+msgid "Open"
+msgstr "Открыть"
+
+#: Projects/projects/ProjectPane.py:1745
+msgid "Open Projects Sidepanel"
+msgstr "Открыть боковую панель проектов"
+
+#: Projects/projects/ProjectPane.py:1407
+msgid "Open enclosing folder"
+msgstr "Открыть включающую папку"
+
+#: Projects/projects/__init__.py:117
+msgid "Open the Projects source control summary list"
+msgstr "Открыть источник управления проектами общим списком"
+
+#: Projects/projects/ConfigDialog.py:277
+msgid "Password"
+msgstr "Пароль"
+
+#: Projects/projects/ProjectPane.py:1412
+msgid "Paste"
+msgstr "Вставить"
+
+#: Projects/projects/ProjectPane.py:149
+msgid "Php File"
+msgstr "PHP-файл"
+
+#: Projects/projects/ConfigDialog.py:498
+msgid "Please enter a repository path.  Partial paths may also be entered."
+msgstr "Пожалуйста, введите путь к репозитарию. Может быть также введен неполный путь."
+
+#: Projects/projects/ProjectPane.py:1744 Projects/projects/__init__.py:60
+#: Projects/projects/__init__.py:154
+msgid "Projects"
+msgstr "Проекты"
+
+#: Projects/projects/ConfigDialog.py:56
+msgid "Projects Configuration"
+msgstr "Конфигарация проектов"
+
+#: Projects/projects/ProjectPane.py:150
+msgid "Python File"
+msgstr "Файл Python"
+
+#: Projects/projects/ProjCmnDlg.py:126
+msgid "Recent Messages"
+msgstr "Недавние сообщения"
+
+#: Projects/projects/ModList.py:119
+msgid "Refresh"
+msgstr "Обновить"
+
+#: Projects/projects/ModList.py:551 Projects/projects/ProjectPane.py:1421
+msgid "Refresh status"
+msgstr "Обновить состояние"
+
+#: Projects/projects/ProjectPane.py:1775
+msgid "Remove Project"
+msgstr "Удалить проект"
+
+#: Projects/projects/ProjectPane.py:1385
+msgid "Remove from repository"
+msgstr "Удалить из репозитария"
+
+#: Projects/projects/ConfigDialog.py:490
+msgid "Remove repository"
+msgstr "Удалить репозитарий"
+
+#: Projects/projects/ModList.py:110
+msgid "Repository"
+msgstr "Репозиторий"
+
+#: Projects/projects/ConfigDialog.py:266
+msgid "Repository Configuration"
+msgstr "Конфигурация репозитария"
+
+#: Projects/projects/HistWin.py:119
+msgid "Retrieving File History"
+msgstr "Получение истории файла"
+
+#: Projects/projects/HistWin.py:313
+msgid "Rev #"
+msgstr "Предпр. #"
+
+#: Projects/projects/ModList.py:137
+msgid "Revert"
+msgstr "Вернуть"
+
+#: Projects/projects/ModList.py:565 Projects/projects/ProjectPane.py:1429
+msgid "Revert to repository version"
+msgstr "Восстановаить версию репозитария"
+
+#: Projects/projects/HistWin.py:138
+msgid "Revision History"
+msgstr "История изменений"
+
+#: Projects/projects/HistWin.py:421
+msgid "Search Log"
+msgstr "Журнал поиска"
+
+#: Projects/projects/ProjectPane.py:1417
+msgid "Search in directory"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:164
+msgid "Select diff program"
+msgstr "Выбрать программу сравнения"
+
+#: Projects/projects/ConfigDialog.py:489
+msgid "Select the repository path to remove"
+msgstr "Выбрать путь к репозитарию для удаления"
+
+#: Projects/projects/ProjectPane.py:1024
+msgid "Selected files are from multiple repositories"
+msgstr "Выбранные файлы из нескольких репозитариев"
+
+#: Projects/projects/ModList.py:558 Projects/projects/ProjectPane.py:1425
+msgid "Show revision history"
+msgstr "Показать историю изменений"
+
+#: Projects/projects/ConfigDialog.py:102 Projects/projects/__init__.py:116
+msgid "Source Control"
+msgstr "Управление исходниками"
+
+#: Projects/projects/ProjectPane.py:1415
+#, fuzzy
+msgid "Source Control command..."
+msgstr "Управление исходниками"
+
+#: Projects/projects/ConfigDialog.py:257
+msgid "Source control system"
+msgstr "Система контроля источников"
+
+#: Projects/projects/ConfigDialog.py:136
+msgid ""
+"Space separated list of files patterns to exclude from view\n"
+"The use of wildcards (*) are permitted."
+msgstr ""
+"Разделённый запятыми список шаблонов файлов, которые следует исключить из обзора\n"
+"Можно использовать джокеры (*)."
+
+#: Projects/projects/ModList.py:329
+msgid "Status"
+msgstr "Статус"
+
+#: Projects/projects/ProjectPane.py:146
+msgid "Text File"
+msgstr "Текстовый файл"
+
+#: Projects/projects/ProjectPane.py:1537
+msgid ""
+"The following command will be executed on all selected\n"
+"files and files contained in selected directories."
+msgstr ""
+"Следующая команда будет выполнена для всех выбранных \n"
+"файлов и файлов, содержащихся в выбранных каталогах."
+
+#: Projects/projects/ProjectPane.py:893
+#, fuzzy
+msgid ""
+"The following source control command will be executed on all selected\n"
+"files and files contained in selected directories.\n"
+"e.g. bzr [command] filename.py"
+msgstr ""
+"Следующая команда будет выполнена для всех выбранных \n"
+"файлов и файлов, содержащихся в выбранных каталогах."
+
+#: Projects/projects/HistWin.py:325
+msgid "The history information for the requested file could not be retrieved.  Please make sure that you have network access."
+msgstr "Не удалось получить историю информации для выбранного файла. Пожалуйста, убедитесь, что у Вас есть доступ к сети."
+
+#: Projects/projects/ProjCmnDlg.py:43
+msgid "The requested file could not be retrieved from the source control system."
+msgstr "Запрашиваемый файл не может быть получен из системы управления исходниками."
+
+#: Projects/projects/ProjectPane.py:1636
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s."
+msgstr "Система вернула следующее сообщение при попытке перемещения/копирования %(filename)s: %(errmsg)s."
+
+#: Projects/projects/ProjectPane.py:1627
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s. Do you wish to continue?"
+msgstr "Система вернула следующее сообщение при попытке перемещения/копирования %(filename)s: %(errmsg)s. Желаете продолжить?"
+
+#: Projects/projects/ProjectPane.py:1469
+msgid "Untitled Folder"
+msgstr "Неназванная папка"
+
+#: Projects/projects/ModList.py:125 Projects/projects/ProjectPane.py:1422
+msgid "Update"
+msgstr "Обновить"
+
+#: Projects/projects/ProjectPane.py:921
+#, python-format
+msgid "Updating %s"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:166
+msgid "Use a specified diff program"
+msgstr "Использовать другую программу, похожую на diff"
+
+#: Projects/projects/ConfigDialog.py:275
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: Projects/projects/ConfigDialog.py:290
+msgid "Value"
+msgstr "Значение"
+
+#: Projects/projects/ProjectPane.py:1023
+msgid "You can not execute source control commands across multiple repositories."
+msgstr "Вы не можете выполнить комманду управления исходниками для нескольких репозитариях."

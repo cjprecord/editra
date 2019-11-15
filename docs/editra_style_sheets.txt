@@ -1,5 +1,5 @@
 SPECIFICATION: Editra Style Sheet
-REVISION: 1.3
+REVISION: 1.6
 
 PURPOSE: Define the format for writing custom style sheets that allow for the
          customization of the color scheme used to highlight text in the editor
@@ -19,7 +19,8 @@ SYNTAX: The syntax of an Editra Style Sheet is very similar to that of a
         Cascading Style Sheet (CSS). It uses "tags" followed by the style
         definition enclosed in {}'s. Attribute keywords are followed by a
         colon and then the attribute values. A semicolon is used at the end of
-        each attribute definition as a delimiter between definitions.
+        each attribute definition as a delimiter between definitions. Comments
+        can be specified by placing text in between '/* */'.
 
 BEHAVIOR: The 'default_style' tag must be defined and must define all four of
           the default attributes (fore, back, face, size). All other tags with
@@ -56,16 +57,20 @@ STANDARD TAGS:
         - array_style: Style of arrays (currently used in perl documents)
         - btick_style: Style of Back Ticks
         - default_style: Style of all text not styled by other definitions
+        - caret_line: Sets caret line background highlight color
         - char_style: Style of characters (i.e 'c')
         - class_style: Style of class defs (i.e def MyClass)
         - class2_style: Currently unused
         - clear: Sets foreground to black, background to white
         - comment_style: Style of code comment blocs
+        - decor_style: Style for decorators
         - directive_style: Style of directives
         - dockey_style: Style of documentation keywords
         - error_style: Style of errors
+        - foldmargin_style: Style of code folding margin and markers
         - funct_style: Style of Functions
         - global_style: Style of global variables
+        - guide_style: indentation guide style
         - here_style: Used to highlight HERE statements
         - ideol_style: Id End of Line (used in Makefiles)
         - keyword_style: Style of Primary Keywords
@@ -81,9 +86,11 @@ STANDARD TAGS:
         - regex_style: Style of Regular Expressions
         - scalar_style: Style of Scalar Variables
         - scalar2_style: Alternate style for Scalar Variables
+        - select_style: Style of text selection background
         - string_style: Style of Strings (i.e "hello")
         - stringeol_style: Style of unclosed strings (i.e "hello )
         - unknown_style: Style of unknown statements
+        - userkw_style: Style for some builins and user defined keywords
 
 STANDARD ATTRIBUTES:
         - back: Defines the style of the background for the tags text area. The
@@ -104,6 +111,7 @@ STANDARD ATTRIBUTES:
                 acceptable values are any system supported font size (i.e 12)
                 or a format expression (i.e %(size)d). See FONT KEYS for more
                 information on available format expressions.
+        - modifiers: Defines style modifiers 'bold underline italic eol'
 
 FONT KEYS:
         The listed values below are used in format expressions to define what
@@ -133,11 +141,29 @@ MODIFIERS:
         - eol: Extends the given attributes style to the end of the line
         - underline: Enables underlining for a text area
 
+        Modifiers can be either appended to the values defined in a standard
+        attribute or specifed in the _modifiers_ attribute.
+
+SPECIAL TAGS:
+        These tags are part of the standard tags but behave differently than
+        a typical tag. The differences in behavior are mostly transparent but
+        here is an explanation of each.
+
+        - calltip: Only Foreground and Background attributes are used
+        - caret_line: Only Background attribute is used
+        - clear: Used internally any definitions will be ignored
+        - foldmargin_style: Only Foreground and Background attributes are used
+        - marker_style: Only Foreground and Background attributes are used
+        - select_style: When defined only the Background attribute is used. If
+                        this style is not defined then the default system colour
+                        for selection highlight is used in its place.
+
 EXAMPLES:
 
+        /* Comment about this style */
         default_style {
                         fore: #000000;
-                        back: #FFFFFF;
+                        back: #FFFFFF; /* use a white background */
                         face: %(primary)s;
                         size: %(size)d;
         }
@@ -146,4 +172,9 @@ EXAMPLES:
                         fore: #A52B2B bold;
                         face: Courier;
                         size: 14;
+        }
+
+        keyword2_style {
+                        fore: #F0F660;
+                        modifiers: italic underline;
         }

@@ -1,0 +1,422 @@
+# Danish translation for editra
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the editra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: editra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-12 20:21-0500\n"
+"PO-Revision-Date: 2009-12-30 15:46+0000\n"
+"Last-Translator: nanker <Unknown>\n"
+"Language-Team: Danish <da@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-10-02 15:37+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: Projects/projects/ConfigDialog.py:434
+msgid "*NAME*"
+msgstr "*NAVN*"
+
+#: Projects/projects/ConfigDialog.py:435
+msgid "*VALUE*"
+msgstr "*VÆRDI*"
+
+#: Projects/projects/ProjectPane.py:1664
+msgid ". Do you wish to continue?"
+msgstr ". Ønsker du at fortsætte?"
+
+#: Projects/projects/ProjectPane.py:1769
+msgid "Add Project"
+msgstr "Tilføj projekt"
+
+#: Projects/projects/ConfigDialog.py:499
+msgid "Add a New Repository Path"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1387
+msgid "Add to repository"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1663
+msgid "An error occurred when attempting to remove "
+msgstr ""
+
+#: Projects/projects/HistWin.py:315
+msgid "Author"
+msgstr "Forfatter"
+
+#: Projects/projects/ConfigDialog.py:149
+msgid "Built-in"
+msgstr "Indbygget"
+
+#: Projects/projects/ProjectPane.py:147
+msgid "C File"
+msgstr "C fil"
+
+#: Projects/projects/ProjectPane.py:1817
+msgid "Choose a Project Directory"
+msgstr ""
+
+#: Projects/projects/ProjCmnDlg.py:275
+msgid "Close"
+msgstr ""
+
+#: Projects/projects/ModList.py:131 Projects/projects/ProjCmnDlg.py:71
+msgid "Commit"
+msgstr "Indsend"
+
+#: Projects/projects/ModList.py:395 Projects/projects/ProjectPane.py:971
+msgid "Commit Dialog"
+msgstr ""
+
+#: Projects/projects/ModList.py:561 Projects/projects/ProjectPane.py:1427
+msgid "Commit changes"
+msgstr ""
+
+#: Projects/projects/HistWin.py:146 Projects/projects/HistWin.py:277
+msgid "Compare Revisions"
+msgstr ""
+
+#: Projects/projects/HistWin.py:281
+msgid "Compare Selected Revisions"
+msgstr ""
+
+#: Projects/projects/HistWin.py:279
+msgid "Compare to Selected Revision"
+msgstr ""
+
+#: Projects/projects/ModList.py:555 Projects/projects/ProjectPane.py:1423
+msgid "Compare to previous version"
+msgstr "Sammenlign med foregående version"
+
+#: Projects/projects/ProjectPane.py:1763
+msgid "Configure"
+msgstr "Konfigurér"
+
+#: Projects/projects/ProjectPane.py:1411
+msgid "Copy"
+msgstr "Kopiér"
+
+#: Projects/projects/ProjCmnDlg.py:45
+msgid "Could not retrieve file"
+msgstr "Kunne ikke genfinde fil"
+
+#: Projects/projects/ProjectPane.py:1410
+msgid "Cut"
+msgstr "Klip"
+
+#: Projects/projects/HistWin.py:314
+msgid "Date"
+msgstr "Dato"
+
+#: Projects/projects/ConfigDialog.py:148
+msgid "Diff Program"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1405
+msgid "Edit"
+msgstr "Redigér"
+
+#: Projects/projects/ProjCmnDlg.py:306
+msgid "Enter a command to be executed on all selected files and files in selected directories."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:896 Projects/projects/ProjectPane.py:1539
+msgid "Enter command to execute on all files"
+msgstr ""
+
+#: Projects/projects/ModList.py:396 Projects/projects/ProjectPane.py:972
+msgid "Enter your commit message:"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:285
+msgid "Environment Variables"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1630 Projects/projects/ProjectPane.py:1638
+msgid "Error occurred when copying/moving files"
+msgstr "Fejl opstod ved kopiering/flytning af fil"
+
+#: Projects/projects/ProjectPane.py:1665
+msgid "Error occurred when removing files"
+msgstr "Fejl opstod ved flytning af fil"
+
+#: Projects/projects/ConfigDialog.py:261
+msgid "Executable Path"
+msgstr ""
+
+#: Projects/projects/ProjCmnDlg.py:300
+msgid "Execute command on files"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1414
+msgid "Execute command..."
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:129
+msgid "File Filters"
+msgstr "Fil filtre"
+
+#: Projects/projects/ModList.py:331
+msgid "Filename"
+msgstr "Filnavn"
+
+#: Projects/projects/ProjectPane.py:1391
+msgid "Folder"
+msgstr "Mappe"
+
+#: Projects/projects/ConfigDialog.py:100
+msgid "General"
+msgstr "Generelt"
+
+#: Projects/projects/ProjectPane.py:148
+msgid "HTML File"
+msgstr "HTML fil"
+
+#: Projects/projects/HistWin.py:328
+msgid "History information could not be retrieved"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:143
+msgid "Keep project tree synchronized with editor notebook"
+msgstr ""
+
+#: Projects/projects/HistWin.py:316
+msgid "Log Message"
+msgstr "Log besked"
+
+#: Projects/projects/ProjectPane.py:1428
+msgid "Make Patch"
+msgstr "Lav patch"
+
+#: Projects/projects/ProjCmnDlg.py:68
+msgid "Message"
+msgstr "Meddelelse"
+
+#: Projects/projects/ProjectPane.py:1399
+msgid "Move to Recycle Bin"
+msgstr "Flyt til papirkurv"
+
+#: Projects/projects/ProjectPane.py:1401
+msgid "Move to Trash"
+msgstr "Flyt til affald"
+
+#: Projects/projects/ConfigDialog.py:289
+msgid "Name"
+msgstr "Navn"
+
+#: Projects/projects/ProjectPane.py:1408
+msgid "New..."
+msgstr "Ny..."
+
+#: Projects/projects/ProjectPane.py:1406
+msgid "Open"
+msgstr "Åben"
+
+#: Projects/projects/ProjectPane.py:1745
+msgid "Open Projects Sidepanel"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1407
+msgid "Open enclosing folder"
+msgstr ""
+
+#: Projects/projects/__init__.py:117
+msgid "Open the Projects source control summary list"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:277
+msgid "Password"
+msgstr "Adgangskode"
+
+#: Projects/projects/ProjectPane.py:1412
+msgid "Paste"
+msgstr "Sæt ind"
+
+#: Projects/projects/ProjectPane.py:149
+msgid "Php File"
+msgstr "Php fil"
+
+#: Projects/projects/ConfigDialog.py:498
+msgid "Please enter a repository path.  Partial paths may also be entered."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1744 Projects/projects/__init__.py:60
+#: Projects/projects/__init__.py:154
+msgid "Projects"
+msgstr "Projekter"
+
+#: Projects/projects/ConfigDialog.py:56
+msgid "Projects Configuration"
+msgstr "Projekt konfiguration"
+
+#: Projects/projects/ProjectPane.py:150
+msgid "Python File"
+msgstr "Python fil"
+
+#: Projects/projects/ProjCmnDlg.py:126
+msgid "Recent Messages"
+msgstr "Seneste meddelelse"
+
+#: Projects/projects/ModList.py:119
+msgid "Refresh"
+msgstr "Genopfrisk"
+
+#: Projects/projects/ModList.py:551 Projects/projects/ProjectPane.py:1421
+msgid "Refresh status"
+msgstr "Genopfrisk status"
+
+#: Projects/projects/ProjectPane.py:1775
+msgid "Remove Project"
+msgstr "Fjern projekt"
+
+#: Projects/projects/ProjectPane.py:1385
+msgid "Remove from repository"
+msgstr "Fjern fra arkiv"
+
+#: Projects/projects/ConfigDialog.py:490
+msgid "Remove repository"
+msgstr "Fjern arkiv"
+
+#: Projects/projects/ModList.py:110
+msgid "Repository"
+msgstr "Arkiv"
+
+#: Projects/projects/ConfigDialog.py:266
+msgid "Repository Configuration"
+msgstr "Konfiguration af arkiv"
+
+#: Projects/projects/HistWin.py:119
+msgid "Retrieving File History"
+msgstr ""
+
+#: Projects/projects/HistWin.py:313
+msgid "Rev #"
+msgstr ""
+
+#: Projects/projects/ModList.py:137
+msgid "Revert"
+msgstr "Tilbagefør"
+
+#: Projects/projects/ModList.py:565 Projects/projects/ProjectPane.py:1429
+msgid "Revert to repository version"
+msgstr ""
+
+#: Projects/projects/HistWin.py:138
+msgid "Revision History"
+msgstr "Revisionshistorik"
+
+#: Projects/projects/HistWin.py:421
+msgid "Search Log"
+msgstr "Søg i log"
+
+#: Projects/projects/ProjectPane.py:1417
+msgid "Search in directory"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:164
+msgid "Select diff program"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:489
+msgid "Select the repository path to remove"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1024
+msgid "Selected files are from multiple repositories"
+msgstr ""
+
+#: Projects/projects/ModList.py:558 Projects/projects/ProjectPane.py:1425
+msgid "Show revision history"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:102 Projects/projects/__init__.py:116
+msgid "Source Control"
+msgstr "Kilde kontrol"
+
+#: Projects/projects/ProjectPane.py:1415
+#, fuzzy
+msgid "Source Control command..."
+msgstr "Kilde kontrol"
+
+#: Projects/projects/ConfigDialog.py:257
+msgid "Source control system"
+msgstr "Kilde kontrolsystem"
+
+#: Projects/projects/ConfigDialog.py:136
+msgid ""
+"Space separated list of files patterns to exclude from view\n"
+"The use of wildcards (*) are permitted."
+msgstr ""
+
+#: Projects/projects/ModList.py:329
+msgid "Status"
+msgstr "Status"
+
+#: Projects/projects/ProjectPane.py:146
+msgid "Text File"
+msgstr "Tekst fil"
+
+#: Projects/projects/ProjectPane.py:1537
+msgid ""
+"The following command will be executed on all selected\n"
+"files and files contained in selected directories."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:893
+msgid ""
+"The following source control command will be executed on all selected\n"
+"files and files contained in selected directories.\n"
+"e.g. bzr [command] filename.py"
+msgstr ""
+
+#: Projects/projects/HistWin.py:325
+msgid "The history information for the requested file could not be retrieved.  Please make sure that you have network access."
+msgstr ""
+
+#: Projects/projects/ProjCmnDlg.py:43
+msgid "The requested file could not be retrieved from the source control system."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1636
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s."
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1627
+#, python-format
+msgid "The system returned the following message when attempting to move/copy %(filename)s: %(errmsg)s. Do you wish to continue?"
+msgstr ""
+
+#: Projects/projects/ProjectPane.py:1469
+msgid "Untitled Folder"
+msgstr "Mappe uden navn"
+
+#: Projects/projects/ModList.py:125 Projects/projects/ProjectPane.py:1422
+msgid "Update"
+msgstr "Opdatér"
+
+#: Projects/projects/ProjectPane.py:921
+#, python-format
+msgid "Updating %s"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:166
+msgid "Use a specified diff program"
+msgstr ""
+
+#: Projects/projects/ConfigDialog.py:275
+msgid "Username"
+msgstr "Brugernavn"
+
+#: Projects/projects/ConfigDialog.py:290
+msgid "Value"
+msgstr "Værdi"
+
+#: Projects/projects/ProjectPane.py:1023
+msgid "You can not execute source control commands across multiple repositories."
+msgstr ""

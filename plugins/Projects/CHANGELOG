@@ -1,0 +1,225 @@
+Name: Projects
+Author: Kevin D. Smith
+Author: Cody Precord
+License: wxWindows
+
+Changelog:
+
+#-----------------------------------------------------------------------------#
+Version 1.8
+Released:
+
+Enhancements:
++Utilize Editra Threadpool reduce overhead from creating threads.
+
+Bug Fixes:
++Fix crash that could occur in move to trash feature due to UI access from
+background thread.
++Fix sorting issue in History Window
++Fix handling of ed_msg handler cleanup
++Fix crash in addPath when invalid data is stored in the tree.
+
+#-----------------------------------------------------------------------------#
+Version 1.7
+Released:
+
+Bug Fixes:
++Fix crash that could occur when activating an invalid tree ctrl item
+
+#-----------------------------------------------------------------------------#
+Version 1.6
+Released: 10/12/2010
+
+Bug Fixes:
++Fix compatibility issue with python 2.6.6 on Windows
+
+#-----------------------------------------------------------------------------#
+Version 1.5
+Released: 11/08/2009
+
+Bug Fixes:
++Fix some windows specific errors related to subprocess creation
+
+#-----------------------------------------------------------------------------#
+Version 1.4
+Released: 11/07/2009
+
+New:
++Update translations and add many new ones.
+
+Bug Fixes:
++Focus behavior on windows
++Fix number of small typos (patch from kevinsmithc)
++Fix error in doing diff when retrieval of file fails
++Fix some threading issues
++Fix error that could happen when retrieving node data for a commit action.
+
+#-----------------------------------------------------------------------------#
+Version 1.3
+Released: 05/25/2009
+
+New:
+
+Bug Fixes:
++Fix settings not being saved between sessions.
++Fix Bazaar status bug. (patch from idcollins).
+
+#-----------------------------------------------------------------------------#
+Version 1.2
+Released: 05/05/2009
+
+Bug Fixes:
++Fix decoding error in HG history command.
++Critical bug fix for windows context menu handling.
+
+#-----------------------------------------------------------------------------#
+Version 1.1
+Released: 04/27/2009
+
+Bug Fixes:
++Fix Windows specific startup error
+
+#-----------------------------------------------------------------------------#
+Version 1.0
+Released: 04/26/2009
+
+New:
++Add Search in directory shortcut to tree context menu.
++Enhanced command dialog for executing source control commands.
++Api compatibility fixes.
++Dialog to show output from a SourceControl update command.
+
+Bug Fixes:
++Fix incorrect status of BZR files when execute bit is changed.
++Fix some incorrectly listed status of directories under a GIT repo.
++Fix Source Control window's Revert button not working.
+
+#-----------------------------------------------------------------------------#
+Version 0.9
+Released: 02/08/2008
+
+New:
++Add support for Mercurial source control system.
++Synchronize adding/removing of projects between different views.
++Improved Windows move to recyle bin feature (patch from Rudi Pettazzi).
++Some performance improvements.
++Add Spanish and Polish translations.
+
+Bug Fixes:
++Fix some error handling in some end cases when doing diffs.
++Fix some Unicode handling issues in Bazaar implementation.
++Fix some crashes related to deleting folders in the view.
+
+#-----------------------------------------------------------------------------#
+Version 0.8
+Released: 01/29/2008
+
+New:
++Commit dialog remebers recent messages for quick re-entry.
++Some misc UI improvements.
++Don't synchronize with notebook when the panel is not shown on screen. To improve
+efficiency.
+
+Bug Fixes:
++Fix expanding empty tree nodes on windows causing projects view to be emptied
+on Windows.
++Fix error in deleting files where node may not have any data.
++Fix out of order files in Source Control list.
++Fix trash detection on Windows Vista.
++Fix GIT not working on Windows
++Fix crashes when closing the config dialog on some version of wx on OSX.
+
+#-----------------------------------------------------------------------------#
+Version 0.7
+Released: 11/15/2008
+
+New:
++New source control window that can be shown in the Shelf to summarize the
+status of the repository.
++Add shortcut for dismissing History Window
+
+Bug Fixes:
++Fix more tree control related bugs on windows
++Fix bug with refreshing status of SVN externals
+
+#-----------------------------------------------------------------------------#
+Version: 0.6
+Released: 08/05/2008
+
+New:
++Add Ukrainian translation
+
+Bug Fixes:
++Fix some compatibility issues with other plugins
++Fix regression in tree sorting that caused multiple entries and poor
+performance on Windows.
++Fix some Unicode handling issues
+
+#-----------------------------------------------------------------------------#
+Version: 0.5
+Released: 05/31/2008
+
+New:
++Project folders can be edited and given aliases
++Double click on folders expands them instead of opening contents
++Add Brazilian Portuguese translation
+
+Bug Fixes:
++File sorting issues
++New File context menu not working on Windows
+
+#-----------------------------------------------------------------------------#
+Version: 0.4
+Released: 04/25/2008
+
+New:
++Added (Italian, Russian, and Serbian) translations
+
+Bug Fixes:
++Use system provided colors instead of hard coded values for the tree control,
+this fixes some visibility problems that can occur when using certain themes on
+gtk.
++Fix duplicate entries in tree view under Windows
++Fix performance issue when changing tabs under Windows
++Fix menu checkmark not updateing properly under Windows
++Items in New File menu are now translatable
++Fix index out of range error that can occur when making a new file under some
+use cases.
+
+#-----------------------------------------------------------------------------#
+Version: 0.3
+Released: 03/14/2008
+
+Feature update and bug fix release
+
+New:
++Support for Bazaar version control system
++Make Patch command for making (unified) patches
++Syncronize icons with Editra when the theme is changed
++Move to Trash command is now enabled
++i18n support
++Simplified Chinese translation
++German translation
++Japanese translation
+
+Bug Fixes:
++Expanding directories that don't have permissions
++Git status display issues
+
+#-----------------------------------------------------------------------------#
+Version: 0.2
+Released: 01/19/2008
+
+Minor bug fix update and compatibilty with latest Editra release version
+
+Bug Fixes:
++Error when removing a project that no longer exists
++Ui fixes for Gtk version
++Display issues in History Window
++Python 2.4 compatibility fix for diff windows builtin display
+
+#-----------------------------------------------------------------------------#
+Version: 0.1
+Released: 11/01/2007
+
++Initial Release
